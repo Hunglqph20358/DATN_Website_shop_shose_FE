@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
+import {apiURL} from '../../config/apiURL';
 
 @Component({
   selector: 'app-header',
@@ -7,7 +8,10 @@ import { Component, OnInit } from '@angular/core';
 })
 export class HeaderComponent implements OnInit {
 
-  constructor() { }
+  constructor() {
+  }
+
+  api = apiURL;
 
   ngOnInit(): void {
   }
