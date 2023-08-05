@@ -9,6 +9,7 @@ import {FooterComponent} from './layout/footer/footer.component';
 import {LoginComponent} from './component/login/login.component';
 import {GiohangComponent} from './component/giohang/giohang.component';
 import {HttpClientModule} from '@angular/common/http';
+import { DetailsComponent } from './component/details/details.component';
 
 @NgModule({
   declarations: [
@@ -17,7 +18,8 @@ import {HttpClientModule} from '@angular/common/http';
     HeaderComponent,
     FooterComponent,
     LoginComponent,
-    GiohangComponent
+    GiohangComponent,
+    DetailsComponent,
   ],
   imports: [
     BrowserModule,

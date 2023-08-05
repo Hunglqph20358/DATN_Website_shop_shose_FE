@@ -1,0 +1,35 @@
+.colornav {
+  background-color: #7fad38;
+  color: white;
+}
+
+.menu-left {
+  border: 1px solid #ebebeb;
+}
+
+.card {
+  border: #ebebeb;
+}
+
+.card-title {
+  font-weight: bold;
+}
+
+.img-thumbnail {
+  border: #ebebeb;
+  float: left;
+}
+
+.gia {
+  font-weight: bold;
+}
+
+.card-img-top {
+  width: 300px;
+  height: 400px;
+}
+
+.img-thumbnail {
+  width: 100px;
+  height: 100px;
+}
