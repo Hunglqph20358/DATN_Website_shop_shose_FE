@@ -52,7 +52,7 @@
 }
 
 #sidebar-wrapper .list-group {
-  width: 15rem;
+  width: 18rem;
 }
 
 #page-content-wrapper {
@@ -92,4 +92,5 @@
   #wrapper.toggled #sidebar-wrapper {
     margin-left: -15rem;
   }
+
 }
