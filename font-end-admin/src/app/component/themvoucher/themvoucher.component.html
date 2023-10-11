@@ -1,0 +1,74 @@
+<section class="content-header">
+  <div class="container-fluid">
+    <div class="row mb-2">
+      <div class="col-md-10">
+        <div class="card card-primary">
+          <div class="card-header">
+            <h3 class="card-title">Voucher</h3>
+          </div>
+          <form>
+            <div class="card-body">
+              <div class="form-group">
+                <label for="maVoucher">Mã</label>
+                <input type="text" class="form-control" id="maVoucher" placeholder="Mã">
+              </div>
+              <div class="form-group">
+                <label for="tenVoucher">Tên</label>
+                <input type="text" class="form-control" id="tenVoucher" placeholder="Tên">
+              </div>
+              <div class="form-group">
+                <label for="noiDung">Nội dung</label>
+                <input type="text" class="form-control" id="noiDung" placeholder="Nội dung">
+              </div>
+              <div class="form-group">
+                <label for="ngayBatDau">Ngày bắt đầu</label>
+                <input type="date" class="form-control" id="ngayBatDau">
+              </div>
+              <div class="form-group">
+                <label for="ngayKetThuc">Ngày kết thúc</label>
+                <input type="date" class="form-control" id="ngayKetThuc">
+              </div>
+              <div class="form-group">
+                <label>Điều kiện sử dụng</label>
+                <div class="row">
+                  <div class="col-md-6">
+                    <div class="form-group">
+                      <label for="hoaDonGiam">Loại</label>
+                      <select class="form-control" id="hoaDonGiam">
+                        <option>Hóa đơn trên 100k</option>
+                        <option>Hóa đơn trên 200k</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <div class="form-group">
+                      <label for="khachHangQuen">Khách hàng quen</label>
+                      <select class="form-control" id="khachHangQuen">
+                        <option>Khách mua trên 20 lần</option>
+                        <option>Khách mua tổng hóa đơn trên 10 triệu</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+              </div>
+<!--              <div class="form-group">-->
+<!--                <label for="trangThai">Trạng thái</label>-->
+<!--                <select class="form-control" id="trangThai">-->
+<!--                  <option>Còn hạn</option>-->
+<!--                  <option>Hết hạn</option>-->
+<!--                </select>-->
+<!--              </div>-->
+              <div class="form-group">
+                <label for="giaTriGiam">Giá trị giảm</label>
+                <input type="text" class="form-control" id="giaTriGiam" placeholder="Giá trị giảm">
+              </div>
+              <div class="card-footer">
+                <button type="submit" class="btn btn-primary">Submit</button>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
