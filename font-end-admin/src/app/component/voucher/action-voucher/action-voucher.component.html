@@ -1,0 +1,9 @@
+<div class="action-buttons">
+  <div class="ellipsis" (click)="toggleMenu()">
+    <i class="fas fa-ellipsis-h"></i>
+  </div>
+  <div class="menu" *ngIf="isMenuOpen">
+    <button class="edit-button" (click)="editItem()">Edit</button>
+    <button class="delete-button" (click)="deleteItem()">Delete</button>
+  </div>
+</div>
