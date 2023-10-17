@@ -1,0 +1,18 @@
+.card-img-top{
+  width: 220px;
+  height: 180px;
+  padding-left: 50px;
+  padding-top: 10px;
+
+
+}
+.img{
+  margin-left: 20px;
+  width: 1200px;
+  display: flex;
+  height: 310px;
+  max-width: 1200px;
+}
+.container{
+
+}
