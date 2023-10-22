@@ -1,0 +1,73 @@
+<section class="content-header">
+  <div class="container-fluid">
+    <div class="row mb-2">
+      <div class="col-md-12">
+        <div class="card card-primary">
+          <div class="card-header">
+            <h3 class="card-title">Voucher</h3>
+          </div>
+          <form>
+            <div class="card-body">
+              <div class="form-group">
+                <label for="Ma">Mã</label>
+                <input type="text" class="form-control"  id="Ma" [(ngModel)]="rowData[0].Ma" placeholder="Mã" >
+              </div>
+              <div class="form-group">
+                <label for="tenVoucher">Tên</label>
+                <input type="text" class="form-control" id="tenVoucher" placeholder="Tên">
+              </div>
+              <div class="form-group">
+                <label for="noiDung">Nội dung</label>
+                <input type="text" class="form-control" id="noiDung" placeholder="Nội dung">
+              </div>
+              <div class="form-group">
+                <label for="ngayBatDau">Ngày bắt đầu</label>
+                <input type="date" class="form-control" id="ngayBatDau">
+              </div>
+              <div class="form-group">
+                <label for="ngayKetThuc">Ngày kết thúc</label>
+                <input type="date" class="form-control" id="ngayKetThuc">
+              </div>
+              <div class="form-group">
+                <label>Điều kiện sử dụng</label>
+                <div class="row">
+                  <div class="col-md-6">
+                    <div class="form-group">
+                      <select class="form-control" id="hoaDonGiam">
+                        <option>Chọn giá trị hóa đơn</option>
+                        <option>Hóa đơn trên 100k</option>
+                        <option>Hóa đơn trên 200k</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <div class="form-group">
+                      <label >Khách hàng quen</label>
+                      <ag-grid-angular
+                        style="width: 400px; height: 300px;"
+                        class="ag-theme-balham"
+                        [rowData]="rowData"
+                        [rowSelection]="rowSelection"
+                        [columnDefs]="columnDefs"
+                        [headerHeight]="headerHeight"
+                        [rowHeight]="rowHeight"
+                      ></ag-grid-angular>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="giaTriGiam">Giá trị giảm</label>
+                <input type="text" class="form-control" id="giaTriGiam" placeholder="Giá trị giảm">
+              </div>
+              <div class="card-footer">
+                <button type="submit" class="btn btn-primary">Submit</button>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
