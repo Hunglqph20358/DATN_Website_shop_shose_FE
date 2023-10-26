@@ -5,6 +5,7 @@ import {GiohangComponent} from './component/giohang/giohang.component';
 import {DetailsComponent} from './component/details/details.component';
 import {SanphamComponent} from './component/sanpham/sanpham.component';
 import {CookieService} from 'ngx-cookie-service';
+import {CheckoutComponent} from './component/checkout/checkout.component';
 
 
 const routes: Routes = [
@@ -13,6 +14,7 @@ const routes: Routes = [
   { path: 'shopping-cart', component: GiohangComponent},
   { path: 'product-details/:idProduct', component: DetailsComponent},
   { path: 'sanpham', component: SanphamComponent},
+  { path: 'cart/checkout', component: CheckoutComponent},
 ];
 
 @NgModule({

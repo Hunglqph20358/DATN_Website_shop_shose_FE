@@ -4,7 +4,6 @@ import {ActivatedRoute} from '@angular/router';
 import {ColorService} from '../../service/color.service';
 import {SizeService} from '../../service/size.service';
 import {CookieService} from 'ngx-cookie-service';
-import {CartItems} from '../../model/cart-items';
 
 @Component({
   selector: 'app-details',
@@ -13,9 +12,19 @@ import {CartItems} from '../../model/cart-items';
 })
 export class DetailsComponent implements OnInit {
 
+  cartData = new Map();
+
   constructor(private productService: ProductService, private activeRoute: ActivatedRoute,
               private colorService: ColorService, private sizeService: SizeService,
               private cookieService: CookieService) {
+    // @ts-ignore
+    window.scrollTo(top, 0, 0);
+    if (this.cookieService.check('cart')) {
+      const cartData = this.cookieService.get('cart');
+      const entries = JSON.parse(cartData);
+      this.cartData = new Map(entries);
+    }
+
   }
 
   product: any;
@@ -27,7 +36,7 @@ export class DetailsComponent implements OnInit {
   bothSizeAndColorSelected: boolean = false;
   sizeSelected: boolean = false;
   colorSelected: boolean = false;
-  cartData = new Map();
+
 
   ngOnInit(): void {
     this.activeRoute.params.subscribe(params => {
@@ -47,11 +56,9 @@ export class DetailsComponent implements OnInit {
 
   selectSize(event: any) {
     const selectedSizeId = event.target.value;
-
     const colorIDsForSelectedSize = this.product.productDetailDTOList
       .filter(detail => detail.idSize === parseInt(String(selectedSizeId), 10))
       .map(detail => detail.idColor);
-
     this.listSize.forEach(size => {
       size.isSelected = size.id == selectedSizeId; // So sánh id với selectedSizeId
     });
@@ -126,20 +133,18 @@ export class DetailsComponent implements OnInit {
   }
 
   addToCart(product: number) {
+    const productKey = product + '-' + this.colorId + '-' + this.sizeId;
+    const expirationDate = new Date();
+    expirationDate.setTime(expirationDate.getTime() + 30 * 60 * 1000);
+    if (this.cartData.has(productKey)) {
+      const slHienTai = this.cartData.get(productKey);
+      this.cartData.set(productKey, slHienTai + 1);
+      this.cookieService.set('cart', JSON.stringify(Array.from(this.cartData.entries())), expirationDate);
+    } else {
+      this.cartData.set(productKey, 1);
+      this.cookieService.set('cart', JSON.stringify(Array.from(this.cartData.entries())), expirationDate);
+    }
+    console.log(this.cartData);
 
-    const productKey = product + '-' + this.sizeId + '-' + this.colorId;
-    // if (this.map.has(productKey)){
-    //   const slHienTai = this.map.get(productKey);
-    //   this.map.set(productKey, slHienTai + 1);
-    // }else{
-    //   this.map.set(productKey, 1);
-    // }
-    // console.log(this.map);
-    // const carta = this.cookieService.get('cart');
-    // if (carta) {
-    //   const cartObject = JSON.parse(carta); // Chuyển đổi từ chuỗi JSON thành đối tượng JavaScript
-    //   const cart = new Map(Object.entries(cartObject)); // Chuyển đối tượng thành Map
-    //   console.log(cart);
-    // }
   }
 }

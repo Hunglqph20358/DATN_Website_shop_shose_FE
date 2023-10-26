@@ -1,0 +1,142 @@
+<div class="container">
+  <div class="row">
+    <h3>Danh Sách Sản Phẩm</h3>
+    <table class="table">
+      <thead style="border: 1px ">
+      <tr>
+        <!--          <th scope="col"><input type="checkbox" name="" [(ngModel)]="selectAll" (click)="toggleSelectAll()"></th>-->
+        <th scope="col">STT</th>
+        <th scope="col">Sản Phẩm</th>
+        <th scope="col">Phân loại hàng</th>
+        <th scope="col">Giá tiền</th>
+        <th scope="col">Số lượng</th>
+        <th scope="col">Thành tiền</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr *ngFor="let c of listCart; let i = index">
+        <th scope="row">
+          {{i + 1}}
+        </th>
+        <td><img width="80px" height="80px" src="{{c.imageName}}" alt=""> <span class="productName" title="{{c.productName}}">{{c.productName}}</span></td>
+        <td><div><span style="font-weight: bold">Color:</span> {{c.productDetailDTO.colorDTO.name}}</div>
+          <div><span style="font-weight: bold">Size: </span> {{c.productDetailDTO.sizeDTO.sizeNumber}}</div>
+        </td>
+        <td><del>{{c.productDetailDTO.listedPrice | number:'1.0-0'}} đ</del>
+          <span style="color: red; margin-left: 5px">{{c.productDetailDTO.price | number:'1.0-0'}} đ</span></td>
+        <td> {{c.quantity}}</td>
+        <th style="color: red">{{c.productDetailDTO.price * c.quantity | number:'1.0-0'}} đ</th>
+      </tr>
+      <tr>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <th>Tiết kiệm</th>
+        <th>Tổng Tiền</th>
+      </tr>
+      <tr>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <th >{{totalSaveMoney | number:'1.0-0'}} đ</th>
+        <th style="color: red">{{totalMoney | number:'1.0-0'}} đ</th>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="row">
+    <div class="col-md-7 col-lg-8">
+      <h4 class="mb-3">Thông tin giao hàng</h4>
+      <form class="needs-validation" novalidate>
+        <div class="row g-3">
+          <div class="col-sm-6">
+            <label for="firstName" class="form-label">Họ và Tên</label>
+            <input type="text" class="form-control" id="firstName" placeholder="" value="" required>
+<!--            <div class="invalid-feedback">-->
+<!--              Valid first name is required.-->
+<!--            </div>-->
+          </div>
+
+          <div class="col-sm-6">
+            <label for="lastName" class="form-label">SDT</label>
+            <input type="text" class="form-control" id="lastName" placeholder="" value="" required>
+<!--            <div class="invalid-feedback">-->
+<!--              Valid last name is required.-->
+<!--            </div>-->
+          </div>
+
+
+          <div class="col-12">
+            <label for="email" class="form-label">Email <span class="text-muted">(Optional)</span></label>
+            <input type="email" class="form-control" id="email" placeholder="you@example.com">
+            <div class="invalid-feedback">
+              Please enter a valid email address for shipping updates.
+            </div>
+          </div>
+
+          <div class="col-md-4">
+            <label class="form-label">Thành Phố</label>
+            <ng-select [items]="listProvince" bindLabel="ProvinceName" bindValue="ProvinceID" placeholder="--Lựa chọn--"
+                       [searchable]="false" (change)="getDistrict($event)">
+            </ng-select>
+            <div class="invalid-feedback">
+              Please select a valid country.
+            </div>
+          </div>
+
+          <div class="col-md-4">
+            <label for="" class="form-label">Quận Huyện</label>
+            <ng-select [items]="listDistrict" bindLabel="DistrictName" bindValue="WardCode" placeholder="--Lựa chọn--"
+                       [searchable]="false" (change)="getWard($event)">
+            </ng-select>
+<!--            <div class="invalid-feedback">-->
+<!--              Please provide a valid state.-->
+<!--            </div>-->
+          </div>
+          <div class="col-md-4">
+            <label for="" class="form-label">Phường Xã</label>
+            <ng-select [items]="listWard" bindLabel="WardName" bindValue="WardCode" placeholder="--Lựa chọn--"
+                       [searchable]="false">
+            </ng-select>
+            <div class="invalid-feedback">
+              Please provide a valid state.
+            </div>
+          </div>
+          <div class="col-12">
+            <label for="address" class="form-label">Địa chỉ cụ thể</label>
+            <input type="text" class="form-control" id="address" placeholder="" required>
+            <div class="invalid-feedback">
+              Please enter your shipping address.
+            </div>
+          </div>
+        </div>
+
+        <hr class="my-4">
+
+        <div class="form-check">
+          <label class="form-check-label">Phí ship:</label>
+        </div>
+
+
+        <hr class="my-4">
+
+        <h4 class="mb-3">Phương thức thanh toán</h4>
+
+        <div class="my-3">
+            <input id="a" name="paymentMethod" type="radio" class="form-check-input" [value]="0" [(ngModel)]="checkChoicePay" checked required value="">
+            <label class="form-check-label" for="a">Thanh Toán khi nhận hàng</label>
+            <input style="margin-left: 30px" id="b" name="paymentMethod" type="radio" [value]="1" [(ngModel)]="checkChoicePay" class="form-check-input" required>
+            <label class="form-check-label" for="b">Thanh toán online</label>
+        </div>
+
+        <div class="my-3" *ngIf="checkChoicePay == 1">
+          <button style="background: #fff; border-radius: 10px; border: none"><img style="width: 43px; height: 43px" src="../../../assets/image/vnPay.png" alt=""></button>
+        </div>
+
+        <button class="w-100 btn btn-danger btn-lg" type="submit">Mua Hàng</button>
+      </form>
+    </div>
+  </div>
+</div>
