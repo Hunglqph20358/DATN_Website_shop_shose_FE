@@ -6,6 +6,11 @@ text-color {
   color: #0093c4;
 }
 
+.price-area{
+  display: flex;
+  height: 45px;
+  padding-top: 10px;
+}
 /* Main image - left */
 .main-img img {
   width: 100%;
@@ -26,13 +31,16 @@ text-color {
   font-size: 2.5rem;
 }
 
-.old-price-discount {
+.old-price {
   font-weight: 600;
 }
 
 .new-price {
-  font-size: 2rem;
+  color: red;
+  margin-left: 10px;
+  font-size: 1rem;
 }
+
 
 .details-title {
   text-transform: uppercase;
@@ -52,10 +60,11 @@ text-color {
 }
 
 
+
 .custom-btn {
   text-transform: capitalize;
   background-color: #0093c4;
-  color: white;
+  color: #fff;
   width: 150px;
   height: 40px;
   border-radius: 0;
@@ -64,7 +73,7 @@ text-color {
 .custom-btn:hover {
   background-color: #0093c4 !important;
   font-size: 18px;
-  color: white !important;
+  color: #fff !important;
 }
 
 .similar-product img {
@@ -78,6 +87,17 @@ text-color {
 .similar-product .title {
   margin: 17px 0px 4px 0px;
 }
+
+.red-selected {
+  border: 1px solid red;
+  color: red;
+}
+
+/*.disable-input{*/
+/*  background-color: #f2f2f2;*/
+/*  color: #999;*/
+/*  cursor: not-allowed;*/
+/*}*/
 
 .similar-product .price {
   font-weight: bold;
@@ -98,9 +118,7 @@ input[type="radio"] {
   display: none;
 }
 
-input[type="radio"]:checked+.radio-label {
-  border-color: black;
-}
+
 @media (max-width: 767.98px) {
   .previews img {
     width: 100%;
@@ -108,3 +126,61 @@ input[type="radio"]:checked+.radio-label {
   }
 
 }
+.btn-groups{
+  margin-top: 22px;
+}
+.btn-groups button{
+  display: inline-block;
+  font-size: 16px;
+  font-family: inherit;
+  text-transform: uppercase;
+  padding: 15px 16px;
+  color: #fff;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+.btn-groups button .fas{
+  margin-right: 8px;
+}
+.add-cart-btn{
+  background-color: #FF9F00;
+  border: 2px solid #FF9F00;
+  margin-right: 8px;
+}
+.add-cart-btn:hover{
+  background-color: #fff;
+  color: #FF9F00 !important;
+}
+.buy-now-btn{
+  background-color: #000;
+  border: 2px solid #000;
+}
+.buy-now-btn:hover{
+  background-color: #fff;
+  color: #000000 !important;
+}
+
+@media screen and (max-width: 992px){
+  .product-div{
+    grid-template-columns: 100%;
+  }
+  .product-div-right{
+    text-align: center;
+  }
+  .product-rating{
+    justify-content: center;
+  }
+  .product-description{
+    max-width: 400px;
+    margin-right: auto;
+    margin-left: auto;
+  }
+}
+
+@media screen and (max-width: 400px){
+  .btn-groups button{
+    width: 100%;
+    margin-bottom: 10px;
+  }
+}
+
