@@ -1,5 +1,9 @@
-<h1 mat-dialog-title>ADD MATERIAL FORM</h1>
+<h1 mat-dialog-title>UPDATE PRODUCT FORM</h1>
 <div mat-dialog-content class="example-container">
+  <mat-form-field appearance="outline">
+    <mat-label>Product Code</mat-label>
+    <input matInput placeholder="Code">
+  </mat-form-field>
   <mat-form-field appearance="outline">
     <mat-label>Product Name</mat-label>
     <input matInput placeholder="Name">
@@ -12,9 +16,12 @@
     <mat-label>Update Date</mat-label>
     <input type="date" matInput>
   </mat-form-field>
-  <mat-form-field appearance="outline">
-    <mat-label>Discription</mat-label>
-    <input matInput placeholder="Discription">
+  <mat-form-field>
+    <mat-select placeholder="Create name">
+      <mat-option *ngFor="let food of foods" [value]="food.value">
+        {{ food.viewValue }}
+      </mat-option>
+    </mat-select>
   </mat-form-field>
   <mat-radio-group>
     <mat-label>Status</mat-label>
@@ -24,5 +31,5 @@
 </div>
 <div mat-dialog-actions [align]="'end'">
   <button mat-raised-button color="warn" mat-dialog-close>CLOSE</button>
-  <button mat-raised-button color="primary" >ADD</button>
+  <button mat-raised-button color="primary" >UPDATE</button>
 </div>

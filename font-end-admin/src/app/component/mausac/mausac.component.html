@@ -9,7 +9,7 @@
 </div>
 <div class="row my-5" style="margin-left: 12px">
   <div class="col">
-    <a href="#" class="btn btn-primary" style="width: 100px">Add</a>
+    <a (click)="openAdd()" class="btn btn-primary" style="width: 100px">Add</a>
     <table class="table bg-white rounded shadow-sm  table-hover">
       <thead>
       <tr>
@@ -30,7 +30,7 @@
         <td>2023-04-23</td>
         <td>
           <a href="#" class="btn btn-danger">Delete</a>
-          <a href="#" class="btn btn-warning">Update</a>
+          <a (click)="openUpdate()" class="btn btn-warning">Update</a>
         </td>
       </tr>
       <tr>

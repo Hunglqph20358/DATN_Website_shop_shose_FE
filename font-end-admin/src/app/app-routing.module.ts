@@ -12,6 +12,8 @@ import {CreatDiscountComponent} from './component/discount/creat-discount/creat-
 import {CreatVoucherComponent} from './component/voucher/creat-voucher/creat-voucher.component';
 import {EditDiscountComponent} from './component/discount/edit-discount/edit-discount.component';
 import {EditVoucherComponent} from './component/voucher/edit-voucher/edit-voucher.component';
+import {DanhmucComponent} from './component/danhmuc/danhmuc.component';
+import {SanphamComponent} from './component/sanpham/sanpham.component';
 
 
 const routes: Routes = [
@@ -29,6 +31,8 @@ const routes: Routes = [
   {path: 'mausac', component: MausacComponent},
   {path: 'kichco', component: KichcoComponent},
   {path: 'thuonghieu', component: ThuonghieuComponent},
+  {path: 'admin/danh-muc', component: DanhmucComponent},
+  {path: 'admin/san-pham', component: SanphamComponent},
 ];
 
 @NgModule({

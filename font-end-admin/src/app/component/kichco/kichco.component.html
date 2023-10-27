@@ -9,7 +9,7 @@
 </div>
 <div class="row my-5" style="margin-left: 12px">
   <div class="col">
-    <a href="#" class="btn btn-primary" style="width: 100px">Add</a>
+    <a  class="btn btn-primary" style="width: 100px" (click)="openAdd()">Add</a>
     <table class="table bg-white rounded shadow-sm  table-hover">
       <thead>
       <tr>
@@ -32,7 +32,7 @@
         <td>Còn hàng</td>
         <td>
           <a href="#" class="btn btn-danger">Delete</a>
-          <a href="#" class="btn btn-warning">Update</a>
+          <a  class="btn btn-warning" (click)="openUpdate()">Update</a>
         </td>
       </tr>
       <tr>
