@@ -2,19 +2,10 @@
   <div class="row">
     <div class="col-md-5">
       <div class="main-img">
-        <img class="img-fluid" src="assets/image/anh4.jpg" alt="ProductS">
-        <div class="row my-3 previews">
-          <div class="col-md-3">
-            <img class="w-100" src="assets/image/anh4.jpg" alt="Sale">
-          </div>
-          <div class="col-md-3">
-            <img class="w-100" src="assets/image/anh4.jpg" alt="Sale">
-          </div>
-          <div class="col-md-3">
-            <img class="w-100" src="assets/image/anh4.jpg" alt="Sale">
-          </div>
-          <div class="col-md-3">
-            <img class="w-100" src="assets/image/anh4.jpg" alt="Sale">
+        <img class="img-fluid" [src]="product.imagesDTOList[0].imageName" alt="ProductS">
+        <div class="row my-3 previews" style="    display: flex;justify-content: space-around;">
+          <div class="col-md-3" *ngFor="let img of product.imagesDTOList">
+            <img class="w-100" [src]="img.imageName" alt="Sale">
           </div>
         </div>
       </div>
@@ -22,100 +13,75 @@
     <div class="col-md-7">
       <div class="main-description px-2">
         <div class="category text-bold">
-          Loại: Giày Thể Thao Nam
+          Loại: {{product.categoryDTO.name}}
         </div>
         <div class="product-title text-bold my-3">
-          Giày Sneaker Nam Chính Hãng
+          {{product.name}}
         </div>
 
 
         <div class="price-area my-4">
-          <p class="old-price mb-1"><del>$100</del>
-            <span class="old-price-discount text-danger">(20% off)</span></p>
-          <p class="new-price text-bold mb-1">$80</p>
-          <p class="text-secondary mb-1">(Thuế bổ sung có thể áp dụng khi thanh toán)</p>
-
-        </div>
-
-
-        <div class="buttons d-flex">
-          <div class="block">
-            <a href="#" class="shadow btn custom-btn ">Mua Ngay</a>
-          </div>
-          <div class="block">
-            <button class="shadow btn custom-btn">Add to cart</button>
-          </div>
-
-          <div class="block quantity">
-            <input type="number" class="form-control" id="cart_quantity" value="1" min="0" max="5" placeholder="Enter email" name="cart_quantity">
-          </div>
+          <div class="old-price"><del>{{product.listedPrice}}</del></div>
+          <div class="new-price"><span>{{product.price}} đ</span></div>
         </div>
 
       </div>
 
+<!--      size-->
       <div class="product-details my-2">
-        <p class="details-title text-color mb-1">Thông Tin Chi Tiết</p>
-        <p class="description">Lorem ipsum dolor sit amet consectetur adipisicing elit. Placeat excepturi
-          odio recusandae aliquid ad impedit autem commodi earum voluptatem laboriosam? </p>
-      </div>
-      <div class="product-details my-2">
-        <p class="details-title text-color mb-2">Hãng</p>
-        <ul>
-          <li>Cotton</li>
-          <li>Machine-wash</li>
-        </ul>
-      </div>
-      <div class="product-details my-2">
-        <p class="details-title text-color mb-2">Chất Liệu</p>
-        <ul>
-          <li>Cotton</li>
-          <li>Machine-wash</li>
-        </ul>
-      </div>
-      <div class="product-details my-2">
-        <p class="details-title text-color mb-1">size</p>
-       <div class="d-flex">
-         <div class="selection">
-           <input type="radio" id="item1" name="items">
-           <label for="item1" class="radio-label">38</label>
-         </div>
-         <div class="selection">
-           <input type="radio" id="item2" name="items">
-           <label for="item2" class="radio-label">39</label>
-         </div>
-         <div class="selection">
-           <input type="radio" id="item3" name="items">
-           <label for="item3" class="radio-label">40</label>
-         </div>
-         <div class="selection">
-           <input type="radio" id="item4" name="items">
-           <label for="item4" class="radio-label">41</label>
-         </div>
-       </div>
+        <p class="details-title text-color mb-1">Size</p>
+        <div class="d-flex">
+          <div class="selection" style="border: 1px solid" *ngFor="let s of listSize" [class.red-selected]="s.isSelected">
+            <input type="radio" [id]="'size' +s.id" [name]="'size'" [value]="s.id" (change)="selectSize($event)" [disabled]="s.disabled">
+            <label [for]="'size' +s.id" class="radio-label" [style.opacity]="s.disabled ? '0.5' : '1'" [style.cursor]="s.disabled ? 'not-allowed' : 'pointer'">{{s.sizeNumber}}</label>
+          </div>
+          <button *ngIf="sizeSelected" (click)="refresh('size')"><i class="fa-solid fa-arrows-rotate"></i></button>
+        </div>
       </div>
 
+
+      <!--      màu sắc-->
       <div class="product-details my-2">
         <p class="details-title text-color mb-1">Màu Sắc</p>
         <div class="d-flex">
-          <div class="selection">
-            <input type="radio" id="mau1" name="items1">
-            <label for="mau1" class="radio-label">Đỏ</label>
+          <div class="selection" *ngFor="let c of listColor" style="border: 1px solid" [class.red-selected]="c.isSelected">
+            <input type="radio" [id]="'color' + c.id" name="color" [value]="c.id" (change)="selectColor($event)" [disabled]="c.disabled">
+            <label [for]="'color' + c.id" class="radio-label" [style.opacity]="c.disabled ? '0.5' : '1'" [style.cursor]="c.disabled ? 'not-allowed' : 'pointer'">{{c.name}}</label>
           </div>
-          <div class="selection">
-            <input type="radio" id="mau2" name="items1">
-            <label for="mau2" class="radio-label">Trắng</label>
-          </div>
-          <div class="selection">
-            <input type="radio" id="mau3" name="items1">
-            <label for="mau3" class="radio-label">Đen</label>
-          </div>
-          <div class="selection">
-            <input type="radio" id="mau4" name="items1">
-            <label for="mau4" class="radio-label">Cam</label>
-          </div>
+          <button *ngIf="colorSelected" (click)="refresh('color')"><i class="fa-solid fa-arrows-rotate"></i></button>
         </div>
       </div>
 
+<!--      Số lượng-->
+      <br>
+      <div class="product-details my-2">
+        <p class="details-title text-color mb-1">Số lượng :{{(getProductDetailQuantity() == 0 || getProductDetailQuantity()== null) ? product.totalQuantity : getProductDetailQuantity()}}</p>
+      </div>
+      <div class ="btn-groups">
+        <button class = "add-cart-btn" (click)="addToCart(product.id)"><i class = "fas fa-shopping-cart"></i>add to cart</button>
+        <button class = "buy-now-btn"><i class = "fas fa-wallet"></i>buy now</button>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="product-details my-2">
+      <p class="details-title text-color mb-1">Thông Tin Chi Tiết</p>
+      <p class="description">Lorem ipsum dolor sit amet consectetur adipisicing elit. Placeat excepturi
+        odio recusandae aliquid ad impedit autem commodi earum voluptatem laboriosam? </p>
+    </div>
+    <div class="product-details my-2">
+      <p class="details-title text-color mb-2">Hãng</p>
+      <ul>
+        <li>Cotton</li>
+        <li>Machine-wash</li>
+      </ul>
+    </div>
+    <div class="product-details my-2">
+      <p class="details-title text-color mb-2">Chất Liệu</p>
+      <ul>
+        <li>Cotton</li>
+        <li>Machine-wash</li>
+      </ul>
     </div>
   </div>
 </div>

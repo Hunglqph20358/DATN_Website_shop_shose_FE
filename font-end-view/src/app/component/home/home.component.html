@@ -43,13 +43,19 @@
     <div style="margin-top: 40px;">
       <div class="container text-center">
         <div class="row align-items-start">
-          <div class="col-3">
+          <div class="col-3" *ngFor="let p of listProductNoiBat">
             <div class="card" style="width: 18rem;">
-              <a routerLink="/product-details"><img src="assets/image/anh1.jpeg" class="card-img-top" alt="..."></a>
+              <a [routerLink]="['/product-details',p.id]">
+                <img
+                  (mouseenter)="onMouseEnter(p)"
+                  (mouseleave)="onMouseLeave(p)"
+                  [src]="isMouseOver[p.id] ? p.imagesDTOList[1].imageName : p.imagesDTOList[0].imageName"
+                  class="card-img-top"
+                  alt="..."
+                ></a>
               <div class="card-body">
-                <p>Giày Sneaker Chính Hãng</p>
-                <h5 class="card-title">300.000 đ</h5>
-
+                <p>{{p.name}}</p>
+                <h5 class="card-title">{{p.listedPrice | number:'1.0-0'}} đ</h5>
               </div>
             </div>
           </div>

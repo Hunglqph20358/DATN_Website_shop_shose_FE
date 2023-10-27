@@ -1,92 +1,58 @@
-<div class="card">
-  <div class="row">
-    <div class="col-md-8 cart">
-      <div class="title">
-        <div class="row">
-          <div class="col"><h4><b>Shopping Cart</b></h4></div>
-          <div class="col align-self-center text-right text-muted">Số lượng: 3</div>
-        </div>
-      </div>
-      <div class="row border-top border-bottom">
-        <div class="row main align-items-center">
-          <div class="col-2">
-            <img src="assets/image/anh2.jpg">
-          </div>
-          <div class="col">
-            <div class="row text-muted">Giày</div>
-            <div class="row">Giày Sneaker Chính Hãng</div>
-          </div>
-          <div class="col">
-            <a href="#">-</a>
-            <a href="#" class="border">1</a>
-            <a href="#">+</a>
-          </div>
-          <div class="col">
-            &euro; 44.00 <span class="close">&#10005;</span>
-          </div>
-        </div>
-      </div>
-      <div class="row">
-        <div class="row main align-items-center">
-          <div class="col-2">
-            <img src="assets/image/anh1.jpeg">
-          </div>
-          <div class="col">
-            <div class="row text-muted">Giày</div>
-            <div class="row">Giày Sneaker Chính Hãng</div>
-          </div>
-          <div class="col">
-            <a href="#">-</a>
-            <a href="#" class="border">1</a>
-            <a href="#">+</a>
-          </div>
-          <div class="col">
-            &euro; 44.00 <span class="close">&#10005;</span>
-          </div>
-        </div>
-      </div>
-      <div class="row border-top border-bottom">
-        <div class="row main align-items-center">
-          <div class="col-2">
-            <img src="assets/image/anh3.jpeg">
-          </div>
-          <div class="col">
-            <div class="row text-muted">Giày</div>
-            <div class="row">Giày Sneaker Chính Hãng</div>
-          </div>
-          <div class="col">
-            <a href="#">-</a>
-            <a href="#" class="border">1</a>
-            <a href="#">+</a>
-          </div>
-          <div class="col">&euro; 44.00 <span class="close">&#10005;</span></div>
-        </div>
-      </div>
-      <div class="back-to-shop">
-        <a href="/home"  class="nav-link"> <- Back To Home</a>
-      </div>
+<main class="page">
+  <div class="container">
+    <br>
+    <h1 style="text-align: center; color: #2f7476 ">Shopping Cart</h1>
+    <br>
+    <div class="row">
+      <table class="table">
+        <thead>
+        <tr>
+<!--          <th scope="col"><input type="checkbox" name="" [(ngModel)]="selectAll" (click)="toggleSelectAll()"></th>-->
+          <th scope="col"><mat-checkbox color="primary" value="{{selectAll}}" [checked]="selectAll" (change)="selectAll = ! selectAll;toggleSelectAll()"></mat-checkbox></th>
+          <th scope="col">Sản Phẩm</th>
+          <th scope="col">Phân loại hàng</th>
+          <th scope="col">Giá tiền</th>
+          <th scope="col">Số lượng</th>
+          <th scope="col">Thành tiền</th>
+          <th scope="col">Action</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr *ngFor="let c of listCart; let i = index">
+          <th scope="row">
+            <mat-checkbox color="primary" value="{{c.selected}}" [checked]="c.selected" [(ngModel)]="checkboxStatus[i]" (change)="c.selected = !c.selected;toggleCheckbox(i)"></mat-checkbox>
+          </th>
+          <td><img width="80px" height="80px" src="{{c.imageName}}" alt=""> <span class="productName" title="{{c.productName}}">{{c.productName}}</span></td>
+          <td><div><span style="font-weight: bold">Color:</span> {{c.productDetailDTO.colorDTO.name}}</div>
+            <div><span style="font-weight: bold">Size: </span> {{c.productDetailDTO.sizeDTO.sizeNumber}}</div>
+          </td>
+          <td><del>{{c.productDetailDTO.listedPrice | number:'1.0-0'}} đ</del>
+            <span style="color: red; margin-left: 5px">{{c.productDetailDTO.price | number:'1.0-0'}} đ</span></td>
+          <td><button (click)="giamSoLuong(c)">-</button> {{c.quantity}} <button (click)="tangSoLuong(c)">+</button></td>
+          <td>{{c.productDetailDTO.price * c.quantity | number:'1.0-0'}} đ</td>
+          <td><button type="button" class="btn -btn-danger" (click)="deleteItem(c)"><i style="color: red" class="fa-solid fa-trash"></i></button></td>
+        </tr>
+
+        </tbody>
+      </table>
     </div>
-    <div class="col-md-4 summary">
-      <div><h5><b>Thông Tin</b></h5></div>
-      <hr>
-      <div class="row">
-        <div class="col" style="padding-left:0;">Tổng Tiền</div>
-        <div class="col text-right">&euro; 132.00</div>
-      </div>
-      <form>
-        <p>Phí Giao Hàng</p>
-        <select>
-          <option class="text-muted">Standard-Delivery- &euro;5.00</option>
-        </select>
-        <p>Mã Giảm Giá</p>
-        <input id="code" placeholder="Mã Giảm Giá">
-      </form>
-      <div class="row" style="border-top: 1px solid rgba(0,0,0,.1); padding: 2vh 0;">
-        <div class="col">Cần Thanh Toán</div>
-        <div class="col text-right">&euro; 137.00</div>
-      </div>
-      <button class="btn">CHECKOUT</button>
+    <div class="row">
+      <table class="table">
+        <thead>
+        <tr>
+          <th scope="col">Tổng tiền</th>
+          <th scope="col">Tiết kiện</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+          <th scope="row">{{totalMoney | number:'1.0-0'}} đ</th>
+          <td>{{totalSaveMoney | number:'1.0-0'}} đ</td>
+          <td><button class="btn btn-success" [disabled]="!disableCheckOut" (click)="checkOut()">Check out</button></td>
+<!--          <td>@mdo</td>-->
+        </tr>
+        </tbody>
+      </table>
     </div>
   </div>
-
-</div>
+</main>
