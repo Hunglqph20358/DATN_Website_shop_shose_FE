@@ -88,8 +88,8 @@
 
           <div class="col-md-4">
             <label for="" class="form-label">Quận Huyện</label>
-            <ng-select [items]="listDistrict" bindLabel="DistrictName" bindValue="WardCode" placeholder="--Lựa chọn--"
-                       [searchable]="false" (change)="getWard($event)">
+            <ng-select [items]="listDistrict" bindLabel="DistrictName" bindValue="DistrictID" placeholder="--Lựa chọn--"
+                       [(ngModel)]="addressInfo.to_district_id"  [searchable]="false"   [ngModelOptions]="{standalone: true}" (change)="getWard($event)">
             </ng-select>
 <!--            <div class="invalid-feedback">-->
 <!--              Please provide a valid state.-->
@@ -98,7 +98,7 @@
           <div class="col-md-4">
             <label for="" class="form-label">Phường Xã</label>
             <ng-select [items]="listWard" bindLabel="WardName" bindValue="WardCode" placeholder="--Lựa chọn--"
-                       [searchable]="false">
+                       [(ngModel)]="addressInfo.to_ward_code"  [ngModelOptions]="{standalone: true}"  [searchable]="false" (change)="getPhiShip()">
             </ng-select>
             <div class="invalid-feedback">
               Please provide a valid state.
@@ -115,9 +115,14 @@
 
         <hr class="my-4">
 
-        <div class="form-check">
-          <label class="form-check-label">Phí ship:</label>
-        </div>
+
+          <div>
+            <label class="form-check-label">Phí ship: </label> <input style="margin-left: 180px" type="text" value="{{shipFee}}" disabled>
+          </div>
+          <div style="margin-top: 10px">
+            <label class="form-check-label">Tổng tiền phải thanh toán: </label> <input style="margin-left: 50px" type="text" value="{{shipFee}}" disabled>
+          </div>
+
 
 
         <hr class="my-4">

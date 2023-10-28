@@ -20,9 +20,21 @@ export class CheckoutComponent implements OnInit {
   listDistrict = [];
   listWard = [];
   checkChoicePay = 0;
-
+  shipFee;
+  addressInfo = {
+    service_type_id: 2,
+    from_district_id: 3440,
+    to_district_id: null,
+    to_ward_code: '',
+    height: 20,
+    length: 30,
+    weight: 200,
+    width: 40,
+    insurance_value: 0,
+  };
+  totalMoneyPay;
   constructor(private giaoHangService: GiaoHangService, private cartService: CartService,
-              private cookieService: CookieService, private route: Router,) {
+              private cookieService: CookieService, private route: Router, ) {
     if (this.cookieService.check('cart')) {
       const cartData = this.cookieService.get('cart');
       const entries = JSON.parse(cartData);
@@ -46,6 +58,7 @@ export class CheckoutComponent implements OnInit {
     this.giaoHangService.getAllProvince().subscribe(res => {
       this.listProvince = res.data;
     });
+    this.totalMoneyPay = this.totalMoney;
   }
 
   getDistrict(event) {
@@ -57,8 +70,17 @@ export class CheckoutComponent implements OnInit {
 
   getWard(event) {
     console.log(event);
+    console.log(this.addressInfo.to_district_id);
     this.giaoHangService.getAllWardByDistrict(event.DistrictID).subscribe(res => {
       this.listWard = res.data;
+    });
+  }
+
+  getPhiShip(){
+    const obj = this.addressInfo;
+    this.giaoHangService.getTinhPhiShip(obj).subscribe(res => {
+      this.shipFee = res.data.service_fee;
+      this.totalMoneyPay = this.shipFee + this.totalMoneyPay;
     });
   }
 

@@ -14,6 +14,9 @@ import { CheckoutComponent } from './component/checkout/checkout.component';
 import {NgSelectModule} from '@ng-select/ng-select';
 import {FormsModule} from '@angular/forms';
 import {MatCheckboxModule} from '@angular/material/checkbox';
+import {MatMenuModule} from '@angular/material/menu';
+import {MatButtonModule} from '@angular/material/button';
+import { DetailCheckoutComponent } from './component/checkout/detail-checkout/detail-checkout.component';
 
 @NgModule({
   declarations: [
@@ -25,6 +28,7 @@ import {MatCheckboxModule} from '@angular/material/checkbox';
     GiohangComponent,
     DetailsComponent,
     CheckoutComponent,
+    DetailCheckoutComponent,
   ],
   imports: [
     BrowserModule,
@@ -32,7 +36,9 @@ import {MatCheckboxModule} from '@angular/material/checkbox';
     HttpClientModule,
     NgSelectModule,
     FormsModule,
-    MatCheckboxModule
+    MatCheckboxModule,
+    MatMenuModule,
+    MatButtonModule
   ],
   providers: [],
   bootstrap: [AppComponent]
