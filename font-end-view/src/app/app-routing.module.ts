@@ -7,6 +7,8 @@ import {SanphamComponent} from './component/sanpham/sanpham.component';
 import {CookieService} from 'ngx-cookie-service';
 import {CheckoutComponent} from './component/checkout/checkout.component';
 
+import {LoginComponent} from './component/login/login.component';
+import {SignUpComponent} from './component/sign-up/sign-up.component';
 
 const routes: Routes = [
   { path: '', redirectTo: 'home', pathMatch: 'full' },
@@ -14,6 +16,8 @@ const routes: Routes = [
   { path: 'shopping-cart', component: GiohangComponent},
   { path: 'product-details/:idProduct', component: DetailsComponent},
   { path: 'sanpham', component: SanphamComponent},
+  { path: 'login', component: LoginComponent},
+  { path: 'sign-up', component: SignUpComponent},
   { path: 'cart/checkout', component: CheckoutComponent},
 ];
 

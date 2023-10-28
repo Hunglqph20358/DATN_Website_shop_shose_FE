@@ -45,7 +45,7 @@
   color: #c72092;
 }
 
-.login_form .right .user .username{
+.login_form .right .user .input{
   position: relative;
   left: 9%;
   width: 295px;
@@ -93,19 +93,18 @@
 
 .login_form .right .forget{
   position: relative;
-  left: 48%;
+  left: 60%;
   margin: 6px 0 10px 0;
   cursor: pointer;
 }
-.login_form .right .sign-up{
+.login_form .right .back-to-signIn{
   position: relative;
   margin: 6px 0 10px 0;
   cursor: pointer;
-
 }
-.login_form .right .sign-up a{
-  text-decoration: none;
+.login_form .right .back-to-signIn a{
   font-weight: bold;
+  text-decoration: none;
 }
 .login_form .right button{
   width: 350px;
