@@ -9,11 +9,12 @@ import {CheckoutComponent} from './component/checkout/checkout.component';
 
 import {LoginComponent} from './component/login/login.component';
 import {SignUpComponent} from './component/sign-up/sign-up.component';
+import {AuthService} from './service/authentication/auth.service';
 
 const routes: Routes = [
   { path: '', redirectTo: 'home', pathMatch: 'full' },
   { path: 'home', component: HomeComponent },
-  { path: 'shopping-cart', component: GiohangComponent},
+  { path: 'shopping-cart', component: GiohangComponent, canActivate: [AuthService]},
   { path: 'product-details/:idProduct', component: DetailsComponent},
   { path: 'sanpham', component: SanphamComponent},
   { path: 'login', component: LoginComponent},
