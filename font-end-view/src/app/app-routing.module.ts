@@ -10,6 +10,8 @@ import {CheckoutComponent} from './component/checkout/checkout.component';
 import {LoginComponent} from './component/login/login.component';
 import {SignUpComponent} from './component/sign-up/sign-up.component';
 import {AuthService} from './service/authentication/auth.service';
+import {DetailCheckoutComponent} from './component/checkout/detail-checkout/detail-checkout.component';
+import {OrderComponent} from './component/order/order.component';
 
 const routes: Routes = [
   { path: '', redirectTo: 'home', pathMatch: 'full' },
@@ -20,6 +22,8 @@ const routes: Routes = [
   { path: 'login', component: LoginComponent},
   { path: 'sign-up', component: SignUpComponent},
   { path: 'cart/checkout', component: CheckoutComponent},
+  { path: 'cart/checkout-detail', component: DetailCheckoutComponent},
+  { path: 'order', component: OrderComponent},
 ];
 
 @NgModule({

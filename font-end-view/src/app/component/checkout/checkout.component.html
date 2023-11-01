@@ -53,7 +53,7 @@
         <div class="row g-3">
           <div class="col-sm-6">
             <label for="firstName" class="form-label">Họ và Tên</label>
-            <input type="text" class="form-control" id="firstName" placeholder="" value="" required>
+            <input type="text" class="form-control" [(ngModel)]="order.receiver" id="firstName" placeholder="" required>
 <!--            <div class="invalid-feedback">-->
 <!--              Valid first name is required.-->
 <!--            </div>-->
@@ -61,7 +61,7 @@
 
           <div class="col-sm-6">
             <label for="lastName" class="form-label">SDT</label>
-            <input type="text" class="form-control" id="lastName" placeholder="" value="" required>
+            <input type="text" class="form-control" id="lastName" placeholder="" [(ngModel)]="order.receiverPhone" required>
 <!--            <div class="invalid-feedback">-->
 <!--              Valid last name is required.-->
 <!--            </div>-->
@@ -75,50 +75,29 @@
               Please enter a valid email address for shipping updates.
             </div>
           </div>
-
-          <div class="col-md-4">
-            <label class="form-label">Thành Phố</label>
-            <ng-select [items]="listProvince" bindLabel="ProvinceName" bindValue="ProvinceID" placeholder="--Lựa chọn--"
-                       [searchable]="false" (change)="getDistrict($event)">
-            </ng-select>
-            <div class="invalid-feedback">
-              Please select a valid country.
-            </div>
-          </div>
-
-          <div class="col-md-4">
-            <label for="" class="form-label">Quận Huyện</label>
-            <ng-select [items]="listDistrict" bindLabel="DistrictName" bindValue="WardCode" placeholder="--Lựa chọn--"
-                       [searchable]="false" (change)="getWard($event)">
-            </ng-select>
-<!--            <div class="invalid-feedback">-->
-<!--              Please provide a valid state.-->
-<!--            </div>-->
-          </div>
-          <div class="col-md-4">
-            <label for="" class="form-label">Phường Xã</label>
-            <ng-select [items]="listWard" bindLabel="WardName" bindValue="WardCode" placeholder="--Lựa chọn--"
-                       [searchable]="false">
-            </ng-select>
-            <div class="invalid-feedback">
-              Please provide a valid state.
-            </div>
-          </div>
-          <div class="col-12">
-            <label for="address" class="form-label">Địa chỉ cụ thể</label>
-            <input type="text" class="form-control" id="address" placeholder="" required>
-            <div class="invalid-feedback">
-              Please enter your shipping address.
+          <div class="col-sm-12">
+            <label for="" class="form-label" style="font-weight: bold">Địa chỉ nhận hàng</label>
+            <div style="display: flex; justify-content: space-between">
+              <p>1 Ngách 63/30 Lê Đức Thọ, Phường Mỹ Đình 2, Quận Nam Từ Liêm, Hà Nội
+                Mặc Định</p>
+              <button class="button-thaydoi" (click)="openPopupAddress();">Thay đổi</button>
             </div>
           </div>
         </div>
-
         <hr class="my-4">
 
-        <div class="form-check">
-          <label class="form-check-label">Phí ship:</label>
+        <div class="voucher">
+          <h6>Voucher giảm giá:</h6>
+          <span>Quang Hưng</span>
+          <button class="btn btn-light">Thêm</button>
         </div>
-
+        <br>
+        <div>
+            <label class="form-check-label">Phí ship: </label> <input style="margin-left: 180px" type="text" value="{{shipFee | number:'1.0-0'}} đ" disabled>
+          </div>
+          <div style="margin-top: 10px">
+            <label class="form-check-label">Tổng tiền phải thanh toán: </label> <input style="margin-left: 50px" type="text" value="{{totalMoneyPay | number:'1.0-0'}} đ" disabled>
+          </div>
 
         <hr class="my-4">
 
@@ -135,7 +114,7 @@
           <button style="background: #fff; border-radius: 10px; border: none"><img style="width: 43px; height: 43px" src="../../../assets/image/vnPay.png" alt=""></button>
         </div>
 
-        <button class="w-100 btn btn-danger btn-lg" type="submit">Mua Hàng</button>
+        <button class="w-100 btn btn-danger btn-lg" type="submit" (click)="thanhToan();">Mua Hàng</button>
       </form>
     </div>
   </div>
