@@ -12,11 +12,17 @@ import {CreatDiscountComponent} from './component/discount/creat-discount/creat-
 import {CreatVoucherComponent} from './component/voucher/creat-voucher/creat-voucher.component';
 import {EditDiscountComponent} from './component/discount/edit-discount/edit-discount.component';
 import {EditVoucherComponent} from './component/voucher/edit-voucher/edit-voucher.component';
+import {OrderComponent} from './component/order/order.component';
+import {OderProcessingComponent} from './component/oder-processing/oder-processing.component';
+import {StaffComponent} from './component/staff/staff.component';
+import {LoginComponent} from './component/login/login.component';
+import {AuthGuard} from './service/auth.guard';
+import {RoleGuardService} from './service/role-guard.service';
 
 
 const routes: Routes = [
-  {path: '', redirectTo: 'admin/dashboard', pathMatch: 'full'},
-  {path: 'admin/dashboard', component: HomeComponent},
+  {path: '', redirectTo: 'staff', pathMatch: 'full'},
+  {path: 'admin/login', component: LoginComponent},
   {path: 'admin/don-hang', component: HomeComponent},
   {path: 'admin/them-giam-gia', component: CreatDiscountComponent},
   {path: 'admin/them-voucher', component: CreatVoucherComponent},
@@ -24,11 +30,17 @@ const routes: Routes = [
   {path: 'admin/voucher', component: VoucherComponent},
   {path: 'admin/sua-giam-gia', component: EditDiscountComponent},
   {path: 'admin/sua-voucher', component: EditVoucherComponent},
-  {path: 'degiay', component: DegiayComponent},
+  {path: 'degiay', component: DegiayComponent, canActivate: [RoleGuardService],
+    data: {
+      expectedRole: 'STAFF'
+    } },
   {path: 'chatlieu', component: ChatlieuComponent},
   {path: 'mausac', component: MausacComponent},
   {path: 'kichco', component: KichcoComponent},
   {path: 'thuonghieu', component: ThuonghieuComponent},
+  {path: 'order-list', component: OrderComponent},
+  {path: 'order-processing', component: OderProcessingComponent},
+  {path: 'staff', component: StaffComponent, canActivate: [AuthGuard]},
 ];
 
 @NgModule({

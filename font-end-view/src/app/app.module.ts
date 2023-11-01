@@ -14,6 +14,7 @@ import { CheckoutComponent } from './component/checkout/checkout.component';
 import {NgSelectModule} from '@ng-select/ng-select';
 import {FormsModule} from '@angular/forms';
 import {MatCheckboxModule} from '@angular/material/checkbox';
+import {JWT_OPTIONS, JwtHelperService} from '@auth0/angular-jwt';
 import {MatMenuModule} from '@angular/material/menu';
 import {MatButtonModule} from '@angular/material/button';
 import { DetailCheckoutComponent } from './component/checkout/detail-checkout/detail-checkout.component';
@@ -52,7 +53,8 @@ import { OrderComponent } from './component/order/order.component';
     MatButtonModule,
     BrowserAnimationsModule
   ],
-  providers: [],
+  providers: [{ provide: JWT_OPTIONS, useValue: JWT_OPTIONS },
+    JwtHelperService],
   bootstrap: [AppComponent]
 })
 export class AppModule {

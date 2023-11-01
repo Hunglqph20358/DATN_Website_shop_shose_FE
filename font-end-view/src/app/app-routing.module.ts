@@ -9,13 +9,14 @@ import {CheckoutComponent} from './component/checkout/checkout.component';
 
 import {LoginComponent} from './component/login/login.component';
 import {SignUpComponent} from './component/sign-up/sign-up.component';
+import {AuthService} from './service/authentication/auth.service';
 import {DetailCheckoutComponent} from './component/checkout/detail-checkout/detail-checkout.component';
 import {OrderComponent} from './component/order/order.component';
 
 const routes: Routes = [
   { path: '', redirectTo: 'home', pathMatch: 'full' },
   { path: 'home', component: HomeComponent },
-  { path: 'shopping-cart', component: GiohangComponent},
+  { path: 'shopping-cart', component: GiohangComponent, canActivate: [AuthService]},
   { path: 'product-details/:idProduct', component: DetailsComponent},
   { path: 'sanpham', component: SanphamComponent},
   { path: 'login', component: LoginComponent},

@@ -6,17 +6,17 @@
   <div class="right">
     <h1>Welcome Back!</h1>
 
-    <form action="#" method="post">
+    <form (ngSubmit)="login()">
       <p>User Name</p>
       <div class="user">
         <i class="fa-solid fa-user"></i>
-        <input type="text" name="user" placeholder="User Name" class="username">
+        <input type="text" name="user" placeholder="User Name" class="username" [(ngModel)]="form.username"  [ngModelOptions]="{standalone: true}">
       </div>
 
       <p class="passworg_tag">Password</p>
       <div class="password">
         <i class="fa-solid fa-lock"></i>
-        <input type="text" name="password" placeholder="Password">
+        <input type="text" name="password" placeholder="Password" [(ngModel)]="form.password"  [ngModelOptions]="{standalone: true}">
       </div>
       <div class="d-flex">
         <p class="sign-up">
