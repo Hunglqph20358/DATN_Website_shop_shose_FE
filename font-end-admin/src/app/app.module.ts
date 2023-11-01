@@ -1,5 +1,6 @@
 import {BrowserModule} from '@angular/platform-browser';
 import {ChangeDetectorRef, NgModule} from '@angular/core';
+import {NgModel} from '@angular/forms';
 
 import {AppRoutingModule} from './app-routing.module';
 import {AppComponent} from './app.component';
@@ -23,9 +24,16 @@ import { ActionDiscountComponent } from './component/discount/action-discount/ac
 import { CreatVoucherComponent } from './component/voucher/creat-voucher/creat-voucher.component';
 import { ActionVoucherComponent } from './component/voucher/action-voucher/action-voucher.component';
 import {FormsModule} from '@angular/forms';
+import {ReactiveFormsModule} from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { EditDiscountComponent } from './component/discount/edit-discount/edit-discount.component';
 import { EditVoucherComponent } from './component/voucher/edit-voucher/edit-voucher.component';
+import { OrderComponent } from './component/order/order.component';
+import { OderProcessingComponent } from './component/oder-processing/oder-processing.component';
+import { StaffComponent } from './component/staff/staff.component';
+import {LoginComponent} from './component/login/login.component';
+import {JwtHelperService, JWT_OPTIONS  } from '@auth0/angular-jwt';
+
 
 
 
@@ -50,6 +58,10 @@ import { EditVoucherComponent } from './component/voucher/edit-voucher/edit-vouc
     ActionVoucherComponent,
     EditDiscountComponent,
     EditVoucherComponent,
+    OrderComponent,
+    OderProcessingComponent,
+    StaffComponent,
+    LoginComponent
   ],
   imports: [
     BrowserModule,
@@ -57,9 +69,11 @@ import { EditVoucherComponent } from './component/voucher/edit-voucher/edit-vouc
     BrowserAnimationsModule,
     AgGridModule.withComponents([]),
     FormsModule,
+    ReactiveFormsModule,
     HttpClientModule
   ],
-  providers: [],
+  providers: [ { provide: JWT_OPTIONS, useValue: JWT_OPTIONS },
+    JwtHelperService],
   bootstrap: [AppComponent]
 })
 export class AppModule {

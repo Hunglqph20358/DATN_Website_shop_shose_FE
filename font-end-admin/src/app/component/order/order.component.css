@@ -1,0 +1,13 @@
+.title{
+  font-weight: normal;
+  font-size: 30px;
+  margin-left: 50px;
+}
+.btn-add-order{
+  margin-left: 10px;
+  height: 40px;
+  border: #bbbec5 solid 1px;
+}
+.col-sm-2{
+  margin-left: 5px;
+}

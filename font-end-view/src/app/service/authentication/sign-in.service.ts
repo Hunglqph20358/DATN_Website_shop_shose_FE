@@ -8,8 +8,9 @@ import {JwtResponse} from '../../component/model/JwtResponse';
   providedIn: 'root'
 })
 export class SignInService {
-  private apiLogin = 'http://localhost:6868/view/api/sign-in';
-  constructor(private httpClient: HttpClient){ }
+  private apiLogin = 'http://localhost:6868/api/sign-in';
+  private apiFindByID: string;
+  constructor(private httpClient: HttpClient){}
   signIn(signInForm: SignInFrom): Observable<JwtResponse>{
     return this.httpClient.post<JwtResponse>(this.apiLogin, signInForm);
   }

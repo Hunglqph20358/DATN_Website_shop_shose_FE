@@ -26,8 +26,11 @@ export class LoginComponent implements OnInit {
     console.log(this.signFrom);
     this.signIn.signIn(this.signFrom).subscribe(data =>{
         localStorage.setItem('token', data.token);
+        console.log(data.usersDTO);
+        localStorage.setItem('users', JSON.stringify(data.usersDTO));
         this.router.navigate(['shopping-cart']);
     },
+      // this.signIn.loadInFor().
       error => {
         if (error.status === 403){
           alert('Mật kHẩu không chính xác');
@@ -36,6 +39,10 @@ export class LoginComponent implements OnInit {
         }
       }
     );
+  }
+  logout(){
+    localStorage.removeItem('token');
+    localStorage.removeItem('users');
   }
   ngOnInit(): void {
   }
