@@ -17,6 +17,12 @@ import {MatCheckboxModule} from '@angular/material/checkbox';
 import {MatMenuModule} from '@angular/material/menu';
 import {MatButtonModule} from '@angular/material/button';
 import { DetailCheckoutComponent } from './component/checkout/detail-checkout/detail-checkout.component';
+import { PopupVoucherComponent } from './component/checkout/popup-voucher/popup-voucher.component';
+import {MatDialogModule} from '@angular/material/dialog';
+import { AddressCheckoutComponent } from './component/checkout/address-checkout/address-checkout.component';
+import { UpdateAddressComponent } from './component/checkout/address-checkout/update-address/update-address.component';
+import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
+import { OrderComponent } from './component/order/order.component';
 
 @NgModule({
   declarations: [
@@ -29,6 +35,10 @@ import { DetailCheckoutComponent } from './component/checkout/detail-checkout/de
     DetailsComponent,
     CheckoutComponent,
     DetailCheckoutComponent,
+    PopupVoucherComponent,
+    AddressCheckoutComponent,
+    UpdateAddressComponent,
+    OrderComponent
   ],
   imports: [
     BrowserModule,
@@ -38,7 +48,9 @@ import { DetailCheckoutComponent } from './component/checkout/detail-checkout/de
     FormsModule,
     MatCheckboxModule,
     MatMenuModule,
-    MatButtonModule
+    MatDialogModule,
+    MatButtonModule,
+    BrowserAnimationsModule
   ],
   providers: [],
   bootstrap: [AppComponent]
