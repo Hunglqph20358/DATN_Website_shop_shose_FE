@@ -12,18 +12,22 @@ import {CreatDiscountComponent} from './component/discount/creat-discount/creat-
 import {CreatVoucherComponent} from './component/voucher/creat-voucher/creat-voucher.component';
 import {EditDiscountComponent} from './component/discount/edit-discount/edit-discount.component';
 import {EditVoucherComponent} from './component/voucher/edit-voucher/edit-voucher.component';
+import {DetailDiscountComponent} from "./component/discount/detail-discount/detail-discount.component";
+import {DetailVoucherComponent} from "./component/voucher/detail-voucher/detail-voucher.component";
 
 
 const routes: Routes = [
   {path: '', redirectTo: 'admin/dashboard', pathMatch: 'full'},
   {path: 'admin/dashboard', component: HomeComponent},
   {path: 'admin/don-hang', component: HomeComponent},
-  {path: 'admin/them-giam-gia', component: CreatDiscountComponent},
-  {path: 'admin/them-voucher', component: CreatVoucherComponent},
-  {path: 'admin/giam-gia', component: DiscountComponent},
+  {path: 'admin/creat-discount', component: CreatDiscountComponent},
+  {path: 'admin/creat-voucher', component: CreatVoucherComponent},
+  {path: 'admin/discount', component: DiscountComponent},
+  {path: 'admin/discount/:id', component: DetailDiscountComponent},
+  {path: 'admin/voucher/:id', component: DetailVoucherComponent},
   {path: 'admin/voucher', component: VoucherComponent},
-  {path: 'admin/sua-giam-gia', component: EditDiscountComponent},
-  {path: 'admin/sua-voucher', component: EditVoucherComponent},
+  {path: 'admin/edit-discount/:id', component: EditDiscountComponent},
+  {path: 'admin/edit-voucher/:id', component: EditVoucherComponent},
   {path: 'degiay', component: DegiayComponent},
   {path: 'chatlieu', component: ChatlieuComponent},
   {path: 'mausac', component: MausacComponent},
