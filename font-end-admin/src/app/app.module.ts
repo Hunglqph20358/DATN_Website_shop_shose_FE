@@ -5,6 +5,7 @@ import {MatFormFieldModule} from '@angular/material/form-field';
 import {MatSelectModule} from '@angular/material/select';
 import {MatRadioModule} from '@angular/material/radio';
 import {MatButtonModule} from '@angular/material/button';
+import {MatIconModule} from '@angular/material/icon';
 
 import {AppRoutingModule} from './app-routing.module';
 import {AppComponent} from './app.component';
@@ -47,8 +48,8 @@ import { ThemThuongHieuComponent } from './component/thuonghieu/them-thuong-hieu
 import { SuaThuongHieuComponent } from './component/thuonghieu/sua-thuong-hieu/sua-thuong-hieu.component';
 import { ThemSanPhamComponent } from './component/sanpham/them-san-pham/them-san-pham.component';
 import { SuaSanPhamComponent } from './component/sanpham/sua-san-pham/sua-san-pham.component';
-
-
+import { ActionRendererComponent } from './component/chatlieu/action-renderer/action-renderer.component';
+import { ActionCategoryRedererComponent } from './component/danhmuc/action-category-rederer/action-category-rederer.component';
 
 
 
@@ -88,7 +89,10 @@ import { SuaSanPhamComponent } from './component/sanpham/sua-san-pham/sua-san-ph
     ThemThuongHieuComponent,
     SuaThuongHieuComponent,
     ThemSanPhamComponent,
-    SuaSanPhamComponent
+    SuaSanPhamComponent,
+    ActionRendererComponent,
+    ActionCategoryRedererComponent,
+
   ],
   imports: [
     BrowserModule,
@@ -103,7 +107,9 @@ import { SuaSanPhamComponent } from './component/sanpham/sua-san-pham/sua-san-ph
     MatSelectModule,
     MatRadioModule,
     MatButtonModule,
+    MatIconModule,
   ],
+  entryComponents: [ActionRendererComponent],
   providers: [],
   bootstrap: [AppComponent]
 })

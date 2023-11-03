@@ -28,7 +28,7 @@ export class DetailsComponent implements OnInit {
   }
 
   product: any;
-  listColor = [];
+    listColor = [];
   listSize = [];
 
   colorId: number | null = null;
