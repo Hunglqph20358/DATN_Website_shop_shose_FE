@@ -1,0 +1,33 @@
+<div class="container">
+  <div class="d-flex">
+    <h1 class="title">Đơn Hàng</h1>
+    <button type="button" class="btn btn-light btn-add-order">Thêm Đơn Hàng</button>
+  </div>
+  <div class="order-list-body mt-3">
+    <div class="oder-body-menu">
+        <div class="order-sreach">
+          <form class="row g-3">
+            <div class="d-flex">
+              <label class="col-form-label">Search</label>
+              <div class="col-sm-2">
+                <input type="password" class="form-control">
+              </div>
+              <div class="col-sm-2">
+                <button type="submit" class="btn btn-primary mb-3">Search</button>
+              </div>
+            </div>
+          </form>
+        </div>
+    </div>
+    <div class="order-table">
+        <div>
+          <ag-grid-angular
+            style="width: 1150px; height: 450px;"
+            class="ag-theme-alpine"
+            [rowData]="rowData"
+            [columnDefs]="columnDefs">
+          </ag-grid-angular>
+        </div>
+    </div>
+  </div>
+</div>

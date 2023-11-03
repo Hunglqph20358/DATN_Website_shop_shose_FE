@@ -1,1 +1,15 @@
-<p>login works!</p>
+<div class="container">
+  <h2>Đăng Nhập</h2>
+  <form (ngSubmit)="login()" novalidate>
+    <div class="form-group">
+      <label>Tên đăng nhập:</label>
+      <input type="text" class="form-control" [(ngModel)]="form.username"  [ngModelOptions]="{standalone: true}">
+    </div>
+    <div class="form-group">
+      <label>Mật khẩu:</label>
+      <input type="password" class="form-control" [(ngModel)]="form.password"  [ngModelOptions]="{standalone: true}">
+    </div>
+    <button type="submit" class="btn btn-primary">Đăng Nhập</button>
+  </form>
+</div>
+
