@@ -10,5 +10,10 @@
   text-decoration: none;
   transition: background-color .3s;
 }
+section {
+  display: table;
+}
+
+
 
 /*# sourceMappingURL=adminlte.min.css.map */
