@@ -1,6 +1,12 @@
 import {BrowserModule} from '@angular/platform-browser';
 import {ChangeDetectorRef, NgModule} from '@angular/core';
 import {NgModel} from '@angular/forms';
+import {MatInputModule} from '@angular/material/input';
+import {MatFormFieldModule} from '@angular/material/form-field';
+import {MatSelectModule} from '@angular/material/select';
+import {MatRadioModule} from '@angular/material/radio';
+import {MatButtonModule} from '@angular/material/button';
+import {MatIconModule} from '@angular/material/icon';
 
 import {AppRoutingModule} from './app-routing.module';
 import {AppComponent} from './app.component';
@@ -34,6 +40,25 @@ import { StaffComponent } from './component/staff/staff.component';
 import {LoginComponent} from './component/login/login.component';
 import {JwtHelperService, JWT_OPTIONS  } from '@auth0/angular-jwt';
 
+import {MatDialogModule} from '@angular/material/dialog';
+import { DanhmucComponent } from './component/danhmuc/danhmuc.component';
+import { SanphamComponent } from './component/sanpham/sanpham.component';
+import { SuaChatLieuComponent } from './component/chatlieu/sua-chat-lieu/sua-chat-lieu.component';
+import { ThemDanhMucComponent } from './component/danhmuc/them-danh-muc/them-danh-muc.component';
+import { SuaDanhMucComponent } from './component/danhmuc/sua-danh-muc/sua-danh-muc.component';
+import { ThemDeGiayComponent } from './component/degiay/them-de-giay/them-de-giay.component';
+import { SuaDeGiayComponent } from './component/degiay/sua-de-giay/sua-de-giay.component';
+import { ThemKichCoComponent } from './component/kichco/them-kich-co/them-kich-co.component';
+import { SuaKichCoComponent } from './component/kichco/sua-kich-co/sua-kich-co.component';
+import { ThemMauSacComponent } from './component/mausac/them-mau-sac/them-mau-sac.component';
+import { SuaMauSacComponent } from './component/mausac/sua-mau-sac/sua-mau-sac.component';
+import { ThemThuongHieuComponent } from './component/thuonghieu/them-thuong-hieu/them-thuong-hieu.component';
+import { SuaThuongHieuComponent } from './component/thuonghieu/sua-thuong-hieu/sua-thuong-hieu.component';
+import { ThemSanPhamComponent } from './component/sanpham/them-san-pham/them-san-pham.component';
+import { SuaSanPhamComponent } from './component/sanpham/sua-san-pham/sua-san-pham.component';
+import { ActionRendererComponent } from './component/chatlieu/action-renderer/action-renderer.component';
+import { ActionCategoryRedererComponent } from './component/danhmuc/action-category-rederer/action-category-rederer.component';
+
 
 
 
@@ -61,7 +86,25 @@ import {JwtHelperService, JWT_OPTIONS  } from '@auth0/angular-jwt';
     OrderComponent,
     OderProcessingComponent,
     StaffComponent,
-    LoginComponent
+    LoginComponent,
+    DanhmucComponent,
+    SanphamComponent,
+    SuaChatLieuComponent,
+    ThemDanhMucComponent,
+    SuaDanhMucComponent,
+    ThemDeGiayComponent,
+    SuaDeGiayComponent,
+    ThemKichCoComponent,
+    SuaKichCoComponent,
+    ThemMauSacComponent,
+    SuaMauSacComponent,
+    ThemThuongHieuComponent,
+    SuaThuongHieuComponent,
+    ThemSanPhamComponent,
+    SuaSanPhamComponent,
+    ActionRendererComponent,
+    ActionCategoryRedererComponent,
+
   ],
   imports: [
     BrowserModule,
@@ -70,10 +113,18 @@ import {JwtHelperService, JWT_OPTIONS  } from '@auth0/angular-jwt';
     AgGridModule.withComponents([]),
     FormsModule,
     ReactiveFormsModule,
-    HttpClientModule
+    HttpClientModule,
+    MatDialogModule,
+    MatInputModule,
+    MatFormFieldModule,
+    MatSelectModule,
+    MatRadioModule,
+    MatButtonModule,
+    MatIconModule,
   ],
   providers: [ { provide: JWT_OPTIONS, useValue: JWT_OPTIONS },
     JwtHelperService],
+  entryComponents: [ActionRendererComponent],
   bootstrap: [AppComponent]
 })
 export class AppModule {
