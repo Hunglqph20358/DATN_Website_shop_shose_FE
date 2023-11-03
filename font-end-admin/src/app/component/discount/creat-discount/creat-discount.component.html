@@ -1,0 +1,108 @@
+<section class="content-header">
+  <div class="container-fluid">
+    <div class="row mb-2">
+      <div class="col-md-12">
+        <div class="card card-primary">
+          <div class="card-header">
+            <h3 class="card-title">Giảm giá</h3>
+          </div>
+
+          <form>
+            <div class="card-body">
+              <div class="form-group">
+                <label for="name">Tên</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="name"
+                  [ngModelOptions]="{ standalone: true }"
+                  [(ngModel)]="discount.discountAdminDTO.name"
+                  placeholder="Tên giảm giá"
+                />
+              </div>
+              <div class="form-group">
+                <label for="description">Nội dung</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="description"
+                  [ngModelOptions]="{ standalone: true }"
+                  [(ngModel)]="discount.discountAdminDTO.description"
+                  placeholder="Nội dung"
+                />
+              </div>
+              <div class="form-group">
+                <label for="startDate">Ngày bắt đầu</label>
+                <input
+                  type="date"
+                  class="form-control"
+                  [ngModelOptions]="{ standalone: true }"
+                  id="startDate"
+                  [(ngModel)]="discount.discountAdminDTO.startDate"
+                />
+              </div>
+              <div class="form-group">
+                <label for="endDate">Ngày kết thúc</label>
+                <input
+                  type="date"
+                  class="form-control"
+                  [ngModelOptions]="{ standalone: true }"
+                  id="endDate"
+                  [(ngModel)]="discount.discountAdminDTO.endDate"
+                />
+              </div>
+              <div class="form-group">
+                <label for="discountType">Loại giảm giá</label>
+                <select
+                  class="form-control"
+                  id="discountType"
+                  [ngModelOptions]="{ standalone: true }"
+                  [(ngModel)]="discount.discountType"
+                >
+                  <option value="1">Theo %</option>
+                  <option value="0">Theo tiền mặt</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="reducedValue">Giá trị giảm</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="reducedValue"
+                  [ngModelOptions]="{ standalone: true }"
+                  [(ngModel)]="discount.reducedValue"
+                  placeholder="Giá trị giảm"
+                />
+              </div>
+              <div class="form-group">
+                <label for="product">Sản phẩm giảm</label>
+                <div class="grid">
+                  <ag-grid-angular
+                    style="width: 100%; height: 500px"
+                    class="ag-theme-balham"
+                    [rowData]="rowData"
+                    [columnDefs]="columnDefs"
+                    [rowSelection]="rowSelection"
+                    [headerHeight]="headerHeight"
+                    [rowHeight]="rowHeight"
+                    [domLayout]="'autoHeight'"
+                    (gridReady)="onGridReady($event)"
+                  ></ag-grid-angular>
+                </div>
+              </div>
+              <div class="card-footer">
+                <button
+                  type="submit"
+                  class="btn btn-primary"
+                  (click)="addDiscount()"
+                >
+                  Submit
+                </button>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

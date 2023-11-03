@@ -1,0 +1,19 @@
+.pagination {
+  display: inline-block;
+  margin-left: 170px;
+}
+
+.pagination a {
+  color: black;
+  float: left;
+  padding: 8px 16px;
+  text-decoration: none;
+  transition: background-color .3s;
+}
+section {
+  display: table;
+}
+
+
+
+/*# sourceMappingURL=adminlte.min.css.map */

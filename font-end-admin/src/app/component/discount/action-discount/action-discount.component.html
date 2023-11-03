@@ -1,0 +1,15 @@
+<!--<div class="action-buttons">-->
+<!--  <div class="ellipsis" (click)="toggleMenu()">-->
+<!--    <i class="fas fa-ellipsis-h"></i>-->
+<!--  </div>-->
+<!--  <div class="menu" *ngIf="isMenuOpen">-->
+<!--    <button class="edit-button" (click)="editItem()">Edit</button>-->
+<!--    <button class="delete-button" (click)="deleteItem()">Delete</button>-->
+<!--  </div>-->
+<!--</div>-->
+<button mat-button [matMenuTriggerFor]="menu"><i class="fa-solid fa-bars"></i></button>
+<mat-menu #menu="matMenu">
+  <button mat-menu-item (click)="editItem()">Edit</button>
+  <button mat-menu-item (click)="detail()">Detail</button>
+  <button mat-menu-item (click)="deleteItem()">Delete</button>
+</mat-menu>
