@@ -15,7 +15,7 @@ export class DetailVoucherComponent implements OnInit {
     description: '',
     reducedValue: '',
     voucherType: '',
-    conditions: '',
+    conditionApply: '',
     quantity: '',
   };
   constructor(private  activatedRoute: ActivatedRoute,
@@ -25,11 +25,21 @@ export class DetailVoucherComponent implements OnInit {
     // Lấy thông tin khuyến mãi dựa trên id từ tham số URL
     this.activatedRoute.params.subscribe((params) => {
       const id = params['id'];
-      this.voucherService
-        .getDetailVoucher(id)
-        .subscribe((respons) => {
-          this.voucher = respons;
-        });
+      console.log(id);
+      this.voucherService.getDetailVoucher(id).subscribe((response: any[]) => {
+        const firstElement = response[0];
+        console.log(firstElement);
+        this.voucher.id = firstElement.id;
+        this.voucher.name = firstElement.name;
+        this.voucher.description = firstElement.description;
+        this.voucher.conditionApply = firstElement.conditionApply;
+        this.voucher.voucherType = firstElement.voucherType;
+        this.voucher.endDate = firstElement.endDate;
+        this.voucher.quantity = firstElement.quantity;
+        this.voucher.reducedValue = firstElement.reducedValue;
+        this.voucher.startDate = firstElement.startDate;
+        console.log(this.voucher);
+      });
     });
     console.log(this.voucher);
   }

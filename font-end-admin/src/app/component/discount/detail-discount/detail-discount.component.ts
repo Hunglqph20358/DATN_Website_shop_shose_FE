@@ -17,6 +17,7 @@ export class DetailDiscountComponent implements OnInit {
     },
     reducedValue: '',
     discountType: '',
+    productDTOList: [],
   };
 
   constructor(private discountService: DiscountService,
@@ -41,6 +42,7 @@ export class DetailDiscountComponent implements OnInit {
             firstDiscount.discountAdminDTO.endDate;
           this.discount.discountType = firstDiscount.discountType;
           this.discount.reducedValue = firstDiscount.reducedValue;
+          this.discount.productDTOList = firstDiscount.productDTOList;
         });
     });
     console.log(this.discount);

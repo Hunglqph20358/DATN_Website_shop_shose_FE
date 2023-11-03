@@ -10,6 +10,7 @@ import { DiscountService } from 'src/app/service/discount.service';
 export class EditDiscountComponent implements OnInit {
    isHidden: boolean = true;
   discount: any = {
+    id: '',
     discountAdminDTO: {
       id: '',
       name: '',
@@ -21,21 +22,69 @@ export class EditDiscountComponent implements OnInit {
     discountType: '',
   };
   gridApi: any;
-  constructor(
-    private discountService: DiscountService,
-    private router: ActivatedRoute,
-    private rou: Router
-  ) {}
+  rowData = [];
+  columnDefs;
+  headerHeight = 50;
+  rowHeight = 40;
+
+  constructor(private discountService: DiscountService,
+              private router: Router,
+              private activatedRoute: ActivatedRoute) {
+    this.columnDefs = [
+      {
+        headerName: 'Mã sản phẩm',
+        field: 'code',
+        sortable: true,
+        filter: true,
+        checkboxSelection: true,
+        headerCheckboxSelection: true,
+        editable: true,
+      },
+      {
+        headerName: 'Tên sản phẩm',
+        field: 'name',
+        sortable: true,
+        filter: true,
+        editable: true,
+      },
+      {
+        headerName: 'Tên thương hiệu',
+        field: 'brandDTO.name',
+        sortable: true,
+        filter: true,
+        editable: true,
+      },
+      {
+        headerName: 'Loại',
+        field: 'categoryDTO.name',
+        sortable: true,
+        filter: true,
+        editable: true,
+      },
+      {
+        headerName: 'Số lượt bán',
+        field: 'totalSold',
+        sortable: true,
+        filter: true,
+        editable: true,
+      },
+    ];
+  }
   public rowSelection: 'single' | 'multiple' = 'multiple'; // Chọn nhiều dòng
   ngOnInit(): void {
+    this.discountService.getProduct().subscribe((response) => {
+      this.rowData = response;
+      console.log(response);
+    });
     this.isHidden = true;
     // Lấy thông tin khuyến mãi dựa trên id từ tham số URL
-    this.router.params.subscribe((params) => {
+    this.activatedRoute.params.subscribe((params) => {
       const id = params['id'];
       this.discountService
         .getDetailDiscount(id)
         .subscribe((response: any[]) => {
           const firstDiscount = response[0];
+          this.discount.id = firstDiscount.id;
           this.discount.discountAdminDTO.id = firstDiscount.discountAdminDTO.id;
           this.discount.discountAdminDTO.name =
             firstDiscount.discountAdminDTO.name;
@@ -57,16 +106,17 @@ export class EditDiscountComponent implements OnInit {
   }
   // Phương thức cập nhật thông tin khuyến mãi
   editDiscount() {
-    this.router.params.subscribe((params) => {
+    this.activatedRoute.params.subscribe((params) => {
       const id = params['id'];
       console.log(this.gridApi.getSelectedRows());
       const obj = {
         ...this.discount,
+        productDTOList: this.gridApi.getSelectedRows(),
       };
       this.discountService
         .updateDiscount(id, obj)
         .subscribe(() => {
-          this.rou.navigateByUrl('/admin/discount');
+          this.router.navigateByUrl('/admin/discount');
         });
       console.log(obj);
     });
