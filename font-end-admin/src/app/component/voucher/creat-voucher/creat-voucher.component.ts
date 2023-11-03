@@ -1,45 +1,44 @@
 import { Component, OnInit } from '@angular/core';
+import { VoucherService } from 'src/app/service/voucher.service';
+import {Router} from "@angular/router";
 
 @Component({
   selector: 'app-creat-voucher',
   templateUrl: './creat-voucher.component.html',
-  styleUrls: ['./creat-voucher.component.css']
+  styleUrls: ['./creat-voucher.component.css'],
 })
 export class CreatVoucherComponent implements OnInit {
-
   rowData = [];
   columnDefs;
   headerHeight = 50;
   rowHeight = 40;
-
-  constructor() {
-    this.columnDefs = [
-      {
-        headerName: 'Mã khách hàng',
-        field: 'Ma',
-        sortable: true,
-        filter: true,
-        checkboxSelection: true,
-        headerCheckboxSelection: true
+  voucher: any = {
+    name: '',
+    startDate: '',
+    endDate: '',
+    description: '',
+    reducedValue: '',
+    voucherType: '',
+    conditions: '',
+    quantity: '',
+  };
+  constructor(private voucherService: VoucherService,
+              private  router: Router) {}
+  ngOnInit(): void {}
+  addVoucher() {
+    const obj = {
+      ...this.voucher,
+    };
+    this.voucherService.createVoucher(obj).subscribe(
+      (response) => {
+        // Handle the response if needed, e.g., show a success message
+        console.log('Discount added successfully', response);
+        this.router.navigateByUrl('/admin/voucher');
       },
-      {headerName: 'Tên khách hàng', field: 'TenKK', sortable: true, filter: true},
-      {headerName: 'Số lượt mua', field: 'SoLuot', sortable: true, filter: true},
-    ];
-  }
-
-  public rowSelection: 'single' | 'multiple' = 'multiple'; // Chọn nhiều dòng
-  ngOnInit(): void {
-    this.rowData = [
-      {
-        Ma: 'KH1',
-        TenKK: 'Xuân',
-        SoLuot: '20'
-      },
-      {
-        Ma: 'KH2',
-        TenKK: 'Duy',
-        SoLuot: '20'
-      },
-    ];
+      (error) => {
+        // Handle errors if the discount creation fails
+        console.error('Error adding discount', error);
+      }
+    );
   }
 }
