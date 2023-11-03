@@ -1,0 +1,20 @@
+<h1 mat-dialog-title>ADD SIZE FORM</h1>
+<div mat-dialog-content class="example-container">
+  <mat-form-field appearance="outline">
+    <mat-label>Size Number</mat-label>
+    <input type="number" matInput placeholder="Size Number">
+  </mat-form-field>
+  <mat-form-field appearance="outline">
+    <mat-label>Create Date</mat-label>
+    <input type="date" matInput>
+  </mat-form-field>
+  <mat-radio-group>
+    <mat-label>Status</mat-label>
+    <mat-radio-button value="1">Option 1</mat-radio-button>
+    <mat-radio-button value="2">Option 2</mat-radio-button>
+  </mat-radio-group>
+</div>
+<div mat-dialog-actions [align]="'end'">
+  <button mat-raised-button color="warn" mat-dialog-close>CLOSE</button>
+  <button  mat-raised-button color="primary" >ADD</button>
+</div>

@@ -1,0 +1,25 @@
+<div style="margin-left: 20px">
+  <label></label>
+  <select class="form-select" aria-label="Default select example" style="width: 200px">
+    <option selected>Filter</option>
+    <option value="1">One</option>
+    <option value="2">Two</option>
+    <option value="3">Three</option>
+  </select>
+</div>
+<div class="row my-5" style="margin-left: 12px">
+  <div class="col">
+    <a href="#" class="btn btn-primary" style="width: 100px" (click)="openAdd()">Add</a>
+    <div class="grid">
+      <ag-grid-angular
+        style="width: 1200px; height: 500px;"
+        class="ag-theme-balham"
+        [rowData]="rowData"
+        [columnDefs]="columnDefs"
+        [rowSelection]="rowSelection"
+        [headerHeight]="headerHeight"
+        [rowHeight]="rowHeight"
+      ></ag-grid-angular>
+    </div>
+  </div>
+</div>

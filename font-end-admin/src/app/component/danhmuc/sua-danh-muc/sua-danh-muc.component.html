@@ -1,0 +1,24 @@
+<h1 mat-dialog-title>UPDATE CATEGORY FORM</h1>
+<div mat-dialog-content class="example-container">
+    <mat-form-field appearance="outline">
+      <mat-label>Category Name</mat-label>
+      <input [(ngModel)]="Name" name="Name" matInput placeholder="Name">
+    </mat-form-field>
+    <mat-form-field appearance="outline">
+      <mat-label>Create Date</mat-label>
+      <input [(ngModel)]="CreateDate" name="CreateDate" type="date" matInput>
+    </mat-form-field>
+    <mat-form-field appearance="outline">
+      <mat-label>Update Date</mat-label>
+      <input [(ngModel)]="UpdateDate" name="UpdateDate" type="date" matInput>
+    </mat-form-field>
+    <mat-radio-group [(ngModel)]="Status" name="Status">
+      <mat-label>Status</mat-label>
+      <mat-radio-button  value="0">Hoat dong</mat-radio-button>
+      <mat-radio-button value="1">Ngung hoat dong</mat-radio-button>
+    </mat-radio-group>
+</div>
+<div mat-dialog-actions [align]="'end'">
+  <button mat-raised-button color="warn" mat-dialog-close>CLOSE</button>
+  <button mat-raised-button color="primary"  >UPDATE</button>
+</div>

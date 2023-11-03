@@ -1,0 +1,29 @@
+<h1 mat-dialog-title>UPDATE MATERIAL FORM</h1>
+  <div mat-dialog-content class="example-container">
+    <mat-form-field appearance="outline">
+      <mat-label>Product Name</mat-label>
+      <input [(ngModel)]="data.name" name="name" #Name="ngModel" matInput placeholder="Name">
+    </mat-form-field>
+<!--    <mat-form-field appearance="outline">-->
+<!--      <mat-label>Create Date</mat-label>-->
+<!--      <input [(ngModel)]="data.createDate" name="CreateDate" type="date" matInput>-->
+<!--    </mat-form-field>-->
+<!--    <mat-form-field appearance="outline">-->
+<!--      <mat-label>Update Date</mat-label>-->
+<!--      <input [(ngModel)]="data.updateDate" name="UpdateDate" type="date" matInput>-->
+<!--    </mat-form-field>-->
+    <mat-form-field appearance="outline">
+      <mat-label>Discription</mat-label>
+      <input [(ngModel)]="data.description"  name="Description" #Name="ngModel" matInput placeholder="Discription">
+    </mat-form-field>
+    <mat-radio-group [(ngModel)]="data.status"  name="status" #Name="ngModel">
+      <mat-label>Status</mat-label>
+      <mat-radio-button [value]="0" >Con hang</mat-radio-button>
+      <mat-radio-button [value]="1">Het hang</mat-radio-button>
+    </mat-radio-group>
+  </div>
+  <div mat-dialog-actions [align]="'end'">
+    <button mat-raised-button color="warn" mat-dialog-close>CLOSE</button>
+    <button mat-raised-button color="primary" (click)="clickUpdate(data.id)" >UPDATE</button>
+  </div>
+

@@ -10,164 +10,17 @@
 <div class="row my-5" style="margin-left: 12px">
   <div class="col">
     <button class="btn btn-primary" (click)="openAdd()">add</button>
-    <table class="table bg-white rounded shadow-sm  table-hover">
-      <thead>
-      <tr>
-        <th scope="col" width="50">#</th>
-        <th scope="col">Code</th>
-        <th scope="col">Name</th>
-        <th scope="col">CreatDate</th>
-        <th scope="col">Description</th>
-        <th scope="col">Status</th>
-        <th scope="col">Action</th>
-      </tr>
-      </thead>
-      <tbody>
-      <tr>
-        <th scope="row">1</th>
-        <td>CL01</td>
-        <td>Vải thoáng khí</td>
-        <td>2023-04-22</td>
-        <td>Nhẹ</td>
-        <td>Còn hàng</td>
-        <td>
-          <a href="#" class="btn btn-danger">Delete</a>
-          <a href="#" class="btn btn-warning">Update</a>
-        </td>
-      </tr>
-      <tr>
-        <th scope="row">2</th>
-        <td>CL01</td>
-        <td>Vải thoáng khí</td>
-        <td>2023-04-22</td>
-        <td>Nhẹ</td>
-        <td>Còn hàng</td>
-        <td>
-          <a href="#" class="btn btn-danger">Delete</a>
-          <a href="#" class="btn btn-warning">Update</a>
-        </td>
-      </tr>
-      <tr>
-        <th scope="row">3</th>
-        <td>CL01</td>
-        <td>Vải thoáng khí</td>
-        <td>2023-04-22</td>
-        <td>Nhẹ</td>
-        <td>Còn hàng</td>
-        <td>
-          <a href="#" class="btn btn-danger">Delete</a>
-          <a href="#" class="btn btn-warning">Update</a>
-        </td>
-      </tr>
-      <tr>
-        <th scope="row">4</th>
-        <td>CL01</td>
-        <td>Vải thoáng khí</td>
-        <td>2023-04-22</td>
-        <td>Nhẹ</td>
-        <td>Còn hàng</td>
-        <td>
-          <a href="#" class="btn btn-danger">Delete</a>
-          <a href="#" class="btn btn-warning">Update</a>
-        </td>
-      </tr>
-      <tr>
-        <th scope="row">5</th>
-        <td>CL01</td>
-        <td>Vải thoáng khí</td>
-        <td>2023-04-22</td>
-        <td>Nhẹ</td>
-        <td>Còn hàng</td>
-        <td>
-          <a href="#" class="btn btn-danger">Delete</a>
-          <a href="#" class="btn btn-warning">Update</a>
-        </td>
-      </tr>
-      <tr>
-        <th scope="row">6</th>
-        <td>CL01</td>
-        <td>Vải thoáng khí</td>
-        <td>2023-04-22</td>
-        <td>Nhẹ</td>
-        <td>Còn hàng</td>
-        <td>
-          <a href="#" class="btn btn-danger">Delete</a>
-          <a href="#" class="btn btn-warning">Update</a>
-        </td>
-      </tr>
-      <tr>
-        <th scope="row">7</th>
-        <td>CL01</td>
-        <td>Vải thoáng khí</td>
-        <td>2023-04-22</td>
-        <td>Nhẹ</td>
-        <td>Còn hàng</td>
-        <td>
-          <a href="#" class="btn btn-danger">Delete</a>
-          <a href="#" class="btn btn-warning">Update</a>
-        </td>
-      </tr>
-      <tr>
-        <th scope="row">8</th>
-        <td>CL01</td>
-        <td>Vải thoáng khí</td>
-        <td>2023-04-22</td>
-        <td>Nhẹ</td>
-        <td>Còn hàng</td>
-        <td>
-          <a href="#" class="btn btn-danger">Delete</a>
-          <a href="#" class="btn btn-warning">Update</a>
-        </td>
-      </tr>
-      <tr>
-        <th scope="row">9</th>
-        <td>CL01</td>
-        <td>Vải thoáng khí</td>
-        <td>2023-04-22</td>
-        <td>Nhẹ</td>
-        <td>Còn hàng</td>
-        <td>
-          <a href="#" class="btn btn-danger">Delete</a>
-          <a href="#" class="btn btn-warning">Update</a>
-        </td>
-      </tr>
-      <tr>
-        <th scope="row">10</th>
-        <td>CL01</td>
-        <td>Vải thoáng khí</td>
-        <td>2023-04-22</td>
-        <td>Nhẹ</td>
-        <td>Còn hàng</td>
-        <td>
-          <a href="#" class="btn btn-danger">Delete</a>
-          <a href="#" class="btn btn-warning">Update</a>
-        </td>
-      </tr>
-      <tr>
-        <th scope="row">11</th>
-        <td>CL01</td>
-        <td>Vải thoáng khí</td>
-        <td>2023-04-22</td>
-        <td>Nhẹ</td>
-        <td>Còn hàng</td>
-        <td>
-          <a href="#" class="btn btn-danger">Delete</a>
-          <a href="#" class="btn btn-warning">Update</a>
-        </td>
-      </tr>
-      <tr>
-        <th scope="row">12</th>
-        <td>CL01</td>
-        <td>Vải thoáng khí</td>
-        <td>2023-04-22</td>
-        <td>Nhẹ</td>
-        <td>Còn hàng</td>
-        <td>
-          <a href="#" class="btn btn-danger">Delete</a>
-          <a href="#" class="btn btn-warning">Update</a>
-        </td>
-      </tr>
-      </tbody>
-    </table>
+    <div class="grid">
+      <ag-grid-angular
+        style="width: 100%; height: 500px;"
+        class="ag-theme-balham"
+        [rowData]="rowData"
+        [columnDefs]="columnDefs"
+        [rowSelection]="rowSelection"
+        [headerHeight]="headerHeight"
+        [rowHeight]="rowHeight"
+      ></ag-grid-angular>
+    </div>
+
   </div>
 </div>
