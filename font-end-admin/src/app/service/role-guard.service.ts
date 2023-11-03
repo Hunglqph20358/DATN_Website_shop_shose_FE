@@ -9,13 +9,7 @@ import jwtDecode from 'jwt-decode';
 export class RoleGuardService implements CanActivate{
   constructor(public auth: AuthJwtService, public router: Router) {}
   canActivate(route: ActivatedRouteSnapshot): boolean {
-    const expectedRole = route.data.expectedRole;
-    const token = localStorage.getItem('token');
-    const tokenPayload = jwtDecode(token);
-    if (
-      !this.auth.isAuthenticated() ||
-      tokenPayload.role !== expectedRole
-    ) {
+    if (!this.auth.isAuthenticated()) {
       this.router.navigate(['admin/login']);
       return false;
     }

@@ -24,6 +24,7 @@ import { AddressCheckoutComponent } from './component/checkout/address-checkout/
 import { UpdateAddressComponent } from './component/checkout/address-checkout/update-address/update-address.component';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import { OrderComponent } from './component/order/order.component';
+import {SignUpComponent} from './component/sign-up/sign-up.component';
 
 @NgModule({
   declarations: [
@@ -39,7 +40,8 @@ import { OrderComponent } from './component/order/order.component';
     PopupVoucherComponent,
     AddressCheckoutComponent,
     UpdateAddressComponent,
-    OrderComponent
+    OrderComponent,
+    SignUpComponent
   ],
   imports: [
     BrowserModule,
