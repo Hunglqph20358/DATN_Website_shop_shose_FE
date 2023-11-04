@@ -17,15 +17,15 @@ export class ActionDiscountComponent
 {
   isMenuOpen: boolean = false;
   data: any = {
-    discountAdminDTO: {
-      id: '',
-      name: '',
-      startDateStr: '',
-      endDateStr: '',
-      description: '',
-    },
-    reducedValue: '',
-    discountType: '',
+    // discountAdminDTO: {
+    //   id: '',
+    //   name: '',
+    //   startDateStr: '',
+    //   endDateStr: '',
+    //   description: '',
+    // },
+    // reducedValue: '',
+    // discountType: '',
   };
   gridApi: GridApi; // Thêm gridApi để truy cập Ag-Grid API
   constructor(private matDialog: MatDialog, private router: Router,
@@ -50,7 +50,7 @@ export class ActionDiscountComponent
   deleteItem(): void {
     const confirmation = confirm('Bạn có chắc chắn muốn xóa dòng này?');
     if (confirmation) {
-      this.discountService.deleteDiscount(this.data.idDiscount)
+      this.discountService.deleteDiscount(this.data.id)
         .subscribe(() => {
             this.router.navigateByUrl('/admin/discount');
           },

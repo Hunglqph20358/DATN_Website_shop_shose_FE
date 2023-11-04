@@ -16,6 +16,16 @@
               [hidden]="isHidden"
             />
           </div>
+          <div class="form-group" >
+            <input
+              type="date"
+              class="form-control"
+              [ngModelOptions]="{ standalone: true }"
+              id="id"
+              [(ngModel)]="discount.id"
+              [hidden]="isHidden"
+            />
+          </div>
           <form>
             <div class="card-body">
               <div class="form-group">
@@ -83,6 +93,22 @@
                   [(ngModel)]="discount.reducedValue"
                   placeholder="Giá trị giảm"
                 />
+              </div>
+              <div class="form-group">
+                <label for="product">Sản phẩm giảm</label>
+                <div class="grid">
+                  <ag-grid-angular
+                    style="width: 100%; height: 500px"
+                    class="ag-theme-balham"
+                    [rowData]="rowData"
+                    [columnDefs]="columnDefs"
+                    [rowSelection]="rowSelection"
+                    [headerHeight]="headerHeight"
+                    [rowHeight]="rowHeight"
+                    [domLayout]="'autoHeight'"
+                    (gridReady)="onGridReady($event)"
+                  ></ag-grid-angular>
+                </div>
               </div>
 
               <div class="card-footer">

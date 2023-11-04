@@ -21,7 +21,7 @@ export class DiscountComponent implements OnInit {
     this.columnDefs = [
       {
         headerName: 'Mã',
-        field: 'discountAdminDTO.code',
+        field: 'code',
         sortable: true,
         filter: true,
         checkboxSelection: true,
@@ -30,44 +30,25 @@ export class DiscountComponent implements OnInit {
       },
       {
         headerName: 'Tên',
-        field: 'discountAdminDTO.name',
+        field: 'name',
         sortable: true,
         filter: true,
         minWidth: 70,
         maxWidth: 80,
       },
       {
-        headerName: 'Sản phẩm',
-        field: 'productDTO.name',
-        sortable: true,
-        filter: true,
-      },
-      {
         headerName: 'Ngày bắt đầu',
-        field: 'discountAdminDTO.startDate',
+        field: 'startDate',
         sortable: true,
         filter: true,
         minWidth: 80,
       },
       {
         headerName: 'Ngày kết thúc',
-        field: 'discountAdminDTO.endDate',
+        field: 'endDate',
         sortable: true,
         filter: true,
         minWidth: 80,
-      },
-      {
-        headerName: 'Loại giảm giá',
-        field: 'discountType',
-        sortable: true,
-        filter: true,
-        cellRenderer: this.statusType.bind(this),
-      },
-      {
-        headerName: 'Giá trị giảm',
-        field: 'reducedValue',
-        sortable: true,
-        filter: true,
       },
       {
         headerName: 'Trạng thái',
@@ -95,16 +76,6 @@ export class DiscountComponent implements OnInit {
       return 'Không rõ';
     }
   }
-  statusType(params) {
-    if (params.value == 1) {
-      return 'Theo %';
-    } else if (params.value == 0) {
-      return 'Theo tiền';
-    } else {
-      return 'Không rõ';
-    }
-  }
-
   ngOnInit(): void {
     this.apiService.getSomeData().subscribe((response) => {
       this.rowData = response;

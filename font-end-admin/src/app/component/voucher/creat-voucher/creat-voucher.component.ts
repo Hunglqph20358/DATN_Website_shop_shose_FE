@@ -19,7 +19,7 @@ export class CreatVoucherComponent implements OnInit {
     description: '',
     reducedValue: '',
     voucherType: '',
-    conditions: '',
+    conditionApply: '',
     quantity: '',
   };
   constructor(private voucherService: VoucherService,

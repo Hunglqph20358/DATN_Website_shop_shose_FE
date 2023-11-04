@@ -41,7 +41,7 @@ export class VoucherComponent implements OnInit {
       },
       {
         headerName: 'Điều kiện sử dụng',
-        field: 'conditions',
+        field: 'conditionApply',
         sortable: true,
         filter: true,
       },
