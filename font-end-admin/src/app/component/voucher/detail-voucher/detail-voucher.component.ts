@@ -1,16 +1,14 @@
 import { Component, OnInit } from '@angular/core';
-import {ActivatedRoute, Router} from '@angular/router';
+import {ActivatedRoute} from "@angular/router";
 import {VoucherService} from "../../../service/voucher.service";
 
 @Component({
-  selector: 'app-edit-voucher',
-  templateUrl: './edit-voucher.component.html',
-  styleUrls: ['./edit-voucher.component.css'],
+  selector: 'app-detail-voucher',
+  templateUrl: './detail-voucher.component.html',
+  styleUrls: ['./detail-voucher.component.css']
 })
-export class EditVoucherComponent implements OnInit {
-  isHidden: boolean = true;
+export class DetailVoucherComponent implements OnInit {
   voucher: any = {
-    id: '',
     name: '',
     startDate: '',
     endDate: '',
@@ -20,15 +18,15 @@ export class EditVoucherComponent implements OnInit {
     conditionApply: '',
     quantity: '',
   };
-  constructor(private activatedRoute: ActivatedRoute,
-              private service: VoucherService,
-              private rou: Router) {}
+  constructor(private  activatedRoute: ActivatedRoute,
+              private voucherService: VoucherService) { }
+
   ngOnInit(): void {
-    this.isHidden = true;
+    // Lấy thông tin khuyến mãi dựa trên id từ tham số URL
     this.activatedRoute.params.subscribe((params) => {
       const id = params['id'];
       console.log(id);
-      this.service.getDetailVoucher(id).subscribe((response: any[]) => {
+      this.voucherService.getDetailVoucher(id).subscribe((response: any[]) => {
         const firstElement = response[0];
         console.log(firstElement);
         this.voucher.id = firstElement.id;
@@ -45,11 +43,5 @@ export class EditVoucherComponent implements OnInit {
     });
     console.log(this.voucher);
   }
-  editVoucher(){
-    this.service
-      .updateVoucher(this.voucher.id, this.voucher)
-      .subscribe(() => {
-        this.rou.navigateByUrl('/admin/voucher');
-      });
-  }
+
 }

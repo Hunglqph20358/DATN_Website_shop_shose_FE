@@ -1,7 +1,7 @@
 
 <div>
-  <div class="container mt-3">
-    <button class="bg-transparent second-text fw-bold" routerLink="/admin/them-giam-gia">Thêm giảm giá</button>
+  <div class="example-button-row" >
+    <button mat-raised-button color="primary" style="margin-bottom: 20px; margin-left: 20px" routerLink="/admin/creat-discount">Thêm giảm giá</button>
   </div>
   <div class="grid">
     <ag-grid-angular
@@ -12,7 +12,12 @@
       [rowSelection]="rowSelection"
       [headerHeight]="headerHeight"
       [rowHeight]="rowHeight"
+      [pagination]="true"
+      [paginationPageSize]="10"
+      [domLayout]="'autoHeight'"
     ></ag-grid-angular>
   </div>
 </div>
+
+
 

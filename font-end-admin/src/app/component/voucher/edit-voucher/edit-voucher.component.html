@@ -7,61 +7,114 @@
             <h3 class="card-title">Voucher</h3>
           </div>
           <form>
+            <div class="form-group" >
+              <input
+                type="date"
+                class="form-control"
+                [ngModelOptions]="{ standalone: true }"
+                id="id"
+                [(ngModel)]="voucher.id"
+                [hidden]="isHidden"
+              />
+            </div>
             <div class="card-body">
               <div class="form-group">
-                <label for="Ma">Mã</label>
-                <input type="text" class="form-control"  id="Ma" [(ngModel)]="rowData[0].Ma" placeholder="Mã" >
+                <label for="name">Tên</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="name"
+                  [ngModelOptions]="{ standalone: true }"
+                  [(ngModel)]="voucher.name"
+                  placeholder="Tên"
+                />
               </div>
               <div class="form-group">
-                <label for="tenVoucher">Tên</label>
-                <input type="text" class="form-control" id="tenVoucher" placeholder="Tên">
+                <label for="startDate">Ngày bắt đầu</label>
+                <input
+                  type="date"
+                  class="form-control"
+                  id="startDate"
+                  [ngModelOptions]="{ standalone: true }"
+                  [(ngModel)]="voucher.startDate"
+                />
               </div>
               <div class="form-group">
-                <label for="noiDung">Nội dung</label>
-                <input type="text" class="form-control" id="noiDung" placeholder="Nội dung">
+                <label for="endDate">Ngày kết thúc</label>
+                <input
+                  type="date"
+                  class="form-control"
+                  id="endDate"
+                  [ngModelOptions]="{ standalone: true }"
+                  [(ngModel)]="voucher.endDate"
+                />
               </div>
               <div class="form-group">
-                <label for="ngayBatDau">Ngày bắt đầu</label>
-                <input type="date" class="form-control" id="ngayBatDau">
-              </div>
-              <div class="form-group">
-                <label for="ngayKetThuc">Ngày kết thúc</label>
-                <input type="date" class="form-control" id="ngayKetThuc">
+                <label for="description">Nội dung</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="description"
+                  [ngModelOptions]="{ standalone: true }"
+                  [(ngModel)]="voucher.description"
+                  placeholder="Nội dung"
+                />
               </div>
               <div class="form-group">
                 <label>Điều kiện sử dụng</label>
                 <div class="row">
                   <div class="col-md-6">
                     <div class="form-group">
-                      <select class="form-control" id="hoaDonGiam">
-                        <option>Chọn giá trị hóa đơn</option>
-                        <option>Hóa đơn trên 100k</option>
-                        <option>Hóa đơn trên 200k</option>
-                      </select>
-                    </div>
-                  </div>
-                  <div class="col-md-6">
-                    <div class="form-group">
-                      <label >Khách hàng quen</label>
-                      <ag-grid-angular
-                        style="width: 400px; height: 300px;"
-                        class="ag-theme-balham"
-                        [rowData]="rowData"
-                        [rowSelection]="rowSelection"
-                        [columnDefs]="columnDefs"
-                        [headerHeight]="headerHeight"
-                        [rowHeight]="rowHeight"
-                      ></ag-grid-angular>
+                      <input
+                        type="number"
+                        class="form-control"
+                        id="condition"
+                        [ngModelOptions]="{ standalone: true }"
+                        [(ngModel)]="voucher.conditionApply"
+                        placeholder="Giá trị đơn hàng"
+                      />
                     </div>
                   </div>
                 </div>
               </div>
               <div class="form-group">
-                <label for="giaTriGiam">Giá trị giảm</label>
-                <input type="text" class="form-control" id="giaTriGiam" placeholder="Giá trị giảm">
+                <label for="voucherType">Loại voucher</label>
+                <select
+                  class="form-control"
+                  id="voucherType"
+                  [ngModelOptions]="{ standalone: true }"
+                  [(ngModel)]="voucher.voucherType"
+                >
+                  <option value="">Chọn loại voucher</option>
+                  <option value="0">Theo %</option>
+                  <option value="1">Theo tiền</option>
+                  <!-- Thêm các loại voucher khác nếu cần -->
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="reducedValue">Giá trị giảm</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="reducedValue"
+                  [ngModelOptions]="{ standalone: true }"
+                  [(ngModel)]="voucher.reducedValue"
+                  placeholder="Giá trị giảm"
+                />
+              </div>
+              <div class="form-group">
+                <label for="quantity">Số lượng</label>
+                <input
+                  type="number"
+                  class="form-control"
+                  id="quantity"
+                  [ngModelOptions]="{ standalone: true }"
+                  [(ngModel)]="voucher.quantity"
+                  placeholder="Số lượng"
+                />
               </div>
               <div class="card-footer">
-                <button type="submit" class="btn btn-primary">Submit</button>
+                <button type="submit" class="btn btn-primary" (click)="editVoucher()">Submit</button>
               </div>
             </div>
           </form>
@@ -70,4 +123,3 @@
     </div>
   </div>
 </section>
-

@@ -1,11 +1,7 @@
-import {BrowserModule} from '@angular/platform-browser';
-import {ChangeDetectorRef, NgModule} from '@angular/core';
-import {NgModel} from '@angular/forms';
 import {MatInputModule} from '@angular/material/input';
 import {MatFormFieldModule} from '@angular/material/form-field';
 import {MatSelectModule} from '@angular/material/select';
 import {MatRadioModule} from '@angular/material/radio';
-import {MatButtonModule} from '@angular/material/button';
 import {MatIconModule} from '@angular/material/icon';
 
 import {AppRoutingModule} from './app-routing.module';
@@ -13,17 +9,19 @@ import {AppComponent} from './app.component';
 import {HeaderComponent} from './layout/header/header.component';
 import {FooterComponent} from './layout/footer/footer.component';
 import {DegiayComponent} from './component/degiay/degiay.component';
+import { BrowserModule } from '@angular/platform-browser';
+import { ChangeDetectorRef, NgModule } from '@angular/core';
 import { ChatlieuComponent } from './component/chatlieu/chatlieu.component';
 import { MausacComponent } from './component/mausac/mausac.component';
 import { KichcoComponent } from './component/kichco/kichco.component';
 import { ThuonghieuComponent } from './component/thuonghieu/thuonghieu.component';
 import { ThemChatLieuComponent } from './component/chatlieu/them-chat-lieu/them-chat-lieu.component';
 
-import {SidebarComponent} from './layout/sidebar/sidebar.component';
-import {DiscountComponent} from './component/discount/discount.component';
-import {VoucherComponent} from './component/voucher/voucher.component';
-import {AgGridModule} from 'ag-grid-angular';
-import {HomeComponent} from './component/home/home.component';
+import { SidebarComponent } from './layout/sidebar/sidebar.component';
+import { DiscountComponent } from './component/discount/discount.component';
+import { VoucherComponent } from './component/voucher/voucher.component';
+import { AgGridModule } from 'ag-grid-angular';
+import { HomeComponent } from './component/home/home.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { CreatDiscountComponent } from './component/discount/creat-discount/creat-discount.component';
 import { ActionDiscountComponent } from './component/discount/action-discount/action-discount.component';
@@ -39,8 +37,6 @@ import { OderProcessingComponent } from './component/oder-processing/oder-proces
 import { StaffComponent } from './component/staff/staff.component';
 import {LoginComponent} from './component/login/login.component';
 import {JwtHelperService, JWT_OPTIONS  } from '@auth0/angular-jwt';
-
-import {MatDialogModule} from '@angular/material/dialog';
 import { DanhmucComponent } from './component/danhmuc/danhmuc.component';
 import { SanphamComponent } from './component/sanpham/sanpham.component';
 import { SuaChatLieuComponent } from './component/chatlieu/sua-chat-lieu/sua-chat-lieu.component';
@@ -58,9 +54,11 @@ import { ThemSanPhamComponent } from './component/sanpham/them-san-pham/them-san
 import { SuaSanPhamComponent } from './component/sanpham/sua-san-pham/sua-san-pham.component';
 import { ActionRendererComponent } from './component/chatlieu/action-renderer/action-renderer.component';
 import { ActionCategoryRedererComponent } from './component/danhmuc/action-category-rederer/action-category-rederer.component';
-
-
-
+import { MatMenuModule } from '@angular/material/menu';
+import { MatDialogModule } from '@angular/material/dialog';
+import { MatButtonModule } from '@angular/material/button';
+import { DetailDiscountComponent } from './component/discount/detail-discount/detail-discount.component';
+import { DetailVoucherComponent } from './component/voucher/detail-voucher/detail-voucher.component';
 
 @NgModule({
   declarations: [
@@ -104,7 +102,8 @@ import { ActionCategoryRedererComponent } from './component/danhmuc/action-categ
     SuaSanPhamComponent,
     ActionRendererComponent,
     ActionCategoryRedererComponent,
-
+    DetailDiscountComponent,
+    DetailVoucherComponent
   ],
   imports: [
     BrowserModule,
@@ -112,6 +111,10 @@ import { ActionCategoryRedererComponent } from './component/danhmuc/action-categ
     BrowserAnimationsModule,
     AgGridModule.withComponents([]),
     FormsModule,
+    HttpClientModule,
+    MatMenuModule,
+    MatDialogModule,
+    MatButtonModule,
     ReactiveFormsModule,
     HttpClientModule,
     MatDialogModule,
@@ -122,10 +125,10 @@ import { ActionCategoryRedererComponent } from './component/danhmuc/action-categ
     MatButtonModule,
     MatIconModule,
   ],
+  bootstrap: [AppComponent],
   providers: [ { provide: JWT_OPTIONS, useValue: JWT_OPTIONS },
     JwtHelperService],
-  entryComponents: [ActionRendererComponent],
-  bootstrap: [AppComponent]
+  entryComponents: [ActionRendererComponent]
 })
 export class AppModule {
 }

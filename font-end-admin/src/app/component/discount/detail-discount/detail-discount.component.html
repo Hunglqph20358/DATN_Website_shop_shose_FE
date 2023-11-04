@@ -1,0 +1,47 @@
+<section class="content-header">
+  <div class="container-fluid">
+    <div class="row mb-2">
+      <div class="col-md-12">
+        <div class="card card-primary">
+          <div class="card-header">
+            <h3 class="card-title">Giảm giá</h3>
+          </div>
+          <div class="card-body">
+            <div class="form-group">
+              <label for="name">Tên</label>
+              <div>{{ discount.discountAdminDTO.name }}</div>
+            </div>
+            <div class="form-group">
+              <label for="description">Nội dung</label>
+              <div>{{ discount.discountAdminDTO.description }}</div>
+            </div>
+            <div class="form-group">
+              <label for="startDate">Ngày bắt đầu</label>
+              <div>{{ discount.discountAdminDTO.startDate }}</div>
+            </div>
+            <div class="form-group">
+              <label for="endDate">Ngày kết thúc</label>
+              <div>{{ discount.discountAdminDTO.endDate }}</div>
+            </div>
+            <div class="form-group">
+              <label for="discountType">Loại giảm giá</label>
+              <div>{{ discount.discountType === '1' ? 'Theo %' : 'Theo tiền mặt' }}</div>
+            </div>
+            <div class="form-group">
+              <label for="reducedValue">Giá trị giảm</label>
+              <div>{{ discount.reducedValue }}</div>
+            </div>
+            <div class="form-group">
+              <label for="product">Sản phẩm giảm</label>
+              <div class="grid">
+                <ul>
+                  <li *ngFor="let product of discount.productDTOList">{{ product.name }}</li>
+                </ul>
+              </div>
+            </div>
+        </div>
+      </div>
+      </div>
+    </div>
+  </div>
+</section>
