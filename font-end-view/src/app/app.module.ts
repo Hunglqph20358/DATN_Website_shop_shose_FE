@@ -25,6 +25,7 @@ import { UpdateAddressComponent } from './component/checkout/address-checkout/up
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import { OrderComponent } from './component/order/order.component';
 import {AgGridModule} from 'ag-grid-angular';
+import {SignUpComponent} from './component/sign-up/sign-up.component';
 
 @NgModule({
   declarations: [
@@ -40,7 +41,8 @@ import {AgGridModule} from 'ag-grid-angular';
     PopupVoucherComponent,
     AddressCheckoutComponent,
     UpdateAddressComponent,
-    OrderComponent
+    OrderComponent,
+    SignUpComponent
   ],
     imports: [
         BrowserModule,
