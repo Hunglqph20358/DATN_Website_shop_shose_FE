@@ -59,6 +59,7 @@ import { MatDialogModule } from '@angular/material/dialog';
 import { MatButtonModule } from '@angular/material/button';
 import { DetailDiscountComponent } from './component/discount/detail-discount/detail-discount.component';
 import { DetailVoucherComponent } from './component/voucher/detail-voucher/detail-voucher.component';
+import { SignUpComponent } from './component/sign-up/sign-up.component';
 
 @NgModule({
   declarations: [
@@ -103,7 +104,8 @@ import { DetailVoucherComponent } from './component/voucher/detail-voucher/detai
     ActionRendererComponent,
     ActionCategoryRedererComponent,
     DetailDiscountComponent,
-    DetailVoucherComponent
+    DetailVoucherComponent,
+    SignUpComponent
   ],
   imports: [
     BrowserModule,

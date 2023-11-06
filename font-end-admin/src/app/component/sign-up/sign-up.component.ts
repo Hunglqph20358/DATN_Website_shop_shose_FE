@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import {SignInService} from '../../service/authentication/sign-in.service';
-import {Router} from '@angular/router';
 import {SignUpRepquest} from '../model/SignUpRepquest';
+import {AuthService} from '../../service/auth.service';
+import {Router} from '@angular/router';
 
 @Component({
   selector: 'app-sign-up',
@@ -21,7 +21,7 @@ export class SignUpComponent implements OnInit {
     role: ''
   };
   signUpForm: SignUpRepquest;
-  constructor(private signup: SignInService, private router: Router) { }
+  constructor(private signup: AuthService, private router: Router) { }
   signUp() {
     this.signUpForm = new SignUpRepquest (
       this.form.fullname,
@@ -31,18 +31,17 @@ export class SignUpComponent implements OnInit {
       this.form.phone,
       this.form.birthday,
       this.form.gender,
-      this.form.role,
+      this.form.role
     );
     console.log(this.signUpForm);
     this.signup.signUp(this.signUpForm).subscribe(data =>{
       console.log(data);
       if (data.message === 'Create Success'){
         alert('Đăng kí thành công ! ');
-        this.router.navigate(['login']);
+        this.router.navigate(['admin/login']);
       }
     });
   }
   ngOnInit(): void {
   }
-
 }

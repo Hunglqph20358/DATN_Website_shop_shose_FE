@@ -30,7 +30,6 @@ export class LoginComponent implements OnInit {
         localStorage.setItem('users', JSON.stringify(data.usersDTO));
         this.router.navigate(['shopping-cart']);
     },
-      // this.signIn.loadInFor().
       error => {
         if (error.status === 403){
           alert('Mật kHẩu không chính xác');

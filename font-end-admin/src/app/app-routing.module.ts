@@ -24,6 +24,7 @@ import {DetailVoucherComponent} from "./component/voucher/detail-voucher/detail-
 import {VoucherComponent} from "./component/voucher/voucher.component";
 import {EditDiscountComponent} from "./component/discount/edit-discount/edit-discount.component";
 import {EditVoucherComponent} from "./component/voucher/edit-voucher/edit-voucher.component";
+import {SignUpComponent} from './component/sign-up/sign-up.component';
 
 const routes: Routes = [
   {path: '', redirectTo: 'staff', pathMatch: 'full'},
@@ -39,7 +40,7 @@ const routes: Routes = [
   {path: 'admin/sua-voucher', component: EditVoucherComponent},
   {path: 'degiay', component: DegiayComponent, canActivate: [RoleGuardService],
     data: {
-      expectedRole: 'STAFF'
+      expectedRole: ['ADMIN']
     } },
   {path: 'admin/edit-discount/:id', component: EditDiscountComponent},
   {path: 'admin/edit-voucher/:id', component: EditVoucherComponent},
@@ -53,6 +54,7 @@ const routes: Routes = [
   {path: 'order-list', component: OrderComponent},
   {path: 'order-processing', component: OderProcessingComponent},
   {path: 'staff', component: StaffComponent, canActivate: [AuthGuard]},
+  {path: 'sign-up', component: SignUpComponent},
 ];
 
 @NgModule({
