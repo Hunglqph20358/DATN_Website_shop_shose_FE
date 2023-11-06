@@ -1,4 +1,4 @@
-export class SignUpRepquest {
+export class SignUpRepquest{
   fullname: string;
   username: string;
   password: string;
@@ -7,7 +7,6 @@ export class SignUpRepquest {
   birthday: string;
   gender: string;
   role: string;
-
   constructor(fullname: string, username: string, password: string, email: string, phone: string, birthday: string, gender: string, role: string) {
     this.fullname = fullname;
     this.username = username;

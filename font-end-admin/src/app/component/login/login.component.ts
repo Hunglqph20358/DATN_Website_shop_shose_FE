@@ -29,7 +29,6 @@ export class LoginComponent implements OnInit {
         alert('Lỗi đăng nhập');
       }else {
         localStorage.setItem('token', data.token);
-        localStorage.setItem('token', );
         this.router.navigate(['']);
       }
     });

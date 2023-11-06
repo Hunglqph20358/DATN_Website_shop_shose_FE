@@ -9,8 +9,8 @@ import {SignUpRepquest} from '../../component/model/SignUpRepquest';
   providedIn: 'root'
 })
 export class SignInService {
-  private apiLogin = 'http://localhost:6868/api/sign-in';
-  private apiSignUp = 'http://localhost:6868/api/sign-up';
+  private apiLogin = 'http://localhost:6868/view/api/sign-in';
+  private apiSignUp = 'http://localhost:6868/view/api/sign-up';
   private apiFindByID: string;
   constructor(private httpClient: HttpClient){}
   signIn(signInForm: SignInFrom): Observable<JwtResponse>{
