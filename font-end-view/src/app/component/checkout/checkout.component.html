@@ -53,7 +53,7 @@
         <div class="row g-3">
           <div class="col-sm-6">
             <label for="firstName" class="form-label">Họ và Tên</label>
-            <input type="text" class="form-control" [(ngModel)]="order.receiver" id="firstName" placeholder="" required>
+            <input type="text" class="form-control" [(ngModel)]="order.receiver" [ngModelOptions]="{standalone: true}" id="firstName" placeholder="" required>
 <!--            <div class="invalid-feedback">-->
 <!--              Valid first name is required.-->
 <!--            </div>-->
@@ -61,25 +61,25 @@
 
           <div class="col-sm-6">
             <label for="lastName" class="form-label">SDT</label>
-            <input type="text" class="form-control" id="lastName" placeholder="" [(ngModel)]="order.receiverPhone" required>
+            <input type="text" class="form-control" id="lastName" placeholder="" [(ngModel)]="order.receiverPhone" [ngModelOptions]="{standalone: true}" required>
 <!--            <div class="invalid-feedback">-->
 <!--              Valid last name is required.-->
 <!--            </div>-->
           </div>
 
 
-          <div class="col-12">
-            <label for="email" class="form-label">Email <span class="text-muted">(Optional)</span></label>
-            <input type="email" class="form-control" id="email" placeholder="you@example.com">
-            <div class="invalid-feedback">
-              Please enter a valid email address for shipping updates.
-            </div>
-          </div>
+<!--          <div class="col-12">-->
+<!--            <label for="email" class="form-label">Email <span class="text-muted">(Optional)</span></label>-->
+<!--            <input type="email" class="form-control" id="email" placeholder="you@example.com">-->
+<!--            <div class="invalid-feedback">-->
+<!--              Please enter a valid email address for shipping updates.-->
+<!--            </div>-->
+<!--          </div>-->
           <div class="col-sm-12">
             <label for="" class="form-label" style="font-weight: bold">Địa chỉ nhận hàng</label>
             <div style="display: flex; justify-content: space-between">
-              <p>1 Ngách 63/30 Lê Đức Thọ, Phường Mỹ Đình 2, Quận Nam Từ Liêm, Hà Nội
-                Mặc Định</p>
+              <p>{{address.specificAddress + ', ' + address.wards + ', '
+              + address.district + ', ' + address.province}}</p>
               <button class="button-thaydoi" (click)="openPopupAddress();">Thay đổi</button>
             </div>
           </div>
@@ -88,8 +88,8 @@
 
         <div class="voucher">
           <h6>Voucher giảm giá:</h6>
-          <span>Quang Hưng</span>
-          <button class="btn btn-light">Thêm</button>
+          <span>{{voucher?.code}}</span>
+          <button class="btn btn-light" (click)="openVoucher();">Chọn Voucher</button>
         </div>
         <br>
         <div>

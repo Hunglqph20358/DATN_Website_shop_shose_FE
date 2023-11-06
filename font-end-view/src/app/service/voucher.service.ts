@@ -13,4 +13,7 @@ export class VoucherService {
   getAllVoucher(): Observable<any>{
     return this.http.get(`${apiURL}get-all-voucher`);
   }
+  getVoucher(code: string): Observable<any>{
+    return this.http.get(`${apiURL}get-voucher?code=${code}`);
+  }
 }

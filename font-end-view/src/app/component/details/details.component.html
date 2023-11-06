@@ -21,8 +21,8 @@
 
 
         <div class="price-area my-4">
-          <div class="old-price"><del>{{product.listedPrice}}</del></div>
-          <div class="new-price"><span>{{product.price}} đ</span></div>
+          <div class="old-price"><del>{{product.listedPrice | number:'1.0-0'}} đ</del></div>
+          <div class="new-price"><span>{{product.price | number:'1.0-0'}} đ</span></div>
         </div>
 
       </div>

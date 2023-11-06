@@ -2,10 +2,21 @@
   <h1 class="my-4">Xem Đơn Mua Hàng</h1>
 
   <h2 class="mb-4">Khách Hàng: John Doe</h2>
-
+  <div class="row">
+    <div class="col-md-4">
+      <label for="" class="form-label">Trạng thái</label>
+      <ng-select [items]="listStatus" bindLabel="name" bindValue="id" placeholder="--Lựa chọn--"
+                 [searchable]="false" [ngModelOptions]="{standalone: true}" [(ngModel)]="status">
+      </ng-select>
+      <div class="invalid-feedback">
+        Please provide a valid state.
+      </div>
+    </div>
+  </div>
   <table class="table">
     <thead>
     <tr>
+      <th>STT</th>
       <th>Mã Đơn Hàng</th>
       <th>Ngày Đặt Hàng</th>
       <th>Tổng Tiền</th>
@@ -39,6 +50,16 @@
     <!-- Thêm các hàng đơn hàng khác ở đây -->
     </tbody>
   </table>
+
+  <div class="grid">
+    <ag-grid-angular style="width: 100%; height: 486px !important;" class="ag-theme-balham"
+    [rowData]="rowData"
+    [columnDefs]="columnDefs"
+    [headerHeight]="headerHeight"
+    [rowHeight]="rowHeight"
+    (gridReady)="onGridReady($event)">
+    </ag-grid-angular>
+  </div>
 
   <a href="index.html" class="btn btn-primary">Quay lại trang chủ</a>
 </div>

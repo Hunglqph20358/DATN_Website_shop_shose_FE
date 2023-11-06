@@ -16,11 +16,11 @@ import {OrderComponent} from './component/order/order.component';
 const routes: Routes = [
   { path: '', redirectTo: 'home', pathMatch: 'full' },
   { path: 'home', component: HomeComponent },
-  { path: 'shopping-cart', component: GiohangComponent, canActivate: [AuthService]},
+  { path: 'shopping-cart', component: GiohangComponent},
   { path: 'product-details/:idProduct', component: DetailsComponent},
   { path: 'sanpham', component: SanphamComponent},
   { path: 'login', component: LoginComponent},
-  { path: 'sign-up', component: SignUpComponent},
+  { path: 'sign-up', component: SignUpComponent, canActivate: [AuthService]},
   { path: 'cart/checkout', component: CheckoutComponent},
   { path: 'cart/checkout-detail', component: DetailCheckoutComponent},
   { path: 'order', component: OrderComponent},
