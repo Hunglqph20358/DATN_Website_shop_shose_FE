@@ -15,9 +15,6 @@
     <ng-select [items]="listDistrict" bindLabel="DistrictName" bindValue="DistrictID" placeholder="--Lựa chọn--"
                [searchable]="false" [(ngModel)]="address.districtId" [ngModelOptions]="{standalone: true}" (change)="getWard($event)">
     </ng-select>
-    <!--            <div class="invalid-feedback">-->
-    <!--              Please provide a valid state.-->
-    <!--            </div>-->
   </div>
   <div class="col-md-4">
     <label for="" class="form-label">Phường Xã</label>

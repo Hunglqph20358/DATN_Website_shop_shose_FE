@@ -58,8 +58,8 @@
         <p class="details-title text-color mb-1">Số lượng :{{(getProductDetailQuantity() == 0 || getProductDetailQuantity()== null) ? product.totalQuantity : getProductDetailQuantity()}}</p>
       </div>
       <div class ="btn-groups">
-        <button class = "add-cart-btn" (click)="addToCart(product.id)"><i class = "fas fa-shopping-cart"></i>add to cart</button>
-        <button class = "buy-now-btn"><i class = "fas fa-wallet"></i>buy now</button>
+        <button class = "add-cart-btn" (click)="addToCart(product.id)"><i class = "fas fa-shopping-cart"></i>Thêm giỏ hàng</button>
+        <button class = "buy-now-btn" (click)="buyNow(product.id);"><i class = "fas fa-wallet"></i>Mua ngay</button>
       </div>
     </div>
   </div>

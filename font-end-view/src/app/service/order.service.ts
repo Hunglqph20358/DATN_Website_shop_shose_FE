@@ -13,8 +13,11 @@ export class OrderService {
   createOrder(obj): Observable<any>{
     return this.http.post(`${apiURL}create-order`, obj);
   }
+  createOrderBuyNow(obj): Observable<any>{
+    return this.http.post(`${apiURL}create-order/buy-now`, obj);
+  }
 
-  getAllOrder(user): Observable<any>{
-    return this.http.post(`${apiURL}get-all-order`, user);
+  getAllOrder(obj): Observable<any>{
+    return this.http.post(`${apiURL}get-all-order`, obj);
   }
 }

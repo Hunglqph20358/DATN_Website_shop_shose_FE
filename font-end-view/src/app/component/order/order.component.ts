@@ -1,9 +1,14 @@
-import {Component, OnInit} from '@angular/core';
+import {ChangeDetectorRef, Component, OnInit} from '@angular/core';
+import {OrderService} from '../../service/order.service';
+import {formatCurrency} from '@angular/common';
+import {formatDate, formatDateTime, formatMoney, formatTime} from '../../util/util';
+import {MatDialog} from '@angular/material/dialog';
+import {OrderDetailComponent} from './order-detail/order-detail.component';
 
 @Component({
   selector: 'app-order',
   templateUrl: './order.component.html',
-  styleUrls: ['./order.component.css']
+  styleUrls: ['./order.component.scss']
 })
 export class OrderComponent implements OnInit {
 
@@ -11,63 +16,157 @@ export class OrderComponent implements OnInit {
   status = 6;
   rowData: any;
   columnDefs: any;
-  headerHeight: 60;
-  rowHeight: 45;
+  headerHeight: 80;
+  rowHeight: 55;
   gridApi;
   gridColumnApi;
 
-  constructor() {
+  constructor(private orderService: OrderService, private cdr: ChangeDetectorRef, private matDialog: MatDialog) {
     const lst =
-      [{name: 'Chờ xử lí', id: 0},
-        {name: 'Chờ giao hàng', id: 1},
+      [
+        {name: 'Tất cả', id: 6},
+        {name: 'Chờ xác nhận', id: 0},
+        {name: 'Chờ xử lí', id: 1},
         {name: 'Đang giao hàng', id: 2},
         {name: 'Đã nhận hàng', id: 3},
         {name: 'Đã Hủy', id: 4},
         {name: 'Hoàn thành', id: 5},
-        {name: 'Tất cả', id: 6}];
+      ];
     this.listStatus = lst;
 
     this.columnDefs = [
       {
         headerName: 'STT',
+        field: '',
         suppressMovable: true,
+        minWidth: 60,
+        maxWidth: 60,
         valueGetter: param => {
           return param.node.rowIndex + 1;
         },
-        minWidth: 60,
-        maxWidth: 60,
       },
       {
         headerName: 'Mã đơn hàng',
+        field: 'code',
         suppressMovable: true,
-        minWidth: 60,
-        maxWidth: 60,
+        cellStyle: {
+          'font-weight': '500',
+          'font-size': '12px',
+          'align-items': 'center',
+          color: '#101840',
+          display: 'flex',
+          // top: '12px',
+          'white-space': 'nowrap',
+          'text-overflow': 'ellipsis',
+          overflow: 'hidden',
+          // textAlign: 'center',
+          'justify-content': 'center',
+        },
       },
       {
         headerName: 'Ngày Đặt Hàng',
+        field: 'createDate',
         suppressMovable: true,
-        minWidth: 60,
-        maxWidth: 60,
+        valueFormatter: params => {
+          return formatDateTime(params.data.createDate);
+        },
+        cellStyle: {
+          'font-weight': '500',
+          'font-size': '12px',
+          'align-items': 'center',
+          color: '#101840',
+          display: 'flex',
+          // top: '12px',
+          'white-space': 'nowrap',
+          'text-overflow': 'ellipsis',
+          overflow: 'hidden',
+          // textAlign: 'center',
+          'justify-content': 'center',
+        },
       }, {
         headerName: 'Tổng Tiền',
+        field: 'totalPayment',
         suppressMovable: true,
-        minWidth: 60,
-        maxWidth: 60,
+        valueFormatter: params => {
+          return formatMoney(params.data.totalPayment);
+        },
+        cellStyle: {
+          'font-weight': '500',
+          'font-size': '12px',
+          'align-items': 'center',
+          color: '#101840',
+          display: 'flex',
+          // top: '12px',
+          'white-space': 'nowrap',
+          'text-overflow': 'ellipsis',
+          overflow: 'hidden',
+          // textAlign: 'center',
+          'justify-content': 'center',
+        },
       }, {
         headerName: 'Trạng Thái',
+        field: 'status',
         suppressMovable: true,
-        minWidth: 60,
-        maxWidth: 60,
+        valueGetter: (params) => {
+          const status = params.data.status;
+          switch (status) {
+            case 0:
+              return 'Chờ xử lý';
+            case 1:
+              return 'Chờ giao hàng';
+            case 2:
+              return 'Đang giao hàng';
+            case 3:
+              return 'Đã nhận hàng';
+            case 4:
+              return 'Đang giao hàng';
+            case 5:
+              return 'Đã Hủy';
+            default:
+              return 'Không xác định';
+          }
+        },
+        cellStyle: {
+          'font-weight': '500',
+          'font-size': '12px',
+          'align-items': 'center',
+          color: '#101840',
+          display: 'flex',
+          // top: '12px',
+          'white-space': 'nowrap',
+          'text-overflow': 'ellipsis',
+          overflow: 'hidden',
+          // textAlign: 'center',
+          'justify-content': 'center',
+        },
       }, {
         headerName: '',
         suppressMovable: true,
-        minWidth: 60,
-        maxWidth: 60,
+        cellRenderer: params => {
+          return `<div style="text-decoration: none" class="btn btn-link">Xem Chi Tiết</div>`;
+        },
+        onCellClicked: (params) => {
+          return this.openOrderDetail(params.data);
+        }
       },
     ];
+    this.rowData = [];
   }
 
   ngOnInit(): void {
+    this.getAllOrder();
+  }
+
+  getAllOrder(): void {
+    const obj = {
+      idCustomer: 3,
+      status: this.status
+    };
+    this.orderService.getAllOrder(obj).subscribe(res => {
+      this.rowData = res;
+      console.log(this.rowData);
+    });
+    this.cdr.detectChanges();
   }
 
   onGridReady(params: any) {
@@ -75,4 +174,10 @@ export class OrderComponent implements OnInit {
     this.gridColumnApi = params.columnApi;
   }
 
+  openOrderDetail(value: any): void {
+    this.matDialog.open(OrderDetailComponent, {
+      width: '150vh',
+      data: value
+    });
+  }
 }

@@ -26,23 +26,28 @@ export class CheckoutComponent implements OnInit {
   shipFee = 0;
   address: any;
 
+  addressBuyNow: any = {
+    provinceId: undefined,
+    districtId: undefined,
+    wardCode: undefined,
+    specificAddress: undefined
+  };
+
   totalMoneyPay;
   voucher: any;
   order: any = {
     customerDTO: {
-      code: 'KH1699061922',
+      code: 'KH1699795301',
     },
     receiver: '',
     receiverPhone: '',
   };
+  email;
+  dataCheckoutByNow;
 
-
-  // orderDetail: {
-  //   idOrder: '',
-  //   lstProductDetail: [];
-  //   quantity: 0,
-  //   price: 0.0
-  // };
+  listProvince = [];
+  listDistrict = [];
+  listWard = [];
 
   constructor(private giaoHangService: GiaoHangService, private cartService: CartService,
               private cookieService: CookieService, private route: Router, private orderService: OrderService,
@@ -54,6 +59,7 @@ export class CheckoutComponent implements OnInit {
       const entries = JSON.parse(cartData);
       this.cartData = new Map(entries);
     }
+    this.dataCheckoutByNow = JSON.parse(sessionStorage.getItem('dataCheckoutByNow'));
     // @ts-ignore
     window.scrollTo(top, 0, 0);
   }
@@ -74,6 +80,22 @@ export class CheckoutComponent implements OnInit {
     });
     console.log(this.listCart);
     this.getAddress(3);
+    this.giaoHangService.getAllProvince().subscribe(res => {
+      this.listProvince = res.data;
+    });
+  }
+
+  getDistrict(event) {
+    console.log(event);
+    this.giaoHangService.getAllDistrictByProvince(event.ProvinceID).subscribe(res => {
+      this.listDistrict = res.data;
+    });
+  }
+
+  getWard(event) {
+    this.giaoHangService.getAllWardByDistrict(event.DistrictID).subscribe(res => {
+      this.listWard = res.data;
+    });
   }
 
   getAddress(id: number) {
@@ -100,33 +122,80 @@ export class CheckoutComponent implements OnInit {
     });
   }
 
+  getPhiShip() {
+    const addressInfo = {
+      service_type_id: 2,
+      from_district_id: 3440,
+      to_district_id: this.addressBuyNow.districtId,
+      to_ward_code: this.addressBuyNow.wardCode,
+      height: 20,
+      length: 30,
+      weight: 200,
+      width: 40,
+      insurance_value: 0,
+    };
+    this.giaoHangService.getTinhPhiShip(addressInfo).subscribe(res2 => {
+      this.shipFee = res2.data.service_fee;
+      this.totalMoneyPay = this.shipFee + this.totalMoneyPay;
+    });
+  }
+
   thanhToan() {
     if (this.checkChoicePay === 1) {
-      const obj = {
-        ...this.order,
-        totalPrice: this.totalMoney,
-        totalPayment: this.totalMoneyPay,
-        shipPrice: this.shipFee,
-        codeVoucher: this.voucher.code,
-        addressReceived: this.address.specificAddress + ', ' + this.address.wards + ', '
-          + this.address.district + ', ' + this.address.province,
-        paymentType: 1,
-      };
+      if (this.dataCheckoutByNow === 1) {
+        const obj = {
+          ...this.order,
+          totalPrice: this.totalMoney,
+          totalPayment: this.totalMoneyPay,
+          shipPrice: this.shipFee,
+          codeVoucher: this.voucher ? this.voucher.code : null,
+          addressReceived: this.addressBuyNow.specificAddress + ', ' + this.addressBuyNow.wards + ', '
+            + this.addressBuyNow.district + ', ' + this.addressBuyNow.province,
+          paymentType: 1,
+          email: this.email
+        };
+        this.orderService.createOrderBuyNow(obj).subscribe(res => {
+          debugger
+          if (res.status === 'OK') {
+            const objCheckOut = {
+              order: res.data,
+              listCart: this.listCart,
+            };
+            sessionStorage.setItem('order', JSON.stringify(objCheckOut));
+            this.paymentService.createPayment(this.totalMoneyPay).subscribe(resPay => {
+              if (resPay.status === 'OK') {
+                window.location.href = resPay.url;
+              }
+            });
+          }
+        });
+      } else {
+        const obj = {
+          ...this.order,
+          totalPrice: this.totalMoney,
+          totalPayment: this.totalMoneyPay,
+          shipPrice: this.shipFee,
+          codeVoucher: this.voucher ? this.voucher.code : null,
+          addressReceived: this.address.specificAddress + ', ' + this.address.wards + ', '
+            + this.address.district + ', ' + this.address.province,
+          paymentType: 1,
+        };
 
-      this.orderService.createOrder(obj).subscribe(res => {
-        if (res.status === 'OK') {
-          const objCheckOut = {
-            order: res.data,
-            listCart: this.listCart,
-          };
-          sessionStorage.setItem('order', JSON.stringify(objCheckOut));
-          this.paymentService.createPayment(this.totalMoneyPay).subscribe(resPay => {
-            if (resPay.status === 'OK') {
-              window.location.href = resPay.url;
-            }
-          });
-        }
-      });
+        this.orderService.createOrder(obj).subscribe(res => {
+          if (res.status === 'OK') {
+            const objCheckOut = {
+              order: res.data,
+              listCart: this.listCart,
+            };
+            sessionStorage.setItem('order', JSON.stringify(objCheckOut));
+            this.paymentService.createPayment(this.totalMoneyPay).subscribe(resPay => {
+              if (resPay.status === 'OK') {
+                window.location.href = resPay.url;
+              }
+            });
+          }
+        });
+      }
     }
   }
 
