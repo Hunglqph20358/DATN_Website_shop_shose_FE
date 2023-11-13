@@ -1,1 +1,34 @@
-<p>popup-voucher works!</p>
+<div class="container">
+  <div class="row"><h5>Chọn Voucher</h5></div>
+  <div class="row" style="border: 1px solid" *ngFor="let v of listVoucher">
+    <div style="display: flex; justify-content: space-between">
+      <div style="display: flex">
+        <div>
+          <img style="width: 70px; height: 70px" src="../../../../assets/image/680c03454d4a8e6510cde78faa437224_tn.png" alt="">
+        </div>
+        <div style="display:flex; margin-left: 10px; flex-direction: column">
+          <div class="row">
+            <label>Giảm: {{v.reducedValue | number:'1.0-0'}} đ</label>
+          </div>
+          <div class="row">
+            <label>Đơn tối thiểu: {{v.conditionApply | number:'1.0-0'}} đ</label>
+          </div>
+          <div class="row">
+            <label>HSD: {{v.startDate}}</label>
+          </div>
+        </div>
+      </div>
+      <div style="margin-top: 23px">
+        <input type="radio" style="transform: scale(1.5);" [value]="v.code" [(ngModel)]="voucherChoice" name="voucher">
+      </div>
+    </div>
+  </div>
+  <div style="display: flex">
+    <div>
+      <button type="button" class="btn btn-secondary" (click)="matDialogRef.close()">Đóng</button>
+    </div>
+    <div>
+      <button type="button" class="btn btn-success" (click)="xacNhan()">Xác nhận</button>
+    </div>
+  </div>
+</div>

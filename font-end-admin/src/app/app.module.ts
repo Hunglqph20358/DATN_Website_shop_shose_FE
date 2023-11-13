@@ -60,6 +60,9 @@ import { MatButtonModule } from '@angular/material/button';
 import { DetailDiscountComponent } from './component/discount/detail-discount/detail-discount.component';
 import { DetailVoucherComponent } from './component/voucher/detail-voucher/detail-voucher.component';
 import { SignUpComponent } from './component/sign-up/sign-up.component';
+import { ActionOrderComponent } from './component/order/action-order/action-order.component';
+import { OrderDetailComponent } from './component/order/order-detail/order-detail.component';
+import {NgSelectModule} from '@ng-select/ng-select';
 
 @NgModule({
   declarations: [
@@ -105,7 +108,9 @@ import { SignUpComponent } from './component/sign-up/sign-up.component';
     ActionCategoryRedererComponent,
     DetailDiscountComponent,
     DetailVoucherComponent,
-    SignUpComponent
+    SignUpComponent,
+    ActionOrderComponent,
+    OrderDetailComponent
   ],
   imports: [
     BrowserModule,
@@ -126,6 +131,7 @@ import { SignUpComponent } from './component/sign-up/sign-up.component';
     MatRadioModule,
     MatButtonModule,
     MatIconModule,
+    NgSelectModule,
   ],
   bootstrap: [AppComponent],
   providers: [ { provide: JWT_OPTIONS, useValue: JWT_OPTIONS },

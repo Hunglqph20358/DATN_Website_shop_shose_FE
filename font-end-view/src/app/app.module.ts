@@ -24,7 +24,9 @@ import { AddressCheckoutComponent } from './component/checkout/address-checkout/
 import { UpdateAddressComponent } from './component/checkout/address-checkout/update-address/update-address.component';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import { OrderComponent } from './component/order/order.component';
+import {AgGridModule} from 'ag-grid-angular';
 import {SignUpComponent} from './component/sign-up/sign-up.component';
+import { OrderDetailComponent } from './component/order/order-detail/order-detail.component';
 
 @NgModule({
   declarations: [
@@ -41,20 +43,22 @@ import {SignUpComponent} from './component/sign-up/sign-up.component';
     AddressCheckoutComponent,
     UpdateAddressComponent,
     OrderComponent,
-    SignUpComponent
+    SignUpComponent,
+    OrderDetailComponent
   ],
-  imports: [
-    BrowserModule,
-    AppRoutingModule,
-    HttpClientModule,
-    NgSelectModule,
-    FormsModule,
-    MatCheckboxModule,
-    MatMenuModule,
-    MatDialogModule,
-    MatButtonModule,
-    BrowserAnimationsModule
-  ],
+    imports: [
+        BrowserModule,
+        AppRoutingModule,
+        HttpClientModule,
+        NgSelectModule,
+        FormsModule,
+        MatCheckboxModule,
+        MatMenuModule,
+        MatDialogModule,
+        MatButtonModule,
+        BrowserAnimationsModule,
+        AgGridModule.withComponents([])
+    ],
   providers: [{ provide: JWT_OPTIONS, useValue: JWT_OPTIONS },
     JwtHelperService],
   bootstrap: [AppComponent]

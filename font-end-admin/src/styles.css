@@ -1,6 +1,8 @@
 @import '../node_modules/ag-grid-community/dist/styles/ag-theme-alpine.css';
 @import '../node_modules/ag-grid-community/dist/styles/ag-theme-balham.css';
 @import '../node_modules/ag-grid-community/dist/styles/ag-grid.css';
+@import "~@ng-select/ng-select/themes/default.theme.css";
+
 html, body {
   height: 100%;
   width: 100%;
@@ -8,6 +10,7 @@ html, body {
   box-sizing: border-box;
   -webkit-overflow-scrolling: touch;
 }
+
 :root {
   --main-bg-color: #009d63;
   --main-text-color: #009d63;
@@ -106,7 +109,11 @@ html, body {
 }
 
 
+html, body {
+  height: 100%;
+}
 
-
-html, body { height: 100%; }
-body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+body {
+  margin: 0;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+}

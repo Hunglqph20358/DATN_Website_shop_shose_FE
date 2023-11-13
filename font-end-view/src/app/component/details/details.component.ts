@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {ProductService} from '../../service/product.service';
-import {ActivatedRoute} from '@angular/router';
+import {ActivatedRoute, Router} from '@angular/router';
 import {ColorService} from '../../service/color.service';
 import {SizeService} from '../../service/size.service';
 import {CookieService} from 'ngx-cookie-service';
@@ -13,10 +13,10 @@ import {CookieService} from 'ngx-cookie-service';
 export class DetailsComponent implements OnInit {
 
   cartData = new Map();
-
+  productData = new Map();
   constructor(private productService: ProductService, private activeRoute: ActivatedRoute,
               private colorService: ColorService, private sizeService: SizeService,
-              private cookieService: CookieService) {
+              private cookieService: CookieService, private router: Router) {
     // @ts-ignore
     window.scrollTo(top, 0, 0);
     if (this.cookieService.check('cart')) {
@@ -145,6 +145,15 @@ export class DetailsComponent implements OnInit {
       this.cookieService.set('cart', JSON.stringify(Array.from(this.cartData.entries())), expirationDate);
     }
     console.log(this.cartData);
+  }
 
+  buyNow(productId: any) {
+    const productKey = productId + '-' + this.colorId + '-' + this.sizeId;
+    const expirationDate = new Date();
+    expirationDate.setTime(expirationDate.getTime() + 30 * 60 * 1000);
+    this.productData.set(productKey, 1);
+    this.cookieService.set('checkout', JSON.stringify(Array.from(this.productData.entries())), expirationDate);
+    sessionStorage.setItem('dataCheckoutByNow', JSON.stringify(1));
+    this.router.navigate(['cart/checkout']);
   }
 }
