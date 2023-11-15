@@ -20,9 +20,12 @@
         </div>
 
 
-        <div class="price-area my-4">
-          <div class="old-price"><del>{{product.listedPrice | number:'1.0-0'}} đ</del></div>
-          <div class="new-price"><span>{{product.price | number:'1.0-0'}} đ</span></div>
+        <div class="price-area my-4" *ngIf="product.reducePrice != null && product.percentageReduce != null">
+          <div class="old-price"><del>{{utilService.formatMoney(product.price)}}</del></div>
+          <div class="new-price"><span>{{utilService.formatMoney(product.price - product.reducePrice)}}</span></div>
+        </div>
+        <div class="price-area my-4" *ngIf="product.reducePrice == null && product.percentageReduce == null">
+          <div class="new-price"><span>{{utilService.formatMoney(product.price)}}</span></div>
         </div>
 
       </div>

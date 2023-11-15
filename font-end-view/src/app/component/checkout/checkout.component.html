@@ -22,10 +22,24 @@
         <td><div><span style="font-weight: bold">Color:</span> {{c.productDetailDTO.colorDTO.name}}</div>
           <div><span style="font-weight: bold">Size: </span> {{c.productDetailDTO.sizeDTO.sizeNumber}}</div>
         </td>
-        <td><del>{{c.productDetailDTO.listedPrice | number:'1.0-0'}} đ</del>
-          <span style="color: red; margin-left: 5px">{{c.productDetailDTO.price | number:'1.0-0'}} đ</span></td>
+        <td>
+          <div *ngIf="c.productDTO.reducePrice != null && c.productDTO.percentageReduce != null">
+            <del>{{utilService.formatMoney(c.productDTO.price)}}</del>
+            <span style="color: red; margin-left: 5px">{{utilService.formatMoney(c.productDTO.price - c.productDTO.reducePrice)}}</span>
+          </div>
+          <div *ngIf="c.productDTO.reducePrice == null && c.productDTO.percentageReduce == null">
+            <span style="color: red; margin-left: 5px">{{utilService.formatMoney(c.productDTO.price - c.productDTO.reducePrice)}}</span>
+          </div>
+        </td>
         <td> {{c.quantity}}</td>
-        <th style="color: red">{{c.productDetailDTO.price * c.quantity | number:'1.0-0'}} đ</th>
+        <th style="color: red">
+          <div *ngIf="c.productDTO.reducePrice != null && c.productDTO.percentageReduce != null">
+            <span style="color: red; margin-left: 5px">{{calculateTotal(c.productDTO.price - c.productDTO.reducePrice, c.quantity)}}</span>
+          </div>
+          <div *ngIf="c.productDTO.reducePrice == null && c.productDTO.percentageReduce == null">
+            <span style="color: red; margin-left: 5px">{{calculateTotal(c.productDTO.price, c.quantity)}}</span>
+          </div>
+        </th>
       </tr>
       <tr>
         <td></td>

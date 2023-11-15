@@ -1,5 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {ProductService} from '../../service/product.service';
+import {UtilService} from '../../util/util.service';
 
 @Component({
   selector: 'app-home',
@@ -8,7 +9,7 @@ import {ProductService} from '../../service/product.service';
 })
 export class HomeComponent implements OnInit {
 
-  constructor(private productService: ProductService) {
+  constructor(private productService: ProductService , public utilService: UtilService) {
   }
 
   listProductNoiBat = [];
@@ -34,4 +35,5 @@ export class HomeComponent implements OnInit {
     // Khi chuột rời khỏi, cập nhật isMouseOver của sản phẩm này thành false
     this.isMouseOver[product.id] = false;
   }
+
 }
