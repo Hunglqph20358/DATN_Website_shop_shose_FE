@@ -4,6 +4,7 @@ import {ActivatedRoute, Router} from '@angular/router';
 import {ColorService} from '../../service/color.service';
 import {SizeService} from '../../service/size.service';
 import {CookieService} from 'ngx-cookie-service';
+import {UtilService} from '../../util/util.service';
 
 @Component({
   selector: 'app-details',
@@ -16,7 +17,7 @@ export class DetailsComponent implements OnInit {
   productData = new Map();
   constructor(private productService: ProductService, private activeRoute: ActivatedRoute,
               private colorService: ColorService, private sizeService: SizeService,
-              private cookieService: CookieService, private router: Router) {
+              private cookieService: CookieService, private router: Router, public utilService: UtilService) {
     // @ts-ignore
     window.scrollTo(top, 0, 0);
     if (this.cookieService.check('cart')) {

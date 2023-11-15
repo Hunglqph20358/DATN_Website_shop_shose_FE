@@ -10,6 +10,7 @@ import {AddressCheckoutComponent} from './address-checkout/address-checkout.comp
 import {PopupVoucherComponent} from './popup-voucher/popup-voucher.component';
 import {AddressService} from '../../service/address.service';
 import {VoucherService} from '../../service/voucher.service';
+import {UtilService} from '../../util/util.service';
 
 @Component({
   selector: 'app-checkout',
@@ -52,7 +53,7 @@ export class CheckoutComponent implements OnInit {
   constructor(private giaoHangService: GiaoHangService, private cartService: CartService,
               private cookieService: CookieService, private route: Router, private orderService: OrderService,
               private paymentService: PaymentService, private matDialog: MatDialog,
-              private addressService: AddressService, private voucherService: VoucherService,
+              private addressService: AddressService, private voucherService: VoucherService, public utilService: UtilService
   ) {
     if (this.cookieService.check('checkout')) {
       const cartData = this.cookieService.get('checkout');
@@ -73,8 +74,8 @@ export class CheckoutComponent implements OnInit {
       this.cartService.getCart(idKey[0], idKey[1], idKey[2], value).subscribe(res => {
         this.listCart.push(res.data);
         // tslint:disable-next-line:max-line-length
-        this.totalSaveMoney += (res.data.productDetailDTO.listedPrice * res.data.quantity) - (res.data.productDetailDTO.price * res.data.quantity);
-        this.totalMoney += res.data.productDetailDTO.price * res.data.quantity;
+        this.totalSaveMoney += (res.data.productDTO.reducePrice * res.data.quantity);
+        this.totalMoney += (res.data.productDTO.price * res.data.quantity) - (res.data.productDTO.reducePrice * res.data.quantity);
         this.totalMoneyPay = this.totalMoney;
       });
     });
@@ -84,9 +85,11 @@ export class CheckoutComponent implements OnInit {
       this.listProvince = res.data;
     });
   }
-
+  calculateTotal(price: number, quantity: number): string {
+    const total = price * quantity;
+    return this.utilService.formatMoney(total);
+  }
   getDistrict(event) {
-    console.log(event);
     this.giaoHangService.getAllDistrictByProvince(event.ProvinceID).subscribe(res => {
       this.listDistrict = res.data;
     });
@@ -155,7 +158,6 @@ export class CheckoutComponent implements OnInit {
           email: this.email
         };
         this.orderService.createOrderBuyNow(obj).subscribe(res => {
-          debugger
           if (res.status === 'OK') {
             const objCheckOut = {
               order: res.data,

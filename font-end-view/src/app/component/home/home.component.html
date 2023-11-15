@@ -54,8 +54,9 @@
                   alt="..."
                 ></a>
               <div class="card-body">
-                <p>{{p.name}}</p>
-                <h5 class="card-title">{{p.listedPrice | number:'1.0-0'}} đ</h5>
+                <h5 class="card-title">{{p.name}}</h5>
+                <div *ngIf="p.reducePrice == null && p.percentageReduce == null"><span>{{p.price}}</span> đ</div>
+                <div *ngIf="p.reducePrice != null && p.percentageReduce != null"> <del>{{utilService.formatMoney(p.price)}}</del>  <span style="margin-left: 5px">{{utilService.formatMoney(p.price - p.reducePrice)}}</span></div>
               </div>
             </div>
           </div>

@@ -2,6 +2,9 @@ import {ChangeDetectorRef, Component, NgZone, OnInit} from '@angular/core';
 import {CartService} from '../../service/cart.service';
 import {CookieService} from 'ngx-cookie-service';
 import {Router} from '@angular/router';
+import {UtilService} from '../../util/util.service';
+import {ToastrService} from 'ngx-toastr';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-giohang',
@@ -15,13 +18,13 @@ export class GiohangComponent implements OnInit {
   listCart = [];
   cartData = new Map();
   checkOutData = new Map();
-  totalMoney: any;
-  totalSaveMoney: any;
+  totalMoney = 0;
+  totalSaveMoney = 0;
   selectedProducts: any[] = [];
   disableCheckOut: boolean = false;
 
   constructor(private cartService: CartService, private cookieService: CookieService, private route: Router,
-              private cdr: ChangeDetectorRef) {
+              private cdr: ChangeDetectorRef, public utilService: UtilService, private toastr: ToastrService) {
     if (this.cookieService.check('cart')) {
       this.cookieService.delete('checkout');
       const cartData = this.cookieService.get('cart');
@@ -43,12 +46,17 @@ export class GiohangComponent implements OnInit {
     console.log(this.listCart);
   }
 
+  calculateTotal(price: number, quantity: number): string {
+    const total = price * quantity;
+    return this.utilService.formatMoney(total);
+  }
+
   checkOut() {
     const expirationDate = new Date();
     expirationDate.setTime(expirationDate.getTime() + 30 * 60 * 1000);
     this.cookieService.set('checkout', JSON.stringify(Array.from(this.selectedProducts)), expirationDate);
-    for (const c of this.selectedProducts){
-      const  key = c.productId + '-' + c.productDetailDTO.idColor + '-' + c.productDetailDTO.idSize;
+    for (const c of this.selectedProducts) {
+      const key = c.productId + '-' + c.productDetailDTO.idColor + '-' + c.productDetailDTO.idSize;
       this.checkOutData.set(key, c.quantity);
     }
     this.cookieService.set('checkout', JSON.stringify(Array.from(this.checkOutData.entries())), expirationDate);
@@ -61,11 +69,22 @@ export class GiohangComponent implements OnInit {
     if (this.cartData.has(cartKey)) {
       const currentQuantity = this.cartData.get(cartKey);
       if (currentQuantity === 1) {
-        // Xóa khỏi cookie nếu số lượng là 1
-        this.cartData.delete(cartKey);
-        this.cookieService.set('cart', JSON.stringify([...this.cartData]));
-
-        this.listCart = this.listCart.filter(item => item.productID !== obj.productID);
+        Swal.fire({
+          title: 'Bạn có chắc chắn muốn xóa sản phẩm không ?',
+          icon: 'error',
+          showCancelButton: true,
+          confirmButtonText: 'Yes',
+          cancelButtonText: 'No',
+        }).then((result) => {
+          if (result.isConfirmed) {
+            this.toastr.success('Xoa Thanh Cong!', 'Remove', {
+              positionClass: 'toast-top-right'
+            });
+            this.cartData.delete(cartKey);
+            this.cookieService.set('cart', JSON.stringify([...this.cartData]));
+            window.location.reload();
+          }
+        });
       } else {
         // Giảm số lượng đi 1
         this.cartData.set(cartKey, currentQuantity - 1);
@@ -148,8 +167,8 @@ export class GiohangComponent implements OnInit {
     this.totalSaveMoney = 0;
     for (const c of this.listCart) {
       if (c.selected) {
-        this.totalSaveMoney += (c.productDetailDTO.listedPrice * c.quantity) - (c.productDetailDTO.price * c.quantity);
-        this.totalMoney += c.productDetailDTO.price * c.quantity;
+        this.totalSaveMoney += c.productDTO.reducePrice * c.quantity;
+        this.totalMoney += (c.productDTO.price * c.quantity) - (c.productDTO.reducePrice * c.quantity);
       }
     }
   }
