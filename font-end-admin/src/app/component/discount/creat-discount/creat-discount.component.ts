@@ -80,7 +80,12 @@ export class CreatDiscountComponent implements OnInit {
   onGridReady(params: any) {
     this.gridApi = params.api;
   }
+  isValidDateRange(): boolean {
+    const startDate = new Date(this.discount.discountAdminDTO.startDate);
+    const endDate = new Date(this.discount.discountAdminDTO.endDate);
 
+    return startDate < endDate;
+  }
   addDiscount() {
     console.log(this.gridApi.getSelectedRows());
     const obj = {
@@ -97,6 +102,6 @@ export class CreatDiscountComponent implements OnInit {
         console.error('Error adding discount', error);
       }
     );
-    this.router.navigateByUrl("/admin/discount");
+    this.router.navigateByUrl('/admin/discount');
   }
 }
