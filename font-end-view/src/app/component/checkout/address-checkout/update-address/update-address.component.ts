@@ -45,11 +45,9 @@ export class UpdateAddressComponent implements OnInit {
 
   add() {
     console.log(this.address);
-    debugger
     let province = this.listProvince.find(c => c.ProvinceID === this.address.provinceId);
     console.log(province);
     let district = this.listDistrict.find(d => d.DistrictID === this.address.districtId);
-    debugger
     let ward = this.listWard.find(w => w.WardCode === this.address.wardCode);
     const obj = {
       ...this.address,
@@ -60,7 +58,7 @@ export class UpdateAddressComponent implements OnInit {
     };
     this.addressService.createAddress(obj).subscribe(res => {
       console.log(res.data);
-      this.matRef.close('save-address');
+      this.matRef.close('saveAddress');
     });
   }
 }

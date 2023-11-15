@@ -22,10 +22,24 @@
         <td><div><span style="font-weight: bold">Color:</span> {{c.productDetailDTO.colorDTO.name}}</div>
           <div><span style="font-weight: bold">Size: </span> {{c.productDetailDTO.sizeDTO.sizeNumber}}</div>
         </td>
-        <td><del>{{c.productDetailDTO.listedPrice | number:'1.0-0'}} đ</del>
-          <span style="color: red; margin-left: 5px">{{c.productDetailDTO.price | number:'1.0-0'}} đ</span></td>
+        <td>
+          <div *ngIf="c.productDTO.reducePrice != null && c.productDTO.percentageReduce != null">
+            <del>{{utilService.formatMoney(c.productDTO.price)}}</del>
+            <span style="color: red; margin-left: 5px">{{utilService.formatMoney(c.productDTO.price - c.productDTO.reducePrice)}}</span>
+          </div>
+          <div *ngIf="c.productDTO.reducePrice == null && c.productDTO.percentageReduce == null">
+            <span style="color: red; margin-left: 5px">{{utilService.formatMoney(c.productDTO.price - c.productDTO.reducePrice)}}</span>
+          </div>
+        </td>
         <td> {{c.quantity}}</td>
-        <th style="color: red">{{c.productDetailDTO.price * c.quantity | number:'1.0-0'}} đ</th>
+        <th style="color: red">
+          <div *ngIf="c.productDTO.reducePrice != null && c.productDTO.percentageReduce != null">
+            <span style="color: red; margin-left: 5px">{{calculateTotal(c.productDTO.price - c.productDTO.reducePrice, c.quantity)}}</span>
+          </div>
+          <div *ngIf="c.productDTO.reducePrice == null && c.productDTO.percentageReduce == null">
+            <span style="color: red; margin-left: 5px">{{calculateTotal(c.productDTO.price, c.quantity)}}</span>
+          </div>
+        </th>
       </tr>
       <tr>
         <td></td>
@@ -53,7 +67,7 @@
         <div class="row g-3">
           <div class="col-sm-6">
             <label for="firstName" class="form-label">Họ và Tên</label>
-            <input type="text" class="form-control" [(ngModel)]="order.receiver" id="firstName" placeholder="" required>
+            <input type="text" class="form-control" [(ngModel)]="order.receiver" [ngModelOptions]="{standalone: true}" id="firstName" placeholder="" required>
 <!--            <div class="invalid-feedback">-->
 <!--              Valid first name is required.-->
 <!--            </div>-->
@@ -61,35 +75,69 @@
 
           <div class="col-sm-6">
             <label for="lastName" class="form-label">SDT</label>
-            <input type="text" class="form-control" id="lastName" placeholder="" [(ngModel)]="order.receiverPhone" required>
+            <input type="text" class="form-control" id="lastName" placeholder="" [(ngModel)]="order.receiverPhone" [ngModelOptions]="{standalone: true}" required>
 <!--            <div class="invalid-feedback">-->
 <!--              Valid last name is required.-->
 <!--            </div>-->
           </div>
 
 
-          <div class="col-12">
-            <label for="email" class="form-label">Email <span class="text-muted">(Optional)</span></label>
-            <input type="email" class="form-control" id="email" placeholder="you@example.com">
+          <div class="col-12" *ngIf="dataCheckoutByNow === 1">
+            <label for="email" class="form-label">Email</label>
+            <input type="email" class="form-control" id="email" [(ngModel)]="email" [ngModelOptions]="{standalone: true}" placeholder="you@example.com">
             <div class="invalid-feedback">
               Please enter a valid email address for shipping updates.
             </div>
           </div>
-          <div class="col-sm-12">
+
+          <div class="col-sm-12" *ngIf="dataCheckoutByNow !== 1">
             <label for="" class="form-label" style="font-weight: bold">Địa chỉ nhận hàng</label>
             <div style="display: flex; justify-content: space-between">
-              <p>1 Ngách 63/30 Lê Đức Thọ, Phường Mỹ Đình 2, Quận Nam Từ Liêm, Hà Nội
-                Mặc Định</p>
-              <button class="button-thaydoi" (click)="openPopupAddress();">Thay đổi</button>
+              <p *ngIf="address != null">{{address?.specificAddress + ', ' + address?.wards + ', '
+              + address?.district + ', ' + address?.province}}</p>
+              <p *ngIf="address == null">Chưa có địa chỉ</p>
+              <button *ngIf="address != null" class="button-thaydoi" (click)="openPopupAddress();">Thay đổi</button>
+              <button *ngIf="address == null" class="button-thaydoi" (click)="openPopupAddress();">Thêm địa chỉ</button>
             </div>
           </div>
+          <div class="row" *ngIf="dataCheckoutByNow === 1">
+            <label for="" class="form-label" style="font-weight: bold">Địa chỉ nhận hàng</label>
+            <div class="col-md-4">
+              <label class="form-label">Thành Phố</label>
+              <ng-select [items]="listProvince" bindLabel="ProvinceName" bindValue="ProvinceID" placeholder="--Lựa chọn--"
+                         [searchable]="false" [(ngModel)]="addressBuyNow.provinceId" [ngModelOptions]="{standalone: true}" (change)="getDistrict($event)">
+              </ng-select>
+              <div class="invalid-feedback">
+                Please select a valid country.
+              </div>
+            </div>
+
+            <div class="col-md-4">
+              <label for="" class="form-label">Quận Huyện</label>
+              <ng-select [items]="listDistrict" bindLabel="DistrictName" bindValue="DistrictID" placeholder="--Lựa chọn--"
+                         [searchable]="false" [(ngModel)]="addressBuyNow.districtId" [ngModelOptions]="{standalone: true}" (change)="getWard($event)">
+              </ng-select>
+            </div>
+            <div class="col-md-4">
+              <label for="" class="form-label">Phường Xã</label>
+              <ng-select [items]="listWard" bindLabel="WardName" bindValue="WardCode" placeholder="--Lựa chọn--"
+                         [searchable]="false" [ngModelOptions]="{standalone: true}" (change)="getPhiShip();" [(ngModel)]="addressBuyNow.wardCode">
+              </ng-select>
+              <div class="invalid-feedback">
+                Please provide a valid state.
+              </div>
+            </div>
+            <label for="address" class="form-label">Địa chỉ cụ thể</label>
+            <input type="text" class="form-control" id="address" placeholder="" [ngModelOptions]="{standalone: true}" [(ngModel)]="addressBuyNow.specificAddress" required>
+          </div>
+
         </div>
         <hr class="my-4">
 
         <div class="voucher">
           <h6>Voucher giảm giá:</h6>
-          <span>Quang Hưng</span>
-          <button class="btn btn-light">Thêm</button>
+          <span>{{voucher?.code}}</span>
+          <button class="btn btn-light" (click)="openVoucher();">Chọn Voucher</button>
         </div>
         <br>
         <div>

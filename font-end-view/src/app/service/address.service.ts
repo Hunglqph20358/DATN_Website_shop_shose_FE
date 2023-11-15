@@ -14,4 +14,11 @@ export class AddressService {
   createAddress(obj): Observable<any> {
     return this.http.post(`${apiURL}create-address`, obj);
   }
+  getAllAddress(obj): Observable<any>{
+    return  this.http.post(`${apiURL}get-all-address`, obj);
+  }
+  getAddress(obj): Observable<any>{
+    return  this.http.post(`${apiURL}get-address`, obj);
+  }
+
 }

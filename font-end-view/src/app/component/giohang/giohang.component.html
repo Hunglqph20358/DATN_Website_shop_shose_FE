@@ -26,10 +26,24 @@
           <td><div><span style="font-weight: bold">Color:</span> {{c.productDetailDTO.colorDTO.name}}</div>
             <div><span style="font-weight: bold">Size: </span> {{c.productDetailDTO.sizeDTO.sizeNumber}}</div>
           </td>
-          <td><del>{{c.productDetailDTO.listedPrice | number:'1.0-0'}} đ</del>
-            <span style="color: red; margin-left: 5px">{{c.productDetailDTO.price | number:'1.0-0'}} đ</span></td>
+          <td>
+            <div *ngIf="c.productDTO.reducePrice != null && c.productDTO.percentageReduce != null">
+              <del>{{utilService.formatMoney(c.productDTO.price)}}</del>
+              <span style="color: red; margin-left: 5px">{{utilService.formatMoney(c.productDTO.price - c.productDTO.reducePrice)}}</span>
+            </div>
+            <div *ngIf="c.productDTO.reducePrice == null && c.productDTO.percentageReduce == null">
+              <span style="color: red; margin-left: 5px">{{utilService.formatMoney(c.productDTO.price - c.productDTO.reducePrice)}}</span>
+            </div>
+          </td>
           <td><button (click)="giamSoLuong(c)">-</button> {{c.quantity}} <button (click)="tangSoLuong(c)">+</button></td>
-          <td>{{c.productDetailDTO.price * c.quantity | number:'1.0-0'}} đ</td>
+          <td>
+            <div *ngIf="c.productDTO.reducePrice != null && c.productDTO.percentageReduce != null">
+              <span style="color: red; margin-left: 5px">{{calculateTotal(c.productDTO.price - c.productDTO.reducePrice, c.quantity)}}</span>
+            </div>
+            <div *ngIf="c.productDTO.reducePrice == null && c.productDTO.percentageReduce == null">
+              <span style="color: red; margin-left: 5px">{{calculateTotal(c.productDTO.price, c.quantity)}}</span>
+            </div>
+          </td>
           <td><button type="button" class="btn -btn-danger" (click)="deleteItem(c)"><i style="color: red" class="fa-solid fa-trash"></i></button></td>
         </tr>
 
@@ -46,8 +60,8 @@
         </thead>
         <tbody>
         <tr>
-          <th scope="row">{{totalMoney | number:'1.0-0'}} đ</th>
-          <td>{{totalSaveMoney | number:'1.0-0'}} đ</td>
+          <th scope="row">{{utilService.formatMoney(totalMoney)}}</th>
+          <td>{{utilService.formatMoney(totalSaveMoney)}}</td>
           <td><button class="btn btn-success" [disabled]="!disableCheckOut" (click)="checkOut()">Check out</button></td>
 <!--          <td>@mdo</td>-->
         </tr>

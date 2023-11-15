@@ -6,9 +6,9 @@
         <div class="card-body">
           <!-- Thông tin người nhận hàng -->
           <h2>Người Nhận Hàng</h2>
-          <p>Tên: John Doe</p>
-          <p>Địa chỉ: 123 Đường ABC, Thành Phố XYZ</p>
-          <p>Số điện thoại: 0123-456-789</p>
+          <p>Tên: {{order.receiver}}</p>
+          <p>Địa chỉ: {{order.addressReceived}}</p>
+          <p>Số điện thoại: {{order.receiverPhone}}</p>
         </div>
       </div>
     </div>
@@ -32,36 +32,45 @@
       <div class="card">
         <div class="card-body">
           <!-- Thông tin đơn hàng -->
-          <h2>Đơn Hàng #12345</h2>
+          <h2>Đơn Hàng {{order.code}}</h2>
           <table class="table">
             <thead>
             <tr>
-              <th>Sản phẩm</th>
-              <th>Số lượng</th>
-              <th>Giá</th>
+              <th scope="col">STT</th>
+              <th scope="col">Sản Phẩm</th>
+              <th scope="col">Phân loại hàng</th>
+              <th scope="col">Giá tiền</th>
+              <th scope="col">Số lượng</th>
+              <th scope="col">Thành tiền</th>
             </tr>
             </thead>
             <tbody>
-            <tr>
-              <td>Sản phẩm 1</td>
-              <td>2</td>
-              <td>$20.00</td>
-            </tr>
-            <tr>
-              <td>Sản phẩm 2</td>
-              <td>1</td>
-              <td>$15.00</td>
-            </tr>
-            <tr>
-              <td>Sản phẩm 3</td>
-              <td>3</td>
-              <td>$30.00</td>
+            <tr *ngFor="let c of listCart; let i = index">
+              <td>{{i +1}}</td>
+              <td><img width="80px" height="80px" src="{{c.imageName}}" alt=""> <span class="productName" title="{{c.productName}}">{{c.productName}}</span></td>
+              <td><div><span style="font-weight: bold">Color:</span> {{c.productDetailDTO.colorDTO.name}}</div>
+                <div><span style="font-weight: bold">Size: </span> {{c.productDetailDTO.sizeDTO.sizeNumber}}</div>
+              </td>
+              <td>
+                <span style="color: red; margin-left: 5px">{{c.productDetailDTO.price | number:'1.0-0'}} đ</span>
+              </td>
+              <td> {{c.quantity}}</td>
+              <td style="color: red">{{c.productDetailDTO.price * c.quantity | number:'1.0-0'}} đ</td>
             </tr>
             </tbody>
           </table>
-          <p>Tổng cộng: $65.00</p>
+          <p>Tổng cộng: {{order.totalPrice}}</p>
+          <p>Tổng cộng thanh toán: {{order.totalPayment}}</p>
         </div>
       </div>
+    </div>
+  </div>
+  <div class="row">
+    <div>
+      <button type="submit" class="btn btn-light" (click)="openHome();">Quay về trang chủ</button>
+    </div>
+    <div>
+      <button type="submit" class="btn btn-success" (click)="openDonMua();">Xem đơn mua</button>
     </div>
   </div>
 </div>

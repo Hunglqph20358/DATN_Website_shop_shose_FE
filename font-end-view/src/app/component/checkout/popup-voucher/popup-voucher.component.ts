@@ -1,4 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
+import {VoucherService} from '../../../service/voucher.service';
+import {MatDialogRef} from '@angular/material/dialog';
 
 @Component({
   selector: 'app-popup-voucher',
@@ -7,9 +9,20 @@ import { Component, OnInit } from '@angular/core';
 })
 export class PopupVoucherComponent implements OnInit {
 
-  constructor() { }
+  listVoucher: any = [];
+  voucherChoice: string = null;
 
-  ngOnInit(): void {
+  constructor(private voucherService: VoucherService, public matDialogRef: MatDialogRef<PopupVoucherComponent>) {
   }
 
+  ngOnInit(): void {
+    this.voucherService.getAllVoucher().subscribe(res => {
+      this.listVoucher = res;
+    });
+  }
+
+  xacNhan() {
+    console.log(this.voucherChoice);
+    this.matDialogRef.close({event: 'saveVoucher', data: {code: this.voucherChoice}});
+  }
 }

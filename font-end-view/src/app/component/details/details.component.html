@@ -20,9 +20,12 @@
         </div>
 
 
-        <div class="price-area my-4">
-          <div class="old-price"><del>{{product.listedPrice}}</del></div>
-          <div class="new-price"><span>{{product.price}} đ</span></div>
+        <div class="price-area my-4" *ngIf="product.reducePrice != null && product.percentageReduce != null">
+          <div class="old-price"><del>{{utilService.formatMoney(product.price)}}</del></div>
+          <div class="new-price"><span>{{utilService.formatMoney(product.price - product.reducePrice)}}</span></div>
+        </div>
+        <div class="price-area my-4" *ngIf="product.reducePrice == null && product.percentageReduce == null">
+          <div class="new-price"><span>{{utilService.formatMoney(product.price)}}</span></div>
         </div>
 
       </div>
@@ -58,8 +61,8 @@
         <p class="details-title text-color mb-1">Số lượng :{{(getProductDetailQuantity() == 0 || getProductDetailQuantity()== null) ? product.totalQuantity : getProductDetailQuantity()}}</p>
       </div>
       <div class ="btn-groups">
-        <button class = "add-cart-btn" (click)="addToCart(product.id)"><i class = "fas fa-shopping-cart"></i>add to cart</button>
-        <button class = "buy-now-btn"><i class = "fas fa-wallet"></i>buy now</button>
+        <button class = "add-cart-btn" (click)="addToCart(product.id)"><i class = "fas fa-shopping-cart"></i>Thêm giỏ hàng</button>
+        <button class = "buy-now-btn" (click)="buyNow(product.id);"><i class = "fas fa-wallet"></i>Mua ngay</button>
       </div>
     </div>
   </div>
