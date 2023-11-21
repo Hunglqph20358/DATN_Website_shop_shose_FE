@@ -15,8 +15,7 @@ export class OrderDetailComponent implements OnInit {
   gridApi;
   gridColumnApi;
 
-  constructor(public matRef: MatDialogRef<OrderDetailComponent>, @Inject(MAT_DIALOG_DATA) public data: any,
-              private orderDetailService: OrderDetailService) {
+  constructor(private orderDetailService: OrderDetailService) {
     this.rowData = [];
     this.columnDefs = [
       {
@@ -77,8 +76,8 @@ export class OrderDetailComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    console.log(this.data);
-    this.orderDetailService.getAllOrderDetailByOrder(this.data.id).subscribe(res => {
+    // console.log(this.data);
+    this.orderDetailService.getAllOrderDetailByOrder(14).subscribe(res => {
       this.rowData = res;
     });
   }

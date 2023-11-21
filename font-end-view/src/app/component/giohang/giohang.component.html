@@ -35,7 +35,7 @@
               <span style="color: red; margin-left: 5px">{{utilService.formatMoney(c.productDTO.price - c.productDTO.reducePrice)}}</span>
             </div>
           </td>
-          <td><button (click)="giamSoLuong(c)">-</button> {{c.quantity}} <button (click)="tangSoLuong(c)">+</button></td>
+          <td><button (click)="giamSoLuong(c)">-</button> {{c.quantity}} <button [disabled]="c.quantity == c.productDetailDTO.quantity" (click)="tangSoLuong(c)">+</button></td>
           <td>
             <div *ngIf="c.productDTO.reducePrice != null && c.productDTO.percentageReduce != null">
               <span style="color: red; margin-left: 5px">{{calculateTotal(c.productDTO.price - c.productDTO.reducePrice, c.quantity)}}</span>

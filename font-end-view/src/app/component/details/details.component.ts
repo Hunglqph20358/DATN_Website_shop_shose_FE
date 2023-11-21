@@ -15,6 +15,7 @@ export class DetailsComponent implements OnInit {
 
   cartData = new Map();
   productData = new Map();
+
   constructor(private productService: ProductService, private activeRoute: ActivatedRoute,
               private colorService: ColorService, private sizeService: SizeService,
               private cookieService: CookieService, private router: Router, public utilService: UtilService) {
@@ -29,14 +30,13 @@ export class DetailsComponent implements OnInit {
   }
 
   product: any;
-    listColor = [];
+  listColor = [];
   listSize = [];
 
   colorId: number | null = null;
   sizeId: number | null = null;
   bothSizeAndColorSelected: boolean = false;
-  sizeSelected: boolean = false;
-  colorSelected: boolean = false;
+
 
 
   ngOnInit(): void {
@@ -55,39 +55,84 @@ export class DetailsComponent implements OnInit {
     });
   }
 
-  selectSize(event: any) {
-    const selectedSizeId = event.target.value;
-    const colorIDsForSelectedSize = this.product.productDetailDTOList
-      .filter(detail => detail.idSize === parseInt(String(selectedSizeId), 10))
-      .map(detail => detail.idColor);
+
+  selectSize(s) {
+    console.log(s);
+
+    // Kiểm tra xem kích thước đã chọn có được chọn trước đó không, nếu có, hãy xóa lựa chọn
+    if (s.isSelected) {
+      this.listSize.forEach(size => {
+        size.isSelected = false;
+        size.disabled = false;
+      });
+      this.listColor.forEach(color => {
+        color.disabled = false;
+      });
+      this.sizeId = null;
+      this.checkIfBothSizeAndColorSelected();
+      return; // Thoát khỏi hàm sớm
+    }
+
+    // Xóa lựa chọn trước đó
     this.listSize.forEach(size => {
-      size.isSelected = size.id == selectedSizeId; // So sánh id với selectedSizeId
+      size.isSelected = false;
+      size.disabled = false;
     });
 
-    this.listColor.forEach(c => {
-      c.disabled = !colorIDsForSelectedSize.includes(c.id);
+    const selectedSizeId = s.id;
+    const colorIDsForSelectedSize = this.product.productDetailDTOList
+      .filter(detail => detail.idSize === parseInt(String(selectedSizeId), 10) && detail.idColor && detail.quantity > 0)
+      .map(detail => detail.idColor);
+
+    // Cập nhật kích thước đã chọn
+    s.isSelected = true;
+
+    // Vô hiệu hóa các kích thước không khả dụng cho màu đã chọn
+    // this.listSize.forEach(size => {
+    //   size.disabled = !colorIDsForSelectedSize.includes(size.id);
+    // });
+
+    // Vô hiệu hóa các màu không khả dụng cho kích thước đã chọn
+    this.listColor.forEach(color => {
+      color.disabled = !colorIDsForSelectedSize.includes(color.id);
     });
+
     this.sizeId = selectedSizeId;
-    this.sizeSelected = true;
     this.checkIfBothSizeAndColorSelected();
   }
 
 
-  selectColor(event: any) {
-    const selectedColorId = event.target.value;
 
+  selectColor(c) {
+    if (c.isSelected) {
+      this.listColor.forEach(color => {
+        color.disabled = false;
+        color.isSelected = false;
+      });
+      this.listSize.forEach(size => {
+        size.disabled = false;
+      });
+      this.colorId = null;
+      this.checkIfBothSizeAndColorSelected();
+      return; // Thoát khỏi hàm sớm
+    }
+
+    this.listColor.forEach(color => {
+      color.disabled = false;
+      color.isSelected = false;
+    });
+
+    const selectColorId = c.id;
     const sizeIDsForSelectedColor = this.product.productDetailDTOList
-      .filter(detail => detail.idColor === parseInt(String(selectedColorId), 10))
-      .map(detail => detail.idSize);
+      .filter(detail => detail.idSize === parseInt(String(selectColorId), 10))
+      .map(detail => detail.idColor);
 
-    this.listColor.forEach(c => {
-      c.isSelected = c.id == selectedColorId; // So sánh id với selectedColorId
+    c.isSelected = true;
+
+    this.listSize.forEach(size => {
+      size.disabled = !sizeIDsForSelectedColor.includes(size.id);
     });
-    this.colorId = event.target.value;
-    this.listSize.forEach(s => {
-      s.disabled = !sizeIDsForSelectedColor.includes(s.id);
-    });
-    this.colorSelected = true;
+    this.colorId = selectColorId;
     this.checkIfBothSizeAndColorSelected();
   }
 
@@ -108,30 +153,6 @@ export class DetailsComponent implements OnInit {
     return 0; // Trả về 0 nếu không tìm thấy hoặc chưa chọn cả size và color
   }
 
-  refresh(resetType: 'size' | 'color') {
-    if (resetType === 'size') {
-      this.listSize.forEach(s => {
-        s.isSelected = false;
-        s.disabled = false;
-      });
-      this.listColor.forEach(c => {
-        c.disabled = false;
-      });
-      this.sizeId = null;
-      this.sizeSelected = false;
-    } else if (resetType === 'color') {
-      this.listColor.forEach(c => {
-        c.isSelected = false;
-        c.disabled = false;
-      });
-      this.listSize.forEach(s => {
-        s.disabled = false;
-      });
-      this.colorId = null;
-      this.colorSelected = false;
-    }
-    this.checkIfBothSizeAndColorSelected();
-  }
 
   addToCart(product: number) {
     const productKey = product + '-' + this.colorId + '-' + this.sizeId;
@@ -154,7 +175,6 @@ export class DetailsComponent implements OnInit {
     expirationDate.setTime(expirationDate.getTime() + 30 * 60 * 1000);
     this.productData.set(productKey, 1);
     this.cookieService.set('checkout', JSON.stringify(Array.from(this.productData.entries())), expirationDate);
-    sessionStorage.setItem('dataCheckoutByNow', JSON.stringify(1));
     this.router.navigate(['cart/checkout']);
   }
 }
