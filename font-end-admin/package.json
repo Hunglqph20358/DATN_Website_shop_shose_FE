@@ -24,6 +24,8 @@
     "@auth0/angular-jwt": "^4.2.0",
     "ag-grid-angular": "^25.3.0",
     "ag-grid-community": "^25.3.0",
+    "ngx-toastr": "^12.1.0",
+    "sweetalert2": "^11.7.12",
     "jwt-decode": "^3.1.2",
     "rxjs": "~6.5.4",
     "tslib": "^1.10.0",

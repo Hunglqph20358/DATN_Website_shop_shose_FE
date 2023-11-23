@@ -28,6 +28,8 @@ import {AgGridModule} from 'ag-grid-angular';
 import {SignUpComponent} from './component/sign-up/sign-up.component';
 import {OrderDetailComponent} from './component/order/order-detail/order-detail.component';
 import {ToastrModule} from 'ngx-toastr';
+import { ActionOrderComponent } from './component/order/action-order/action-order.component';
+import { OrderNotLoginComponent } from './component/order-not-login/order-not-login.component';
 
 @NgModule({
   declarations: [
@@ -45,7 +47,9 @@ import {ToastrModule} from 'ngx-toastr';
     UpdateAddressComponent,
     OrderComponent,
     SignUpComponent,
-    OrderDetailComponent
+    OrderDetailComponent,
+    ActionOrderComponent,
+    OrderNotLoginComponent
   ],
   imports: [
     BrowserModule,

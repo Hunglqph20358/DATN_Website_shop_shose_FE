@@ -23,6 +23,7 @@ export class GiohangComponent implements OnInit {
   selectedProducts: any[] = [];
   disableCheckOut: boolean = false;
 
+
   constructor(private cartService: CartService, private cookieService: CookieService, private route: Router,
               private cdr: ChangeDetectorRef, public utilService: UtilService, private toastr: ToastrService) {
     if (this.cookieService.check('cart')) {
@@ -117,11 +118,25 @@ export class GiohangComponent implements OnInit {
   deleteItem(obj) {
     const cartKey = `${obj.productId}-${obj.productDetailDTO.idColor}-${obj.productDetailDTO.idSize}`;
     if (this.cartData.has(cartKey)) {
-      // Xóa khỏi cartData
-      this.cartData.delete(cartKey);
-
-      // Cập nhật cookie
+      Swal.fire({
+        title: 'Bạn có chắc chắn muốn xóa sản phẩm không ?',
+        icon: 'error',
+        showCancelButton: true,
+        confirmButtonText: 'Yes',
+        cancelButtonText: 'No',
+      }).then((result) => {
+        if (result.isConfirmed) {
+          this.toastr.success('Xoa Thanh Cong!', 'Remove', {
+            positionClass: 'toast-top-right'
+          });
+          this.cartData.delete(cartKey);
+          this.cookieService.set('cart', JSON.stringify([...this.cartData]));
+          window.location.reload();
+        }
+      });
     }
+    this.calculateTotalMoney();
+    this.cdr.detectChanges();
   }
 
   toggleSelectAll() {
