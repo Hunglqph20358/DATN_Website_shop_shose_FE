@@ -64,6 +64,7 @@ import { ActionOrderComponent } from './component/order/action-order/action-orde
 import { OrderDetailComponent } from './component/order/order-detail/order-detail.component';
 import {NgSelectModule} from '@ng-select/ng-select';
 import {MatTabsModule} from '@angular/material/tabs';
+import {ToastrModule} from 'ngx-toastr';
 
 @NgModule({
   declarations: [
@@ -130,7 +131,8 @@ import {MatTabsModule} from '@angular/material/tabs';
     MatRadioModule,
     MatIconModule,
     NgSelectModule,
-    MatTabsModule
+    MatTabsModule,
+    ToastrModule.forRoot()
   ],
   bootstrap: [AppComponent],
   providers: [ { provide: JWT_OPTIONS, useValue: JWT_OPTIONS },

@@ -56,7 +56,7 @@ const routes: Routes = [
   {path: 'order-processing', component: OderProcessingComponent},
   {path: 'staff', component: StaffComponent, canActivate: [AuthGuard]},
   {path: 'sign-up', component: SignUpComponent},
-  {path: 'order-detail', component: OrderDetailComponent},
+  // {path: 'order-detail', component: OrderDetailComponent},
 ];
 
 @NgModule({

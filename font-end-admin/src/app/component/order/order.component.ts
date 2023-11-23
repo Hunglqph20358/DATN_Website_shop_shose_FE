@@ -3,6 +3,8 @@ import {ColDef} from 'ag-grid-community';
 import {formatDateTime, formatMoney} from '../../util/util';
 import {OrderService} from '../../service/order.service';
 import {ActionOrderComponent} from './action-order/action-order.component';
+import {OrderDetailComponent} from './order-detail/order-detail.component';
+import {MatDialog} from '@angular/material/dialog';
 @Component({
   selector: 'app-order',
   templateUrl: './order.component.html',
@@ -16,7 +18,7 @@ export class OrderComponent implements OnInit {
   columnDefs;
   gridApi;
   gridColumnApi;
-  constructor(private orderService: OrderService, private cdr: ChangeDetectorRef) {
+  constructor(private matDialog: MatDialog, private orderService: OrderService, private cdr: ChangeDetectorRef) {
     const lst =
       [
         {name: 'Tất cả', id: 6},
@@ -46,15 +48,19 @@ export class OrderComponent implements OnInit {
           'font-weight': '500',
           'font-size': '12px',
           'align-items': 'center',
-          color: '#101840',
+          color: '#36f',
           display: 'flex',
           // top: '12px',
           'white-space': 'nowrap',
           'text-overflow': 'ellipsis',
           overflow: 'hidden',
+          cursor: 'pointer',
           // textAlign: 'center',
           'justify-content': 'center',
         },
+        onCellClicked: (params) => {
+          return this.openXemChiTiet(params.data);
+        }
       },
       {
         headerName: 'Ngày Tạo',
@@ -64,6 +70,7 @@ export class OrderComponent implements OnInit {
           return formatDateTime(params.data.createDate);
         },
         cellStyle: {
+
           'font-weight': '500',
           'font-size': '12px',
           'align-items': 'center',
@@ -198,5 +205,12 @@ export class OrderComponent implements OnInit {
     const selectedTabId = this.listStatus[selectedTabIndex].id;
     this.status = selectedTabId;
     this.getAllOrder();
+  }
+
+  openXemChiTiet(dataOrder) {
+    this.matDialog.open(OrderDetailComponent, {
+      width: '150vh',
+      data: dataOrder
+    });
   }
 }

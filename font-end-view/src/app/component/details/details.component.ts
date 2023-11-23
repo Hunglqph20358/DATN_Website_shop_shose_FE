@@ -124,7 +124,7 @@ export class DetailsComponent implements OnInit {
 
     const selectColorId = c.id;
     const sizeIDsForSelectedColor = this.product.productDetailDTOList
-      .filter(detail => detail.idSize === parseInt(String(selectColorId), 10))
+      .filter(detail => detail.idSize === parseInt(String(selectColorId), 10) && detail.idSize && detail.quantity > 0)
       .map(detail => detail.idColor);
 
     c.isSelected = true;

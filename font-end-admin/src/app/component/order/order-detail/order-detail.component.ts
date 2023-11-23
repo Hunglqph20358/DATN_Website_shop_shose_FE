@@ -2,11 +2,14 @@ import {Component, Inject, OnInit} from '@angular/core';
 import {formatMoney, padZero} from '../../../util/util';
 import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
 import {OrderDetailService} from '../../../service/order-detail.service';
+import {OrderService} from '../../../service/order.service';
+import Swal from 'sweetalert2';
+import {ToastrService} from 'ngx-toastr';
 
 @Component({
   selector: 'app-order-detail',
   templateUrl: './order-detail.component.html',
-  styleUrls: ['./order-detail.component.css']
+  styleUrls: ['./order-detail.component.scss']
 })
 export class OrderDetailComponent implements OnInit {
 
@@ -14,8 +17,10 @@ export class OrderDetailComponent implements OnInit {
   columnDefs: any;
   gridApi;
   gridColumnApi;
+  status: any;
 
-  constructor(private orderDetailService: OrderDetailService) {
+  constructor(private orderDetailService: OrderDetailService, public matRef: MatDialogRef<OrderDetailComponent>,
+              @Inject(MAT_DIALOG_DATA) public data: any, private orderService: OrderService, private toastr: ToastrService) {
     this.rowData = [];
     this.columnDefs = [
       {
@@ -73,11 +78,12 @@ export class OrderDetailComponent implements OnInit {
         },
       }
     ];
+    this.status = this.data.status;
   }
 
   ngOnInit(): void {
     // console.log(this.data);
-    this.orderDetailService.getAllOrderDetailByOrder(14).subscribe(res => {
+    this.orderDetailService.getAllOrderDetailByOrder(this.data.id).subscribe(res => {
       this.rowData = res;
     });
   }
@@ -85,5 +91,30 @@ export class OrderDetailComponent implements OnInit {
   onGridReady(params: any) {
     this.gridApi = params.api;
     this.gridColumnApi = params.columnApi;
+  }
+
+  cancelOrder() {
+    // @ts-ignore
+    Swal.fire({
+      title: 'Bạn có chắc chắn muốn Hoàn hủy hóa đơn này không ?',
+      icon: 'waring',
+      showCancelButton: true,
+      confirmButtonText: 'Yes',
+      cancelButtonText: 'No',
+    }).then((result) => {
+      if (result.isConfirmed) {
+        const obj = {
+          id: this.data.id,
+          idStaff: 3
+        };
+        this.orderService.cancelOrder(obj).subscribe(res => {
+          if (res.status === 'OK') {
+            this.toastr.success('Xoa Thanh Cong!', 'Remove', {
+              positionClass: 'toast-top-right'
+            });
+          }
+        });
+      }
+    });
   }
 }
