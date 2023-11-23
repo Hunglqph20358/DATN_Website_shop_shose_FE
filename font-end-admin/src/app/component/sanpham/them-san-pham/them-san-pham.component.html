@@ -1,1 +1,84 @@
-<p>them-san-pham works!</p>
+<h1 mat-dialog-title>ADD PRODUCT FORM</h1>
+<div mat-dialog-content class="example-container"style="display: flex">
+  <div style="margin-right: 10px">
+    <mat-form-field appearance="outline">
+      <mat-label>Code</mat-label>
+      <input [(ngModel)]="Code" name="Code" matInput placeholder="Code">
+    </mat-form-field>
+    <mat-form-field appearance="outline">
+      <mat-label>Product Name</mat-label>
+      <input [(ngModel)]="Name" name="Name" matInput placeholder="Name">
+    </mat-form-field>
+    <mat-form-field appearance="outline">
+      <mat-label>Create Name</mat-label>
+      <input [(ngModel)]="CreateName" name="CreateName" matInput placeholder="CreateName">
+    </mat-form-field>
+    <mat-form-field appearance="outline">
+      <mat-label>Discription</mat-label>
+      <input [(ngModel)]="Description" name="Description" matInput placeholder="Discription">
+    </mat-form-field>
+    <mat-radio-group [(ngModel)]="Status" name="Status">
+      <mat-label>Status</mat-label>
+      <mat-radio-button [value]="0">Con hang</mat-radio-button>
+      <mat-radio-button [value]="1">Het hang</mat-radio-button>
+    </mat-radio-group>
+  </div>
+  <div>
+    <mat-form-field>
+      <mat-label>Name Brand</mat-label>
+      <mat-select [(ngModel)]="IdBrand">
+        <mat-option *ngFor="let br of brand" [value]="br.id">
+          {{br.name}}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+    <mat-form-field>
+      <mat-label>Name Category</mat-label>
+      <mat-select [(ngModel)]="IdCategory">
+        <mat-option *ngFor="let cate of categories" [value]="cate.id">
+          {{cate.name}}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+    <mat-form-field>
+      <mat-label>SoleHeight</mat-label>
+      <mat-select [(ngModel)]="IdSole">
+        <mat-option *ngFor="let sl of sole" [value]="sl.id">
+          {{sl.soleHeight}}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+    <mat-form-field>
+      <mat-label>Name Material</mat-label>
+      <mat-select [(ngModel)]="IdMaterial">
+        <mat-option *ngFor="let mt of material" [value]="mt.id">
+          {{mt.name}}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+<!--    <mat-form-field appearance="outline">-->
+<!--      <mat-label>IdBrand</mat-label>-->
+<!--      <input [(ngModel)]="IdBrand" name="IdBrand" matInput placeholder="IdBrand">-->
+<!--    </mat-form-field>-->
+<!--    <mat-form-field appearance="outline">-->
+<!--      <mat-label>IdCategory</mat-label>-->
+<!--      <input [(ngModel)]="IdCategory" name="IdCategory" matInput placeholder="IdCategory">-->
+<!--    </mat-form-field>-->
+<!--    <mat-form-field appearance="outline">-->
+<!--      <mat-label>IdSole</mat-label>-->
+<!--      <input [(ngModel)]="IdSole" name="IdSole" matInput placeholder="IdSole">-->
+<!--    </mat-form-field>-->
+<!--    <mat-form-field appearance="outline">-->
+<!--      <mat-label>IdMaterial</mat-label>-->
+<!--      <input [(ngModel)]="IdMaterial" name="IdMaterial" matInput placeholder="IdMaterial">-->
+<!--    </mat-form-field>-->
+    <mat-form-field appearance="outline">
+      <mat-label>Price</mat-label>
+      <input [(ngModel)]="Price" name="Price" matInput placeholder="Price">
+    </mat-form-field>
+  </div>
+</div>
+<div mat-dialog-actions [align]="'end'">
+  <button mat-raised-button color="warn" mat-dialog-close>CLOSE</button>
+  <button mat-raised-button color="primary" (click)="clickaddProduct()" >ADD</button>
+</div>

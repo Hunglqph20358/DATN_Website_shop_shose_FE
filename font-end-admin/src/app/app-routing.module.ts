@@ -39,10 +39,10 @@ const routes: Routes = [
   {path: 'admin/voucher', component: VoucherComponent},
   {path: 'admin/sua-giam-gia', component: EditDiscountComponent},
   {path: 'admin/sua-voucher', component: EditVoucherComponent},
-  {path: 'degiay', component: DegiayComponent, canActivate: [RoleGuardService],
-    data: {
-      expectedRole: ['ADMIN']
-    } },
+  // {path: 'degiay', component: DegiayComponent, canActivate: [RoleGuardService],
+  //   data: {
+  //     expectedRole: ['ADMIN']
+  //   } },
   {path: 'admin/edit-discount/:id', component: EditDiscountComponent},
   {path: 'admin/edit-voucher/:id', component: EditVoucherComponent},
   {path: 'degiay', component: DegiayComponent},

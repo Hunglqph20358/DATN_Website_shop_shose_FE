@@ -9,9 +9,15 @@ export class ProductService {
 
   constructor(private http: HttpClient) { }
   getAllProduct(): Observable<any>{
-   return  this.http.get(`${apiURL}product/hien-thi`);
+    return  this.http.get(`${apiURL}product/hien-thi`);
   }
-  // AddProduct(): Observable<any>{
-  //   return  this.http.post(`${apiURL}product/add`);
-  // }
+  CreateProduct(product: any): Observable<any>{
+    return this.http.post(`${apiURL}product/add`, product);
+  }
+  UpdateProduct(id: number, product: any): Observable<any>{
+    return this.http.put(`${apiURL}product/update/${id}`, product);
+  }
+  DeleteProduct(id: number): Observable<any>{
+    return this.http.delete(`${apiURL}product/delete/${id}`);
+  }
 }

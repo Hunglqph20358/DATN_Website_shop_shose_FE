@@ -3,7 +3,7 @@ import {ICellRendererAngularComp} from 'ag-grid-angular';
 import {SuaChatLieuComponent} from '../sua-chat-lieu/sua-chat-lieu.component';
 import {MatDialog} from '@angular/material/dialog';
 import {MaterialpostService} from '../../../service/materialpost.service';
-import {ChatlieuComponent} from "../chatlieu.component";
+import {ChatlieuComponent} from '../chatlieu.component';
 
 @Component({
   selector: 'app-action-renderer',
@@ -16,7 +16,8 @@ export class ActionRendererComponent implements ICellRendererAngularComp, OnInit
   rowData = [];
 
   constructor(private matdialog: MatDialog,
-              private mtsv: MaterialpostService, private cdr: ChangeDetectorRef, private chatLieuComponent: ChatlieuComponent) {
+              private mtsv: MaterialpostService, private cdr: ChangeDetectorRef,
+              private chatLieuComponent: ChatlieuComponent) {
   }
 
   agInit(params: any) {
@@ -43,29 +44,14 @@ export class ActionRendererComponent implements ICellRendererAngularComp, OnInit
     });
   }
 
-  updateMaterial(material: any) {
-    this.mtsv.UpdateMaterial(material.id, material).subscribe(() => {
-      this.getMaterial();
-    });
-  }
-
   deleteMaterial(material?: any) {
-    material = this.params.data.id;
+    material = this.params.id;
     this.mtsv.DeleteMaterial(material).subscribe(() => {
-      this.getMaterial();
+      this.chatLieuComponent.ngOnInit();
+      this.cdr.detectChanges();
     });
   }
 
-  editMaterial() {
-    // const rowData = this.params.data;
-    // const id = rowData.id;
-    // Xử lý sự kiện nhấp vào nút sửa dựa trên ID
-    // Sử dụng ID để thực hiện các thao tác sửa
-  }
-
-  deleteEventMaterial() {
-    const rowData = this.params.data.id;
-  }
 
   getMaterial() {
     this.mtsv.getAllMaterial().subscribe(result => {

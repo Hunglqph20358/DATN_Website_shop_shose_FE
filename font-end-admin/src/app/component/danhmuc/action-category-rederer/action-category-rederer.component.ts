@@ -1,15 +1,50 @@
-import { Component, OnInit } from '@angular/core';
+import {ChangeDetectorRef, Component, OnInit} from '@angular/core';
 import {ICellRendererAngularComp} from 'ag-grid-angular';
+import {MatDialog} from '@angular/material/dialog';
+import {CategoryService} from '../../../service/category.service';
+import {DanhmucComponent} from '../danhmuc.component';
+import {SuaDanhMucComponent} from '../sua-danh-muc/sua-danh-muc.component';
 @Component({
   selector: 'app-action-category-rederer',
   templateUrl: './action-category-rederer.component.html',
   styleUrls: ['./action-category-rederer.component.css']
 })
-export class ActionCategoryRedererComponent implements OnInit {
+export class ActionCategoryRedererComponent implements ICellRendererAngularComp, OnInit {
 
-  constructor() { }
+  params: any;
+  rowData = [];
+  agInit(params: any): void {
+    this.params = params.data;
+  }
+
+  refresh(): boolean {
+    return false;
+  }
+  constructor(private matdialog: MatDialog,
+              private ctsv: CategoryService, private cdr: ChangeDetectorRef,
+              private danhmucComponent: DanhmucComponent) { }
 
   ngOnInit(): void {
   }
-
+  openUpdate(){
+    const dialogref = this.matdialog.open(SuaDanhMucComponent, {
+      width: '60vh',
+      height: '60vh',
+      data: this.params
+    });
+    dialogref.afterClosed().subscribe(result => {
+      console.log(result);
+      if (result === 'saveCategory') {
+        this.danhmucComponent.ngOnInit();
+        this.cdr.detectChanges();
+      }
+    });
+  }
+  deleteCategory(category?: any) {
+    category = this.params.id;
+    this.ctsv.DeleteCategory(category).subscribe(() => {
+      this.danhmucComponent.ngOnInit();
+      this.cdr.detectChanges();
+    });
+  }
 }

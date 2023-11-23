@@ -11,4 +11,13 @@ export class SoleService {
   getAllSole(): Observable<any>{
     return this.http.get(`${apiURL}sole/hien-thi`);
   }
+  AddSole(sole: any): Observable<any>{
+    return this.http.post(`${apiURL}sole/add`, sole);
+  }
+  UpdateSole(id: number, sole: any): Observable<any>{
+    return this.http.put(`${apiURL}sole/update/${id}`, sole);
+  }
+  DeleteSole(id: number): Observable<any>{
+    return this.http.delete(`${apiURL}sole/delete/${id}`);
+  }
 }

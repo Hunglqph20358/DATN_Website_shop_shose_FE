@@ -37,6 +37,7 @@ import { OderProcessingComponent } from './component/oder-processing/oder-proces
 import { StaffComponent } from './component/staff/staff.component';
 import {LoginComponent} from './component/login/login.component';
 import {JwtHelperService, JWT_OPTIONS  } from '@auth0/angular-jwt';
+
 import { DanhmucComponent } from './component/danhmuc/danhmuc.component';
 import { SanphamComponent } from './component/sanpham/sanpham.component';
 import { SuaChatLieuComponent } from './component/chatlieu/sua-chat-lieu/sua-chat-lieu.component';
@@ -65,6 +66,12 @@ import { OrderDetailComponent } from './component/order/order-detail/order-detai
 import {NgSelectModule} from '@ng-select/ng-select';
 import {MatTabsModule} from '@angular/material/tabs';
 import {ToastrModule} from 'ngx-toastr';
+import {DeGiayActionComponent} from './component/degiay/de-giay-action/de-giay-action.component';
+import {KichCoActionComponent} from './component/kichco/kich-co-action/kich-co-action.component';
+import {MauSacActionComponent} from './component/mausac/mau-sac-action/mau-sac-action.component';
+import {SanPhamActionComponent} from './component/sanpham/san-pham-action/san-pham-action.component';
+import {ThuongHieuActionComponent} from './component/thuonghieu/thuong-hieu-action/thuong-hieu-action.component';
+
 
 @NgModule({
   declarations: [
@@ -108,6 +115,11 @@ import {ToastrModule} from 'ngx-toastr';
     SuaSanPhamComponent,
     ActionRendererComponent,
     ActionCategoryRedererComponent,
+    DeGiayActionComponent,
+    KichCoActionComponent,
+    MauSacActionComponent,
+    SanPhamActionComponent,
+    ThuongHieuActionComponent,
     DetailDiscountComponent,
     DetailVoucherComponent,
     SignUpComponent,

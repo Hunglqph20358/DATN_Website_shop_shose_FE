@@ -1,29 +1,33 @@
 <h1 mat-dialog-title>UPDATE MATERIAL FORM</h1>
-  <div mat-dialog-content class="example-container">
-    <mat-form-field appearance="outline">
-      <mat-label>Product Name</mat-label>
-      <input [(ngModel)]="data.name" name="name" #Name="ngModel" matInput placeholder="Name">
-    </mat-form-field>
-<!--    <mat-form-field appearance="outline">-->
-<!--      <mat-label>Create Date</mat-label>-->
-<!--      <input [(ngModel)]="data.createDate" name="CreateDate" type="date" matInput>-->
-<!--    </mat-form-field>-->
-<!--    <mat-form-field appearance="outline">-->
-<!--      <mat-label>Update Date</mat-label>-->
-<!--      <input [(ngModel)]="data.updateDate" name="UpdateDate" type="date" matInput>-->
-<!--    </mat-form-field>-->
-    <mat-form-field appearance="outline">
-      <mat-label>Discription</mat-label>
-      <input [(ngModel)]="data.description"  name="Description" #Name="ngModel" matInput placeholder="Discription">
-    </mat-form-field>
-    <mat-radio-group [(ngModel)]="data.status"  name="status" #Name="ngModel">
-      <mat-label>Status</mat-label>
-      <mat-radio-button [value]="0" >Con hang</mat-radio-button>
-      <mat-radio-button [value]="1">Het hang</mat-radio-button>
-    </mat-radio-group>
-  </div>
-  <div mat-dialog-actions [align]="'end'">
-    <button mat-raised-button color="warn" mat-dialog-close>CLOSE</button>
-    <button mat-raised-button color="primary" (click)="clickUpdate(data.id)" >UPDATE</button>
-  </div>
+<div mat-dialog-content class="example-container">
+  <mat-form-field appearance="outline">
+    <mat-label>Product Name</mat-label>
+    <input [(ngModel)]="data.name" name="name" #Name="ngModel" matInput placeholder="Name" (change)="validate()">
+    <small style="color: red;font-size: 12px" class="error-validate" *ngIf="blName">
+      Vui lòng nhập tên chất liệu
+    </small>
+    <small style="color: red;font-size: 12px" class="error-validate" *ngIf="maxLengthName">
+      Vui lòng nhập tên dưới 250 kí tự
+    </small>
+  </mat-form-field>
+  <mat-form-field appearance="outline">
+    <mat-label>Discription</mat-label>
+    <input [(ngModel)]="data.description"  name="Description" #Name="ngModel" matInput placeholder="Discription" (change)="validate()">
+    <small style="color: red;font-size: 12px" class="error-validate" *ngIf="blDescription">
+      Vui lòng nhập mô tả chất liệu
+    </small>
+  </mat-form-field>
+  <mat-radio-group [(ngModel)]="data.status"  name="status" #Name="ngModel"(change)="validate()">
+    <mat-label>Status</mat-label>
+    <mat-radio-button [value]="0" >Con hang</mat-radio-button>
+    <mat-radio-button [value]="1">Het hang</mat-radio-button>
+    <small style="color: red;font-size: 12px" class="error-validate" *ngIf="blStatus">
+      Vui lòng chọn trạng thái
+    </small>
+  </mat-radio-group>
+</div>
+<div mat-dialog-actions [align]="'end'">
+  <button mat-raised-button color="warn" mat-dialog-close>CLOSE</button>
+  <button mat-raised-button color="primary" (click)="clickUpdate(data.id)" >UPDATE</button>
+</div>
 

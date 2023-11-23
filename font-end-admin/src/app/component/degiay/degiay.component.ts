@@ -1,11 +1,9 @@
-import {Component, OnInit} from '@angular/core';
-import {ThemChatLieuComponent} from "../chatlieu/them-chat-lieu/them-chat-lieu.component";
-import {SuaChatLieuComponent} from "../chatlieu/sua-chat-lieu/sua-chat-lieu.component";
-import {MatDialog} from "@angular/material/dialog";
-import {ThemDeGiayComponent} from "./them-de-giay/them-de-giay.component";
-import {SuaDeGiayComponent} from "./sua-de-giay/sua-de-giay.component";
-import {SoleService} from "../../service/sole.service";
-import {ActionVoucherComponent} from "../voucher/action-voucher/action-voucher.component";
+import {ChangeDetectorRef, Component, OnInit} from '@angular/core';
+import {MatDialog} from '@angular/material/dialog';
+import {ThemDeGiayComponent} from './them-de-giay/them-de-giay.component';
+import {SoleService} from '../../service/sole.service';
+import {DeGiayActionComponent} from './de-giay-action/de-giay-action.component';
+
 
 @Component({
   selector: 'app-degiay',
@@ -19,40 +17,44 @@ export class DegiayComponent implements OnInit {
   rowHeight = 40;
   public rowSelection: 'single' | 'multiple' = 'multiple'; // Chọn nhiều dòng
   constructor(private matdialog: MatDialog,
-              private slsv: SoleService) {
+              private slsv: SoleService,
+              private cdr: ChangeDetectorRef) {
     this.columnDefs = [
       {
-        headerName: 'Tên',
-        field: 'name',
+        headerName: 'Chiều cao đế',
+        field: 'soleHeight',
         sortable: true,
-        filter: true,
-        checkboxSelection: true,
-        headerCheckboxSelection: true
+        filter: true
       },
+      {headerName: 'Chất liệu đế', field: 'soleMaterial', sortable: true, filter: true},
       {headerName: 'Ngày bắt đầu', field: 'createDate', sortable: true, filter: true},
       {headerName: 'Ngày Sửa ', field: 'updateDate', sortable: true, filter: true},
-      {headerName: 'Trạng thái', field: 'status', sortable: true, filter: true},
-      {headerName: 'Action', field: '', cellRendererFramework: ActionVoucherComponent},
+      {headerName: 'Trạng thái', field: 'status', sortable: true, filter: true, valueGetter: (params) => {
+          return params.data.status === 0 ? 'Hoạt động' : 'Ngưng hoạt động';
+        }},
+      {headerName: 'Action', field: '', cellRendererFramework: DeGiayActionComponent, width: 130},
     ];
   }
 
   ngOnInit(): void {
+    this.getAllSole();
+  }
+  getAllSole(){
     this.slsv.getAllSole().subscribe(result => {
       this.rowData = result;
     });
   }
 
   openAdd() {
-    this.matdialog.open(ThemDeGiayComponent, {
+    const dialogref = this.matdialog.open(ThemDeGiayComponent, {
       width: '65vh',
       height: '75vh'
     });
-  }
-
-  openUpdate() {
-    this.matdialog.open(SuaDeGiayComponent, {
-      width: '65vh',
-      height: '75vh'
+    dialogref.afterClosed().subscribe(result => {
+      if (result === 'addSole'){
+        this.ngOnInit();
+        this.cdr.detectChanges();
+      }
     });
   }
 }
