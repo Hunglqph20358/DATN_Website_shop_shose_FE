@@ -1,5 +1,5 @@
-import { NgModule } from '@angular/core';
-import { Routes, RouterModule } from '@angular/router';
+import {NgModule} from '@angular/core';
+import {Routes, RouterModule} from '@angular/router';
 import {HomeComponent} from './component/home/home.component';
 import {GiohangComponent} from './component/giohang/giohang.component';
 import {DetailsComponent} from './component/details/details.component';
@@ -15,6 +15,7 @@ import {OrderComponent} from './component/order/order.component';
 import {ForgotPasswordComponent} from './component/forgot-password/forgot-password.component';
 import {ResetPasswordComponent} from './component/reset-password/reset-password.component';
 import {InfoUserComponent} from './component/info-user/info-user.component';
+import {OrderNotLoginComponent} from './component/order-not-login/order-not-login.component';
 
 const routes: Routes = [
   { path: '', redirectTo: 'home', pathMatch: 'full' },
@@ -26,7 +27,8 @@ const routes: Routes = [
   { path: 'sign-up', component: SignUpComponent},
   { path: 'cart/checkout', component: CheckoutComponent},
   { path: 'cart/checkout-detail', component: DetailCheckoutComponent},
-  { path: 'order', component: OrderComponent},
+  {path: 'order', component: OrderComponent, canActivate: [AuthService]},
+  {path: 'order/not-login/:codeOrder', component: OrderNotLoginComponent},
   { path: 'forgot-pass', component: ForgotPasswordComponent},
   { path: 'reset-pass', component: ResetPasswordComponent},
   { path: 'user-profile', component: InfoUserComponent},
@@ -37,4 +39,5 @@ const routes: Routes = [
   providers: [CookieService],
   exports: [RouterModule]
 })
-export class AppRoutingModule { }
+export class AppRoutingModule {
+}

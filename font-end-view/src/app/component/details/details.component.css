@@ -88,9 +88,13 @@ text-color {
   margin: 17px 0px 4px 0px;
 }
 
-.red-selected {
-  border: 1px solid red;
-  color: red;
+.red-selected-size {
+  border: 3px solid red;
+  outline: none;
+}
+.red-selected-color {
+  border: 3px solid red;
+  outline: none;
 }
 
 /*.disable-input{*/

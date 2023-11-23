@@ -1,0 +1,59 @@
+:host ::ng-deep {
+  .header {
+    background-color: white;
+    display:flex;
+    justify-content: space-between;
+    padding: 10px;
+    margin-bottom: 15px;
+    .tille-h {
+      display: flex;
+      gap: 10px;
+      .code {
+        .a{
+
+        }
+        .b{
+
+        }
+      }
+      .status {
+        .c{
+
+        }
+        .d{
+
+        }
+      }
+      .ship {
+        .e{
+
+        }
+        .g{
+
+        }
+      }
+      .time {
+
+      }
+    }
+    .btn-button{
+
+    }
+  }
+  .footer {
+    background-color: white;
+    margin-top: 10px;
+    display: flex;
+    padding: 20px;
+    gap: 10px;
+      .footer-k{
+
+      }
+    .footer-t {
+
+    }
+    .footer-y{
+
+    }
+  }
+}

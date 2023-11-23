@@ -26,11 +26,10 @@ export class OrderComponent implements OnInit {
       [
         {name: 'Tất cả', id: 6},
         {name: 'Chờ xác nhận', id: 0},
-        {name: 'Chờ xử lí', id: 1},
+        {name: 'Chờ xử lý', id: 1},
         {name: 'Đang giao hàng', id: 2},
         {name: 'Đã nhận hàng', id: 3},
         {name: 'Đã Hủy', id: 4},
-        {name: 'Hoàn thành', id: 5},
       ];
     this.listStatus = lst;
 
@@ -111,16 +110,14 @@ export class OrderComponent implements OnInit {
           const status = params.data.status;
           switch (status) {
             case 0:
-              return 'Chờ xử lý';
+              return 'Chờ xác nhận';
             case 1:
-              return 'Chờ giao hàng';
+              return 'Chờ xử lý';
             case 2:
               return 'Đang giao hàng';
             case 3:
               return 'Đã nhận hàng';
             case 4:
-              return 'Đang giao hàng';
-            case 5:
               return 'Đã Hủy';
             default:
               return 'Không xác định';

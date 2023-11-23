@@ -25,6 +25,7 @@ import {VoucherComponent} from "./component/voucher/voucher.component";
 import {EditDiscountComponent} from "./component/discount/edit-discount/edit-discount.component";
 import {EditVoucherComponent} from "./component/voucher/edit-voucher/edit-voucher.component";
 import {SignUpComponent} from './component/sign-up/sign-up.component';
+import {OrderDetailComponent} from './component/order/order-detail/order-detail.component';
 import {SalesCounterComponent} from './component/sales-counter/sales-counter.component';
 
 const routes: Routes = [
@@ -56,6 +57,7 @@ const routes: Routes = [
   {path: 'order-processing', component: OderProcessingComponent},
   {path: 'staff', component: StaffComponent, canActivate: [AuthGuard]},
   {path: 'sign-up', component: SignUpComponent},
+  // {path: 'order-detail', component: OrderDetailComponent},
   {path: 'sales-counter', component: SalesCounterComponent},
 ];
 

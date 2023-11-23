@@ -10,6 +10,7 @@ import {AddressCheckoutComponent} from './address-checkout/address-checkout.comp
 import {PopupVoucherComponent} from './popup-voucher/popup-voucher.component';
 import {AddressService} from '../../service/address.service';
 import {VoucherService} from '../../service/voucher.service';
+import {UtilService} from '../../util/util.service';
 
 @Component({
   selector: 'app-checkout',
@@ -26,7 +27,7 @@ export class CheckoutComponent implements OnInit {
   shipFee = 0;
   address: any;
 
-  addressBuyNow: any = {
+  addressNotLogin: any = {
     provinceId: undefined,
     districtId: undefined,
     wardCode: undefined,
@@ -36,9 +37,6 @@ export class CheckoutComponent implements OnInit {
   totalMoneyPay;
   voucher: any;
   order: any = {
-    customerDTO: {
-      code: 'KH1699795301',
-    },
     receiver: '',
     receiverPhone: '',
   };
@@ -48,45 +46,71 @@ export class CheckoutComponent implements OnInit {
   listProvince = [];
   listDistrict = [];
   listWard = [];
+  user: any = {
+    id: null,
+    code: null,
+    fullname: '',
+    phone: '',
+    email: '',
+  };
 
   constructor(private giaoHangService: GiaoHangService, private cartService: CartService,
               private cookieService: CookieService, private route: Router, private orderService: OrderService,
               private paymentService: PaymentService, private matDialog: MatDialog,
-              private addressService: AddressService, private voucherService: VoucherService,
+              private addressService: AddressService, private voucherService: VoucherService, public utilService: UtilService
   ) {
     if (this.cookieService.check('checkout')) {
       const cartData = this.cookieService.get('checkout');
       const entries = JSON.parse(cartData);
       this.cartData = new Map(entries);
     }
-    this.dataCheckoutByNow = JSON.parse(sessionStorage.getItem('dataCheckoutByNow'));
+    const storedUserString = localStorage.getItem('users');
+
+    if (storedUserString) {
+      const storedUser = JSON.parse(storedUserString);
+      this.user = {
+        id: storedUser.id,
+        code: storedUser.code,
+        fullname: storedUser.fullname,
+        phone: storedUser.phone,
+        email: storedUser.email,
+      };
+    }
     // @ts-ignore
     window.scrollTo(top, 0, 0);
   }
 
   ngOnInit(): void {
+    // console.log(this.user);
+    console.log('user' + this.user.id);
     this.totalMoney = 0;
     this.totalSaveMoney = 0;
     this.totalMoneyPay = 0;
+    this.order.receiver = this.user.fullname;
+    this.order.receiverPhone = this.user.phone;
     this.cartData.forEach((value, key) => {
       const idKey = key.split('-');
       this.cartService.getCart(idKey[0], idKey[1], idKey[2], value).subscribe(res => {
         this.listCart.push(res.data);
         // tslint:disable-next-line:max-line-length
-        this.totalSaveMoney += (res.data.productDetailDTO.listedPrice * res.data.quantity) - (res.data.productDetailDTO.price * res.data.quantity);
-        this.totalMoney += res.data.productDetailDTO.price * res.data.quantity;
+        this.totalSaveMoney += (res.data.productDTO.reducePrice * res.data.quantity);
+        this.totalMoney += (res.data.productDTO.price * res.data.quantity) - (res.data.productDTO.reducePrice * res.data.quantity);
         this.totalMoneyPay = this.totalMoney;
       });
     });
     console.log(this.listCart);
-    this.getAddress(3);
+    this.getAddress(this.user.id);
     this.giaoHangService.getAllProvince().subscribe(res => {
       this.listProvince = res.data;
     });
   }
 
+  calculateTotal(price: number, quantity: number): string {
+    const total = price * quantity;
+    return this.utilService.formatMoney(total);
+  }
+
   getDistrict(event) {
-    console.log(event);
     this.giaoHangService.getAllDistrictByProvince(event.ProvinceID).subscribe(res => {
       this.listDistrict = res.data;
     });
@@ -126,8 +150,8 @@ export class CheckoutComponent implements OnInit {
     const addressInfo = {
       service_type_id: 2,
       from_district_id: 3440,
-      to_district_id: this.addressBuyNow.districtId,
-      to_ward_code: this.addressBuyNow.wardCode,
+      to_district_id: this.addressNotLogin.districtId,
+      to_ward_code: this.addressNotLogin.wardCode,
       height: 20,
       length: 30,
       weight: 200,
@@ -141,21 +165,67 @@ export class CheckoutComponent implements OnInit {
   }
 
   thanhToan() {
-    if (this.checkChoicePay === 1) {
-      if (this.dataCheckoutByNow === 1) {
+    if (this.user == null || this.user === undefined) {
+      if (this.checkChoicePay === 1) {
         const obj = {
           ...this.order,
           totalPrice: this.totalMoney,
           totalPayment: this.totalMoneyPay,
           shipPrice: this.shipFee,
           codeVoucher: this.voucher ? this.voucher.code : null,
-          addressReceived: this.addressBuyNow.specificAddress + ', ' + this.addressBuyNow.wards + ', '
-            + this.addressBuyNow.district + ', ' + this.addressBuyNow.province,
+          addressReceived: this.addressNotLogin.specificAddress + ', ' + this.addressNotLogin.wards + ', '
+            + this.addressNotLogin.district + ', ' + this.addressNotLogin.province,
           paymentType: 1,
-          email: this.email
         };
-        this.orderService.createOrderBuyNow(obj).subscribe(res => {
-          debugger
+        this.orderService.createOrderNotLogin(obj).subscribe(res => {
+          if (res.status === 'OK') {
+            const objCheckOut = {
+              order: res.data,
+              listCart: this.listCart,
+              email: this.email
+            };
+            sessionStorage.setItem('order', JSON.stringify(objCheckOut));
+            this.paymentService.createPayment(this.totalMoneyPay).subscribe(resPay => {
+              if (resPay.status === 'OK') {
+                window.location.href = resPay.url;
+              }
+            });
+          }
+        });
+      } else {
+        const obj = {
+          ...this.order,
+          totalPrice: this.totalMoney,
+          shipPrice: this.shipFee,
+          codeVoucher: this.voucher ? this.voucher.code : null,
+          addressReceived: this.addressNotLogin.specificAddress + ', ' + this.addressNotLogin.wards + ', '
+            + this.addressNotLogin.district + ', ' + this.addressNotLogin.province,
+          paymentType: 0,
+        };
+        this.orderService.createOrderNotLogin(obj).subscribe(res => {
+          if (res.status === 'OK') {
+            this.route.navigate(['/home']);
+          }
+        });
+      }
+    } else {
+      debugger
+      if (this.checkChoicePay === 1) {
+        const obj = {
+          ...this.order,
+          customerDTO: {
+            code: this.user.code,
+          },
+          totalPrice: this.totalMoney,
+          totalPayment: this.totalMoneyPay,
+          shipPrice: this.shipFee,
+          codeVoucher: this.voucher ? this.voucher.code : null,
+          addressReceived: this.address.specificAddress + ', ' + this.address.wards + ', '
+            + this.address.district + ', ' + this.address.province,
+          paymentType: 1,
+
+        };
+        this.orderService.createOrder(obj).subscribe(res => {
           if (res.status === 'OK') {
             const objCheckOut = {
               order: res.data,
@@ -172,27 +242,19 @@ export class CheckoutComponent implements OnInit {
       } else {
         const obj = {
           ...this.order,
+          customerDTO: {
+            code: this.user.code,
+          },
           totalPrice: this.totalMoney,
-          totalPayment: this.totalMoneyPay,
           shipPrice: this.shipFee,
           codeVoucher: this.voucher ? this.voucher.code : null,
           addressReceived: this.address.specificAddress + ', ' + this.address.wards + ', '
             + this.address.district + ', ' + this.address.province,
-          paymentType: 1,
+          paymentType: 0,
         };
-
         this.orderService.createOrder(obj).subscribe(res => {
           if (res.status === 'OK') {
-            const objCheckOut = {
-              order: res.data,
-              listCart: this.listCart,
-            };
-            sessionStorage.setItem('order', JSON.stringify(objCheckOut));
-            this.paymentService.createPayment(this.totalMoneyPay).subscribe(resPay => {
-              if (resPay.status === 'OK') {
-                window.location.href = resPay.url;
-              }
-            });
+            this.route.navigate(['/order']);
           }
         });
       }

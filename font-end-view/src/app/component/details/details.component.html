@@ -20,9 +20,12 @@
         </div>
 
 
-        <div class="price-area my-4">
-          <div class="old-price"><del>{{product.listedPrice | number:'1.0-0'}} đ</del></div>
-          <div class="new-price"><span>{{product.price | number:'1.0-0'}} đ</span></div>
+        <div class="price-area my-4" *ngIf="product.reducePrice != null && product.percentageReduce != null">
+          <div class="old-price"><del>{{utilService.formatMoney(product.price)}}</del></div>
+          <div class="new-price"><span>{{utilService.formatMoney(product.price - product.reducePrice)}}</span></div>
+        </div>
+        <div class="price-area my-4" *ngIf="product.reducePrice == null && product.percentageReduce == null">
+          <div class="new-price"><span>{{utilService.formatMoney(product.price)}}</span></div>
         </div>
 
       </div>
@@ -31,11 +34,9 @@
       <div class="product-details my-2">
         <p class="details-title text-color mb-1">Size</p>
         <div class="d-flex">
-          <div class="selection" style="border: 1px solid" *ngFor="let s of listSize" [class.red-selected]="s.isSelected">
-            <input type="radio" [id]="'size' +s.id" [name]="'size'" [value]="s.id" (change)="selectSize($event)" [disabled]="s.disabled">
-            <label [for]="'size' +s.id" class="radio-label" [style.opacity]="s.disabled ? '0.5' : '1'" [style.cursor]="s.disabled ? 'not-allowed' : 'pointer'">{{s.sizeNumber}}</label>
+          <div class="selection" *ngFor="let s of listSize">
+            <button type="button" (click)="selectSize(s)" [disabled]="s.disabled" [class.red-selected-size]="s.isSelected">{{s.sizeNumber}}</button>
           </div>
-          <button *ngIf="sizeSelected" (click)="refresh('size')"><i class="fa-solid fa-arrows-rotate"></i></button>
         </div>
       </div>
 
@@ -44,11 +45,9 @@
       <div class="product-details my-2">
         <p class="details-title text-color mb-1">Màu Sắc</p>
         <div class="d-flex">
-          <div class="selection" *ngFor="let c of listColor" style="border: 1px solid" [class.red-selected]="c.isSelected">
-            <input type="radio" [id]="'color' + c.id" name="color" [value]="c.id" (change)="selectColor($event)" [disabled]="c.disabled">
-            <label [for]="'color' + c.id" class="radio-label" [style.opacity]="c.disabled ? '0.5' : '1'" [style.cursor]="c.disabled ? 'not-allowed' : 'pointer'">{{c.name}}</label>
+          <div class="selection" *ngFor="let c of listColor">
+            <button type="button" (click)="selectColor(c)" [disabled]="c.disabled" [class.red-selected-color]="c.isSelected">{{c.name}}</button>
           </div>
-          <button *ngIf="colorSelected" (click)="refresh('color')"><i class="fa-solid fa-arrows-rotate"></i></button>
         </div>
       </div>
 

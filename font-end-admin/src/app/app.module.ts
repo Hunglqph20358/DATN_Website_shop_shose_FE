@@ -64,9 +64,10 @@ import { ActionOrderComponent } from './component/order/action-order/action-orde
 import { OrderDetailComponent } from './component/order/order-detail/order-detail.component';
 import {NgSelectModule} from '@ng-select/ng-select';
 import { SalesCounterComponent } from './component/sales-counter/sales-counter.component';
-import {MatTabsModule} from '@angular/material/tabs';
 import {MatListModule} from '@angular/material/list';
 import {MatTable, MatTableModule} from '@angular/material/table';
+import {MatTabsModule} from '@angular/material/tabs';
+import {ToastrModule} from 'ngx-toastr';
 
 @NgModule({
   declarations: [
@@ -128,16 +129,14 @@ import {MatTable, MatTableModule} from '@angular/material/table';
     MatDialogModule,
     MatButtonModule,
     ReactiveFormsModule,
-    HttpClientModule,
-    MatDialogModule,
     MatInputModule,
     MatFormFieldModule,
     MatSelectModule,
     MatRadioModule,
-    MatButtonModule,
     MatIconModule,
     NgSelectModule,
     MatTabsModule,
+    ToastrModule.forRoot(),
     MatListModule,
     MatTableModule
   ],

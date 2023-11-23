@@ -19,6 +19,15 @@ export class OrderService {
   cancelOrder(obj): Observable<any> {
     return this.http.post(`${apiURL}cancel-order`, obj);
   }
+  progressingOrder(obj): Observable<any> {
+    return this.http.post(`${apiURL}progressing-order`, obj);
+  }
+  completeOrder(obj): Observable<any> {
+    return this.http.post(`${apiURL}complete-order`, obj);
+  }
+  shipOrder(obj): Observable<any> {
+    return this.http.post(`${apiURL}ship-order`, obj);
+  }
   createOrderSales(order: Order): Observable<any>{
     return this.http.post<any>('http://localhost:6868/sales-counter/api/create-order', order);
   }

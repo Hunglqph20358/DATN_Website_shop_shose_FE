@@ -3,29 +3,30 @@ import {ColDef} from 'ag-grid-community';
 import {formatDateTime, formatMoney} from '../../util/util';
 import {OrderService} from '../../service/order.service';
 import {ActionOrderComponent} from './action-order/action-order.component';
+import {OrderDetailComponent} from './order-detail/order-detail.component';
+import {MatDialog} from '@angular/material/dialog';
 @Component({
   selector: 'app-order',
   templateUrl: './order.component.html',
   styleUrls: ['./order.component.scss']
 })
 export class OrderComponent implements OnInit {
-
+  active = 1;
   listStatus: any = [];
   status = 6;
   rowData;
   columnDefs;
   gridApi;
   gridColumnApi;
-  constructor(private orderService: OrderService, private cdr: ChangeDetectorRef) {
+  constructor(private matDialog: MatDialog, private orderService: OrderService, private cdr: ChangeDetectorRef) {
     const lst =
       [
         {name: 'Tất cả', id: 6},
         {name: 'Chờ xác nhận', id: 0},
         {name: 'Chờ xử lý', id: 1},
         {name: 'Đang giao hàng', id: 2},
-        {name: 'Đã nhận hàng', id: 3},
+        {name: 'Hoàn thành', id: 3},
         {name: 'Đã Hủy', id: 4},
-        {name: 'Hoàn thành', id: 5},
       ];
     this.listStatus = lst;
     this.columnDefs = [
@@ -47,6 +48,32 @@ export class OrderComponent implements OnInit {
           'font-weight': '500',
           'font-size': '12px',
           'align-items': 'center',
+          color: '#36f',
+          display: 'flex',
+          // top: '12px',
+          'white-space': 'nowrap',
+          'text-overflow': 'ellipsis',
+          overflow: 'hidden',
+          cursor: 'pointer',
+          // textAlign: 'center',
+          'justify-content': 'center',
+        },
+        onCellClicked: (params) => {
+          return this.openXemChiTiet(params.data);
+        }
+      },
+      {
+        headerName: 'Ngày Tạo',
+        field: 'createDate',
+        suppressMovable: true,
+        valueFormatter: params => {
+          return formatDateTime(params.data.createDate);
+        },
+        cellStyle: {
+
+          'font-weight': '500',
+          'font-size': '12px',
+          'align-items': 'center',
           color: '#101840',
           display: 'flex',
           // top: '12px',
@@ -58,11 +85,28 @@ export class OrderComponent implements OnInit {
         },
       },
       {
-        headerName: 'Ngày Đặt Hàng',
-        field: 'createDate',
+        headerName: 'Khách Hàng',
+        field: 'customerAdminDTO.fullname',
         suppressMovable: true,
+        cellStyle: {
+          'font-weight': '500',
+          'font-size': '12px',
+          'align-items': 'center',
+          color: '#101840',
+          display: 'flex',
+          // top: '12px',
+          'white-space': 'nowrap',
+          'text-overflow': 'ellipsis',
+          overflow: 'hidden',
+          // textAlign: 'center',
+          'justify-content': 'center',
+        },
+      },
+      {
+        headerName: 'Thanh Toán',
+        field: 'statusPayment',
         valueFormatter: params => {
-          return formatDateTime(params.data.createDate);
+          return params.data.statusPayment === 0 ? 'Đã thanh toán' : 'Chưa thanh toán';
         },
         cellStyle: {
           'font-weight': '500',
@@ -111,11 +155,9 @@ export class OrderComponent implements OnInit {
             case 2:
               return 'Đang giao hàng';
             case 3:
-              return 'Đã nhận hàng';
+              return 'Hoàn thành';
             case 4:
               return 'Đã Hủy';
-            case 5:
-              return 'Hoàn Thành';
             default:
               return 'Không xác định';
           }
@@ -136,7 +178,7 @@ export class OrderComponent implements OnInit {
       }, {
         headerName: '',
         field: '',
-        minWidth: 410,
+        minWidth: 200,
         cellRendererFramework: ActionOrderComponent
       },
     ];
@@ -156,5 +198,19 @@ export class OrderComponent implements OnInit {
       console.log(this.rowData);
     });
     this.cdr.detectChanges();
+  }
+
+  tabChanged(event: any) {
+    const selectedTabIndex = event.index;
+    const selectedTabId = this.listStatus[selectedTabIndex].id;
+    this.status = selectedTabId;
+    this.getAllOrder();
+  }
+
+  openXemChiTiet(dataOrder) {
+    this.matDialog.open(OrderDetailComponent, {
+      width: '150vh',
+      data: dataOrder
+    });
   }
 }
