@@ -27,6 +27,9 @@ import { OrderComponent } from './component/order/order.component';
 import {AgGridModule} from 'ag-grid-angular';
 import {SignUpComponent} from './component/sign-up/sign-up.component';
 import { OrderDetailComponent } from './component/order/order-detail/order-detail.component';
+import { ForgotPasswordComponent } from './component/forgot-password/forgot-password.component';
+import { ResetPasswordComponent } from './component/reset-password/reset-password.component';
+import { InfoUserComponent } from './component/info-user/info-user.component';
 
 @NgModule({
   declarations: [
@@ -44,7 +47,10 @@ import { OrderDetailComponent } from './component/order/order-detail/order-detai
     UpdateAddressComponent,
     OrderComponent,
     SignUpComponent,
-    OrderDetailComponent
+    OrderDetailComponent,
+    ForgotPasswordComponent,
+    ResetPasswordComponent,
+    InfoUserComponent,
   ],
     imports: [
         BrowserModule,

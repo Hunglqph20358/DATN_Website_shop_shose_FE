@@ -63,6 +63,10 @@ import { SignUpComponent } from './component/sign-up/sign-up.component';
 import { ActionOrderComponent } from './component/order/action-order/action-order.component';
 import { OrderDetailComponent } from './component/order/order-detail/order-detail.component';
 import {NgSelectModule} from '@ng-select/ng-select';
+import { SalesCounterComponent } from './component/sales-counter/sales-counter.component';
+import {MatTabsModule} from '@angular/material/tabs';
+import {MatListModule} from '@angular/material/list';
+import {MatTable, MatTableModule} from '@angular/material/table';
 
 @NgModule({
   declarations: [
@@ -110,7 +114,8 @@ import {NgSelectModule} from '@ng-select/ng-select';
     DetailVoucherComponent,
     SignUpComponent,
     ActionOrderComponent,
-    OrderDetailComponent
+    OrderDetailComponent,
+    SalesCounterComponent,
   ],
   imports: [
     BrowserModule,
@@ -132,11 +137,14 @@ import {NgSelectModule} from '@ng-select/ng-select';
     MatButtonModule,
     MatIconModule,
     NgSelectModule,
+    MatTabsModule,
+    MatListModule,
+    MatTableModule
   ],
   bootstrap: [AppComponent],
   providers: [ { provide: JWT_OPTIONS, useValue: JWT_OPTIONS },
     JwtHelperService],
-  entryComponents: [ActionRendererComponent]
+  entryComponents: [ActionRendererComponent],
 })
 export class AppModule {
 }

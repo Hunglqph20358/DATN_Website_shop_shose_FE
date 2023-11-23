@@ -4,25 +4,27 @@
   </div>
 
   <div class="right">
-    <h1>Welcome Back!</h1>
+    <h1>Chào mừng đến với ...</h1>
 
     <form (ngSubmit)="login()">
-      <p>User Name</p>
+      <p>Tên tài khoản</p>
       <div class="user">
         <i class="fa-solid fa-user"></i>
         <input type="text" name="user" placeholder="User Name" class="username" [(ngModel)]="form.username"  [ngModelOptions]="{standalone: true}">
       </div>
 
-      <p class="passworg_tag">Password</p>
+      <p class="passworg_tag">Mật khẩu</p>
       <div class="password">
         <i class="fa-solid fa-lock"></i>
         <input type="text" name="password" placeholder="Password" [(ngModel)]="form.password"  [ngModelOptions]="{standalone: true}">
       </div>
       <div class="d-flex">
         <p class="sign-up">
-          <a href="/sign-up">Sign Up</a>
+          <a href="/sign-up">Đăng kí</a>
         </p>
-        <p class="forget">Forget Password ?</p>
+        <p class="forget">
+          <a href="/forgot-pass">Quên mật khẩu ?</a>
+        </p>
       </div>
 
       <button type="submit">Login</button>

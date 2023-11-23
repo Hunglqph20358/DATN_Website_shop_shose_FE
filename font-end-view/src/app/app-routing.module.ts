@@ -12,6 +12,9 @@ import {SignUpComponent} from './component/sign-up/sign-up.component';
 import {AuthService} from './service/authentication/auth.service';
 import {DetailCheckoutComponent} from './component/checkout/detail-checkout/detail-checkout.component';
 import {OrderComponent} from './component/order/order.component';
+import {ForgotPasswordComponent} from './component/forgot-password/forgot-password.component';
+import {ResetPasswordComponent} from './component/reset-password/reset-password.component';
+import {InfoUserComponent} from './component/info-user/info-user.component';
 
 const routes: Routes = [
   { path: '', redirectTo: 'home', pathMatch: 'full' },
@@ -24,6 +27,9 @@ const routes: Routes = [
   { path: 'cart/checkout', component: CheckoutComponent},
   { path: 'cart/checkout-detail', component: DetailCheckoutComponent},
   { path: 'order', component: OrderComponent},
+  { path: 'forgot-pass', component: ForgotPasswordComponent},
+  { path: 'reset-pass', component: ResetPasswordComponent},
+  { path: 'user-profile', component: InfoUserComponent},
 ];
 
 @NgModule({
