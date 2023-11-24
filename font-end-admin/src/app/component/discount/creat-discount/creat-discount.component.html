@@ -88,15 +88,16 @@
                   name="discountType"
                   required
                 >
-                  <option value="1">Theo %</option>
-                  <option value="0">Theo tiền mặt</option>
+                  <option >Loại giảm giá</option>
+                  <option value="0">Theo %</option>
+                  <option value="1">Theo tiền mặt</option>
                 </select>
                 <div *ngIf="discount.discountType.invalid && (discount.discountType.dirty || discount.discountType.touched)" class="alert alert-danger">
                   <div *ngIf="discount.discountType.errors?.required">Vui lòng chọn loại giảm giá.</div>
                 </div>
               </div>
 
-              <div class="form-group">
+              <div class="form-group" >
                 <label for="reducedValue">Giá trị giảm</label>
                 <input
                   type="text"
@@ -105,19 +106,29 @@
                   [ngModelOptions]="{ standalone: true }"
                   [(ngModel)]="discount.reducedValue"
                   placeholder="Giá trị giảm"
-                  name="reducedValue"
-                  required
+                  [max]="discount.discountType === '0' ? 100 : null"
                 />
-                <div *ngIf="discount.reducedValue.invalid && (discount.reducedValue.dirty || discount.reducedValue.touched)" class="alert alert-danger">
-                  <div *ngIf="discount.reducedValue.errors?.required">Vui lòng nhập giá trị giảm.</div>
+                <div *ngIf="discount.discountType === '0' && discount.reducedValue > 100" class="text-danger">
+                  Giá trị giảm không được quá 100%
                 </div>
               </div>
 
+              <div class="form-group" *ngIf="discount.discountType == '0'">
+                <label for="maxReduced">Giá trị giảm tối đa</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="maxReduced"
+                  [ngModelOptions]="{ standalone: true }"
+                  [(ngModel)]="discount.maxReduced"
+                  placeholder="Giá trị giảm tối đa"
+                />
+              </div>
               <div class="form-group">
                 <label for="product">Sản phẩm giảm</label>
                 <div class="grid">
                   <ag-grid-angular
-                    style="width: 100%; height: 500px"
+                    style="width: 100%; height: 300px"
                     class="ag-theme-balham"
                     [rowData]="rowData"
                     [columnDefs]="columnDefs"
@@ -127,7 +138,19 @@
                     [domLayout]="'autoHeight'"
                     (gridReady)="onGridReady($event)"
                   ></ag-grid-angular>
+
                 </div>
+              </div>
+              <div class="form-group">
+                <label for="limitCustomer">Số lượng</label>
+                <input
+                  type="number"
+                  class="form-control"
+                  id="limitCustomer"
+                  [ngModelOptions]="{ standalone: true }"
+                  [(ngModel)]="discount.quantity"
+                  placeholder="Số lượng"
+                />
               </div>
             </div>
             <div class="card-footer">

@@ -1,34 +1,34 @@
 import { Component, OnInit } from '@angular/core';
-import {ActivatedRoute, Router} from '@angular/router';
+import {ActivatedRoute} from "@angular/router";
 import {VoucherService} from "../../../service/voucher.service";
 
 @Component({
-  selector: 'app-edit-voucher',
-  templateUrl: './edit-voucher.component.html',
-  styleUrls: ['./edit-voucher.component.css'],
+  selector: 'app-detail-voucher-ship',
+  templateUrl: './detail-voucher-ship.component.html',
+  styleUrls: ['./detail-voucher-ship.component.css']
 })
-export class EditVoucherComponent implements OnInit {
-  isHidden: boolean = true;
+export class DetailVoucherShipComponent implements OnInit {
+
   voucher: any = {
-    id: '',
     name: '',
     startDate: '',
     endDate: '',
     description: '',
     reducedValue: '',
     voucherType: '',
-    conditions: '',
+    conditionApply: '',
     quantity: '',
+    customerAdminDTOList: [],
   };
-  constructor(private activatedRoute: ActivatedRoute,
-              private service: VoucherService,
-              private rou: Router) {}
+  constructor(private  activatedRoute: ActivatedRoute,
+              private voucherService: VoucherService) { }
+
   ngOnInit(): void {
-    this.isHidden = true;
+    // Lấy thông tin khuyến mãi dựa trên id từ tham số URL
     this.activatedRoute.params.subscribe((params) => {
       const id = params['id'];
       console.log(id);
-      this.service.getDetailVoucher(id).subscribe((response: any[]) => {
+      this.voucherService.getDetailVoucher(id).subscribe((response: any[]) => {
         const firstElement = response[0];
         console.log(firstElement);
         this.voucher.id = firstElement.id;
@@ -40,16 +40,18 @@ export class EditVoucherComponent implements OnInit {
         this.voucher.quantity = firstElement.quantity;
         this.voucher.reducedValue = firstElement.reducedValue;
         this.voucher.startDate = firstElement.startDate;
+        this.voucher.customerAdminDTOList = firstElement.customerAdminDTOList;
         console.log(this.voucher);
       });
     });
-    console.log(this.voucher);
   }
-  editVoucher(){
-    this.service
-      .updateVoucher(this.voucher.id, this.voucher)
-      .subscribe(() => {
-        this.rou.navigateByUrl('/admin/voucher');
-      });
+  getVoucherTypeText(): string{
+    if (this.voucher.voucherType === 0) {
+      return 'Theo %';
+    } else if (this.voucher.voucherType === 1) {
+      return 'Theo tiền';
+    } else {
+      return 'Không rõ';
+    }
   }
 }

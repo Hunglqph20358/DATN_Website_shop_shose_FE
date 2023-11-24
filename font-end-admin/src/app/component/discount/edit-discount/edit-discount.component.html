@@ -6,27 +6,8 @@
           <div class="card-header">
             <h3 class="card-title">Giảm giá</h3>
           </div>
-          <div class="form-group" >
-            <input
-              type="date"
-              class="form-control"
-              [ngModelOptions]="{ standalone: true }"
-              id="id"
-              [(ngModel)]="discount.discountAdminDTO.id"
-              [hidden]="isHidden"
-            />
-          </div>
-          <div class="form-group" >
-            <input
-              type="date"
-              class="form-control"
-              [ngModelOptions]="{ standalone: true }"
-              id="id"
-              [(ngModel)]="discount.id"
-              [hidden]="isHidden"
-            />
-          </div>
-          <form>
+
+          <form (submit)="editDiscount()">
             <div class="card-body">
               <div class="form-group">
                 <label for="name">Tên</label>
@@ -36,10 +17,17 @@
                   id="name"
                   [ngModelOptions]="{ standalone: true }"
                   [(ngModel)]="discount.discountAdminDTO.name"
-                  [value]="discount.discountAdminDTO.name"
                   placeholder="Tên giảm giá"
+                  name="name"
+                  required
+                  minlength="5"
                 />
+                <div *ngIf="discount.discountAdminDTO.name.invalid && (discount.discountAdminDTO.name.dirty || discount.discountAdminDTO.name.touched)" class="alert alert-danger">
+                  <div *ngIf="discount.discountAdminDTO.name.errors?.required">Vui lòng nhập tên.</div>
+                  <div *ngIf="discount.discountAdminDTO.name.errors?.minlength">Tên phải có ít nhất 5 kí tự.</div>
+                </div>
               </div>
+
               <div class="form-group">
                 <label for="description">Nội dung</label>
                 <input
@@ -49,28 +37,47 @@
                   [ngModelOptions]="{ standalone: true }"
                   [(ngModel)]="discount.discountAdminDTO.description"
                   placeholder="Nội dung"
+                  name="description"
+                  required
                 />
+                <div *ngIf="discount.discountAdminDTO.description.invalid && (discount.discountAdminDTO.description.dirty || discount.discountAdminDTO.description.touched)" class="alert alert-danger">
+                  <div *ngIf="discount.discountAdminDTO.description.errors?.required">Vui lòng nhập nội dung.</div>
+                </div>
               </div>
+
               <div class="form-group">
                 <label for="startDate">Ngày bắt đầu</label>
                 <input
-                  type="date"
+                  type="datetime-local"
                   class="form-control"
                   [ngModelOptions]="{ standalone: true }"
                   id="startDate"
                   [(ngModel)]="discount.discountAdminDTO.startDate"
+                  name="startDate"
+                  required
                 />
+                <div *ngIf="discount.discountAdminDTO.startDate.invalid && (discount.discountAdminDTO.startDate.dirty || discount.discountAdminDTO.startDate.touched)" class="alert alert-danger">
+                  <div *ngIf="discount.discountAdminDTO.startDate.errors?.required">Vui lòng chọn ngày bắt đầu.</div>
+                </div>
               </div>
+
               <div class="form-group">
                 <label for="endDate">Ngày kết thúc</label>
                 <input
-                  type="date"
+                  type="datetime-local"
                   class="form-control"
                   [ngModelOptions]="{ standalone: true }"
                   id="endDate"
                   [(ngModel)]="discount.discountAdminDTO.endDate"
+                  name="endDate"
+                  required
                 />
+                <div *ngIf="discount.discountAdminDTO.endDate.invalid && (discount.discountAdminDTO.endDate.dirty || discount.discountAdminDTO.endDate.touched)" class="alert alert-danger">
+                  <div *ngIf="discount.discountAdminDTO.endDate.errors?.required">Vui lòng chọn ngày kết thúc.</div>
+                  <div *ngIf="!discount.isValidDateRange()">Ngày kết thúc phải lớn hơn ngày bắt đầu.</div>
+                </div>
               </div>
+
               <div class="form-group">
                 <label for="discountType">Loại giảm giá</label>
                 <select
@@ -78,12 +85,19 @@
                   id="discountType"
                   [ngModelOptions]="{ standalone: true }"
                   [(ngModel)]="discount.discountType"
+                  name="discountType"
+                  required
                 >
-                  <option value="1">Theo %</option>
-                  <option value="0">Theo tiền mặt</option>
+                  <option >Loại giảm giá</option>
+                  <option value="0">Theo %</option>
+                  <option value="1">Theo tiền mặt</option>
                 </select>
+                <div *ngIf="discount.discountType.invalid && (discount.discountType.dirty || discount.discountType.touched)" class="alert alert-danger">
+                  <div *ngIf="discount.discountType.errors?.required">Vui lòng chọn loại giảm giá.</div>
+                </div>
               </div>
-              <div class="form-group">
+
+              <div class="form-group" >
                 <label for="reducedValue">Giá trị giảm</label>
                 <input
                   type="text"
@@ -92,13 +106,29 @@
                   [ngModelOptions]="{ standalone: true }"
                   [(ngModel)]="discount.reducedValue"
                   placeholder="Giá trị giảm"
+                  [max]="discount.discountType === '0' ? 100 : null"
+                />
+                <div *ngIf="discount.discountType === '0' && discount.reducedValue > 100" class="text-danger">
+                  Giá trị giảm không được quá 100%
+                </div>
+              </div>
+
+              <div class="form-group" *ngIf="discount.discountType == '0'">
+                <label for="maxReduced">Giá trị giảm tối đa</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="maxReduced"
+                  [ngModelOptions]="{ standalone: true }"
+                  [(ngModel)]="discount.maxReduced"
+                  placeholder="Giá trị giảm tối đa"
                 />
               </div>
               <div class="form-group">
                 <label for="product">Sản phẩm giảm</label>
                 <div class="grid">
                   <ag-grid-angular
-                    style="width: 100%; height: 500px"
+                    style="width: 100%; height: 300px"
                     class="ag-theme-balham"
                     [rowData]="rowData"
                     [columnDefs]="columnDefs"
@@ -110,16 +140,20 @@
                   ></ag-grid-angular>
                 </div>
               </div>
-
-              <div class="card-footer">
-                <button
-                  type="submit"
-                  class="btn btn-primary"
-                  (click)="editDiscount()"
-                >
-                  Submit
-                </button>
+              <div class="form-group">
+                <label for="limitCustomer">Số lượng</label>
+                <input
+                  type="number"
+                  class="form-control"
+                  id="limitCustomer"
+                  [ngModelOptions]="{ standalone: true }"
+                  [(ngModel)]="discount.quantity"
+                  placeholder="Số lượng"
+                />
               </div>
+            </div>
+            <div class="card-footer">
+              <button type="submit" class="btn btn-primary">Submit</button>
             </div>
           </form>
         </div>

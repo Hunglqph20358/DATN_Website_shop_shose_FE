@@ -1,7 +1,7 @@
 import {Component, OnInit, ViewChild} from '@angular/core';
 import {NgModule} from '@angular/core';
 import {DiscountService} from '../../../service/discount.service';
-import {AgGridAngular} from 'ag-grid-angular';
+import {FormsModule} from '@angular/forms';
 import {Router} from '@angular/router';
 
 @Component({
@@ -19,13 +19,15 @@ export class CreatDiscountComponent implements OnInit {
     },
     reducedValue: '',
     discountType: '',
+    maxReduced: '',
   };
   gridApi: any;
   rowData = [];
   columnDefs;
   headerHeight = 50;
   rowHeight = 40;
-
+  disableCheckPriceProduct: boolean = false;
+  iđStaff: string = '';
   constructor(private discountService: DiscountService,
               private router: Router) {
     this.columnDefs = [
@@ -60,6 +62,13 @@ export class CreatDiscountComponent implements OnInit {
         editable: true,
       },
       {
+        headerName: 'Giá',
+        field: 'price',
+        sortable: true,
+        filter: true,
+        editable: true,
+      },
+      {
         headerName: 'Số lượt bán',
         field: 'totalSold',
         sortable: true,
@@ -73,6 +82,7 @@ export class CreatDiscountComponent implements OnInit {
   ngOnInit(): void {
     this.discountService.getProduct().subscribe((response) => {
       this.rowData = response;
+      debugger
       console.log(response);
     });
   }
@@ -80,28 +90,47 @@ export class CreatDiscountComponent implements OnInit {
   onGridReady(params: any) {
     this.gridApi = params.api;
   }
+
   isValidDateRange(): boolean {
     const startDate = new Date(this.discount.discountAdminDTO.startDate);
     const endDate = new Date(this.discount.discountAdminDTO.endDate);
 
     return startDate < endDate;
   }
+
   addDiscount() {
-    console.log(this.gridApi.getSelectedRows());
-    const obj = {
-      ...this.discount,
-      productDTOList: this.gridApi.getSelectedRows(),
-    };
-    this.discountService.createDiscount(obj).subscribe(
-      (response) => {
-        // Handle the response if needed, e.g., show a success message
-        console.log('Discount added successfully', response);
-      },
-      (error) => {
-        // Handle errors if the discount creation fails
-        console.error('Error adding discount', error);
+    const arrayProduct = this.gridApi.getSelectedRows();
+    this.disableCheckPriceProduct = false;
+    for (let i = 0; i < arrayProduct.length; i++) {
+      if (this.discount.reducedValue > arrayProduct[i].price && this.discount.discountType ==1 ) {
+        this.disableCheckPriceProduct = true;
+        alert('Giá trị giảm lớn hơn giá sản phẩm');
+        return;
       }
-    );
-    this.router.navigateByUrl('/admin/discount');
+      this.iđStaff = localStorage.getItem('idStaff');
+      if (this.discount.maxReduced > arrayProduct[i].price && this.discount.discountType ==0  ) {
+        this.disableCheckPriceProduct = true;
+        alert('Giá trị giảm lớn hơn giá sản phẩm');
+        return;
+      }
+    }
+    if (this.disableCheckPriceProduct === false) {
+      const obj = {
+        ...this.discount,
+        productDTOList: this.gridApi.getSelectedRows(),
+      };
+      this.discountService.createDiscount(obj).subscribe(
+        (response) => {
+          // Handle the response if needed, e.g., show a success message
+          console.log('Discount added successfully', response);
+          this.router.navigateByUrl('/admin/discount');
+        },
+        (error) => {
+          // Handle errors if the discount creation fails
+          console.error('Error adding discount', error);
+        }
+      );
+    }
   }
+
 }

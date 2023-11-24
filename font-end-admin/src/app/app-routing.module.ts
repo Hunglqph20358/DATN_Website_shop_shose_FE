@@ -25,19 +25,28 @@ import {VoucherComponent} from "./component/voucher/voucher.component";
 import {EditDiscountComponent} from "./component/discount/edit-discount/edit-discount.component";
 import {EditVoucherComponent} from "./component/voucher/edit-voucher/edit-voucher.component";
 import {SignUpComponent} from './component/sign-up/sign-up.component';
+import {ShowComponent} from "./component/discount/show/show.component";
+import {CreatVoucherShipComponent} from "./component/voucher-ship/creat-voucher-ship/creat-voucher-ship.component";
+import {DetailVoucherShipComponent} from "./component/voucher-ship/detail-voucher-ship/detail-voucher-ship.component";
+import {VoucherShipComponent} from "./component/voucher-ship/voucher-ship.component";
+import {EditVoucherShipComponent} from "./component/voucher-ship/edit-voucher-ship/edit-voucher-ship.component";
 
 const routes: Routes = [
   {path: '', redirectTo: 'staff', pathMatch: 'full'},
   {path: 'admin/login', component: LoginComponent},
   {path: 'admin/don-hang', component: HomeComponent},
   {path: 'admin/creat-discount', component: CreatDiscountComponent},
+  {path: 'admin/creat-voucher-ship', component: CreatVoucherShipComponent},
   {path: 'admin/creat-voucher', component: CreatVoucherComponent},
   {path: 'admin/discount', component: DiscountComponent},
   {path: 'admin/discount/:id', component: DetailDiscountComponent},
   {path: 'admin/voucher/:id', component: DetailVoucherComponent},
+  {path: 'admin/voucher-ship/:id', component: DetailVoucherShipComponent},
   {path: 'admin/voucher', component: VoucherComponent},
+  {path: 'admin/voucher-ship', component: VoucherShipComponent},
   {path: 'admin/sua-giam-gia', component: EditDiscountComponent},
   {path: 'admin/sua-voucher', component: EditVoucherComponent},
+  {path: 'admin/sua-voucher-ship', component: EditVoucherShipComponent},
   {path: 'degiay', component: DegiayComponent, canActivate: [RoleGuardService],
     data: {
       expectedRole: ['ADMIN']

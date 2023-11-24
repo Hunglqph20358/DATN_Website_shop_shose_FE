@@ -63,6 +63,12 @@ import { SignUpComponent } from './component/sign-up/sign-up.component';
 import { ActionOrderComponent } from './component/order/action-order/action-order.component';
 import { OrderDetailComponent } from './component/order/order-detail/order-detail.component';
 import {NgSelectModule} from '@ng-select/ng-select';
+import { ShowComponent } from './component/discount/show/show.component';
+import { VoucherShipComponent } from './component/voucher-ship/voucher-ship.component';
+import { ActionVoucherShipComponent } from './component/voucher-ship/action-voucher-ship/action-voucher-ship.component';
+import { CreatVoucherShipComponent } from './component/voucher-ship/creat-voucher-ship/creat-voucher-ship.component';
+import { EditVoucherShipComponent } from './component/voucher-ship/edit-voucher-ship/edit-voucher-ship.component';
+import { DetailVoucherShipComponent } from './component/voucher-ship/detail-voucher-ship/detail-voucher-ship.component';
 
 @NgModule({
   declarations: [
@@ -110,7 +116,13 @@ import {NgSelectModule} from '@ng-select/ng-select';
     DetailVoucherComponent,
     SignUpComponent,
     ActionOrderComponent,
-    OrderDetailComponent
+    OrderDetailComponent,
+    ShowComponent,
+    VoucherShipComponent,
+    ActionVoucherShipComponent,
+    CreatVoucherShipComponent,
+    EditVoucherShipComponent,
+    DetailVoucherShipComponent
   ],
   imports: [
     BrowserModule,

@@ -1,8 +1,11 @@
-import { Component, OnInit } from '@angular/core';
-import { MatDialog } from '@angular/material/dialog';
-import { ActionDiscountComponent } from './action-discount/action-discount.component';
-import { Router } from '@angular/router';
-import { DiscountService } from '../../service/discount.service';
+import {Component, OnInit} from '@angular/core';
+import {MatDialog} from '@angular/material/dialog';
+import {ActionDiscountComponent} from './action-discount/action-discount.component';
+import {Router} from '@angular/router';
+import {DiscountService} from '../../service/discount.service';
+import {placeholdersToParams} from "@angular/compiler/src/render3/view/i18n/util";
+import {formatDateTime} from "../../util/util";
+import {ShowComponent} from "./show/show.component";
 
 @Component({
   selector: 'app-banggiamgia',
@@ -14,8 +17,8 @@ export class DiscountComponent implements OnInit {
   columnDefs;
   headerHeight = 50;
   rowHeight = 40;
-
-  public rowSelection: 'single' | 'multiple' = 'multiple'; // Chọn nhiều dòng
+  checkedIsdel = false;
+  idStaff: string = '';
 
   constructor(private apiService: DiscountService) {
     this.columnDefs = [
@@ -24,7 +27,6 @@ export class DiscountComponent implements OnInit {
         field: 'code',
         sortable: true,
         filter: true,
-        checkboxSelection: true,
         minWidth: 70,
         maxWidth: 80,
       },
@@ -42,6 +44,9 @@ export class DiscountComponent implements OnInit {
         sortable: true,
         filter: true,
         minWidth: 80,
+        valueGetter: params => {
+          return `${formatDateTime(params.data.startDate)}`;
+        }
       },
       {
         headerName: 'Ngày kết thúc',
@@ -49,6 +54,9 @@ export class DiscountComponent implements OnInit {
         sortable: true,
         filter: true,
         minWidth: 80,
+        valueGetter: params => {
+          return `${formatDateTime(params.data.endDate)}`;
+        }
       },
       {
         headerName: 'Trạng thái',
@@ -56,6 +64,29 @@ export class DiscountComponent implements OnInit {
         sortable: true,
         filter: true,
         cellRenderer: this.statusRenderer.bind(this),
+      },
+      {
+        headerName: 'Đã sử dụng',
+        valueGetter: function (params) {
+          const useDiscount = params.data.used_count || 0;
+          const quantity = params.data.quantity || 1;
+          return `${useDiscount} / ${quantity}`;
+        }
+      },
+      {
+        headerName: 'Hiển thị',
+        field: '',
+        cellRenderer: (params) => {
+          return `<div>
+  <label class="switch">
+    <input type="checkbox" ${params.data.idel === '1' ? 'checked' : ''}>
+    <span class="slider round"></span>
+  </label>
+</div>`;
+        },
+        onCellClicked: (params) => {
+          return this.checkIsdell(params);
+        }
       },
       {
         headerName: 'Action',
@@ -76,10 +107,19 @@ export class DiscountComponent implements OnInit {
       return 'Không rõ';
     }
   }
+
   ngOnInit(): void {
     this.apiService.getSomeData().subscribe((response) => {
       this.rowData = response;
       console.log(response);
     });
+  }
+
+  checkIsdell(data: any) {
+    if(data == 1){
+      //gọi 1 api update lại idel = 0
+    }else {
+
+    }
   }
 }

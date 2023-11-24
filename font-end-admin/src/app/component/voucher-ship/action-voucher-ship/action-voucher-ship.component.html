@@ -1,0 +1,6 @@
+<button mat-button [matMenuTriggerFor]="menu"><i class="fa-solid fa-bars"></i></button>
+<mat-menu #menu="matMenu">
+  <button mat-menu-item (click)="editItem()">Edit</button>
+  <button mat-menu-item (click)="detail()">Detail</button>
+  <button mat-menu-item (click)="deleteItem()">Delete</button>
+</mat-menu>

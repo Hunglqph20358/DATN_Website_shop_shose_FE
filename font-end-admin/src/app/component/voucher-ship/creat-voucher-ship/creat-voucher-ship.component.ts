@@ -1,14 +1,14 @@
 import { Component, OnInit } from '@angular/core';
-import { VoucherService } from 'src/app/service/voucher.service';
+import {VoucherService} from "../../../service/voucher.service";
 import {Router} from "@angular/router";
-import {DiscountService} from "../../../service/discount.service";
 
 @Component({
-  selector: 'app-creat-voucher',
-  templateUrl: './creat-voucher.component.html',
-  styleUrls: ['./creat-voucher.component.css'],
+  selector: 'app-creat-voucher-ship',
+  templateUrl: './creat-voucher-ship.component.html',
+  styleUrls: ['./creat-voucher-ship.component.css']
 })
-export class CreatVoucherComponent implements OnInit {
+export class CreatVoucherShipComponent implements OnInit {
+
   rowData = [];
   columnDefs;
   headerHeight = 50;
@@ -25,10 +25,8 @@ export class CreatVoucherComponent implements OnInit {
     customerAdminDTOList: '',
     limitCustomer: '',
     allow: '',
-    createName: localStorage.getItem('fullname'),
   };
   gridApi: any;
-  fullname: string = '';
   constructor(private voucherService: VoucherService,
               private  router: Router) {
     this.columnDefs = [

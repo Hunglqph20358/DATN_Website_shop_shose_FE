@@ -17,6 +17,7 @@ export class DetailVoucherComponent implements OnInit {
     voucherType: '',
     conditionApply: '',
     quantity: '',
+    customerAdminDTOList: [],
   };
   constructor(private  activatedRoute: ActivatedRoute,
               private voucherService: VoucherService) { }
@@ -32,16 +33,24 @@ export class DetailVoucherComponent implements OnInit {
         this.voucher.id = firstElement.id;
         this.voucher.name = firstElement.name;
         this.voucher.description = firstElement.description;
-        this.voucher.conditionApply = firstElement.conditionApply;
+        this.voucher.conditions = firstElement.conditions;
         this.voucher.voucherType = firstElement.voucherType;
         this.voucher.endDate = firstElement.endDate;
         this.voucher.quantity = firstElement.quantity;
         this.voucher.reducedValue = firstElement.reducedValue;
         this.voucher.startDate = firstElement.startDate;
+        this.voucher.customerAdminDTOList = firstElement.customerAdminDTOList;
         console.log(this.voucher);
       });
     });
-    console.log(this.voucher);
   }
-
+  getVoucherTypeText(): string{
+    if (this.voucher.voucherType === 0) {
+      return 'Theo %';
+    } else if (this.voucher.voucherType === 1) {
+      return 'Theo tiền';
+    } else {
+      return 'Không rõ';
+    }
+  }
 }

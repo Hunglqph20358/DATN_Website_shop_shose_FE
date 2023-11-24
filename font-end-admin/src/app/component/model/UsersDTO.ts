@@ -1,8 +1,11 @@
 export class UsersDTO{
   id: number;
-  username: string;
+  code: number;
+  fullname: string;
+  birthday: number;
+  gender: number;
+  phone: number;
   email: string;
-  id_customer: number;
-  id_staff: number;
+  username: string;
   role: string;
 }

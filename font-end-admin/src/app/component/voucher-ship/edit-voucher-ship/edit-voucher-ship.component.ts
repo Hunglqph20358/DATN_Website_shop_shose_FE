@@ -1,13 +1,14 @@
 import { Component, OnInit } from '@angular/core';
-import {ActivatedRoute, Router} from '@angular/router';
+import {ActivatedRoute, Router} from "@angular/router";
 import {VoucherService} from "../../../service/voucher.service";
 
 @Component({
-  selector: 'app-edit-voucher',
-  templateUrl: './edit-voucher.component.html',
-  styleUrls: ['./edit-voucher.component.css'],
+  selector: 'app-edit-voucher-ship',
+  templateUrl: './edit-voucher-ship.component.html',
+  styleUrls: ['./edit-voucher-ship.component.css']
 })
-export class EditVoucherComponent implements OnInit {
+export class EditVoucherShipComponent implements OnInit {
+
   isHidden: boolean = true;
   voucher: any = {
     id: '',

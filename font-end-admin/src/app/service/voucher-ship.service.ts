@@ -1,10 +1,11 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import {HttpClient} from "@angular/common/http";
+import {Observable} from "rxjs";
+
 @Injectable({
   providedIn: 'root'
 })
-export class VoucherService {
+export class VoucherShipService {
   private apiUrl = 'http://localhost:6868/api/admin/voucher';
 
   constructor(private http: HttpClient) {}

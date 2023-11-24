@@ -20,6 +20,7 @@ export class EditDiscountComponent implements OnInit {
     },
     reducedValue: '',
     discountType: '',
+    quantity: ''
   };
   gridApi: any;
   rowData = [];

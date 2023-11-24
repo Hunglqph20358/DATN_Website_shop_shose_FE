@@ -1,16 +1,16 @@
 import { Component, OnInit } from '@angular/core';
-import { MatDialog } from '@angular/material/dialog';
-import { ActionVoucherComponent } from './action-voucher/action-voucher.component';
-import { VoucherService } from 'src/app/service/voucher.service';
+import {MatDialog} from "@angular/material/dialog";
+import {VoucherService} from "../../service/voucher.service";
 import {formatDateTime} from "../../util/util";
 import {ShowComponent} from "../discount/show/show.component";
+import {ActionVoucherComponent} from "../voucher/action-voucher/action-voucher.component";
 
 @Component({
-  selector: 'app-bangvoucher',
-  templateUrl: './voucher.component.html',
-  styleUrls: ['./voucher.component.css'],
+  selector: 'app-voucher-ship',
+  templateUrl: './voucher-ship.component.html',
+  styleUrls: ['./voucher-ship.component.css']
 })
-export class VoucherComponent implements OnInit {
+export class VoucherShipComponent implements OnInit {
   rowData = [];
   columnDefs;
   headerHeight = 50;
@@ -108,14 +108,14 @@ export class VoucherComponent implements OnInit {
       return 'Không rõ';
     }
   }
-    statusType(params) {
-      if (params.value == 0) {
-        return 'Theo %';
-      } else if (params.value == 1) {
-        return 'Theo tiền';
-      } else {
-        return 'Không rõ';
-      }
+  statusType(params) {
+    if (params.value == 0) {
+      return 'Theo %';
+    } else if (params.value == 1) {
+      return 'Theo tiền';
+    } else {
+      return 'Không rõ';
+    }
   }
 
   ngOnInit(): void {
@@ -125,3 +125,4 @@ export class VoucherComponent implements OnInit {
     });
   }
 }
+
