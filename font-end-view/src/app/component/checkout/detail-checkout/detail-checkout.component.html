@@ -46,21 +46,36 @@
             </thead>
             <tbody>
             <tr *ngFor="let c of listCart; let i = index">
-              <td>{{i +1}}</td>
+              <th scope="row">
+                {{i + 1}}
+              </th>
               <td><img width="80px" height="80px" src="{{c.imageName}}" alt=""> <span class="productName" title="{{c.productName}}">{{c.productName}}</span></td>
               <td><div><span style="font-weight: bold">Color:</span> {{c.productDetailDTO.colorDTO.name}}</div>
                 <div><span style="font-weight: bold">Size: </span> {{c.productDetailDTO.sizeDTO.sizeNumber}}</div>
               </td>
               <td>
-                <span style="color: red; margin-left: 5px">{{c.productDetailDTO.price | number:'1.0-0'}} đ</span>
+                <div *ngIf="c.productDTO.reducePrice != null && c.productDTO.percentageReduce != null">
+                  <del>{{utilService.formatMoney(c.productDTO.price)}}</del>
+                  <span style="color: red; margin-left: 5px">{{utilService.formatMoney(c.productDTO.price - c.productDTO.reducePrice)}}</span>
+                </div>
+                <div *ngIf="c.productDTO.reducePrice == null && c.productDTO.percentageReduce == null">
+                  <span style="color: red; margin-left: 5px">{{utilService.formatMoney(c.productDTO.price - c.productDTO.reducePrice)}}</span>
+                </div>
               </td>
               <td> {{c.quantity}}</td>
-              <td style="color: red">{{c.productDetailDTO.price * c.quantity | number:'1.0-0'}} đ</td>
+              <th style="color: red">
+                <div *ngIf="c.productDTO.reducePrice != null && c.productDTO.percentageReduce != null">
+                  <span style="color: red; margin-left: 5px">{{calculateTotal(c.productDTO.price - c.productDTO.reducePrice, c.quantity)}}</span>
+                </div>
+                <div *ngIf="c.productDTO.reducePrice == null && c.productDTO.percentageReduce == null">
+                  <span style="color: red; margin-left: 5px">{{calculateTotal(c.productDTO.price, c.quantity)}}</span>
+                </div>
+              </th>
             </tr>
             </tbody>
           </table>
-          <p>Tổng cộng: {{order.totalPrice}}</p>
-          <p>Tổng cộng thanh toán: {{order.totalPayment}}</p>
+          <p>Tổng cộng: {{utilService.formatMoney(order.totalPrice)}}</p>
+          <p>Tổng cộng thanh toán: {{utilService.formatMoney(order.totalPayment)}}</p>
         </div>
       </div>
     </div>
@@ -70,7 +85,7 @@
       <button type="submit" class="btn btn-light" (click)="openHome();">Quay về trang chủ</button>
     </div>
     <div>
-      <button type="submit" class="btn btn-success" (click)="openDonMua();">Xem đơn mua</button>
+      <button type="submit" class="btn btn-success" *ngIf="this.email == null || this.email === undefined" (click)="openDonMua();">Xem đơn mua</button>
     </div>
   </div>
 </div>

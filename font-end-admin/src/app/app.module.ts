@@ -63,6 +63,8 @@ import { SignUpComponent } from './component/sign-up/sign-up.component';
 import { ActionOrderComponent } from './component/order/action-order/action-order.component';
 import { OrderDetailComponent } from './component/order/order-detail/order-detail.component';
 import {NgSelectModule} from '@ng-select/ng-select';
+import {MatTabsModule} from '@angular/material/tabs';
+import {ToastrModule} from 'ngx-toastr';
 import { ShowComponent } from './component/discount/show/show.component';
 import { VoucherShipComponent } from './component/voucher-ship/voucher-ship.component';
 import { ActionVoucherShipComponent } from './component/voucher-ship/action-voucher-ship/action-voucher-ship.component';
@@ -135,15 +137,14 @@ import { DetailVoucherShipComponent } from './component/voucher-ship/detail-vouc
     MatDialogModule,
     MatButtonModule,
     ReactiveFormsModule,
-    HttpClientModule,
-    MatDialogModule,
     MatInputModule,
     MatFormFieldModule,
     MatSelectModule,
     MatRadioModule,
-    MatButtonModule,
     MatIconModule,
     NgSelectModule,
+    MatTabsModule,
+    ToastrModule.forRoot()
   ],
   bootstrap: [AppComponent],
   providers: [ { provide: JWT_OPTIONS, useValue: JWT_OPTIONS },

@@ -13,8 +13,8 @@ export class OrderService {
   createOrder(obj): Observable<any>{
     return this.http.post(`${apiURL}create-order`, obj);
   }
-  createOrderBuyNow(obj): Observable<any>{
-    return this.http.post(`${apiURL}create-order/buy-now`, obj);
+  createOrderNotLogin(obj): Observable<any>{
+    return this.http.post(`${apiURL}create-order/not-login`, obj);
   }
 
   getAllOrder(obj): Observable<any>{

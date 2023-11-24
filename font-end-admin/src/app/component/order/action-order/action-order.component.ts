@@ -8,15 +8,16 @@ import {OrderService} from '../../../service/order.service';
 @Component({
   selector: 'app-action-order',
   templateUrl: './action-order.component.html',
-  styleUrls: ['./action-order.component.css']
+  styleUrls: ['./action-order.component.scss']
 })
 export class ActionOrderComponent implements OnInit, ICellRendererAngularComp {
 
   data: any;
-
+  status: any;
   constructor(private matDialog: MatDialog, private orderService: OrderService, private cdr: ChangeDetectorRef) { }
 
   ngOnInit(): void {
+    this.status = this.data.status;
   }
 
   agInit(params: ICellRendererParams): void {
