@@ -68,6 +68,7 @@ import {MatListModule} from '@angular/material/list';
 import {MatTable, MatTableModule} from '@angular/material/table';
 import {MatTabsModule} from '@angular/material/tabs';
 import {ToastrModule} from 'ngx-toastr';
+import { CustomerComponent } from './component/customer/customer.component';
 
 @NgModule({
   declarations: [
@@ -117,6 +118,7 @@ import {ToastrModule} from 'ngx-toastr';
     ActionOrderComponent,
     OrderDetailComponent,
     SalesCounterComponent,
+    CustomerComponent,
   ],
   imports: [
     BrowserModule,
