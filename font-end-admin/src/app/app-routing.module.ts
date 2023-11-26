@@ -26,6 +26,8 @@ import {EditDiscountComponent} from "./component/discount/edit-discount/edit-dis
 import {EditVoucherComponent} from "./component/voucher/edit-voucher/edit-voucher.component";
 import {SignUpComponent} from './component/sign-up/sign-up.component';
 import {OrderDetailComponent} from './component/order/order-detail/order-detail.component';
+import {ThemSanPhamComponent} from './component/sanpham/them-san-pham/them-san-pham.component';
+import {SuaSanPhamComponent} from './component/sanpham/sua-san-pham/sua-san-pham.component';
 
 const routes: Routes = [
   {path: '', redirectTo: 'staff', pathMatch: 'full'},
@@ -52,6 +54,8 @@ const routes: Routes = [
   {path: 'thuonghieu', component: ThuonghieuComponent},
   {path: 'admin/danh-muc', component: DanhmucComponent},
   {path: 'admin/san-pham', component: SanphamComponent},
+  {path: 'them-san-pham', component: ThemSanPhamComponent},
+  {path: 'sua-san-pham/:idProduct', component: SuaSanPhamComponent},
   {path: 'order-list', component: OrderComponent},
   {path: 'order-processing', component: OderProcessingComponent},
   {path: 'staff', component: StaffComponent, canActivate: [AuthGuard]},

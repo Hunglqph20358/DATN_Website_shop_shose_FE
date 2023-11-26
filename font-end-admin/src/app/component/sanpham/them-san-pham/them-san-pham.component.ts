@@ -1,6 +1,5 @@
 import {Component, Inject, OnInit} from '@angular/core';
 import {ProductService} from '../../../service/product.service';
-import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
 import {BrandService} from '../../../service/brand.service';
 import {CategoryInterface} from '../../../interface/category-interface';
 import {CategoryService} from '../../../service/category.service';
@@ -9,6 +8,7 @@ import {SoleService} from '../../../service/sole.service';
 import {MaterialpostService} from '../../../service/materialpost.service';
 import {SoleInterface} from '../../../interface/sole-interface';
 import {MaterialInterface} from '../../../interface/material-interface';
+import {Router} from '@angular/router';
 
 @Component({
   selector: 'app-them-san-pham',
@@ -32,13 +32,13 @@ export class ThemSanPhamComponent implements OnInit {
   brand: BrandInterface[] = [];
   sole: SoleInterface[] = [];
   material: MaterialInterface[] = [];
-  constructor( public dialogRef: MatDialogRef<ThemSanPhamComponent>,
-               @Inject(MAT_DIALOG_DATA) public data: any,
-               private prdsv: ProductService,
+  idnv: string;
+  constructor( private prdsv: ProductService,
                private brsv: BrandService,
                private ctsv: CategoryService,
                private slsv: SoleService,
-               private mtsv: MaterialpostService) { }
+               private mtsv: MaterialpostService,
+               private router: Router) { }
 
   ngOnInit(): void {
    this.getALLBrand();
@@ -67,6 +67,7 @@ export class ThemSanPhamComponent implements OnInit {
     });
   }
   clickaddProduct(){
+    this.idnv = localStorage.getItem('id');
     const products = {
       code: this.Code,
       name: this.Name,
@@ -77,12 +78,13 @@ export class ThemSanPhamComponent implements OnInit {
       idSole: this.IdSole,
       description: this.Description,
       status: this.Status,
-      price: this.Price
+      price: this.Price,
+      idnv: this.idnv
     };
     this.prdsv.CreateProduct(products).subscribe(
       result => {
         console.log('Product add success', result);
-        this.dialogRef.close('addProduct');
+        this.router.navigateByUrl('admin/san-pham');
       },
       error => {
         console.error('Product add error', error);

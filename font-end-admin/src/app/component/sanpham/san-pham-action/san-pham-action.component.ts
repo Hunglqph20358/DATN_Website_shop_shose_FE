@@ -5,19 +5,21 @@ import {MatDialog} from '@angular/material/dialog';
 
 import {SanphamComponent} from '../sanpham.component';
 import {ProductService} from '../../../service/product.service';
+import {ActivatedRoute} from '@angular/router';
 @Component({
   selector: 'app-san-pham-action',
   templateUrl: './san-pham-action.component.html',
   styleUrls: ['./san-pham-action.component.css']
 })
 export class SanPhamActionComponent implements ICellRendererAngularComp, OnInit {
-
+  idProduct: any;
   rowData = [];
   params: any;
   constructor(private matdialog: MatDialog,
               private prdsv: ProductService,
               private cdr: ChangeDetectorRef,
-              private sanphamComponent: SanphamComponent) { }
+              private sanphamComponent: SanphamComponent) {
+  }
 
   ngOnInit(): void {
     this.getAllProduct();
@@ -50,6 +52,7 @@ export class SanPhamActionComponent implements ICellRendererAngularComp, OnInit 
 
   agInit(params: any): void {
     this.params = params.data;
+    this.idProduct = params.data.id;
   }
 
   refresh(): boolean {

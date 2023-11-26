@@ -9,6 +9,7 @@ import {CategoryInterface} from '../../../interface/category-interface';
 import {BrandInterface} from '../../../interface/brand-interface';
 import {SoleInterface} from '../../../interface/sole-interface';
 import {MaterialInterface} from '../../../interface/material-interface';
+import {ActivatedRoute, Router} from '@angular/router';
 
 @Component({
   selector: 'app-sua-san-pham',
@@ -16,62 +17,103 @@ import {MaterialInterface} from '../../../interface/material-interface';
   styleUrls: ['./sua-san-pham.component.css']
 })
 export class SuaSanPhamComponent implements OnInit {
+  product: any = {
+    code: null,
+    name: null,
+    idBrand: null,
+    idCategory: null,
+    idMaterial: null,
+    description: null,
+    status: null,
+    idSole: null,
+    price: null,
+  };
+  idProduct: any;
   categories: CategoryInterface[] = [];
   brand: BrandInterface[] = [];
   sole: SoleInterface[] = [];
   material: MaterialInterface[] = [];
   rowData = [];
-  constructor( public dialogRef: MatDialogRef<SuaSanPhamComponent>,
-               @Inject(MAT_DIALOG_DATA) public data: any,
-               private prdsv: ProductService,
-               private brsv: BrandService,
-               private ctsv: CategoryService,
-               private slsv: SoleService,
-               private mtsv: MaterialpostService) { }
+  data: any;
+
+  constructor(private prdsv: ProductService,
+              private brsv: BrandService,
+              private ctsv: CategoryService,
+              private slsv: SoleService,
+              private mtsv: MaterialpostService, private router: Router,
+              private route: ActivatedRoute) {
+    this.idProduct = +this.route.snapshot.paramMap.get('idProduct');
+  }
 
   ngOnInit(): void {
     this.getALLBrand();
     this.getAllCategory();
     this.getAllMaterial();
     this.getAllSole();
+    this.getProductDetails(this.idProduct);
+    console.log('data', this.product.code);
   }
-  getALLBrand(){
+
+  getProductDetails(productId: number): void {
+    this.prdsv.GetProduct(productId).subscribe((result) => {
+        this.product.code = result.data.code;
+        this.product.name = result.data.name;
+        this.product.idBrand = result.data.idBrand;
+        this.product.idCategory = result.data.idCategory;
+        this.product.idMaterial = result.data.idMaterial;
+        this.product.idSole = result.data.idSole;
+        this.product.description = result.data.description;
+        this.product.price = result.data.price;
+        this.product.status = result.data.status;
+        console.log(this.product.code);
+        console.log(result.data.code);
+      },
+      error => {
+        console.error('Error retrieving product details:', error);
+      }
+    );
+  }
+
+  getALLBrand() {
     this.brsv.getAllBrand().subscribe(res => {
       this.brand = res;
     });
   }
-  getAllCategory(){
+
+  getAllCategory() {
     this.ctsv.getAllCategory().subscribe(res => {
       this.categories = res;
     });
   }
-  getAllSole(){
+
+  getAllSole() {
     this.slsv.getAllSole().subscribe(res => {
       this.sole = res;
     });
   }
-  getAllMaterial(){
+
+  getAllMaterial() {
     this.mtsv.getAllMaterial().subscribe(res => {
       this.material = res;
     });
   }
-  clickUpdate(id: number){
+
+  clickUpdate(id: number) {
     const product = {
-      code: this.data.code,
-      name: this.data.name,
-      updateName: this.data.updateName,
-      idBrand: this.data.idBrand,
-      idMaterial: this.data.idMaterial,
-      idSole: this.data.idSole,
-      idCategory: this.data.idCategory,
-      description: this.data.description,
-      status: this.data.status,
-      price: this.data.price
+      code: this.product.code,
+      name: this.product.name,
+      idBrand: this.product.idBrand,
+      idMaterial: this.product.idMaterial,
+      idSole: this.product.idSole,
+      idCategory: this.product.idCategory,
+      description: this.product.description,
+      status: this.product.status,
+      price: this.product.price
     };
     this.prdsv.UpdateProduct(id, product).subscribe(
       result => {
         console.log('product add success', result);
-        this.dialogRef.close('saveProduct');
+        this.router.navigateByUrl('admin/san-pham');
       },
       error => {
         console.error('product add error', error);

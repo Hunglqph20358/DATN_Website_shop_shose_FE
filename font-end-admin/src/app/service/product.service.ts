@@ -20,4 +20,7 @@ export class ProductService {
   DeleteProduct(id: number): Observable<any>{
     return this.http.delete(`${apiURL}product/delete/${id}`);
   }
+  GetProduct(id: number): Observable<any>{
+    return this.http.get(`${apiURL}product/detail/${id}`);
+  }
 }
