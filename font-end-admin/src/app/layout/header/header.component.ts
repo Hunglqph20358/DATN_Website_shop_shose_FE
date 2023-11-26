@@ -8,7 +8,11 @@ import { Component, OnInit } from '@angular/core';
 export class HeaderComponent implements OnInit {
 
   constructor() { }
+  openedNewComponent = false;
 
+  public openNewComponent() {
+    this.openedNewComponent = true;
+  }
   ngOnInit(): void {
   }
 

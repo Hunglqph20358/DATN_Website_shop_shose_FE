@@ -63,8 +63,12 @@ import { SignUpComponent } from './component/sign-up/sign-up.component';
 import { ActionOrderComponent } from './component/order/action-order/action-order.component';
 import { OrderDetailComponent } from './component/order/order-detail/order-detail.component';
 import {NgSelectModule} from '@ng-select/ng-select';
+import { SalesCounterComponent } from './component/sales-counter/sales-counter.component';
+import {MatListModule} from '@angular/material/list';
+import {MatTable, MatTableModule} from '@angular/material/table';
 import {MatTabsModule} from '@angular/material/tabs';
 import {ToastrModule} from 'ngx-toastr';
+import { CustomerComponent } from './component/customer/customer.component';
 
 @NgModule({
   declarations: [
@@ -112,7 +116,9 @@ import {ToastrModule} from 'ngx-toastr';
     DetailVoucherComponent,
     SignUpComponent,
     ActionOrderComponent,
-    OrderDetailComponent
+    OrderDetailComponent,
+    SalesCounterComponent,
+    CustomerComponent,
   ],
   imports: [
     BrowserModule,
@@ -132,12 +138,14 @@ import {ToastrModule} from 'ngx-toastr';
     MatIconModule,
     NgSelectModule,
     MatTabsModule,
-    ToastrModule.forRoot()
+    ToastrModule.forRoot(),
+    MatListModule,
+    MatTableModule
   ],
   bootstrap: [AppComponent],
   providers: [ { provide: JWT_OPTIONS, useValue: JWT_OPTIONS },
     JwtHelperService],
-  entryComponents: [ActionRendererComponent]
+  entryComponents: [ActionRendererComponent],
 })
 export class AppModule {
 }

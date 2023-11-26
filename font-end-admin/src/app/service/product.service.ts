@@ -14,4 +14,7 @@ export class ProductService {
   // AddProduct(): Observable<any>{
   //   return  this.http.post(`${apiURL}product/add`);
   // }
+  searchProduct(param: string): Observable<any>{
+    return this.http.get(`${apiURL}product/search/` + param);
+  }
 }
