@@ -28,6 +28,7 @@ import {SignUpComponent} from './component/sign-up/sign-up.component';
 import {OrderDetailComponent} from './component/order/order-detail/order-detail.component';
 import {ThemSanPhamComponent} from './component/sanpham/them-san-pham/them-san-pham.component';
 import {SuaSanPhamComponent} from './component/sanpham/sua-san-pham/sua-san-pham.component';
+import {SalesCounterComponent} from './component/sales-counter/sales-counter.component';
 
 const routes: Routes = [
   {path: '', redirectTo: 'staff', pathMatch: 'full'},
@@ -61,6 +62,7 @@ const routes: Routes = [
   {path: 'staff', component: StaffComponent, canActivate: [AuthGuard]},
   {path: 'sign-up', component: SignUpComponent},
   // {path: 'order-detail', component: OrderDetailComponent},
+  {path: 'sales-counter', component: SalesCounterComponent},
 ];
 
 @NgModule({

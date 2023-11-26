@@ -64,8 +64,12 @@ import { SignUpComponent } from './component/sign-up/sign-up.component';
 import { ActionOrderComponent } from './component/order/action-order/action-order.component';
 import { OrderDetailComponent } from './component/order/order-detail/order-detail.component';
 import {NgSelectModule} from '@ng-select/ng-select';
+import { SalesCounterComponent } from './component/sales-counter/sales-counter.component';
+import {MatListModule} from '@angular/material/list';
+import {MatTable, MatTableModule} from '@angular/material/table';
 import {MatTabsModule} from '@angular/material/tabs';
 import {ToastrModule} from 'ngx-toastr';
+import { CustomerComponent } from './component/customer/customer.component';
 import {DeGiayActionComponent} from './component/degiay/de-giay-action/de-giay-action.component';
 import {KichCoActionComponent} from './component/kichco/kich-co-action/kich-co-action.component';
 import {MauSacActionComponent} from './component/mausac/mau-sac-action/mau-sac-action.component';
@@ -124,7 +128,9 @@ import {ThuongHieuActionComponent} from './component/thuonghieu/thuong-hieu-acti
     DetailVoucherComponent,
     SignUpComponent,
     ActionOrderComponent,
-    OrderDetailComponent
+    OrderDetailComponent,
+    SalesCounterComponent,
+    CustomerComponent,
   ],
   imports: [
     BrowserModule,
@@ -144,12 +150,14 @@ import {ThuongHieuActionComponent} from './component/thuonghieu/thuong-hieu-acti
     MatIconModule,
     NgSelectModule,
     MatTabsModule,
-    ToastrModule.forRoot()
+    ToastrModule.forRoot(),
+    MatListModule,
+    MatTableModule
   ],
   bootstrap: [AppComponent],
   providers: [ { provide: JWT_OPTIONS, useValue: JWT_OPTIONS },
     JwtHelperService],
-  entryComponents: [ActionRendererComponent]
+  entryComponents: [ActionRendererComponent],
 })
 export class AppModule {
 }
