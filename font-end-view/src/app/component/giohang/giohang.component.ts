@@ -126,12 +126,12 @@ export class GiohangComponent implements OnInit {
         cancelButtonText: 'No',
       }).then((result) => {
         if (result.isConfirmed) {
-          this.toastr.success('Xoa Thanh Cong!', 'Remove', {
-            positionClass: 'toast-top-right'
-          });
           this.cartData.delete(cartKey);
           this.cookieService.set('cart', JSON.stringify([...this.cartData]));
           window.location.reload();
+          this.toastr.success('Xoa Thanh Cong!', 'Remove', {
+            positionClass: 'toast-top-right'
+          });
         }
       });
     }

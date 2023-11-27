@@ -20,5 +20,11 @@ export class AddressService {
   getAddress(obj): Observable<any>{
     return  this.http.post(`${apiURL}get-address`, obj);
   }
+  updateAddressConfig(obj): Observable<any>{
+    return  this.http.post(`${apiURL}update-address/config`, obj);
+  }
+  detailAddress(id: number): Observable<any>{
+    return  this.http.get(`${apiURL}detail-address/${id}`);
+  }
 
 }
