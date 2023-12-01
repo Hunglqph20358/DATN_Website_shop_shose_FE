@@ -41,7 +41,6 @@ export class CheckoutComponent implements OnInit {
     receiverPhone: '',
   };
   email;
-  dataCheckoutByNow;
 
   listProvince = [];
   listDistrict = [];
@@ -64,7 +63,7 @@ export class CheckoutComponent implements OnInit {
       const entries = JSON.parse(cartData);
       this.cartData = new Map(entries);
     }
-    const storedUserString = localStorage.getItem('users');
+    const storedUserString = localStorage.getItem('customer');
 
     if (storedUserString) {
       const storedUser = JSON.parse(storedUserString);
@@ -165,7 +164,12 @@ export class CheckoutComponent implements OnInit {
   }
 
   thanhToan() {
-    if (this.user == null || this.user === undefined) {
+    debugger
+    if (this.user.id ===  null && this.user.code === null) {
+      let province = this.listProvince.find(c => c.ProvinceID === this.addressNotLogin.provinceId);
+      // console.log(province);
+      let district = this.listDistrict.find(d => d.DistrictID === this.addressNotLogin.districtId);
+      let ward = this.listWard.find(w => w.WardCode === this.addressNotLogin.wardCode);
       if (this.checkChoicePay === 1) {
         const obj = {
           ...this.order,
@@ -173,8 +177,8 @@ export class CheckoutComponent implements OnInit {
           totalPayment: this.totalMoneyPay,
           shipPrice: this.shipFee,
           codeVoucher: this.voucher ? this.voucher.code : null,
-          addressReceived: this.addressNotLogin.specificAddress + ', ' + this.addressNotLogin.wards + ', '
-            + this.addressNotLogin.district + ', ' + this.addressNotLogin.province,
+          addressReceived: this.addressNotLogin.specificAddress + ', ' + ward.WardName + ', '
+            + district.DistrictName + ', ' + province.ProvinceName,
           paymentType: 1,
         };
         this.orderService.createOrderNotLogin(obj).subscribe(res => {
@@ -198,18 +202,23 @@ export class CheckoutComponent implements OnInit {
           totalPrice: this.totalMoney,
           shipPrice: this.shipFee,
           codeVoucher: this.voucher ? this.voucher.code : null,
-          addressReceived: this.addressNotLogin.specificAddress + ', ' + this.addressNotLogin.wards + ', '
-            + this.addressNotLogin.district + ', ' + this.addressNotLogin.province,
+          addressReceived: this.addressNotLogin.specificAddress + ', ' + ward.WardName + ', '
+            + district.DistrictName + ', ' + province.ProvinceName,
           paymentType: 0,
         };
         this.orderService.createOrderNotLogin(obj).subscribe(res => {
           if (res.status === 'OK') {
-            this.route.navigate(['/home']);
+            const objCheckOut = {
+              order: res.data,
+              listCart: this.listCart,
+              email: this.email
+            };
+            sessionStorage.setItem('order', JSON.stringify(objCheckOut));
+            this.route.navigate(['cart/checkout-detail']);
           }
         });
       }
     } else {
-      debugger
       if (this.checkChoicePay === 1) {
         const obj = {
           ...this.order,
@@ -254,7 +263,12 @@ export class CheckoutComponent implements OnInit {
         };
         this.orderService.createOrder(obj).subscribe(res => {
           if (res.status === 'OK') {
-            this.route.navigate(['/order']);
+            const objCheckOut = {
+              order: res.data,
+              listCart: this.listCart,
+            };
+            sessionStorage.setItem('order', JSON.stringify(objCheckOut));
+            this.route.navigate(['cart/checkout-detail']);
           }
         });
       }
@@ -265,7 +279,11 @@ export class CheckoutComponent implements OnInit {
     this.matDialog.open(AddressCheckoutComponent, {
       width: '40%',
       height: '65vh',
-      data: 3
+      data: this.user.id
+    }).afterClosed().subscribe(res => {
+      if (res === 'close-address') {
+        this.ngOnInit();
+      }
     });
   }
 
@@ -273,6 +291,7 @@ export class CheckoutComponent implements OnInit {
     this.matDialog.open(PopupVoucherComponent, {
       width: '45%',
       height: '70vh',
+      data: this.totalMoney
     }).afterClosed().subscribe(result => {
       if (result.event === 'saveVoucher') {
         this.voucherService.getVoucher(result.data.code).subscribe(res => {

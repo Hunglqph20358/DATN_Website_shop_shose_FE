@@ -1,7 +1,10 @@
-import {Component, Inject, OnInit} from '@angular/core';
+import {ChangeDetectorRef, Component, Inject, OnInit} from '@angular/core';
 import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
 import {OrderDetailService} from '../../../service/order-detail.service';
 import {formatMoney, formatNumber, padZero} from '../../../util/util';
+import Swal from 'sweetalert2';
+import {OrderService} from '../../../service/order.service';
+import {ToastrService} from 'ngx-toastr';
 
 @Component({
   selector: 'app-order-detail',
@@ -14,9 +17,12 @@ export class OrderDetailComponent implements OnInit {
   columnDefs: any;
   gridApi;
   gridColumnApi;
+  status: any;
+  totalQuantity: number = 0;
 
-  constructor(public matRef: MatDialogRef<OrderDetailComponent>, @Inject(MAT_DIALOG_DATA) public data: any,
-              private orderDetailService: OrderDetailService) {
+  constructor(private orderDetailService: OrderDetailService,
+              public matRef: MatDialogRef<OrderDetailComponent>,
+              @Inject(MAT_DIALOG_DATA) public data: any, private orderService: OrderService, private cdr: ChangeDetectorRef, private toastr: ToastrService) {
     this.rowData = [];
     this.columnDefs = [
       {
@@ -74,17 +80,44 @@ export class OrderDetailComponent implements OnInit {
         },
       }
     ];
+    this.status = this.data.data.status;
   }
 
   ngOnInit(): void {
-    console.log(this.data);
-    this.orderDetailService.getAllOrderDetailByOrder(this.data.id).subscribe(res => {
+    // console.log(this.data);
+    console.log(this.data.data);
+    this.orderDetailService.getAllOrderDetailByOrder(this.data.data.id).subscribe(res => {
       this.rowData = res;
+      this.totalQuantity = this.rowData.reduce((total, orderDetail) => total + (orderDetail.quantity || 0), 0);
     });
   }
 
   onGridReady(params: any) {
     this.gridApi = params.api;
     this.gridColumnApi = params.columnApi;
+  }
+
+  cancelOrder() {
+    Swal.fire({
+      title: 'Bạn có chắc chắn muốn hủy đơn hàng này không ?',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Yes',
+      cancelButtonText: 'No',
+    }).then((result) => {
+      if (result.isConfirmed) {
+        const obj = {
+          id: this.data.data.id,
+          idCustomer: this.data.customer.id
+        };
+        this.orderService.cancelOrderView(obj).subscribe(res => {
+          this.toastr.success('Hủy đơn hàng Thanh Cong!', 'Thông báo', {
+            positionClass: 'toast-top-right'
+          });
+          this.cdr.detectChanges();
+          this.matRef.close('update-order');
+        });
+      }
+    });
   }
 }

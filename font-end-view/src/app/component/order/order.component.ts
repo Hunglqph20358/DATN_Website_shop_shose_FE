@@ -4,6 +4,7 @@ import {formatCurrency} from '@angular/common';
 import {formatDate, formatDateTime, formatMoney, formatTime} from '../../util/util';
 import {MatDialog} from '@angular/material/dialog';
 import {OrderDetailComponent} from './order-detail/order-detail.component';
+import {ActionOrderComponent} from './action-order/action-order.component';
 
 @Component({
   selector: 'app-order',
@@ -12,27 +13,32 @@ import {OrderDetailComponent} from './order-detail/order-detail.component';
 })
 export class OrderComponent implements OnInit {
 
+  active = 1;
   listStatus: any = [];
   status = 6;
-  rowData: any;
-  columnDefs: any;
-  headerHeight: 80;
-  rowHeight: 55;
+  rowData;
+  columnDefs;
   gridApi;
   gridColumnApi;
+  user: any = {
+    id: null,
+    code: null,
+    fullname: '',
+    phone: '',
+    email: '',
+  };
 
-  constructor(private orderService: OrderService, private cdr: ChangeDetectorRef, private matDialog: MatDialog) {
+  constructor(private matDialog: MatDialog, private orderService: OrderService, private cdr: ChangeDetectorRef) {
     const lst =
       [
         {name: 'Tất cả', id: 6},
         {name: 'Chờ xác nhận', id: 0},
         {name: 'Chờ xử lý', id: 1},
         {name: 'Đang giao hàng', id: 2},
-        {name: 'Đã nhận hàng', id: 3},
+        {name: 'Hoàn thành', id: 3},
         {name: 'Đã Hủy', id: 4},
       ];
     this.listStatus = lst;
-
     this.columnDefs = [
       {
         headerName: 'STT',
@@ -52,6 +58,32 @@ export class OrderComponent implements OnInit {
           'font-weight': '500',
           'font-size': '12px',
           'align-items': 'center',
+          color: '#36f',
+          display: 'flex',
+          // top: '12px',
+          'white-space': 'nowrap',
+          'text-overflow': 'ellipsis',
+          overflow: 'hidden',
+          cursor: 'pointer',
+          // textAlign: 'center',
+          'justify-content': 'center',
+        },
+        onCellClicked: (params) => {
+          return this.openXemChiTiet(params.data);
+        }
+      },
+      {
+        headerName: 'Ngày Tạo',
+        field: 'createDate',
+        suppressMovable: true,
+        valueFormatter: params => {
+          return formatDateTime(params.data.createDate);
+        },
+        cellStyle: {
+
+          'font-weight': '500',
+          'font-size': '12px',
+          'align-items': 'center',
           color: '#101840',
           display: 'flex',
           // top: '12px',
@@ -63,11 +95,10 @@ export class OrderComponent implements OnInit {
         },
       },
       {
-        headerName: 'Ngày Đặt Hàng',
-        field: 'createDate',
-        suppressMovable: true,
+        headerName: 'Thanh Toán',
+        field: 'statusPayment',
         valueFormatter: params => {
-          return formatDateTime(params.data.createDate);
+          return params.data.statusPayment === 0 ? 'Đã thanh toán' : 'Chưa thanh toán';
         },
         cellStyle: {
           'font-weight': '500',
@@ -116,7 +147,7 @@ export class OrderComponent implements OnInit {
             case 2:
               return 'Đang giao hàng';
             case 3:
-              return 'Đã nhận hàng';
+              return 'Hoàn thành';
             case 4:
               return 'Đã Hủy';
             default:
@@ -136,28 +167,36 @@ export class OrderComponent implements OnInit {
           // textAlign: 'center',
           'justify-content': 'center',
         },
-      }, {
-        headerName: '',
-        suppressMovable: true,
-        cellRenderer: params => {
-          return `<div style="text-decoration: none" class="btn btn-link">Xem Chi Tiết</div>`;
-        },
-        onCellClicked: (params) => {
-          return this.openOrderDetail(params.data);
-        }
-      },
+      }
     ];
     this.rowData = [];
+    const storedUserString = localStorage.getItem('customer');
+
+    if (storedUserString) {
+      const storedUser = JSON.parse(storedUserString);
+      this.user = {
+        id: storedUser.id,
+        code: storedUser.code,
+        fullname: storedUser.fullname,
+        phone: storedUser.phone,
+        email: storedUser.email,
+      };
+    }
   }
 
   ngOnInit(): void {
     this.getAllOrder();
   }
 
+  onGridReady(params: any) {
+    this.gridApi = params.api;
+    this.gridColumnApi = params.columnApi;
+  }
+
   getAllOrder(): void {
     const obj = {
-      idCustomer: 3,
-      status: this.status
+      status: this.status,
+      idCustomer: this.user.id
     };
     this.orderService.getAllOrder(obj).subscribe(res => {
       this.rowData = res;
@@ -166,15 +205,24 @@ export class OrderComponent implements OnInit {
     this.cdr.detectChanges();
   }
 
-  onGridReady(params: any) {
-    this.gridApi = params.api;
-    this.gridColumnApi = params.columnApi;
+  tabChanged(event: any) {
+    const selectedTabIndex = event.index;
+    const selectedTabId = this.listStatus[selectedTabIndex].id;
+    this.status = selectedTabId;
+    this.getAllOrder();
   }
 
-  openOrderDetail(value: any): void {
+  openXemChiTiet(dataOrder) {
     this.matDialog.open(OrderDetailComponent, {
       width: '150vh',
-      data: value
+      data: {
+        data: dataOrder,
+        customer: this.user
+      }
+    }).afterClosed().subscribe(res => {
+      if (res === 'update-order') {
+        this.ngOnInit();
+      }
     });
   }
 }

@@ -2,6 +2,11 @@
   <div class="example-button-row" >
     <button mat-raised-button color="primary" style="margin-bottom: 20px; margin-left: 20px" routerLink="/them-san-pham">Thêm Product</button>
   </div>
+<div style="margin-left: 20px">
+  <div>
+    <button type="button" (click)="exportData()">Export</button>
+    <button type="button" (click)="openPopupImport()">Import</button>
+  </div>
 </div>
 <div class="row my-5" style="margin-left: 12px">
   <div class="col">
@@ -20,4 +25,5 @@
       ></ag-grid-angular>
     </div>
   </div>
+</div>
 </div>

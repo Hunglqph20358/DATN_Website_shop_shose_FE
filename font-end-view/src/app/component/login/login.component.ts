@@ -27,7 +27,7 @@ export class LoginComponent implements OnInit {
     this.signIn.signIn(this.signFrom).subscribe(data =>{
         localStorage.setItem('token', data.token);
         console.log(data.usersDTO);
-        localStorage.setItem('users', JSON.stringify(data.usersDTO));
+        localStorage.setItem('customer', JSON.stringify(data.usersDTO));
         this.router.navigate(['shopping-cart']);
     },
       error => {

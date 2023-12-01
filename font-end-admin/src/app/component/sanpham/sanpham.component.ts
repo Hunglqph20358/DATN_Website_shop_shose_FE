@@ -1,8 +1,12 @@
 import {ChangeDetectorRef, Component, OnInit} from '@angular/core';
-import {MatDialog} from "@angular/material/dialog";
-import {ThemSanPhamComponent} from "./them-san-pham/them-san-pham.component";
-import {ProductService} from "../../service/product.service";
-import {SanPhamActionComponent} from './san-pham-action/san-pham-action.component';
+import {MatDialog} from '@angular/material/dialog';
+import {ThemSanPhamComponent} from './them-san-pham/them-san-pham.component';
+import {SuaSanPhamComponent} from './sua-san-pham/sua-san-pham.component';
+import {ProductService} from '../../service/product.service';
+import {ActionVoucherComponent} from '../voucher/action-voucher/action-voucher.component';
+import * as FileSaver from 'file-saver';
+import {getFormattedDateCurrent} from '../../util/util';
+import {ImportFileComponent} from './import-file/import-file.component';
 
 @Component({
   selector: 'app-sanpham',
@@ -17,6 +21,7 @@ export class SanphamComponent implements OnInit {
   rowHeight = 40;
   public rowSelection: 'single' | 'multiple' = 'multiple'; // Chọn nhiều dòng
   constructor(private matdialog: MatDialog,
+              private spsv: ProductService, private changeDetectorRef: ChangeDetectorRef) {
               private spsv: ProductService,
               private cdr: ChangeDetectorRef) {
     this.columnDefs = [
@@ -52,24 +57,46 @@ export class SanphamComponent implements OnInit {
       {headerName: 'Action', field: '', cellRendererFramework: SanPhamActionComponent, width: 110},
     ];
   }
-
   ngOnInit(): void {
-    this.getALLproduct();
-  }
-  getALLproduct(){
     this.spsv.getAllProduct().subscribe(res => {
       this.rowData = res;
     });
   }
-  openAdd(){
-    const dialogref = this.matdialog.open(ThemSanPhamComponent, {
-      width: '130vh',
+
+  openAdd() {
+    this.matdialog.open(ThemSanPhamComponent, {
+      width: '60vh',
       height: '80vh'
     });
-    dialogref.afterClosed().subscribe(result => {
-      if (result === 'addProduct'){
+  }
+
+  openUpdate() {
+    this.matdialog.open(SuaSanPhamComponent, {
+      width: '60vh',
+      height: '80vh'
+    });
+  }
+
+  exportData() {
+    this.spsv.exportExcelProduct().subscribe((data: Blob) => {
+      const currentDate = new Date();
+      const formattedDate = getFormattedDateCurrent(currentDate);
+      const fileName = `DS_SanPham_${formattedDate}.xlsx`;
+      FileSaver.saveAs(data, fileName);
+    });
+    this.changeDetectorRef.detectChanges();
+  }
+
+  openPopupImport() {
+    this.matdialog.open(ImportFileComponent, {
+      data: null,
+      disableClose: true,
+      hasBackdrop: true,
+      width: '446px'
+    }).afterClosed().subscribe(res => {
+      if (res === 'cancel-import') {
         this.ngOnInit();
-        this.cdr.detectChanges();
+        this.changeDetectorRef.detectChanges();
       }
     });
   }
