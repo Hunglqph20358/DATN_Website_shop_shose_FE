@@ -11,7 +11,7 @@ export class AuthService implements CanActivate{
       return true;
     } else {
       localStorage.removeItem('token');
-      localStorage.removeItem('users');
+      localStorage.removeItem('customer');
       this.router.navigate(['login']);
       return false;
     }

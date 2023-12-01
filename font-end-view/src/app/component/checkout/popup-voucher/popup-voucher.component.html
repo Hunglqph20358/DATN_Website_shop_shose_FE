@@ -1,7 +1,7 @@
 <div class="container">
   <div class="row"><h5>Chọn Voucher</h5></div>
   <div class="row" style="border: 1px solid" *ngFor="let v of listVoucher">
-    <div style="display: flex; justify-content: space-between">
+    <div style="display: flex; justify-content: space-between" [style.opacity]="v.conditionApply > data ? '0.5': ''">
       <div style="display: flex">
         <div>
           <img style="width: 70px; height: 70px" src="../../../../assets/image/680c03454d4a8e6510cde78faa437224_tn.png" alt="">
@@ -14,18 +14,18 @@
             <label>Đơn tối thiểu: {{v.conditionApply | number:'1.0-0'}} đ</label>
           </div>
           <div class="row">
-            <label>HSD: {{v.startDate}}</label>
+            <label>HSD: {{v.endDate}}</label>
           </div>
         </div>
       </div>
       <div style="margin-top: 23px">
-        <input type="radio" style="transform: scale(1.5);" [value]="v.code" [(ngModel)]="voucherChoice" name="voucher">
+        <input type="radio" style="transform: scale(1.5);" [value]="v.code" [(ngModel)]="voucherChoice" name="voucher" [disabled]="v.conditionApply > data">
       </div>
     </div>
   </div>
   <div style="display: flex">
     <div>
-      <button type="button" class="btn btn-secondary" (click)="matDialogRef.close()">Đóng</button>
+      <button type="button" class="btn btn-secondary" (click)="closePopup();">Đóng</button>
     </div>
     <div>
       <button type="button" class="btn btn-success" (click)="xacNhan()">Xác nhận</button>

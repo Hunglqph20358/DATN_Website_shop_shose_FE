@@ -82,7 +82,7 @@
           </div>
 
 
-          <div class="col-12" *ngIf="this.user.id === null || this.user.code === null">
+          <div class="col-12" *ngIf="this.user.id === null && this.user.code === null">
             <label for="email" class="form-label">Email</label>
             <input type="email" class="form-control" id="email" [(ngModel)]="email" [ngModelOptions]="{standalone: true}" placeholder="you@example.com">
             <div class="invalid-feedback">
@@ -90,7 +90,7 @@
             </div>
           </div>
 
-          <div class="col-sm-12" *ngIf="this.user.id !== null || this.user.code !== null">
+          <div class="col-sm-12" *ngIf="this.user.id !== null && this.user.code !== null">
             <label for="" class="form-label" style="font-weight: bold">Địa chỉ nhận hàng</label>
             <div style="display: flex; justify-content: space-between">
               <p *ngIf="address != null">{{address?.specificAddress + ', ' + address?.wards + ', '
@@ -100,7 +100,7 @@
               <button *ngIf="address == null" class="button-thaydoi" (click)="openPopupAddress();">Thêm địa chỉ</button>
             </div>
           </div>
-          <div class="row" *ngIf="this.user.id === null || this.user.code === null">
+          <div class="row" *ngIf="this.user.id === null && this.user.code === null">
             <label for="" class="form-label" style="font-weight: bold">Địa chỉ nhận hàng</label>
             <div class="col-md-4">
               <label class="form-label">Thành Phố</label>
@@ -143,7 +143,10 @@
         <div>
             <label class="form-check-label">Phí ship: </label> <input style="margin-left: 180px" type="text" value="{{shipFee | number:'1.0-0'}} đ" disabled>
           </div>
-          <div style="margin-top: 10px">
+          <div style="margin-top: 10px;">
+            <label class="form-check-label">Voucher giảm: </label> <input style="margin-left: 135px" type="text" value="{{voucher?.reducedValue | number:'1.0-0'}} đ" disabled>
+          </div>
+        <div style="margin-top: 10px">
             <label class="form-check-label">Tổng tiền phải thanh toán: </label> <input style="margin-left: 50px" type="text" value="{{totalMoneyPay | number:'1.0-0'}} đ" disabled>
           </div>
 

@@ -30,7 +30,7 @@ import {OrderDetailComponent} from './component/order/order-detail/order-detail.
 import {ToastrModule} from 'ngx-toastr';
 import { ActionOrderComponent } from './component/order/action-order/action-order.component';
 import { OrderNotLoginComponent } from './component/order-not-login/order-not-login.component';
-import { OrderDetailComponent } from './component/order/order-detail/order-detail.component';
+import {MatTabsModule} from '@angular/material/tabs';
 import { ForgotPasswordComponent } from './component/forgot-password/forgot-password.component';
 import { ResetPasswordComponent } from './component/reset-password/reset-password.component';
 import { InfoUserComponent } from './component/info-user/info-user.component';
@@ -58,20 +58,21 @@ import { InfoUserComponent } from './component/info-user/info-user.component';
     ActionOrderComponent,
     OrderNotLoginComponent
   ],
-  imports: [
-    BrowserModule,
-    AppRoutingModule,
-    HttpClientModule,
-    NgSelectModule,
-    FormsModule,
-    MatCheckboxModule,
-    MatMenuModule,
-    MatDialogModule,
-    MatButtonModule,
-    BrowserAnimationsModule,
-    AgGridModule.withComponents([]),
-    ToastrModule.forRoot()
-  ],
+    imports: [
+        BrowserModule,
+        AppRoutingModule,
+        HttpClientModule,
+        NgSelectModule,
+        FormsModule,
+        MatCheckboxModule,
+        MatMenuModule,
+        MatDialogModule,
+        MatButtonModule,
+        BrowserAnimationsModule,
+        AgGridModule.withComponents([]),
+        ToastrModule.forRoot(),
+        MatTabsModule
+    ],
   providers: [{provide: JWT_OPTIONS, useValue: JWT_OPTIONS},
     JwtHelperService],
   bootstrap: [AppComponent]

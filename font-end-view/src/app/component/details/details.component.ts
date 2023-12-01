@@ -32,11 +32,10 @@ export class DetailsComponent implements OnInit {
   product: any;
   listColor = [];
   listSize = [];
-
+  sizeBefore: number;
   colorId: number | null = null;
   sizeId: number | null = null;
   bothSizeAndColorSelected: boolean = false;
-
 
 
   ngOnInit(): void {
@@ -59,7 +58,6 @@ export class DetailsComponent implements OnInit {
   selectSize(s) {
     console.log(s);
 
-    // Kiểm tra xem kích thước đã chọn có được chọn trước đó không, nếu có, hãy xóa lựa chọn
     if (s.isSelected) {
       this.listSize.forEach(size => {
         size.isSelected = false;
@@ -74,24 +72,25 @@ export class DetailsComponent implements OnInit {
     }
 
     // Xóa lựa chọn trước đó
-    this.listSize.forEach(size => {
-      size.isSelected = false;
-      size.disabled = false;
-    });
+    // this.listSize.forEach(size => {
+    //   size.isSelected = false;
+    //   size.disabled = false;
+    // });
 
     const selectedSizeId = s.id;
     const colorIDsForSelectedSize = this.product.productDetailDTOList
       .filter(detail => detail.idSize === parseInt(String(selectedSizeId), 10) && detail.idColor && detail.quantity > 0)
       .map(detail => detail.idColor);
 
+    if (this.sizeId != null) {
+      const previousSelectedSize = this.listSize.find(size => size.id === this.sizeId);
+      if (previousSelectedSize) {
+        // Bỏ chọn size trước đó
+        previousSelectedSize.isSelected = false;
+      }
+    }
     // Cập nhật kích thước đã chọn
     s.isSelected = true;
-
-    // Vô hiệu hóa các kích thước không khả dụng cho màu đã chọn
-    // this.listSize.forEach(size => {
-    //   size.disabled = !colorIDsForSelectedSize.includes(size.id);
-    // });
-
     // Vô hiệu hóa các màu không khả dụng cho kích thước đã chọn
     this.listColor.forEach(color => {
       color.disabled = !colorIDsForSelectedSize.includes(color.id);
@@ -100,7 +99,6 @@ export class DetailsComponent implements OnInit {
     this.sizeId = selectedSizeId;
     this.checkIfBothSizeAndColorSelected();
   }
-
 
 
   selectColor(c) {
@@ -117,22 +115,29 @@ export class DetailsComponent implements OnInit {
       return; // Thoát khỏi hàm sớm
     }
 
-    this.listColor.forEach(color => {
-      color.disabled = false;
-      color.isSelected = false;
-    });
+    // this.listColor.forEach(color => {
+    //   color.disabled = false;
+    //   color.isSelected = false;
+    // });
 
-    const selectColorId = c.id;
-    const sizeIDsForSelectedColor = this.product.productDetailDTOList
-      .filter(detail => detail.idSize === parseInt(String(selectColorId), 10) && detail.idSize && detail.quantity > 0)
-      .map(detail => detail.idColor);
+    const selectedColorId = c.id;
+    const colorIDsForSelectedSize = this.product.productDetailDTOList
+      .filter(detail => detail.idColor === parseInt(String(selectedColorId), 10) && detail.idColor && detail.quantity > 0)
+      .map(detail => detail.idSize);
 
+    if (this.colorId != null) {
+      const previousSelectedColor = this.listColor.find(color => color.id === this.colorId);
+      if (previousSelectedColor) {
+        // Bỏ chọn size trước đó
+        previousSelectedColor.isSelected = false;
+      }
+    }
     c.isSelected = true;
 
     this.listSize.forEach(size => {
-      size.disabled = !sizeIDsForSelectedColor.includes(size.id);
+      size.disabled = !colorIDsForSelectedSize.includes(size.id);
     });
-    this.colorId = selectColorId;
+    this.colorId = selectedColorId;
     this.checkIfBothSizeAndColorSelected();
   }
 
