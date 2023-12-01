@@ -69,6 +69,7 @@ import {MatTable, MatTableModule} from '@angular/material/table';
 import {MatTabsModule} from '@angular/material/tabs';
 import {ToastrModule, ToastrService} from 'ngx-toastr';
 import { CustomerComponent } from './component/customer/customer.component';
+import { ImportFileComponent } from './component/sanpham/import-file/import-file.component';
 
 @NgModule({
   declarations: [
@@ -119,6 +120,7 @@ import { CustomerComponent } from './component/customer/customer.component';
     OrderDetailComponent,
     SalesCounterComponent,
     CustomerComponent,
+    ImportFileComponent,
   ],
   imports: [
     BrowserModule,
