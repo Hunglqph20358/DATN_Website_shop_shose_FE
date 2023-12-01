@@ -25,6 +25,8 @@ export class CreatVoucherComponent implements OnInit {
     customerAdminDTOList: '',
     limitCustomer: '',
     allow: '',
+    appy: '',
+    optionCustomer: '',
     createName: localStorage.getItem('fullname'),
   };
   gridApi: any;
@@ -83,10 +85,11 @@ export class CreatVoucherComponent implements OnInit {
     this.gridApi = params.api;
   }
   addVoucher() {
+    const arrayCustomer = this.voucher.optionCustomer === '0' ? this.rowData : this.gridApi.getSelectedRows();
     const obj = {
-      ...this.voucher,
-      customerAdminDTOList: this.gridApi.getSelectedRows(),
-    };
+       ...this.voucher,
+       customerAdminDTOList: arrayCustomer,
+     };
     this.voucherService.createVoucher(obj).subscribe(
       (response) => {
         // Handle the response if needed, e.g., show a success message

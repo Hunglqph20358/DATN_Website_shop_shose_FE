@@ -46,20 +46,6 @@ export class ActionDiscountComponent
     console.log(this.data);
     this.router.navigate(['/admin/edit-discount', this.data.id]);
   }
-
-  deleteItem(): void {
-    const confirmation = confirm('Bạn có chắc chắn muốn xóa dòng này?');
-    if (confirmation) {
-      this.discountService.deleteDiscount(this.data.id)
-        .subscribe(() => {
-            this.router.navigateByUrl('/admin/discount');
-          },
-          (error) => {
-            console.error('Error delete discount', error);
-          });
-    }
-  }
-
   detail(): void {
     this.router.navigate(['/admin/discount', this.data.id]);
   }

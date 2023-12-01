@@ -3,7 +3,6 @@ import { MatDialog } from '@angular/material/dialog';
 import { ActionVoucherComponent } from './action-voucher/action-voucher.component';
 import { VoucherService } from 'src/app/service/voucher.service';
 import {formatDateTime} from "../../util/util";
-import {ShowComponent} from "../discount/show/show.component";
 
 @Component({
   selector: 'app-bangvoucher',
@@ -88,7 +87,18 @@ export class VoucherComponent implements OnInit {
       {
         headerName: 'Hiển thị',
         field: '',
-        cellRendererFramework: ShowComponent,
+        cellRenderer: (params) => {
+          return `<div>
+      <label class="switch1">
+        <input type="checkbox" ${params.data.idel === 1 ? 'checked' : ''  }>
+        <span class="slider round"></span>
+      </label>
+    </div>`;
+        },
+        onCellClicked: (params) => {
+          // Use params.node.data to access the data property
+          return this.checkIsdell(params.node.data);
+        }
       },
       {
         headerName: 'Action',
@@ -123,5 +133,22 @@ export class VoucherComponent implements OnInit {
       this.rowData = response;
       console.log(response);
     });
+  }
+  checkIsdell(data: any) {
+    console.log('ID to be sent:', data.id);
+
+    // Truyền dữ liệu thông qua HTTP PUT request
+    this.apiService.KichHoat(data.id).subscribe(
+      (response) => {
+        if (Array.isArray(response)) {
+          this.rowData = response;
+        } else {
+          console.error('Invalid response format:', response);
+        }
+      },
+      (error) => {
+        console.error('Error in HTTP PUT request:', error);
+      }
+    );
   }
 }

@@ -28,7 +28,7 @@ export class DetailVoucherComponent implements OnInit {
       const id = params['id'];
       console.log(id);
       this.voucherService.getDetailVoucher(id).subscribe((response: any[]) => {
-        const firstElement = response[0];
+        const firstElement = Array.isArray(response) ? response[0] : response;
         console.log(firstElement);
         this.voucher.id = firstElement.id;
         this.voucher.name = firstElement.name;

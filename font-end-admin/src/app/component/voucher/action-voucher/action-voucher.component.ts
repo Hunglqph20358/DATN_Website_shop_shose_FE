@@ -35,18 +35,6 @@ export class ActionVoucherComponent implements OnInit, ICellRendererAngularComp 
     this.router.navigate(['/admin/edit-voucher', this.data.id]);
   }
 
-  deleteItem(): void {
-    const confirmation = confirm('Bạn có chắc chắn muốn xóa dòng này?');
-    if (confirmation) {
-      this.voucherService.deleteVoucher(this.data.id)
-        .subscribe(() => {
-            this.router.navigateByUrl('/admin/voucher');
-          },
-          (error) => {
-            console.error('Error delete discount', error);
-          });
-    }
-  }
   detail(): void {
     this.router.navigate(['/admin/voucher', this.data.id]);
   }

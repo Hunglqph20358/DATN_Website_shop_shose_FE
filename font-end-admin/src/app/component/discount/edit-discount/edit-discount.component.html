@@ -6,7 +6,9 @@
           <div class="card-header">
             <h3 class="card-title">Giảm giá</h3>
           </div>
-
+          <input type="text" hidden
+                 [ngModelOptions]="{ standalone: true }"
+                 [(ngModel)]="discount.discountAdminDTO.id">
           <form (submit)="editDiscount()">
             <div class="card-body">
               <div class="form-group">
@@ -88,7 +90,6 @@
                   name="discountType"
                   required
                 >
-                  <option >Loại giảm giá</option>
                   <option value="0">Theo %</option>
                   <option value="1">Theo tiền mặt</option>
                 </select>
@@ -125,6 +126,22 @@
                 />
               </div>
               <div class="form-group">
+                <label for="discountType">Sản phẩm áp dụng</label>
+                <select
+                  class="form-control"
+                  id="spap"
+                  [ngModelOptions]="{ standalone: true }"
+                  [(ngModel)]="discount.spap"
+                  name="discountType"
+                  required
+                >
+                  <option value="0">Tất cả sản phẩm</option>
+                  <option value="1">Tùy chọn</option>
+                </select>
+
+              </div>
+
+              <div class="form-group" *ngIf="discount.spap == '1'">
                 <label for="product">Sản phẩm giảm</label>
                 <div class="grid">
                   <ag-grid-angular
@@ -138,7 +155,23 @@
                     [domLayout]="'autoHeight'"
                     (gridReady)="onGridReady($event)"
                   ></ag-grid-angular>
+
                 </div>
+              </div>
+              <div class="form-group">
+                <label for="discountType">Nơi áp dụng</label>
+                <select
+                  class="form-control"
+                  id="spap"
+                  [ngModelOptions]="{ standalone: true }"
+                  [(ngModel)]="discount.discountAdminDTO.appy"
+                  name="discountType"
+                  required
+                >
+                  <option value="0">Mua online</option>
+                  <option value="1">Tại cửa hàng</option>
+                </select>
+
               </div>
               <div class="form-group">
                 <label for="limitCustomer">Số lượng</label>

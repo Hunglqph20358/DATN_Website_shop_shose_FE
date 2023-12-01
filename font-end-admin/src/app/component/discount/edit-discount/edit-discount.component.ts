@@ -10,17 +10,18 @@ import { DiscountService } from 'src/app/service/discount.service';
 export class EditDiscountComponent implements OnInit {
    isHidden: boolean = true;
   discount: any = {
-    id: '',
     discountAdminDTO: {
       id: '',
       name: '',
-      startDateStr: '',
-      endDateStr: '',
+      startDate: '',
+      endDate: '',
       description: '',
+      appy: '',
     },
+    spap: '',
     reducedValue: '',
     discountType: '',
-    quantity: ''
+    maxReduced: '',
   };
   gridApi: any;
   rowData = [];
@@ -84,17 +85,16 @@ export class EditDiscountComponent implements OnInit {
       this.discountService
         .getDetailDiscount(id)
         .subscribe((response: any[]) => {
-          const firstDiscount = response[0];
-          this.discount.id = firstDiscount.id;
-          this.discount.discountAdminDTO.id = firstDiscount.discountAdminDTO.id;
+          const firstDiscount = Array.isArray(response) ? response[0] : response;
+          this.discount.discountAdminDTO.id = firstDiscount.id;
           this.discount.discountAdminDTO.name =
-            firstDiscount.discountAdminDTO.name;
+            firstDiscount.name;
           this.discount.discountAdminDTO.startDate =
-            firstDiscount.discountAdminDTO.startDate;
+            firstDiscount.startDate;
           this.discount.discountAdminDTO.endDate =
-            firstDiscount.discountAdminDTO.endDate;
+            firstDiscount.endDate;
           this.discount.discountAdminDTO.description =
-            firstDiscount.discountAdminDTO.description;
+            firstDiscount.description;
           this.discount.reducedValue = firstDiscount.reducedValue;
           this.discount.discountType = firstDiscount.discountType;
 

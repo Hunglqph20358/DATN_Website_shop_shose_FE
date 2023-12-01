@@ -1,24 +1,33 @@
 import {Component, OnInit} from '@angular/core';
-import {MatDialog} from '@angular/material/dialog';
 import {ActionDiscountComponent} from './action-discount/action-discount.component';
-import {Router} from '@angular/router';
 import {DiscountService} from '../../service/discount.service';
-import {placeholdersToParams} from "@angular/compiler/src/render3/view/i18n/util";
-import {formatDateTime} from "../../util/util";
-import {ShowComponent} from "./show/show.component";
+import {formatDateTime} from '../../util/util';
+import {FormControl, FormGroup} from '@angular/forms';
+
 
 @Component({
-  selector: 'app-banggiamgia',
+  selector: 'app-discount',
   templateUrl: './discount.component.html',
-  styleUrls: ['./discount.component.css'],
+  styleUrls: ['./discount.component.css']
 })
 export class DiscountComponent implements OnInit {
   rowData: any = [];
+  rowData1: any = [];
+  rowData2: any = [];
   columnDefs;
   headerHeight = 50;
   rowHeight = 40;
   checkedIsdel = false;
   idStaff: string = '';
+  // today = new Date();
+  // month = today.getMonth();
+  // year = today.getFullYear();
+  searchName: '';
+  // campaignOne = new FormGroup({
+  //   start: new FormControl(new Date()),
+  //   end: new FormControl(new Date()),
+  // });
+  searchResults: any[] = [];
 
   constructor(private apiService: DiscountService) {
     this.columnDefs = [
@@ -67,7 +76,7 @@ export class DiscountComponent implements OnInit {
       },
       {
         headerName: 'Đã sử dụng',
-        valueGetter: function (params) {
+        valueGetter: (params) => {
           const useDiscount = params.data.used_count || 0;
           const quantity = params.data.quantity || 1;
           return `${useDiscount} / ${quantity}`;
@@ -78,14 +87,15 @@ export class DiscountComponent implements OnInit {
         field: '',
         cellRenderer: (params) => {
           return `<div>
-  <label class="switch">
-    <input type="checkbox" ${params.data.idel === '1' ? 'checked' : ''}>
-    <span class="slider round"></span>
-  </label>
-</div>`;
+      <label class="switch1">
+        <input type="checkbox" ${params.data.idel === 1 ? 'checked' : ''}>
+        <span class="slider round"></span>
+      </label>
+    </div>`;
         },
         onCellClicked: (params) => {
-          return this.checkIsdell(params);
+          // Use params.node.data to access the data property
+          return this.checkIsdell(params.node.data);
         }
       },
       {
@@ -99,9 +109,9 @@ export class DiscountComponent implements OnInit {
 
   // Định nghĩa Cell Renderer ở mức lớp
   statusRenderer(params) {
-    if (params.value == 0) {
+    if (params.value === 0) {
       return 'Còn hạn';
-    } else if (params.value == 1) {
+    } else if (params.value === 1) {
       return 'Hết hạn';
     } else {
       return 'Không rõ';
@@ -111,15 +121,71 @@ export class DiscountComponent implements OnInit {
   ngOnInit(): void {
     this.apiService.getSomeData().subscribe((response) => {
       this.rowData = response;
+      this.searchResults = response;
+      console.log(response);
+    });
+    this.apiService.getDiscountKH().subscribe((response) => {
+      this.rowData1 = response;
+    });
+    this.apiService.getDiscountKKH().subscribe((response) => {
+      this.rowData2 = response;
       console.log(response);
     });
   }
 
   checkIsdell(data: any) {
-    if(data == 1){
-      //gọi 1 api update lại idel = 0
-    }else {
+    console.log('ID to be sent:', data.id);
 
-    }
+    // Truyền dữ liệu thông qua HTTP PUT request
+    this.apiService.KichHoat(data.id).subscribe(
+      (response) => {
+        if (Array.isArray(response)) {
+          this.rowData = response;
+        } else {
+          console.error('Invalid response format:', response);
+        }
+      },
+      (error) => {
+        console.error('Error in HTTP PUT request:', error);
+      }
+    );
+  }
+
+  // Tạo một biến để lưu trữ danh sách hiện tại
+
+  search(searchTerm: string) {
+    // Thực hiện tìm kiếm và cập nhật searchResults
+    this.apiService.searchByName(searchTerm).subscribe(
+      (data) => {
+        this.searchResults = data;
+      },
+      (error) => {
+        console.error(error);
+      }
+    );
+  }
+
+  onSearchChange(event: any) {
+    const searchTerm = event.target.value;
+    this.search(searchTerm);
+  }
+
+  searchByDateRange(startDate: Date, endDate: Date): void {
+    // this.apiService.searchByDateRange(start, end)
+    //   .subscribe({
+    //     next: data => {
+    //       // Xử lý dữ liệu trả về từ API
+    //       console.log(data);
+    //     },
+    //     error: error => {
+    //       // Xử lý lỗi
+    //       console.error(error);
+    //     }
+    //   });
+  }
+
+
+  test(event: any) {
+    console.log('data event: ', event);
   }
 }

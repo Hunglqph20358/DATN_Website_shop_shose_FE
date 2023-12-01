@@ -6,6 +6,7 @@ import { Observable } from 'rxjs';
 })
 export class VoucherService {
   private apiUrl = 'http://localhost:6868/api/admin/voucher';
+  private apiUrl2 = 'http://localhost:6868/api/admin/kichHoatV';
 
   constructor(private http: HttpClient) {}
 
@@ -30,6 +31,10 @@ export class VoucherService {
 
   createVoucher(voucher: any): Observable<any> {
     return this.http.post(this.apiUrl, voucher);
+  }
+  KichHoat( id: number ) {
+    const url = `${this.apiUrl2}/${id}`;
+    return this.http.put(url, { /* provide data if needed */ }, { observe: 'response' });
   }
 }
 

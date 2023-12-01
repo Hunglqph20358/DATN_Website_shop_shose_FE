@@ -65,12 +65,13 @@ import { OrderDetailComponent } from './component/order/order-detail/order-detai
 import {NgSelectModule} from '@ng-select/ng-select';
 import {MatTabsModule} from '@angular/material/tabs';
 import {ToastrModule} from 'ngx-toastr';
-import { ShowComponent } from './component/discount/show/show.component';
 import { VoucherShipComponent } from './component/voucher-ship/voucher-ship.component';
 import { ActionVoucherShipComponent } from './component/voucher-ship/action-voucher-ship/action-voucher-ship.component';
 import { CreatVoucherShipComponent } from './component/voucher-ship/creat-voucher-ship/creat-voucher-ship.component';
 import { EditVoucherShipComponent } from './component/voucher-ship/edit-voucher-ship/edit-voucher-ship.component';
 import { DetailVoucherShipComponent } from './component/voucher-ship/detail-voucher-ship/detail-voucher-ship.component';
+import {MatNativeDateModule} from '@angular/material/core';
+import {MatDatepickerModule} from '@angular/material/datepicker';
 
 @NgModule({
   declarations: [
@@ -119,7 +120,6 @@ import { DetailVoucherShipComponent } from './component/voucher-ship/detail-vouc
     SignUpComponent,
     ActionOrderComponent,
     OrderDetailComponent,
-    ShowComponent,
     VoucherShipComponent,
     ActionVoucherShipComponent,
     CreatVoucherShipComponent,
@@ -144,7 +144,11 @@ import { DetailVoucherShipComponent } from './component/voucher-ship/detail-vouc
     MatIconModule,
     NgSelectModule,
     MatTabsModule,
-    ToastrModule.forRoot()
+    ToastrModule.forRoot(),
+    MatDatepickerModule,
+    MatNativeDateModule,
+    MatInputModule,
+    MatFormFieldModule
   ],
   bootstrap: [AppComponent],
   providers: [ { provide: JWT_OPTIONS, useValue: JWT_OPTIONS },

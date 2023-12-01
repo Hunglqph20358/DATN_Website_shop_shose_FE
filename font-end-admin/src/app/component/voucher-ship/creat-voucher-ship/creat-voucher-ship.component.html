@@ -121,6 +121,32 @@
                 />
               </div>
               <div class="form-group">
+                <label for="discountType">Nơi áp dụng</label>
+                <select
+                  class="form-control"
+                  id="kkad"
+                  [ngModelOptions]="{ standalone: true }"
+                  [(ngModel)]="voucher.apply"
+                >
+                  <option value="0">Mua online</option>
+                  <option value="1">Tại cửa hàng</option>
+                  <!-- Thêm các loại voucher khác nếu cần -->
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="discountType">Khách hàng áp dụng</label>
+                <select
+                  class="form-control"
+                  id="kkad"
+                  [ngModelOptions]="{ standalone: true }"
+                  [(ngModel)]="voucher.optionCustomer"
+                >
+                  <option value="0">Tất cả khách hàng</option>
+                  <option value="1">Tùy chọn</option>
+                  <!-- Thêm các loại voucher khác nếu cần -->
+                </select>
+              </div>
+              <div class="form-group" *ngIf="voucher.optionCustomer == 1">
                 <label for="customer">Khách hàng</label>
                 <div class="grid">
                   <ag-grid-angular

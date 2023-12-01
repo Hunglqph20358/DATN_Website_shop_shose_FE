@@ -16,11 +16,24 @@ export class CreatDiscountComponent implements OnInit {
       startDate: '',
       endDate: '',
       description: '',
+      appy: '',
+      createName: localStorage.getItem('fullname'),
     },
+    spap: '',
     reducedValue: '',
     discountType: '',
     maxReduced: '',
+    isValidDateRange: () => {
+      // Your logic to check the validity of the date range
+      // For example:
+      return (
+        this.discount.discountAdminDTO.startDate &&
+        this.discount.discountAdminDTO.endDate &&
+        this.discount.discountAdminDTO.startDate < this.discount.discountAdminDTO.endDate
+      );
+    },
   };
+  fullname: string = '';
   gridApi: any;
   rowData = [];
   columnDefs;
@@ -91,24 +104,27 @@ export class CreatDiscountComponent implements OnInit {
     this.gridApi = params.api;
   }
 
-  isValidDateRange(): boolean {
-    const startDate = new Date(this.discount.discountAdminDTO.startDate);
-    const endDate = new Date(this.discount.discountAdminDTO.endDate);
-
-    return startDate < endDate;
-  }
+  // isValidDateRange: () => {
+  //   // Your logic to check the validity of the date range
+  //   // For example:
+  //   return (
+  //     this.discount.discountAdminDTO.startDate &&
+  //   this.discount.discountAdminDTO.endDate &&
+  //   this.discount.discountAdminDTO.startDate < this.discount.discountAdminDTO.endDate
+  //   );
+  // }
 
   addDiscount() {
-    const arrayProduct = this.gridApi.getSelectedRows();
+    const arrayProduct = this.discount.spap === '0' ? this.rowData : this.gridApi.getSelectedRows();
     this.disableCheckPriceProduct = false;
     for (let i = 0; i < arrayProduct.length; i++) {
-      if (this.discount.reducedValue > arrayProduct[i].price && this.discount.discountType ==1 ) {
+      if (this.discount.reducedValue > arrayProduct[i].price && this.discount.discountType == 1) {
         this.disableCheckPriceProduct = true;
         alert('Giá trị giảm lớn hơn giá sản phẩm');
         return;
       }
       this.iđStaff = localStorage.getItem('idStaff');
-      if (this.discount.maxReduced > arrayProduct[i].price && this.discount.discountType ==0  ) {
+      if (this.discount.maxReduced > arrayProduct[i].price && this.discount.discountType == 0) {
         this.disableCheckPriceProduct = true;
         alert('Giá trị giảm lớn hơn giá sản phẩm');
         return;
@@ -117,7 +133,7 @@ export class CreatDiscountComponent implements OnInit {
     if (this.disableCheckPriceProduct === false) {
       const obj = {
         ...this.discount,
-        productDTOList: this.gridApi.getSelectedRows(),
+        productDTOList: arrayProduct,
       };
       this.discountService.createDiscount(obj).subscribe(
         (response) => {

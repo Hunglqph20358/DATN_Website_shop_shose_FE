@@ -26,7 +26,6 @@ import {EditDiscountComponent} from "./component/discount/edit-discount/edit-dis
 import {EditVoucherComponent} from "./component/voucher/edit-voucher/edit-voucher.component";
 import {SignUpComponent} from './component/sign-up/sign-up.component';
 import {OrderDetailComponent} from './component/order/order-detail/order-detail.component';
-import {ShowComponent} from "./component/discount/show/show.component";
 import {CreatVoucherShipComponent} from "./component/voucher-ship/creat-voucher-ship/creat-voucher-ship.component";
 import {DetailVoucherShipComponent} from "./component/voucher-ship/detail-voucher-ship/detail-voucher-ship.component";
 import {VoucherShipComponent} from "./component/voucher-ship/voucher-ship.component";

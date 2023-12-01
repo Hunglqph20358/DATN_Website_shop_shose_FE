@@ -9,19 +9,19 @@
           <div class="card-body">
             <div class="form-group">
               <label for="name">Tên</label>
-              <div>{{ discount.discountAdminDTO.name }}</div>
+              <div>{{ discount.name }}</div>
             </div>
             <div class="form-group">
               <label for="description">Nội dung</label>
-              <div>{{ discount.discountAdminDTO.description }}</div>
+              <div>{{ discount.description }}</div>
             </div>
             <div class="form-group">
               <label for="startDate">Ngày bắt đầu</label>
-              <div>{{ discount.discountAdminDTO.startDate }}</div>
+              <div>{{ discount.startDate }}</div>
             </div>
             <div class="form-group">
               <label for="endDate">Ngày kết thúc</label>
-              <div>{{ discount.discountAdminDTO.endDate }}</div>
+              <div>{{ discount.endDate }}</div>
             </div>
             <div class="form-group">
               <label for="discountType">Loại giảm giá</label>
@@ -33,11 +33,11 @@
             </div>
             <div class="form-group">
               <label for="product">Sản phẩm giảm</label>
-              <div class="grid">
-                <ul>
-                  <li *ngFor="let product of discount.productDTOList">{{ product.name }}</li>
-                </ul>
-              </div>
+              <ul>
+                <li *ngFor="let product of discount.productDTOList">
+                  {{ product.name }} - {{ product.price }}
+                </li>
+              </ul>
             </div>
         </div>
       </div>
