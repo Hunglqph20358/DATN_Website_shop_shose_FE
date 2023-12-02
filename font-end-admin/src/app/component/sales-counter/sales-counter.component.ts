@@ -14,6 +14,8 @@ import {MausacService} from '../../service/mausac.service';
 import {MatDialog} from '@angular/material/dialog';
 import {LoginComponent} from '../login/login.component';
 import {CustomerComponent} from '../customer/customer.component';
+import {CustomerServiceService} from '../../service/customer-service.service';
+import {CustomerSalesDTO} from '../model/CustomerSalesDTO';
 @Component({
   selector: 'app-sales-counter',
   templateUrl: './sales-counter.component.html',
@@ -22,11 +24,17 @@ import {CustomerComponent} from '../customer/customer.component';
 
 export class SalesCounterComponent implements OnInit {
   public isProductListVisible: boolean = true;
+  public isCustomerNull: boolean = true;
   count = 1;
   searchTerm: string = '';
   showResults: boolean = false;
   listOder: any[] = [];
   searchResults: any[] = [];
+
+  searcherCustomer: string = '';
+  showCustomer: boolean = false;
+  searchCustomerResults: any[] = [];
+
   listProductPush: any[] = [];
   totalPrice: number = 0;
   totalAllProducts: number = 0;
@@ -39,10 +47,14 @@ export class SalesCounterComponent implements OnInit {
   listColor: any[];
   name: string;
   animal: string;
+  selectedOption: string = '1';
+  customerDTO: CustomerSalesDTO;
+  selectedCustomer: any;
+  idCustomer: number;
   constructor(private productService: ProductService, private cookieService: CookieService,
               private orderService: OrderService, private orderDetailService: OrderDetailService,
               private router: Router, private sizeService: SizeService, private colorService: MausacService,
-              private dialog: MatDialog
+              private dialog: MatDialog, private customerService: CustomerServiceService
               ) { }
   search() {
     this.isProductListVisible = true;
@@ -56,6 +68,24 @@ export class SalesCounterComponent implements OnInit {
       );
     }
     this.showResults = this.searchTerm.length > 0;
+  }
+  searchCustomer(){
+    this.idCustomer = null;
+    this.isCustomerNull = true;
+    if (this.searcherCustomer.trim() === '' ){
+      console.log('Mời nhập sdt khách hàng');
+      this.isCustomerNull = false;
+    }else {
+      this.customerService.findCustomerByPhone(this.searcherCustomer).subscribe(
+        customer => {
+          this.searchCustomerResults = customer;
+          console.log(customer);
+          this.idCustomer = customer[0].id;
+          console.log(this.idCustomer);
+        }
+      );
+      this.showCustomer = this.searcherCustomer.length > 0;
+    }
   }
   addOrder(){
     this.count++;
@@ -92,6 +122,16 @@ export class SalesCounterComponent implements OnInit {
     this.calculateTotalAllProducts();
     this.clearSearchTerm();
   }
+  addCustomer(row: any){
+    debugger
+    if (!row.quantity) {
+      row.quantity = 1;
+    }
+    this.searcherCustomer = `${row.fullname} - ${row.phone}`;
+    this.selectedCustomer = row;
+    this.isCustomerNull = false;
+    console.log(this.selectedCustomer);
+  }
   clearSearchTerm(): void {
     this.searchTerm = '';
   }
@@ -126,12 +166,17 @@ export class SalesCounterComponent implements OnInit {
       return total + productTotal;
     }, 0);
   }
+
   placeOrderSales(){
+    console.log(this.idCustomer);
+    debugger
+    console.log(this.selectedCustomer);
     const order: Order = {
-      receiver: 'Nguyễn Văn Mạnh',
       paymentType: 1,
       totalPrice: this.totalAllProducts,
       totalPayment: this.totalAllProducts,
+      customerDTO: this.selectedCustomer,
+      idCustomer: this.idCustomer,
     };
     this.orderService.createOrderSales(order).subscribe(
       (response) => {
@@ -152,12 +197,9 @@ export class SalesCounterComponent implements OnInit {
             alert('thanh toán thành công');
             localStorage.removeItem('listProductPush');
             this.listProductPush = [];
-
-            // Xóa tab order
             this.removeOrder(order);
-
-            // Cập nhật tổng số lượng sản phẩm
             this.calculateTotalAllProducts();
+            this.cookieService.set('listOrder', JSON.stringify(this.listOder));
             console.log('done detail');
             const index = this.listOder.findIndex( order => order.id === this.currentOrderId);
             if (index !== -1) {
@@ -172,6 +214,7 @@ export class SalesCounterComponent implements OnInit {
       }
     );
   }
+
   onTabChange(event: MatTabChangeEvent): void {
     const selectedTabIndex = event.index;
     this.currentOrderId = this.listOder[selectedTabIndex].id;
@@ -184,7 +227,6 @@ export class SalesCounterComponent implements OnInit {
       height: '600px',
       data: {name: this.name}
     });
-
     dialogRef.afterClosed().subscribe(result => {
       console.log('The dialog was closed');
       this.animal = result;
@@ -222,6 +264,7 @@ export class SalesCounterComponent implements OnInit {
     this.colorService.getAllMauSac().subscribe(data =>{
       this.listColor = data;
     });
+    this.selectedOption = '0';
   }
 
 }

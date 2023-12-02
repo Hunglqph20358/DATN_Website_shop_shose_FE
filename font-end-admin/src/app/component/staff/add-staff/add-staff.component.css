@@ -1,0 +1,13 @@
+input {
+  border: none;
+  border-bottom: 1px solid #f3dfdf;
+  outline: none;
+}
+input:focus {
+  border-bottom: 2px solid #fdfdfd;
+}
+.form-select{
+  border: none;
+  border-bottom: 1px solid #f3dfdf;
+  outline: none;
+}

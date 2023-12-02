@@ -1,0 +1,68 @@
+<div class="container">
+  <h1 class="mb-4">Nhân Viên</h1>
+  <form class="row g-3">
+    <div class="col-md-12">
+      <label for="profilePicture" class="form-label">Ảnh Đại Diện</label>
+      <input type="file" class="form-control visually-hidden" id="profilePicture" accept="image/*" (change)="onImageChange($event)">
+      <div class="d-flex  align-items-center mb-3">
+        <img src="{{ selectedImage }}" alt="Ảnh đại diện" class="img-thumbnail" style="max-width: 100%;">
+        <button type="button" class="btn btn-secondary ms-2" (click)="onAddImageClick()">Thêm Ảnh</button>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <label for="fullName" class="form-label">Họ và Tên</label>
+      <input type="text" class="form-control" id="fullName" placeholder="Nhập họ và tên">
+    </div>
+    <div class="col-md-6">
+      <label for="phoneNumber" class="form-label">Số Điện Thoại</label>
+      <input type="text" class="form-control" id="phoneNumber" placeholder="Nhập số điện thoại">
+    </div>
+    <div class="col-md-6">
+      <label for="email" class="form-label">Email</label>
+      <input type="email" class="form-control" id="email" placeholder="Nhập email">
+    </div>
+    <div class="col-md-6">
+      <label for="username" class="form-label">Tên Đăng Nhập</label>
+      <input type="text" class="form-control" id="username" placeholder="Nhập tên đăng nhập">
+    </div>
+    <div class="col-md-6">
+      <label for="password" class="form-label">Mật Khẩu</label>
+      <input type="password" class="form-control" id="password" placeholder="Nhập mật khẩu">
+    </div>
+    <div class="col-md-6">
+      <label for="birthdate" class="form-label">Ngày Sinh</label>
+      <input type="date" class="form-control" id="birthdate">
+    </div>
+    <div class="col-md-6">
+      <label for="gender" class="form-label">Giới Tính</label>
+      <select class="form-select" id="gender">
+        <option selected>Chọn giới tính</option>
+        <option value="male">Nam</option>
+        <option value="female">Nữ</option>
+      </select>
+    </div>
+    <div class="col-md-6">
+      <label for="address" class="form-label">Quê Quán</label>
+      <input type="text" class="form-control" id="address" placeholder="Nhập quê quán">
+    </div>
+    <div class="col-md-6">
+      <label for="status" class="form-label">Chức Vụ</label>
+      <select class="form-select" id="status">
+        <option selected>Nhân Viên</option>
+        <option value="employee">Quản lý</option>
+      </select>
+    </div>
+    <div class="col-md-6">
+      <label for="status" class="form-label">Trạng Thái</label>
+      <select class="form-select" id="status">
+        <option value="employee1" selected>Đang hoạt động</option>
+        <option value="employee2">Không hoạt động</option>
+      </select>
+    </div>
+
+    <div class="col-12">
+      <button type="submit" class="btn btn-primary">Cập Nhật</button>
+      <button type="submit" class="btn btn-error">Hủy</button>
+    </div>
+  </form>
+</div>

@@ -1,24 +1,103 @@
 <div class="container">
-    <h2>Tài khoản của tôi</h2>
-  <hr>
-  <nav>
-    <div class="nav nav-tabs" id="nav-tab" role="tablist">
-      <button class="nav-link active" id="nav-home-tab" data-bs-toggle="tab" data-bs-target="#nav-home" type="button" role="tab" aria-controls="nav-home" aria-selected="true">Thông tin tài khoản</button>
-      <button class="nav-link" id="nav-profile-tab" data-bs-toggle="tab" data-bs-target="#nav-profile" type="button" role="tab" aria-controls="nav-profile" aria-selected="false">Bảo mật</button>
-    </div>
-  </nav>
-  <div class="tab-content" id="nav-tabContent">
-    <div class="tab-pane fade show active col" id="nav-home" role="tabpanel" aria-labelledby="nav-home-tab">
+  <mat-tab-group>
+    <mat-tab>
+      <ng-template mat-tab-label>
+        Thông tin tài  khoản
+      </ng-template>
       <h6>chi tiết:</h6>
-      <div class="d-flex">
-        <div class="cold-4 ">
-          <input type="text">
-        </div>
-        <div class="cold-4">
-          <input type="text">
+      <div>
+        <div class="container">
+          <form action="#" method="post" id="employeeForm">
+            <div class="row align-items-start">
+              <div class="col-md-5 ">
+                <div class="form-group">
+                  <label for="maKhachHang">Mã khách hàng:</label>
+                  <input type="text" class="form-control" id="maKhachHang" name="maKhachHang" readonly placeholder="Mã mặc định" required [(ngModel)]="infoCustomer.code">
+                </div>
+
+                <div class="form-group">
+                  <label for="tenKhachHang">Tên khách hàng:</label>
+                  <input type="text" class="form-control" id="tenKhachHang" name="tenKhachHang" placeholder="Tên khách hàng" required  [(ngModel)]="infoCustomer.fullname">
+                </div>
+
+                <div class="form-group">
+                  <label for="dienThoai">Điện thoại:</label>
+                  <input type="tel" class="form-control" id="dienThoai" name="dienThoai" placeholder="Điện thoại" required [(ngModel)]="infoCustomer.phone">
+                </div>
+
+                <div class="form-group">
+                  <label for="diaChi">Địa chỉ email:</label>
+                  <input type="text" class="form-control" id="diaChi" name="diaChiEmail" placeholder="Số nhà, tòa nhà, ngõ, đường" required [(ngModel)]="infoCustomer.email">
+                </div>
+
+                <div class="form-group">
+                  <label for="khuVuc">Khu vực:</label>
+                  <input type="text" class="form-control" id="khuVuc" name="khuVuc" placeholder="Khu vực" required>
+                </div>
+              </div>
+
+              <div class="col-md-5">
+                <div class="form-group">
+                  <label for="tinhThanh">Tỉnh/TP - Quận/Huyện:</label>
+                  <select class="form-control" id="tinhThanh" name="tinhThanh" required>
+                    <!-- Thêm các tùy chọn của bạn -->
+                  </select>
+                </div>
+
+                <div class="form-group">
+                  <label for="phuongXa">Phường/Xã:</label>
+                  <select class="form-control" id="phuongXa" name="phuongXa" required>
+                    <!-- Thêm các tùy chọn của bạn -->
+                  </select>
+                </div>
+
+                <div class="form-group">
+                  <label for="ngaySinh">Ngày sinh:</label>
+                  <input type="date" class="form-control" id="ngaySinh" name="ngaySinh" required [(ngModel)]="infoCustomer.birthday">
+                </div>
+
+                <div class="form-group">
+                  <label for="gioiTinh">Giới tính:</label>
+                  <select class="form-control" id="gioiTinh" name="gioiTinh" required [(ngModel)]="infoCustomer.gender">
+                    <option value="Nam">Nam</option>
+                    <option value="Nữ">Nữ</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            <button type="submit" class="btn btn-primary">Cập Nhật</button>
+          </form>
         </div>
       </div>
-    </div>
-    <div class="tab-pane fade" id="nav-profile" role="tabpanel" aria-labelledby="nav-profile-tab">bbb</div>
-  </div>
+    </mat-tab>
+    <mat-tab>
+      <ng-template mat-tab-label>
+          Đổi mật khẩu
+      </ng-template>
+      <div class="container">
+        <form action="#" >
+          <div class="row align-items-start">
+            <div class="col-md-5 ">
+              <div class="form-group">
+                <label for="maKhachHang">Mật  Khẩu  cũ</label>
+                <input type="text" class="form-control" name="passwordOld" readonly placeholder="Mật Khẩu Cũ" required>
+              </div>
+
+              <div class="form-group">
+                <label for="tenKhachHang">Mât Khẩu Mới</label>
+                <input type="text" class="form-control"  name="newPass" placeholder="Mât Khẩu Mới" required>
+              </div>
+
+              <div class="form-group">
+                <label for="dienThoai">Nhập lại Mật Khẩu Mới</label>
+                <input type="tel" class="form-control" name="reNewPass" placeholder="Nhập lại Mật Khẩu Mới" required>
+              </div>
+            </div>
+          </div>
+          <button type="submit" class="btn btn-primary">Đổi mật khẩu</button>
+        </form>
+      </div>
+    </mat-tab>
+  </mat-tab-group>
 </div>

@@ -28,7 +28,9 @@ export class LoginComponent implements OnInit {
         localStorage.setItem('token', data.token);
         console.log(data.usersDTO);
         localStorage.setItem('users', JSON.stringify(data.usersDTO));
-        this.router.navigate(['shopping-cart']);
+        this.router.navigate(['']).then(() => {
+          location.reload();
+        });
     },
       error => {
         if (error.status === 403){

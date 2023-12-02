@@ -42,11 +42,11 @@ html, body {
   overflow-x: hidden;
   background-image: linear-gradient(
     to right,
-    #baf3d7,
-    #c2f5de,
-    #cbf7e4,
-    #d4f8ea,
-    #ddfaef
+    #ffffff,
+    #ffffff,
+    #ffffff,
+    #fdfdfd,
+    #ffffff
   );
 }
 
