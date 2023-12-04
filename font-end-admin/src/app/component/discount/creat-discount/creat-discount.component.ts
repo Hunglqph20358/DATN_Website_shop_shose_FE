@@ -83,7 +83,7 @@ export class CreatDiscountComponent implements OnInit {
       },
       {
         headerName: 'Số lượt bán',
-        field: 'totalSold',
+        field: 'totalQuantity',
         sortable: true,
         filter: true,
         editable: true,
