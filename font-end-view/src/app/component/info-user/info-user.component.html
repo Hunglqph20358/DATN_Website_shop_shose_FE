@@ -7,7 +7,7 @@
       <h6>chi tiết:</h6>
       <div>
         <div class="container">
-          <form action="#" method="post" id="employeeForm">
+          <form (ngSubmit)="updateInfor()">
             <div class="row align-items-start">
               <div class="col-md-5 ">
                 <div class="form-group">
@@ -76,22 +76,22 @@
           Đổi mật khẩu
       </ng-template>
       <div class="container">
-        <form action="#" >
+        <form (ngSubmit)="changePass()" >
           <div class="row align-items-start">
             <div class="col-md-5 ">
               <div class="form-group">
                 <label for="maKhachHang">Mật  Khẩu  cũ</label>
-                <input type="text" class="form-control" name="passwordOld" readonly placeholder="Mật Khẩu Cũ" required>
+                <input type="text" class="form-control" name="passwordOld" placeholder="Mật Khẩu Cũ" required [(ngModel)]="infoCustomer.password" autocomplete="off">
               </div>
 
               <div class="form-group">
                 <label for="tenKhachHang">Mât Khẩu Mới</label>
-                <input type="text" class="form-control"  name="newPass" placeholder="Mât Khẩu Mới" required>
+                <input type="text" class="form-control"  name="newPass" placeholder="Mât Khẩu Mới" required [(ngModel)]="infoCustomer.newPass" autocomplete="off">
               </div>
 
               <div class="form-group">
                 <label for="dienThoai">Nhập lại Mật Khẩu Mới</label>
-                <input type="tel" class="form-control" name="reNewPass" placeholder="Nhập lại Mật Khẩu Mới" required>
+                <input type="tel" class="form-control" name="reNewPass" placeholder="Nhập lại Mật Khẩu Mới" required [(ngModel)]="rePass" autocomplete="off">
               </div>
             </div>
           </div>

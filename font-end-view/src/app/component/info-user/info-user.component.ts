@@ -1,5 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import {UsersDTO} from '../model/UsersDTO';
+import {CustomerInforService} from '../../service/customer-infor.service';
+import {ToastrService} from 'ngx-toastr';
+import {Router} from '@angular/router';
 
 @Component({
   selector: 'app-info-user',
@@ -8,7 +11,8 @@ import {UsersDTO} from '../model/UsersDTO';
 })
 export class InfoUserComponent implements OnInit {
   infoCustomer: UsersDTO;
-  constructor() { }
+  rePass: string;
+  constructor(private customerInforService: CustomerInforService, private toastr: ToastrService,private router: Router) { }
 
   ngOnInit(): void {
     this.loadUserInfo();
@@ -39,5 +43,42 @@ export class InfoUserComponent implements OnInit {
   private padZero(value: number): string {
     return value < 10 ? `0${value}` : `${value}`;
   }
-
+  updateInfor(){
+    this.customerInforService.updateInfor(this.infoCustomer).subscribe(
+      data => {
+        console.log(data);
+        console.log(this.infoCustomer);
+        localStorage.removeItem('users');
+        localStorage.setItem('users', JSON.stringify(this.infoCustomer));
+        this.loadUserInfo();
+        const toastrRef = this.toastr.success('Cập nhật thành công!', 'Success', { timeOut: 1000});
+        setTimeout(() => {
+          this.handleReload();
+        }, 1000);
+      },
+      error => {
+        console.error(error);
+        this.toastr.error('Đã xảy ra lỗi khi cập nhật thông tin!', 'Error');
+      }
+    );
+  }
+  handleReload() {
+    this.router.navigate(['/user-profile']).then(() => {
+      location.reload();
+    });
+  }
+  changePass(){
+    this.customerInforService.changePass(this.infoCustomer).subscribe(
+      data => {
+        console.log(data);
+        this.toastr.success('Cập nhật thành công! ', 'Success');
+        this.rePass = '';
+        this.ngOnInit();
+      },
+      error => {
+        console.error(error);
+        this.toastr.error('Đã xảy ra lỗi khi cập nhật thông tin!', 'Error');
+      }
+    );
+  }
 }
