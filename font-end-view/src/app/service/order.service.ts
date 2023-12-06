@@ -16,6 +16,9 @@ export class OrderService {
   createOrderNotLogin(obj): Observable<any>{
     return this.http.post(`${apiURL}create-order/not-login`, obj);
   }
+  cancelOrderView(obj): Observable<any>{
+    return this.http.post(`${apiURL}cancel-order-view`, obj);
+  }
 
   getAllOrder(obj): Observable<any>{
     return this.http.post(`${apiURL}get-all-order`, obj);

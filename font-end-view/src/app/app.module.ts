@@ -30,11 +30,11 @@ import {OrderDetailComponent} from './component/order/order-detail/order-detail.
 import {ToastrModule} from 'ngx-toastr';
 import { ActionOrderComponent } from './component/order/action-order/action-order.component';
 import { OrderNotLoginComponent } from './component/order-not-login/order-not-login.component';
+import {MatTabsModule} from '@angular/material/tabs';
 import { ForgotPasswordComponent } from './component/forgot-password/forgot-password.component';
 import { ResetPasswordComponent } from './component/reset-password/reset-password.component';
 import { InfoUserComponent } from './component/info-user/info-user.component';
 import {MatTableModule} from '@angular/material/table';
-import {MatTabsModule} from '@angular/material/tabs';
 
 @NgModule({
   declarations: [
@@ -59,22 +59,22 @@ import {MatTabsModule} from '@angular/material/tabs';
     ActionOrderComponent,
     OrderNotLoginComponent
   ],
-  imports: [
-    BrowserModule,
-    AppRoutingModule,
-    HttpClientModule,
-    NgSelectModule,
-    FormsModule,
-    MatCheckboxModule,
-    MatMenuModule,
-    MatDialogModule,
-    MatButtonModule,
-    BrowserAnimationsModule,
-    AgGridModule.withComponents([]),
-    ToastrModule.forRoot(),
-    MatTableModule,
-    MatTabsModule
-  ],
+    imports: [
+        BrowserModule,
+        AppRoutingModule,
+        HttpClientModule,
+        NgSelectModule,
+        FormsModule,
+        MatCheckboxModule,
+        MatMenuModule,
+        MatDialogModule,
+        MatButtonModule,
+        BrowserAnimationsModule,
+        AgGridModule.withComponents([]),
+        ToastrModule.forRoot(),
+        MatTabsModule,
+        MatTableModule
+    ],
   providers: [{provide: JWT_OPTIONS, useValue: JWT_OPTIONS},
     JwtHelperService],
   bootstrap: [AppComponent]

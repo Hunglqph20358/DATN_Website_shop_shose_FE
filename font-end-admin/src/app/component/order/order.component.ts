@@ -5,6 +5,7 @@ import {OrderService} from '../../service/order.service';
 import {ActionOrderComponent} from './action-order/action-order.component';
 import {OrderDetailComponent} from './order-detail/order-detail.component';
 import {MatDialog} from '@angular/material/dialog';
+
 @Component({
   selector: 'app-order',
   templateUrl: './order.component.html',
@@ -18,6 +19,14 @@ export class OrderComponent implements OnInit {
   columnDefs;
   gridApi;
   gridColumnApi;
+  user: any = {
+    id: null,
+    code: null,
+    fullname: '',
+    phone: '',
+    email: '',
+  };
+
   constructor(private matDialog: MatDialog, private orderService: OrderService, private cdr: ChangeDetectorRef) {
     const lst =
       [
@@ -175,23 +184,32 @@ export class OrderComponent implements OnInit {
           // textAlign: 'center',
           'justify-content': 'center',
         },
-      }, {
-        headerName: '',
-        field: '',
-        minWidth: 200,
-        cellRendererFramework: ActionOrderComponent
-      },
+      }
     ];
     this.rowData = [];
+    const storedUserString = localStorage.getItem('users');
+
+    if (storedUserString) {
+      const storedUser = JSON.parse(storedUserString);
+      this.user = {
+        id: storedUser.id,
+        code: storedUser.code,
+        fullname: storedUser.fullname,
+        phone: storedUser.phone,
+        email: storedUser.email,
+      };
+    }
   }
 
   ngOnInit(): void {
-   this.getAllOrder();
+    this.getAllOrder();
   }
+
   onGridReady(params: any) {
     this.gridApi = params.api;
     this.gridColumnApi = params.columnApi;
   }
+
   getAllOrder(): void {
     this.orderService.getAllOrderAdmin(this.status).subscribe(res => {
       this.rowData = res;
@@ -210,7 +228,15 @@ export class OrderComponent implements OnInit {
   openXemChiTiet(dataOrder) {
     this.matDialog.open(OrderDetailComponent, {
       width: '150vh',
-      data: dataOrder
+      height: '90vh',
+      data: {
+        data: dataOrder,
+        staff: this.user
+      }
+    }).afterClosed().subscribe(res => {
+      if (res === 'update-order') {
+        this.ngOnInit();
+      }
     });
   }
 }

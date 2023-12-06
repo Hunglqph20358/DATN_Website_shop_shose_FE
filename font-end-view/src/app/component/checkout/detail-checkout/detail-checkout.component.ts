@@ -19,7 +19,7 @@ export class DetailCheckoutComponent implements OnInit {
   //   vnp_BankCode: null,
   //
   // };
-  status: any;
+  statusPayment: any;
   email: any;
 
   constructor(private route: ActivatedRoute, private orderDetailService: OrderDetailService,
@@ -28,42 +28,78 @@ export class DetailCheckoutComponent implements OnInit {
     this.order = session.order;
     this.listCart = session.listCart;
     this.email = session.email;
-    status = this.route.snapshot.queryParamMap.get('vnp_TransactionStatus');
+    this.statusPayment = this.route.snapshot.queryParamMap.get('vnp_TransactionStatus');
+    sessionStorage.removeItem('order');
+    this.cookieService.delete('cart', '/');
+    this.cookieService.delete('checkout', '/');
   }
 
   ngOnInit(): void {
     console.log(this.order);
     console.log(this.listCart);
-    if (status === '00') {
-      this.listCart.forEach(item => {
+
+    if (this.statusPayment === '00' && this.order.paymentType === 1) {
+      const orderDetailPromises = this.listCart.map(item => {
         const obj = {
           idOrder: this.order.id,
           idProductDetail: item.productDetailDTO.id,
           quantity: item.quantity,
           price: item.productDTO.price
         };
-        this.orderDetailService.createOrderDetail(obj).subscribe(res => {
-        });
+        return this.orderDetailService.createOrderDetail(obj).toPromise();
       });
-      if (this.email === null || this.email === undefined) {
-        this.emailService.sendEmail(this.order).subscribe(res => {
-          sessionStorage.removeItem('order');
-          this.cookieService.delete('cart');
-          this.cookieService.delete('checkout');
+      Promise.all(orderDetailPromises)
+        .then(() => {
+          if (this.email === null || this.email === undefined) {
+            this.emailService.sendEmail(this.order).subscribe(res => {
+            });
+          } else {
+            const obj = {
+              ...this.order,
+              email: this.email
+            };
+            this.emailService.sendEmailNotLogin(obj).subscribe(res => {
+            });
+          }
+        })
+        .catch(error => {
+          console.error('Error creating order details:', error);
+        })
+        .finally(() => {
         });
-      } else {
+    }
+    if (this.order.paymentType === 0) {
+      const orderDetailPromises = this.listCart.map(item => {
         const obj = {
-          ...this.order,
-          email: this.email
+          idOrder: this.order.id,
+          idProductDetail: item.productDetailDTO.id,
+          quantity: item.quantity,
+          price: item.productDTO.price
         };
-        this.emailService.sendEmailNotLogin(obj).subscribe(res => {
-          sessionStorage.removeItem('order');
-          this.cookieService.delete('cart');
-          this.cookieService.delete('checkout');
+        return this.orderDetailService.createOrderDetail(obj).toPromise();
+      });
+      Promise.all(orderDetailPromises)
+        .then(() => {
+          if (this.email === null || this.email === undefined) {
+            this.emailService.sendEmail(this.order).subscribe(res => {
+            });
+          } else {
+            const obj = {
+              ...this.order,
+              email: this.email
+            };
+            this.emailService.sendEmailNotLogin(obj).subscribe(res => {
+            });
+          }
+        })
+        .catch(error => {
+          console.error('Error creating order details:', error);
+        })
+        .finally(() => {
         });
-      }
     }
   }
+
 
   calculateTotal(price: number, quantity: number): string {
     const total = price * quantity;
