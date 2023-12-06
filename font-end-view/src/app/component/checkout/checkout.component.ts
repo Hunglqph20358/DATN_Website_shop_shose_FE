@@ -11,6 +11,8 @@ import {PopupVoucherComponent} from './popup-voucher/popup-voucher.component';
 import {AddressService} from '../../service/address.service';
 import {VoucherService} from '../../service/voucher.service';
 import {UtilService} from '../../util/util.service';
+import {ValidateInput} from '../../model/validate-input.model';
+import {CommonFunction} from '../../util/common-function';
 
 @Component({
   selector: 'app-checkout',
@@ -52,6 +54,9 @@ export class CheckoutComponent implements OnInit {
     phone: '',
     email: '',
   };
+  validReceiver: ValidateInput = new ValidateInput();
+  validEmail: ValidateInput = new ValidateInput();
+  validReceiverPhone: ValidateInput = new ValidateInput();
 
   constructor(private giaoHangService: GiaoHangService, private cartService: CartService,
               private cookieService: CookieService, private route: Router, private orderService: OrderService,
@@ -164,8 +169,16 @@ export class CheckoutComponent implements OnInit {
   }
 
   thanhToan() {
-    debugger
-    if (this.user.id ===  null && this.user.code === null) {
+    this.validateReceiver();
+    this.validateReceiverPhone();
+    this.validateEmail();
+    this.order.receiver = CommonFunction.trimText(this.order.receiver);
+    this.email = CommonFunction.trimText(this.email);
+    this.order.receiverPhone = CommonFunction.trimText(this.order.receiverPhone);
+    if (!this.validReceiver.done || !this.validEmail.done || !this.validReceiverPhone.done) {
+      return;
+    }
+    if (this.user.id === null && this.user.code === null) {
       let province = this.listProvince.find(c => c.ProvinceID === this.addressNotLogin.provinceId);
       // console.log(province);
       let district = this.listDistrict.find(d => d.DistrictID === this.addressNotLogin.districtId);
@@ -301,5 +314,20 @@ export class CheckoutComponent implements OnInit {
         });
       }
     });
+  }
+
+  revoveInvalid(result) {
+    result.done = true;
+  }
+
+  validateReceiver() {
+    this.validReceiver = CommonFunction.validateInput(this.order.receiver, 250, null);
+  }
+
+  validateEmail() {
+    this.validEmail = CommonFunction.validateInput(this.email, 250, /^[^\s@]+@[^\s@]+\.[^\s@]+$/);
+  }
+  validateReceiverPhone() {
+    this.validReceiverPhone = CommonFunction.validateInput(this.order.receiverPhone, null, /^(0[2-9]|1[2-9]|2[2-9]|3[2-9]|4[2-9]|5[2-9]|6[2-9]|7[2-9]|8[2-9]|9[2-9])\d{8}$/);
   }
 }

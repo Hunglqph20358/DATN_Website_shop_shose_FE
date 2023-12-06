@@ -1,5 +1,17 @@
 <div class="container">
   <div class="row"><h5>Chọn Voucher</h5></div>
+  <div class="row">
+    <div class="col">
+      <label for="search" class="col-form-label">Tìm kiếm</label>
+    </div>
+    <div class="col">
+      <input type="text" id="search" class="form-control" placeholder="Tìm kiếm">
+    </div>
+    <div class="col">
+    <button class="btn btn-primary">Tìm kiếm</button>
+    </div>
+  </div>
+  <br>
   <div class="row" style="border: 1px solid" *ngFor="let v of listVoucher">
     <div style="display: flex; justify-content: space-between" [style.opacity]="v.conditionApply > data ? '0.5': ''">
       <div style="display: flex">
@@ -23,7 +35,7 @@
       </div>
     </div>
   </div>
-  <div style="display: flex">
+  <div style="display: flex; margin-top: 10px">
     <div>
       <button type="button" class="btn btn-secondary" (click)="closePopup();">Đóng</button>
     </div>

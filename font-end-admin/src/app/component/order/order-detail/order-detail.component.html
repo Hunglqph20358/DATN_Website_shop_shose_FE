@@ -71,6 +71,23 @@
       </tr>
       </tbody>
     </table>
+    <br>
+    <div class="row">
+      <h4><strong>Lịch sử</strong></h4>
+      <div>
+        <table class="table">
+          <tbody>
+          <tr>
+            <th scope="row">Hình thức thanh toán</th>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td>{{data.data?.statusPayment === 0 ? "Đã thanh toán": "Chưa thanh toán"}}</td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
   </div>
   <div style="text-align: center; margin-top: 10px;">
     <button type="submit" class="btn btn-light" (click)="matRef.close()">Close</button>

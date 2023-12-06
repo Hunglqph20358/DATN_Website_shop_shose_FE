@@ -70,6 +70,8 @@ import {MatTabsModule} from '@angular/material/tabs';
 import {ToastrModule, ToastrService} from 'ngx-toastr';
 import { CustomerComponent } from './component/customer/customer.component';
 import { ImportFileComponent } from './component/sanpham/import-file/import-file.component';
+import { ThongKeComponent } from './component/thong-ke/thong-ke.component';
+import {ChartsModule} from '@progress/kendo-angular-charts';
 
 @NgModule({
   declarations: [
@@ -121,6 +123,7 @@ import { ImportFileComponent } from './component/sanpham/import-file/import-file
     SalesCounterComponent,
     CustomerComponent,
     ImportFileComponent,
+    ThongKeComponent,
   ],
   imports: [
     BrowserModule,
@@ -142,7 +145,8 @@ import { ImportFileComponent } from './component/sanpham/import-file/import-file
     MatTabsModule,
     ToastrModule.forRoot(),
     MatListModule,
-    MatTableModule
+    MatTableModule,
+    ChartsModule
   ],
   bootstrap: [AppComponent],
   providers: [{provide: JWT_OPTIONS, useValue: JWT_OPTIONS},
