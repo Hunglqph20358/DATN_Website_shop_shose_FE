@@ -27,6 +27,7 @@ import {EditVoucherComponent} from "./component/voucher/edit-voucher/edit-vouche
 import {SignUpComponent} from './component/sign-up/sign-up.component';
 import {OrderDetailComponent} from './component/order/order-detail/order-detail.component';
 import {SalesCounterComponent} from './component/sales-counter/sales-counter.component';
+import {ThongKeComponent} from './component/thong-ke/thong-ke.component';
 
 const routes: Routes = [
   {path: '', redirectTo: 'staff', pathMatch: 'full'},
@@ -59,6 +60,7 @@ const routes: Routes = [
   {path: 'sign-up', component: SignUpComponent},
   // {path: 'order-detail', component: OrderDetailComponent},
   {path: 'sales-counter', component: SalesCounterComponent},
+  {path: 'thong-ke', component: ThongKeComponent},
 ];
 
 @NgModule({
