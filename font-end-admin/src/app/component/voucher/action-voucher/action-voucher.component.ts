@@ -38,4 +38,7 @@ export class ActionVoucherComponent implements OnInit, ICellRendererAngularComp 
   detail(): void {
     this.router.navigate(['/admin/voucher', this.data.id]);
   }
+  delete(): void {
+    this.router.navigate(['/admin/voucher', this.data.id]);
+  }
 }

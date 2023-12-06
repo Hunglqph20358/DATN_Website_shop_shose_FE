@@ -49,5 +49,8 @@ export class ActionDiscountComponent
   detail(): void {
     this.router.navigate(['/admin/discount', this.data.id]);
   }
+  delete(): void {
+    this.router.navigate(['/admin/discount', this.data.id]);
+  }
 
 }

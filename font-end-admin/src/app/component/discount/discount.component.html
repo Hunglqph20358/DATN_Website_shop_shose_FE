@@ -23,24 +23,24 @@
           <option value="1">Theo khoảng thời gian</option>
         </select>
         </div>
-<!--        <mat-form-field>-->
-<!--          <mat-label>Enter a date range</mat-label>-->
-<!--          <mat-date-range-input [rangePicker]="picker">-->
-<!--            <input matStartDate placeholder="Start date">-->
-<!--            <input matEndDate placeholder="End date">-->
-<!--          </mat-date-range-input>-->
-<!--          <mat-hint>MM/DD/YYYY – MM/DD/YYYY</mat-hint>-->
-<!--          <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>-->
-<!--          <mat-date-range-picker #picker></mat-date-range-picker>-->
-<!--        </mat-form-field>-->
+        <mat-form-field>
+          <mat-label>Enter a date range</mat-label>
+          <mat-date-range-input [rangePicker]="picker">
+            <input matStartDate placeholder="Start date">
+            <input matEndDate placeholder="End date">
+          </mat-date-range-input>
+          <mat-hint>MM/DD/YYYY – MM/DD/YYYY</mat-hint>
+          <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+          <mat-date-range-picker #picker></mat-date-range-picker>
+        </mat-form-field>
 
-<!--                  <button mat-raised-button color="primary" >Tìm kiếm</button>-->
+                  <button mat-raised-button color="primary" >Tìm kiếm</button>
 
-<!--        <div class="search-box">-->
-<!--          <input type="text" id="search" style="width: 400px;height: 30px" placeholder="Mã hoặc tên" (input)="onSearchChange($event)">-->
-<!--&lt;!&ndash;          <button mat-icon-button color="primary">&ndash;&gt;-->
-<!--&lt;!&ndash;            <mat-icon>search</mat-icon>&ndash;&gt;-->
-<!--&lt;!&ndash;          </button>&ndash;&gt;-->
+        <div class="search-box">
+          <input type="text" id="search" style="width: 400px;height: 30px" placeholder="Mã hoặc tên" (input)="onSearchChange($event)">
+<!--          <button mat-icon-button color="primary">-->
+<!--            <mat-icon>search</mat-icon>-->
+<!--          </button>-->
         </div>
 
       <div class="grid">
@@ -58,8 +58,8 @@
       </div>
 
     </div>
+    </div>
   </mat-tab>
-
   <mat-tab>
     <ng-template mat-tab-label>
       Đang kích hoạt
