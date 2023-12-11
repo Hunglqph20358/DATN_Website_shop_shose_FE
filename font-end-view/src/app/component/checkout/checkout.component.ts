@@ -169,12 +169,12 @@ export class CheckoutComponent implements OnInit {
   }
 
   thanhToan() {
-    this.validateReceiver();
-    this.validateReceiverPhone();
-    this.validateEmail();
     this.order.receiver = CommonFunction.trimText(this.order.receiver);
     this.email = CommonFunction.trimText(this.email);
     this.order.receiverPhone = CommonFunction.trimText(this.order.receiverPhone);
+    this.validateReceiver();
+    this.validateReceiverPhone();
+    this.validateEmail();
     if (!this.validReceiver.done || !this.validEmail.done || !this.validReceiverPhone.done) {
       return;
     }

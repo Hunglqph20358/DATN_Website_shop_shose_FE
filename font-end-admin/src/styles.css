@@ -3,7 +3,8 @@
 @import '../node_modules/ag-grid-community/dist/styles/ag-grid.css';
 @import "~@ng-select/ng-select/themes/default.theme.css";
 @import "~ngx-toastr/toastr.css";
-
+@import '~@angular/material/prebuilt-themes/indigo-pink.css';
+@import '../node_modules/@syncfusion/ej2-angular-calendars/styles/material.css';
 
 
 html, body {
