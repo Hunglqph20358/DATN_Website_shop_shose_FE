@@ -20,13 +20,13 @@
 <!--      </tr>-->
 <!--      </thead>-->
       <tbody>
-      <tr>
-        <th scope="row">Số tiền Giảm giá</th>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td>Thornton</td>
-      </tr>
+<!--      <tr>-->
+<!--        <th scope="row">Số tiền Giảm giá</th>-->
+<!--        <td></td>-->
+<!--        <td></td>-->
+<!--        <td></td>-->
+<!--        <td>Thornton</td>-->
+<!--      </tr>-->
       <tr>
         <th scope="row">Tổng giá trị sản phẩm</th>
         <td></td>
@@ -46,7 +46,7 @@
         <td></td>
         <td></td>
         <td></td>
-        <td>Thornton</td>
+        <td>{{this.data.data?.codeVoucher}}</td>
       </tr>
       <tr>
         <th scope="row">Phí vận chuyển</th>
@@ -76,13 +76,21 @@
       <h4><strong>Lịch sử</strong></h4>
       <div>
         <table class="table">
+          <thead>
+          <tr>
+            <th scope="col">STT</th>
+            <th scope="col">Nhân Viên</th>
+            <th scope="col">Trạng thái</th>
+            <th scope="col">Ngày sửa</th>
+            <th scope="col">Ghi chú</th>
+          </tr>
+          </thead>
           <tbody>
           <tr>
-            <th scope="row">Hình thức thanh toán</th>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td>{{data.data?.statusPayment === 0 ? "Đã thanh toán": "Chưa thanh toán"}}</td>
+            <th scope="row">1</th>
+            <td>Mark</td>
+            <td>Otto</td>
+            <td>@mdo</td>
           </tr>
           </tbody>
         </table>

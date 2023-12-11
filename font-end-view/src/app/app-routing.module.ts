@@ -28,7 +28,7 @@ const routes: Routes = [
   { path: 'cart/checkout', component: CheckoutComponent},
   { path: 'cart/checkout-detail', component: DetailCheckoutComponent},
   {path: 'order', component: OrderComponent, canActivate: [AuthService]},
-  {path: 'order/not-login/:codeOrder', component: OrderNotLoginComponent},
+  // {path: 'order/not-login/:codeOrder', component: OrderNotLoginComponent},
   { path: 'forgot-pass', component: ForgotPasswordComponent},
   { path: 'reset-pass', component: ResetPasswordComponent},
   { path: 'user-profile', component: InfoUserComponent},
