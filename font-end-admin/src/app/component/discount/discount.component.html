@@ -6,44 +6,70 @@
     <ng-template mat-tab-label>
       Tất Cả
     </ng-template>
-    <div>
-      <div class="filter-container">
-      <div class="form-group">
-        <label>Điều kiện lọc</label>
+      <div class="form-group ">
         <select
           class="form-control"
-          id="discountType"
-          name="discountType"
+          id="loc"
+          name="loc"
           required
+          [(ngModel)]="loc"
         >
+          <option >Điều kiện lọc</option>
           <option value="0">Theo loại sản phẩm</option>
           <option value="1">Theo sản phẩm</option>
-          <option value="1">Theo thương hiệu</option>
-          <option value="1">Theo giảm giá</option>
-          <option value="1">Theo khoảng thời gian</option>
+          <option value="2">Theo thương hiệu</option>
+          <option value="3">Theo giảm giá</option>
+          <option value="4">Theo khoảng thời gian</option>
         </select>
         </div>
-        <mat-form-field>
-          <mat-label>Enter a date range</mat-label>
-          <mat-date-range-input [rangePicker]="picker">
-            <input matStartDate placeholder="Start date">
-            <input matEndDate placeholder="End date">
-          </mat-date-range-input>
-          <mat-hint>MM/DD/YYYY – MM/DD/YYYY</mat-hint>
-          <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
-          <mat-date-range-picker #picker></mat-date-range-picker>
-        </mat-form-field>
 
-                  <button mat-raised-button color="primary" >Tìm kiếm</button>
-
-        <div class="search-box">
-          <input type="text" id="search" style="width: 400px;height: 30px" placeholder="Mã hoặc tên" (input)="onSearchChange($event)">
-<!--          <button mat-icon-button color="primary">-->
-<!--            <mat-icon>search</mat-icon>-->
-<!--          </button>-->
+        <div class="search-box" *ngIf="loc === '3' ">
+          <input type="text" id="search" style="width: 400px; height: 30px" placeholder="Mã hoặc tên" (input)="searchByDiscount($event)">
         </div>
+    <div class="search-box" *ngIf="loc === '0' ">
+      <input type="text" id="searchByCategory" style="width: 400px; height: 30px" placeholder="Loại giày" (input)="searchByCategory($event)">
+    </div>
+    <div class="search-box" *ngIf="loc === '1' ">
+      <input type="text" id="searchByProduct" style="width: 400px; height: 30px" placeholder="Tên hoặc mã giày" (input)="searchByProduct($event)">
+    </div>
+    <div class="search-box" *ngIf="loc === '2' ">
+      <input type="text" id="searchByBrand" style="width: 400px; height: 30px" placeholder="Tên thương hiệu" (input)="searchByBrand($event)">
+    </div>
+    <div class="search-box" *ngIf="loc === '4' ">
+      <div class="form-group">
+        <label for="startDate">Ngày bắt đầu</label>
+        <input
+          type="datetime-local"
+          class="form-control"
+          [ngModelOptions]="{ standalone: true }"
+          id="startDate"
+          [(ngModel)]="startDate"
+          name="startDate"
+          required
+        />
+        <div *ngIf="!startDate" class="alert alert-danger">
+          <div *ngIf="!startDate">Vui lòng chọn ngày bắt đầu.</div>
+        </div>
+      </div>
 
-      <div class="grid">
+      <div class="form-group">
+        <label for="endDate">Ngày kết thúc</label>
+        <input
+          type="datetime-local"
+          class="form-control"
+          [ngModelOptions]="{ standalone: true }"
+          id="endDate"
+          [(ngModel)]="endDate"
+          name="endDate"
+          required
+        />
+        <div *ngIf="!endDate || !isValidDateRange()" class="alert alert-danger">
+          <div *ngIf="!endDate">Vui lòng chọn ngày kết thúc.</div>
+          <div *ngIf="!isValidDateRange()">Ngày kết thúc phải lớn hơn ngày bắt đầu.</div>
+        </div>
+      </div>    </div>
+
+        <div class="grid">
         <ag-grid-angular
           style="width: 100%; height: 500px;"
           class="ag-theme-balham"
@@ -56,9 +82,6 @@
           [domLayout]="'autoHeight'"
         ></ag-grid-angular>
       </div>
-
-    </div>
-    </div>
   </mat-tab>
   <mat-tab>
     <ng-template mat-tab-label>

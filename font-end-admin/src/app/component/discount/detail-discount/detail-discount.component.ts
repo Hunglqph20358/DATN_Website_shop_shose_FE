@@ -10,14 +10,18 @@ import { ActivatedRoute } from "@angular/router";
 export class DetailDiscountComponent implements OnInit {
 
   discount: any = {
+    discountAdminDTO: {
       name: '',
       startDate: '',
       endDate: '',
       description: '',
-      productDTOList: [],
-    optionCustomer: '',
+      quantity: '',
+      createName: localStorage.getItem('fullname'),
+    },
+    spap: '',
     reducedValue: '',
     discountType: '',
+    maxReduced: '',
   };
 
   constructor(private discountService: DiscountService,
@@ -26,7 +30,7 @@ export class DetailDiscountComponent implements OnInit {
   ngOnInit(): void {
     // Lấy thông tin khuyến mãi dựa trên id từ tham số URL
     this.router.params.subscribe((params) => {
-      const id = params['id'];
+      const id = params.id;
       console.log(id);
       this.discountService
         .getDetailDiscount(id)
@@ -40,9 +44,14 @@ export class DetailDiscountComponent implements OnInit {
             firstDiscount.startDate;
           this.discount.endDate =
             firstDiscount.endDate;
+          this.discount.quantity =
+            firstDiscount.quantity;
+          this.discount.createName =
+            firstDiscount.createName;
           this.discount.discountType = firstDiscount.discountType;
           this.discount.reducedValue = firstDiscount.reducedValue;
           this.discount.productDTOList = firstDiscount.productDTOList;
+          this.discount.maxReduced = firstDiscount.maxReduced;
 
           // Log the discount data after it has been fetched
           console.log(this.discount);

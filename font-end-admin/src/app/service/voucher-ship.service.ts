@@ -1,13 +1,13 @@
 import { Injectable } from '@angular/core';
-import {HttpClient} from "@angular/common/http";
-import {Observable} from "rxjs";
+import {HttpClient} from '@angular/common/http';
+import {Observable} from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
 export class VoucherShipService {
   private apiUrl = 'http://localhost:6868/api/admin/voucherFS';
-  private apiUrl2 = 'http://localhost:6868/api/admin/kichHoatFS';
+  private apiUrl2 = 'http://localhost:6868/api/admin/voucherFS/kichHoat';
 
   constructor(private http: HttpClient) {}
 
@@ -15,7 +15,7 @@ export class VoucherShipService {
     return this.http.get<any[]>(this.apiUrl);
   }
   getCustomer() {
-    return this.http.get<any[]>('http://localhost:6868/api/admin/customer');
+    return this.http.get<any[]>('http://localhost:6868/api/admin/voucherFS/customer');
   }
   updateVoucher(id, voucher: any) {
     const url = `${this.apiUrl}/${id}`;
@@ -36,6 +36,12 @@ export class VoucherShipService {
   KichHoat( id: number ) {
     const url = `${this.apiUrl2}/${id}`;
     return this.http.put(url, { /* provide data if needed */ }, { observe: 'response' });
+  }
+  getVoucherKH() {
+    return this.http.get<any[]>('http://localhost:6868/api/admin/voucherFS/KH');
+  }
+  getVoucherKKH() {
+    return this.http.get<any[]>('http://localhost:6868/api/admin/voucherFS/KKH');
   }
 }
 

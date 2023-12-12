@@ -1,8 +1,10 @@
 import { Component, OnInit } from '@angular/core';
-import {MatDialog} from "@angular/material/dialog";
-import {VoucherService} from "../../service/voucher.service";
-import {formatDateTime} from "../../util/util";
-import {ActionVoucherComponent} from "../voucher/action-voucher/action-voucher.component";
+import {MatDialog} from '@angular/material/dialog';
+import {VoucherService} from '../../service/voucher.service';
+import {formatDateTime} from '../../util/util';
+import {ActionVoucherComponent} from '../voucher/action-voucher/action-voucher.component';
+import {VoucherShipService} from "../../service/voucher-ship.service";
+import {ActionVoucherShipComponent} from "./action-voucher-ship/action-voucher-ship.component";
 
 @Component({
   selector: 'app-voucher-ship',
@@ -11,13 +13,15 @@ import {ActionVoucherComponent} from "../voucher/action-voucher/action-voucher.c
 })
 export class VoucherShipComponent implements OnInit {
   rowData = [];
+  rowData1 = [];
+  rowData2 = [];
   columnDefs;
   headerHeight = 50;
   rowHeight = 40;
   public rowSelection: 'single' | 'multiple' = 'multiple'; // Chọn nhiều dòng
   constructor(
     private matDialog: MatDialog,
-    private apiService: VoucherService
+    private apiService: VoucherShipService
   ) {
     this.columnDefs = [
       {
@@ -78,7 +82,7 @@ export class VoucherShipComponent implements OnInit {
       },
       {
         headerName: 'Sử dụng',
-        valueGetter : function (params) {
+        valueGetter(params) {
           const useVoucher = params.data.useVoucher || 0;
           const quantity = params.data.quantity || 1;
           return `${useVoucher} / ${quantity}`;
@@ -103,25 +107,25 @@ export class VoucherShipComponent implements OnInit {
       {
         headerName: 'Action',
         field: '',
-        cellRendererFramework: ActionVoucherComponent,
+        cellRendererFramework: ActionVoucherShipComponent,
         pinned: 'right',
       },
     ];
   }
 
   statusRenderer(params) {
-    if (params.value == 0) {
+    if (params.value === 0) {
       return 'Còn hạn';
-    } else if (params.value == 1) {
+    } else if (params.value === 1) {
       return 'Hết hạn';
     } else {
       return 'Không rõ';
     }
   }
   statusType(params) {
-    if (params.value == 0) {
+    if (params.value === 0) {
       return 'Theo %';
-    } else if (params.value == 1) {
+    } else if (params.value === 1) {
       return 'Theo tiền';
     } else {
       return 'Không rõ';
@@ -131,6 +135,13 @@ export class VoucherShipComponent implements OnInit {
   ngOnInit(): void {
     this.apiService.getSomeData().subscribe((response) => {
       this.rowData = response;
+      console.log(response);
+    });
+    this.apiService.getVoucherKH().subscribe((response) => {
+      this.rowData1 = response;
+    });
+    this.apiService.getVoucherKKH().subscribe((response) => {
+      this.rowData2 = response;
       console.log(response);
     });
   }

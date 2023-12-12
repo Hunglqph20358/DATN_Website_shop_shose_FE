@@ -36,6 +36,26 @@
     <th>Giá trị giảm:</th>
     <td>{{voucher.reducedValue}}</td>
   </tr>
+  <tr *ngIf="voucher.voucherType === 0">
+    <th>Giá trị giảm tối đa:</th>
+    <td>{{voucher.maxReduced}}</td>
+  </tr>
+  <tr>
+    <th>Mỗi khách hàng sử dụng tối đa:</th>
+    <td>{{voucher.limitCustomer}}</td>
+  </tr>
+  <tr>
+    <th>Nơi áp dụng:</th>
+    <td>{{getApplyText()}}</td>
+  </tr>
+  <tr>
+    <th>Người tạo:</th>
+    <td>{{voucher.createName}}</td>
+  </tr>
+  <tr>
+    <th>Cho phép sử dụng cùng discount:</th>
+    <td>{{voucher.allow == 1 ? 'Cho phép': 'Không cho phép'}}</td>
+  </tr>
   <tr>
     <th>Số lượng voucher:</th>
     <td>{{voucher.quantity}}</td>
@@ -44,7 +64,7 @@
     <label for="customer">Khách hàng</label>
     <div class="grid">
       <ul>
-        <li *ngFor="let customer of voucher.customerAdminDTOList">{{ customer.fullname }}</li>
+        <li *ngFor="let customer of voucher.customerAdminDTOList">{{ customer.code}} - {{ customer.fullname}}</li>
       </ul>
     </div>
   </div>

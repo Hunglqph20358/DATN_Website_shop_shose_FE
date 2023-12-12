@@ -7,7 +7,7 @@ import {Observable, of} from 'rxjs';
 })
 export class DiscountService {
   private apiUrl = 'http://localhost:6868/api/admin/discount';
-  private apiUrl2 = 'http://localhost:6868/api/admin/kichHoatD';
+  private apiUrl2 = 'http://localhost:6868/api/admin/discount/kichHoat';
 
 
   constructor(private http: HttpClient) {}
@@ -16,13 +16,13 @@ export class DiscountService {
     return this.http.get<any[]>(this.apiUrl);
   }
   getProduct() {
-    return this.http.get<any[]>('http://localhost:6868/api/admin/product');
+    return this.http.get<any[]>('http://localhost:6868/api/admin/discount/product');
   }
   getDiscountKH() {
-    return this.http.get<any[]>('http://localhost:6868/api/admin/discountKH');
+    return this.http.get<any[]>('http://localhost:6868/api/admin/discount/KH');
   }
   getDiscountKKH() {
-    return this.http.get<any[]>('http://localhost:6868/api/admin/discountKKH');
+    return this.http.get<any[]>('http://localhost:6868/api/admin/discount/KKH');
   }
 
   updateDiscount(id: number, discount: any) {
@@ -30,7 +30,7 @@ export class DiscountService {
     return this.http.put(url, discount);
   }
 
-  searchByDateRange(startDate: Date, endDate: Date): Observable<any> {
+  searchByDate(startDate: Date, endDate: Date): Observable<any> {
     // Kiểm tra nếu startDate hoặc endDate là undefined hoặc null, tránh lỗi
     if (!startDate || !endDate) {
       console.error('Ngày bắt đầu hoặc ngày kết thúc không được xác định.');
@@ -50,16 +50,31 @@ export class DiscountService {
       .set('startDate', startDateTime.toISOString())
       .set('endDate', endDateTime.toISOString());
 
-    return this.http.get<any>(`http://localhost:6868/api/admin/search`, { params });
+    return this.http.get<any>(`http://localhost:6868/api/admin/discount/searchByDate`, { params });
   }
 
 
 
 
-  searchByName(search: string): Observable<any> {
+  searchByDiscount(search: string): Observable<any> {
     const params = new HttpParams()
       .set('search', search);
-    return this.http.get<any>(`http://localhost:6868/api/admin/searchByName`, { params });
+    return this.http.get<any>(`http://localhost:6868/api/admin/discount/searchByDiscount`, { params });
+  }
+  searchByProduct(search: string): Observable<any> {
+    const params = new HttpParams()
+      .set('search', search);
+    return this.http.get<any>(`http://localhost:6868/api/admin/discount/searchByProduct`, { params });
+  }
+  searchByBrand(search: string): Observable<any> {
+    const params = new HttpParams()
+      .set('search', search);
+    return this.http.get<any>(`http://localhost:6868/api/admin/discount/searchByBrand`, { params });
+  }
+  searchByCategory(search: string): Observable<any> {
+    const params = new HttpParams()
+      .set('search', search);
+    return this.http.get<any>(`http://localhost:6868/api/admin/discount/searchByCategory`, { params });
   }
   KichHoat( id: number ) {
     const url = `${this.apiUrl2}/${id}`;
@@ -70,6 +85,10 @@ export class DiscountService {
   getDetailDiscount(discountId: number) {
     const url = `${this.apiUrl}/${discountId}`;
     return this.http.get<any[]>(url);
+  }
+  deleteDiscount(discountId: number) {
+    const url = `${this.apiUrl}/${discountId}`;
+    return this.http.delete<any[]>(url);
   }
 
   createDiscount(discount: any): Observable<any> {

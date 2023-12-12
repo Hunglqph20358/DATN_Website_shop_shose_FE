@@ -16,7 +16,7 @@ export class CreatDiscountComponent implements OnInit {
       startDate: '',
       endDate: '',
       description: '',
-      appy: '',
+      quantity: '',
       createName: localStorage.getItem('fullname'),
     },
     spap: '',
@@ -24,8 +24,6 @@ export class CreatDiscountComponent implements OnInit {
     discountType: '',
     maxReduced: '',
     isValidDateRange: () => {
-      // Your logic to check the validity of the date range
-      // For example:
       return (
         this.discount.discountAdminDTO.startDate &&
         this.discount.discountAdminDTO.endDate &&
@@ -33,14 +31,15 @@ export class CreatDiscountComponent implements OnInit {
       );
     },
   };
-  fullname: string = '';
+  currentDate: Date = new Date();
+  fullname = '';
   gridApi: any;
   rowData = [];
   columnDefs;
   headerHeight = 50;
   rowHeight = 40;
-  disableCheckPriceProduct: boolean = false;
-  iđStaff: string = '';
+  disableCheckPriceProduct = false;
+  iđStaff = '';
   constructor(private discountService: DiscountService,
               private router: Router) {
     this.columnDefs = [
@@ -90,14 +89,17 @@ export class CreatDiscountComponent implements OnInit {
       },
     ];
   }
+  isStartDateValid(): boolean {
+    return !this.discount.startDate || this.discount.startDate >= this.currentDate;
+  }
 
   public rowSelection: 'single' | 'multiple' = 'multiple'; // Chọn nhiều dòng
   ngOnInit(): void {
     this.discountService.getProduct().subscribe((response) => {
       this.rowData = response;
-      debugger
       console.log(response);
     });
+    console.log(this.currentDate);
   }
 
   onGridReady(params: any) {
@@ -117,13 +119,16 @@ export class CreatDiscountComponent implements OnInit {
   addDiscount() {
     const arrayProduct = this.discount.spap === '0' ? this.rowData : this.gridApi.getSelectedRows();
     this.disableCheckPriceProduct = false;
+    // tslint:disable-next-line:prefer-for-of
     for (let i = 0; i < arrayProduct.length; i++) {
+      // tslint:disable-next-line:triple-equals
       if (this.discount.reducedValue > arrayProduct[i].price && this.discount.discountType == 1) {
         this.disableCheckPriceProduct = true;
         alert('Giá trị giảm lớn hơn giá sản phẩm');
         return;
       }
       this.iđStaff = localStorage.getItem('idStaff');
+      // tslint:disable-next-line:triple-equals
       if (this.discount.maxReduced > arrayProduct[i].price && this.discount.discountType == 0) {
         this.disableCheckPriceProduct = true;
         alert('Giá trị giảm lớn hơn giá sản phẩm');

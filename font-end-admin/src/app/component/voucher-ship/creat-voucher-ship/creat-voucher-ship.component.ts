@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import {VoucherService} from "../../../service/voucher.service";
 import {Router} from "@angular/router";
+import {VoucherShipService} from "../../../service/voucher-ship.service";
 
 @Component({
   selector: 'app-creat-voucher-ship',
@@ -27,7 +28,7 @@ export class CreatVoucherShipComponent implements OnInit {
     allow: '',
   };
   gridApi: any;
-  constructor(private voucherService: VoucherService,
+  constructor(private voucherService: VoucherShipService,
               private  router: Router) {
     this.columnDefs = [
       {
@@ -89,7 +90,7 @@ export class CreatVoucherShipComponent implements OnInit {
       (response) => {
         // Handle the response if needed, e.g., show a success message
         console.log('Discount added successfully', response);
-        this.router.navigateByUrl('/admin/voucher');
+        this.router.navigateByUrl('/admin/voucherFS');
       },
       (error) => {
         // Handle errors if the discount creation fails

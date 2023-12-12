@@ -8,7 +8,7 @@ import { DiscountService } from 'src/app/service/discount.service';
   styleUrls: ['./edit-discount.component.css'],
 })
 export class EditDiscountComponent implements OnInit {
-   isHidden: boolean = true;
+   isHidden = true;
   discount: any = {
     discountAdminDTO: {
       id: '',
@@ -16,12 +16,20 @@ export class EditDiscountComponent implements OnInit {
       startDate: '',
       endDate: '',
       description: '',
-      appy: '',
+      quantity: '',
+      createName: localStorage.getItem('fullname'),
     },
     spap: '',
     reducedValue: '',
     discountType: '',
     maxReduced: '',
+    isValidDateRange: () => {
+      return (
+        this.discount.discountAdminDTO.startDate &&
+        this.discount.discountAdminDTO.endDate &&
+        this.discount.discountAdminDTO.startDate < this.discount.discountAdminDTO.endDate
+      );
+    },
   };
   gridApi: any;
   rowData = [];
@@ -81,7 +89,7 @@ export class EditDiscountComponent implements OnInit {
     this.isHidden = true;
     // Lấy thông tin khuyến mãi dựa trên id từ tham số URL
     this.activatedRoute.params.subscribe((params) => {
-      const id = params['id'];
+      const id = params.id;
       this.discountService
         .getDetailDiscount(id)
         .subscribe((response: any[]) => {
@@ -108,7 +116,7 @@ export class EditDiscountComponent implements OnInit {
   // Phương thức cập nhật thông tin khuyến mãi
   editDiscount() {
     this.activatedRoute.params.subscribe((params) => {
-      const id = params['id'];
+      const id = params.id;
       console.log(this.gridApi.getSelectedRows());
       const obj = {
         ...this.discount,

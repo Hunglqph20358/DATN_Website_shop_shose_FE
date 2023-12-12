@@ -18,17 +18,19 @@ export class DiscountComponent implements OnInit {
   headerHeight = 50;
   rowHeight = 40;
   checkedIsdel = false;
-  idStaff: string = '';
-  // today = new Date();
-  // month = today.getMonth();
-  // year = today.getFullYear();
-  searchName: '';
-  // campaignOne = new FormGroup({
-  //   start: new FormControl(new Date()),
-  //   end: new FormControl(new Date()),
-  // });
+  loc = '0';
+  idStaff = '';
+  startDate = '';
+  endDate = '';
   searchResults: any[] = [];
 
+  isValidDateRange = () => {
+    return (
+      this.startDate &&
+      this.endDate &&
+      new Date(this.startDate) < new Date(this.endDate)
+    );
+  }
   constructor(private apiService: DiscountService) {
     this.columnDefs = [
       {
@@ -150,12 +152,31 @@ export class DiscountComponent implements OnInit {
       }
     );
   }
-
-  // Tạo một biến để lưu trữ danh sách hiện tại
-
-  search(searchTerm: string) {
-    // Thực hiện tìm kiếm và cập nhật searchResults
-    this.apiService.searchByName(searchTerm).subscribe(
+  searchByCategory(event: any) {
+    const searchTerm = event.target.value;
+    this.apiService.searchByCategory(searchTerm).subscribe(
+      (data) => {
+        this.searchResults = data;
+      },
+      (error) => {
+        console.error(error);
+      }
+    );
+  }
+  searchByProduct(event: any) {
+    const searchTerm = event.target.value;
+    this.apiService.searchByProduct(searchTerm).subscribe(
+      (data) => {
+        this.searchResults = data;
+      },
+      (error) => {
+        console.error(error);
+      }
+    );
+  }
+  searchByBrand(event: any) {
+    const searchTerm = event.target.value;
+    this.apiService.searchByBrand(searchTerm).subscribe(
       (data) => {
         this.searchResults = data;
       },
@@ -165,24 +186,39 @@ export class DiscountComponent implements OnInit {
     );
   }
 
-  onSearchChange(event: any) {
+  searchByDiscount(event: any) {
     const searchTerm = event.target.value;
-    this.search(searchTerm);
+    this.apiService.searchByDiscount(searchTerm).subscribe(
+      (data) => {
+        this.searchResults = data;
+      },
+      (error) => {
+        console.error(error);
+      }
+    );
   }
 
-  searchByDateRange(startDate: Date, endDate: Date): void {
-    // this.apiService.searchByDateRange(start, end)
-    //   .subscribe({
-    //     next: data => {
-    //       // Xử lý dữ liệu trả về từ API
-    //       console.log(data);
-    //     },
-    //     error: error => {
-    //       // Xử lý lỗi
-    //       console.error(error);
-    //     }
-    //   });
+  searchByDate(startDate: string, endDate: string) {
+    if (startDate && endDate) {
+      // Assuming your API service accepts a date range for searching
+      const dateRange = { startDate, endDate };
+
+      // @ts-ignore
+      this.apiService.searchByDate(dateRange).subscribe(
+        (data) => {
+          this.searchResults = data;
+        },
+        (error) => {
+          console.error('Error occurred during date range search:', error);
+          // You can provide a user-friendly error message here if needed
+        }
+      );
+    } else {
+      console.warn('Invalid date range.');
+      // Optionally, you can provide feedback to the user that the date range is invalid
+    }
   }
+
 
 
   test(event: any) {

@@ -18,6 +18,11 @@
                   [(ngModel)]="voucher.name"
                   placeholder="Tên"
                 />
+                <div *ngIf="!voucher.name || (voucher.name && voucher.name.length < 5)" class="alert alert-danger">
+                  <div *ngIf="!voucher.name">Vui lòng nhập tên.</div>
+                  <div *ngIf="voucher.name && voucher.name.length < 5">Tên phải có ít nhất 5 kí tự.</div>
+                  <div *ngIf="voucher.name && !voucher.name.match(pattern)">Tên không chứa kí tự đặc biệt.</div>
+                </div>
               </div>
               <div class="form-group">
                 <label for="startDate">Ngày bắt đầu</label>
@@ -28,6 +33,14 @@
                   [ngModelOptions]="{ standalone: true }"
                   [(ngModel)]="voucher.startDate"
                 />
+                <div *ngIf="!voucher.startDate || voucher.startDate < currentDate" class="alert alert-danger">
+                  <div *ngIf="!voucher.startDate">
+                    Vui lòng chọn ngày bắt đầu.
+                  </div>
+                  <div *ngIf="voucher.startDate && !isStartDateValid()">
+                    Ngày bắt đầu phải lớn hơn hoặc bằng ngày hiện tại.
+                  </div>
+                </div>
               </div>
               <div class="form-group">
                 <label for="endDate">Ngày kết thúc</label>
@@ -38,6 +51,10 @@
                   [ngModelOptions]="{ standalone: true }"
                   [(ngModel)]="voucher.endDate"
                 />
+                <div *ngIf="!voucher.endDate || !voucher.isValidDateRange()" class="alert alert-danger">
+                  <div *ngIf="!voucher.endDate">Vui lòng chọn ngày kết thúc.</div>
+                  <div *ngIf="!voucher.isValidDateRange()">Ngày kết thúc phải lớn hơn ngày bắt đầu.</div>
+                </div>
               </div>
               <div class="form-group">
                 <label for="description">Nội dung</label>
@@ -49,24 +66,25 @@
                   [(ngModel)]="voucher.description"
                   placeholder="Nội dung"
                 />
-              </div>
-              <div class="form-group">
-                <label>Điều kiện sử dụng</label>
-                <div class="row">
-                  <div class="col-md-6">
-                    <div class="form-group">
-                      <input
-                        type="number"
-                        class="form-control"
-                        id="condition"
-                        [ngModelOptions]="{ standalone: true }"
-                        [(ngModel)]="voucher.conditions"
-                        placeholder="Giá trị đơn hàng"
-                      />
-                    </div>
-                  </div>
+                <div *ngIf="!voucher.description" class="alert alert-danger">
+                  <div *ngIf="!voucher.description">Vui lòng nhập nội dung.</div>
                 </div>
               </div>
+              <div class="form-group">
+                <label for="condition">Điều kiện sử dụng</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="condition"
+                  [(ngModel)]="voucher.conditions"
+                  name="condition"
+                  placeholder="Giá trị đơn hàng"
+                  required
+                />
+                <div *ngIf="!voucher.conditions" class="alert alert-danger">Vui lòng nhập điều kiện sử dụng.</div>
+                <div *ngIf="voucher.conditions && !voucher.conditions.match(so)" class="alert alert-danger">Điều kiện sử dụng phải là số không âm.</div>
+              </div>
+
               <div class="form-group">
                 <label for="discountType">Loại voucher</label>
                 <select
@@ -78,8 +96,10 @@
                   <option value="">Chọn loại voucher</option>
                   <option value="0">Theo %</option>
                   <option value="1">Theo tiền</option>
-                  <!-- Thêm các loại voucher khác nếu cần -->
                 </select>
+                <div *ngIf="!voucher.voucherType" class="alert alert-danger">
+                  <div *ngIf="!voucher.voucherType">Vui lòng chọn loại voucher.</div>
+                </div>
               </div>
 
               <div class="form-group" >
@@ -96,6 +116,9 @@
                 <div *ngIf="voucher.voucherType === '0' && voucher.reducedValue > 100" class="text-danger">
                   Giá trị giảm không được quá 100%
                 </div>
+                <div *ngIf="!voucher.reducedValue" class="alert alert-danger">
+                  <div *ngIf="!voucher.reducedValue">Vui lòng nhập giá trị giảm.</div>
+                </div>
               </div>
 
               <div class="form-group" *ngIf="voucher.voucherType == '0'">
@@ -108,6 +131,9 @@
                   [(ngModel)]="voucher.maxReduced"
                   placeholder="Giá trị giảm tối đa"
                 />
+                <div *ngIf="!voucher.maxReduced" class="alert alert-danger">
+                  <div *ngIf="!voucher.maxReduced">Vui lòng nhập giá trị giảm tối đa.</div>
+                </div>
               </div>
               <div class="form-group">
                 <label for="quantity">Số lượng</label>
@@ -119,6 +145,9 @@
                   [(ngModel)]="voucher.quantity"
                   placeholder="Số lượng"
                 />
+                <div *ngIf="!voucher.quantity" class="alert alert-danger">
+                  <div *ngIf="!voucher.quantity">Vui lòng nhập số lượng.</div>
+                </div>
               </div>
               <div class="form-group">
                 <label for="discountType">Nơi áp dụng</label>
@@ -128,10 +157,14 @@
                   [ngModelOptions]="{ standalone: true }"
                   [(ngModel)]="voucher.apply"
                 >
-                  <option value="0">Mua online</option>
-                  <option value="1">Tại cửa hàng</option>
+                  <option value="2">Tất cả mọi nơi</option>
+                  <option value="0">Tại cửa hàng</option>
+                  <option value="1">Mua online</option>
                   <!-- Thêm các loại voucher khác nếu cần -->
                 </select>
+                <div *ngIf="!voucher.apply" class="alert alert-danger">
+                  <div *ngIf="!voucher.apply">Vui lòng chọn nơi áp dụng.</div>
+                </div>
               </div>
               <div class="form-group">
                 <label for="discountType">Khách hàng áp dụng</label>
@@ -143,7 +176,6 @@
                 >
                   <option value="0">Tất cả khách hàng</option>
                   <option value="1">Tùy chọn</option>
-                  <!-- Thêm các loại voucher khác nếu cần -->
                 </select>
               </div>
               <div class="form-group" *ngIf="voucher.optionCustomer == 1">
@@ -157,10 +189,14 @@
                     [rowSelection]="rowSelection"
                     [headerHeight]="headerHeight"
                     [rowHeight]="rowHeight"
+                    [pagination]="true"
+                    [paginationPageSize]="5"
                     [domLayout]="'autoHeight'"
                     (gridReady)="onGridReady($event)"
                   ></ag-grid-angular>
-
+                  <div *ngIf="!voucher.customer" class="alert alert-danger">
+                    <div *ngIf="!voucher.customer">Vui lòng chọn khách hàng.</div>
+                  </div>
                 </div>
               </div>
               <div class="form-group">
@@ -173,6 +209,9 @@
                   [(ngModel)]="voucher.limitCustomer"
                   placeholder="Số lượng"
                 />
+                <div *ngIf="!voucher.limitCustomer" class="alert alert-danger">
+                  <div *ngIf="!voucher.limitCustomer">Vui lòng nhập giới hạn sử dụng.</div>
+                </div>
               </div>
               <div class="form-group">
                 <div class="form-check">

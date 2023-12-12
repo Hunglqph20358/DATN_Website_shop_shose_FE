@@ -56,9 +56,15 @@
                   name="startDate"
                   required
                 />
-                <div *ngIf="!discount.discountAdminDTO.startDate" class="alert alert-danger">
-                  <div *ngIf="!discount.discountAdminDTO.startDate">Vui lòng chọn ngày bắt đầu.</div>
+                <div *ngIf="!discount.discountAdminDTO.startDate || discount.discountAdminDTO.startDate < currentDate" class="alert alert-danger">
+                  <div *ngIf="!discount.discountAdminDTO.startDate">
+                    Vui lòng chọn ngày bắt đầu.
+                  </div>
+                  <div *ngIf="discount.discountAdminDTO.startDate && !isStartDateValid()">
+                    Ngày bắt đầu phải lớn hơn hoặc bằng ngày hiện tại.
+                  </div>
                 </div>
+
               </div>
 
               <div class="form-group">
@@ -112,7 +118,7 @@
                   Giá trị giảm không được quá 100%
                 </div>
                 <div *ngIf="!discount.reducedValue" class="alert alert-danger">
-                  <div *ngIf="!discount.reducedValue">Vui lòng nhập loại giảm giá.</div>
+                  <div *ngIf="!discount.reducedValue">Vui lòng nhập giá trị giảm.</div>
                 </div>
               </div>
 
@@ -160,27 +166,12 @@
                     [rowSelection]="rowSelection"
                     [headerHeight]="headerHeight"
                     [rowHeight]="rowHeight"
+                    [pagination]="true"
+                    [paginationPageSize]="5"
                     [domLayout]="'autoHeight'"
                     (gridReady)="onGridReady($event)"
                   ></ag-grid-angular>
 
-                </div>
-              </div>
-              <div class="form-group">
-                <label for="discountType">Nơi áp dụng</label>
-                <select
-                  class="form-control"
-                  id="spap"
-                  [ngModelOptions]="{ standalone: true }"
-                  [(ngModel)]="discount.discountAdminDTO.appy"
-                  name="discountType"
-                  required
-                >
-                  <option value="0">Mua online</option>
-                  <option value="1">Tại cửa hàng</option>
-                </select>
-                <div *ngIf="!discount.discountAdminDTO.appy" class="alert alert-danger">
-                  <div *ngIf="!discount.discountAdminDTO.appy">Vui lòng chọn nơi áp dụng.</div>
                 </div>
               </div>
               <div class="form-group">
@@ -190,11 +181,11 @@
                   class="form-control"
                   id="limitCustomer"
                   [ngModelOptions]="{ standalone: true }"
-                  [(ngModel)]="discount.quantity"
+                  [(ngModel)]="discount.discountAdminDTO.quantity"
                   placeholder="Số lượng"
                 />
-                <div *ngIf="!discount.quantity" class="alert alert-danger">
-                  <div *ngIf="!discount.quantity">Vui lòng nhập số lượng</div>
+                <div *ngIf="!discount.discountAdminDTO.quantity" class="alert alert-danger">
+                  <div *ngIf="!discount.discountAdminDTO.quantity">Vui lòng nhập số lượng</div>
                 </div>
               </div>
             </div>

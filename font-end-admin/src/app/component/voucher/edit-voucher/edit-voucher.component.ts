@@ -8,7 +8,14 @@ import {VoucherService} from "../../../service/voucher.service";
   styleUrls: ['./edit-voucher.component.css'],
 })
 export class EditVoucherComponent implements OnInit {
-  isHidden: boolean = true;
+  isHidden = true;
+  gridApi: any;
+  rowData = [];
+  columnDefs;
+  headerHeight = 50;
+  rowHeight = 40;
+  fullname = '';
+  check: boolean;
   voucher: any = {
     id: '',
     name: '',
@@ -19,16 +26,65 @@ export class EditVoucherComponent implements OnInit {
     voucherType: '',
     conditions: '',
     quantity: '',
+    idel: '',
   };
   constructor(private activatedRoute: ActivatedRoute,
-              private service: VoucherService,
-              private rou: Router) {}
+              private voucherService: VoucherService,
+              private rou: Router) {
+    this.columnDefs = [
+      {
+        headerName: 'Mã Khách hàng',
+        field: 'code',
+        sortable: true,
+        filter: true,
+        checkboxSelection: true,
+        headerCheckboxSelection: true,
+        editable: true,
+      },
+      {
+        headerName: 'Tên khách hàng',
+        field: 'fullname',
+        sortable: true,
+        filter: true,
+        editable: true,
+      },
+      {
+        headerName: 'Ngày sinh',
+        field: 'birthday',
+        sortable: true,
+        filter: true,
+        editable: true,
+      },
+      {
+        headerName: 'Giới tính',
+        field: 'gender',
+        sortable: true,
+        filter: true,
+        editable: true,
+      },
+      {
+        headerName: 'Số lượt mua',
+        field: 'orderCount',
+        sortable: true,
+        filter: true,
+        editable: true,
+      },
+    ];
+  }
+  public rowSelection: 'single' | 'multiple' = 'multiple'; // Chọn nhiều dòng
+  onGridReady(params: any) {
+    this.gridApi = params.api;
+  }
   ngOnInit(): void {
+    this.voucherService.getCustomer().subscribe((response) => {
+      this.rowData = response;
+      console.log(response);
+    });
     this.isHidden = true;
     this.activatedRoute.params.subscribe((params) => {
-      const id = params['id'];
+      const id = params.id;
       console.log(id);
-      this.service.getDetailVoucher(id).subscribe((response: any[]) => {
+      this.voucherService.getDetailVoucher(id).subscribe((response: any[]) => {
         const firstElement = Array.isArray(response) ? response[0] : response;
         console.log(firstElement);
         this.voucher.id = firstElement.id;
@@ -46,10 +102,19 @@ export class EditVoucherComponent implements OnInit {
     console.log(this.voucher);
   }
   editVoucher(){
-    this.service
-      .updateVoucher(this.voucher.id, this.voucher)
-      .subscribe(() => {
-        this.rou.navigateByUrl('/admin/voucher');
-      });
+    this.check = false;
+    if (this.voucher.idel === 0) {
+      this.check = true;
+    }
+    if (this.check === false){
+      this.voucherService
+        .updateVoucher(this.voucher.id, this.voucher)
+        .subscribe(() => {
+          this.rou.navigateByUrl('/admin/voucher');
+        });
+    }
+  }
+  toggleAllowDiscount() {
+    this.voucher.allow = this.voucher.allow === 1 ? 0 : 1;
   }
 }

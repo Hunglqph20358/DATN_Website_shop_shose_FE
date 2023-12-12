@@ -1,12 +1,12 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import {HttpClient, HttpParams} from '@angular/common/http';
 import { Observable } from 'rxjs';
 @Injectable({
   providedIn: 'root'
 })
 export class VoucherService {
   private apiUrl = 'http://localhost:6868/api/admin/voucher';
-  private apiUrl2 = 'http://localhost:6868/api/admin/kichHoatV';
+
 
   constructor(private http: HttpClient) {}
 
@@ -14,7 +14,7 @@ export class VoucherService {
     return this.http.get<any[]>(this.apiUrl);
   }
   getCustomer() {
-    return this.http.get<any[]>('http://localhost:6868/api/admin/customer');
+    return this.http.get<any[]>('http://localhost:6868/api/admin/voucher/customer');
   }
   updateVoucher(id, voucher: any) {
     const url = `${this.apiUrl}/${id}`;
@@ -33,8 +33,24 @@ export class VoucherService {
     return this.http.post(this.apiUrl, voucher);
   }
   KichHoat( id: number ) {
-    const url = `${this.apiUrl2}/${id}`;
+    const url = `${this.apiUrl}/kichHoat/${id}`;
     return this.http.put(url, { /* provide data if needed */ }, { observe: 'response' });
+  }
+  searchByCustomer(search: string): Observable<any> {
+    const params = new HttpParams()
+      .set('search', search);
+    return this.http.get<any>(`${this.apiUrl}/searchByCustomer`, { params });
+  }
+  searchByVoucher(search: string): Observable<any> {
+    const params = new HttpParams()
+      .set('search', search);
+    return this.http.get<any>(`http://localhost:6868/api/admin/voucher/searchByVoucher`, { params });
+  }
+  getVoucherKH() {
+    return this.http.get<any[]>('http://localhost:6868/api/admin/voucher/KH');
+  }
+  getVoucherKKH() {
+    return this.http.get<any[]>('http://localhost:6868/api/admin/voucher/KKH');
   }
 }
 

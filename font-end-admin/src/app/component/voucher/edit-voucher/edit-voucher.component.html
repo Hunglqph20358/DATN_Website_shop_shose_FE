@@ -70,7 +70,7 @@
                         class="form-control"
                         id="condition"
                         [ngModelOptions]="{ standalone: true }"
-                        [(ngModel)]="voucher.conditionApply"
+                        [(ngModel)]="voucher.conditions"
                         placeholder="Giá trị đơn hàng"
                       />
                     </div>
@@ -78,10 +78,10 @@
                 </div>
               </div>
               <div class="form-group">
-                <label for="voucherType">Loại voucher</label>
+                <label for="discountType">Loại voucher</label>
                 <select
                   class="form-control"
-                  id="voucherType"
+                  id="discountType"
                   [ngModelOptions]="{ standalone: true }"
                   [(ngModel)]="voucher.voucherType"
                 >
@@ -91,7 +91,8 @@
                   <!-- Thêm các loại voucher khác nếu cần -->
                 </select>
               </div>
-              <div class="form-group">
+
+              <div class="form-group" >
                 <label for="reducedValue">Giá trị giảm</label>
                 <input
                   type="text"
@@ -100,6 +101,22 @@
                   [ngModelOptions]="{ standalone: true }"
                   [(ngModel)]="voucher.reducedValue"
                   placeholder="Giá trị giảm"
+                  [max]="voucher.voucherType === '0' ? 100 : null"
+                />
+                <div *ngIf="voucher.voucherType === '0' && voucher.reducedValue > 100" class="text-danger">
+                  Giá trị giảm không được quá 100%
+                </div>
+              </div>
+
+              <div class="form-group" *ngIf="voucher.voucherType == '0'">
+                <label for="maxReduced">Giá trị giảm tối đa</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="maxReduced"
+                  [ngModelOptions]="{ standalone: true }"
+                  [(ngModel)]="voucher.maxReduced"
+                  placeholder="Giá trị giảm tối đa"
                 />
               </div>
               <div class="form-group">
@@ -112,6 +129,71 @@
                   [(ngModel)]="voucher.quantity"
                   placeholder="Số lượng"
                 />
+              </div>
+              <div class="form-group">
+                <label for="discountType">Nơi áp dụng</label>
+                <select
+                  class="form-control"
+                  id="appy"
+                  [ngModelOptions]="{ standalone: true }"
+                  [(ngModel)]="voucher.apply"
+                >
+                  <option value="0">Mua online</option>
+                  <option value="1">Tại cửa hàng</option>
+                  <!-- Thêm các loại voucher khác nếu cần -->
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="discountType">Khách hàng áp dụng</label>
+                <select
+                  class="form-control"
+                  id="kkad"
+                  [ngModelOptions]="{ standalone: true }"
+                  [(ngModel)]="voucher.optionCustomer"
+                >
+                  <option value="0">Tất cả khách hàng</option>
+                  <option value="1">Tùy chọn</option>
+                  <!-- Thêm các loại voucher khác nếu cần -->
+                </select>
+              </div>
+              <div class="form-group" *ngIf="voucher.optionCustomer == 1">
+                <label for="customer">Khách hàng</label>
+                <div class="grid">
+                  <ag-grid-angular
+                    style="width: 100%; height: 300px"
+                    class="ag-theme-balham"
+                    [rowData]="rowData"
+                    [columnDefs]="columnDefs"
+                    [rowSelection]="rowSelection"
+                    [headerHeight]="headerHeight"
+                    [pagination]="true"
+                    [paginationPageSize]="5"
+                    [rowHeight]="rowHeight"
+                    [domLayout]="'autoHeight'"
+                    (gridReady)="onGridReady($event)"
+                  ></ag-grid-angular>
+
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="limitCustomer">Giới hạn số lần sử dụng với mỗi khách hàng</label>
+                <input
+                  type="number"
+                  class="form-control"
+                  id="limitCustomer"
+                  [ngModelOptions]="{ standalone: true }"
+                  [(ngModel)]="voucher.limitCustomer"
+
+                />
+              </div>
+              <div class="form-group">
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" value="" id="allow"
+                         [checked]="voucher.allow === 1" (change)="toggleAllowDiscount()">
+                  <label class="form-check-label" for="allow">
+                    Cho phép xử dụng cùng giảm giá
+                  </label>
+                </div>
               </div>
               <div class="card-footer">
                 <button type="submit" class="btn btn-primary" (click)="editVoucher()">Submit</button>

@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import {ActivatedRoute} from "@angular/router";
 import {VoucherService} from "../../../service/voucher.service";
+import {VoucherShipService} from "../../../service/voucher-ship.service";
 
 @Component({
   selector: 'app-detail-voucher-ship',
@@ -16,17 +17,16 @@ export class DetailVoucherShipComponent implements OnInit {
     description: '',
     reducedValue: '',
     voucherType: '',
-    conditionApply: '',
     quantity: '',
     customerAdminDTOList: [],
   };
   constructor(private  activatedRoute: ActivatedRoute,
-              private voucherService: VoucherService) { }
+              private voucherService: VoucherShipService) { }
 
   ngOnInit(): void {
     // Lấy thông tin khuyến mãi dựa trên id từ tham số URL
     this.activatedRoute.params.subscribe((params) => {
-      const id = params['id'];
+      const id = params.id;
       console.log(id);
       this.voucherService.getDetailVoucher(id).subscribe((response: any[]) => {
         const firstElement = response[0];

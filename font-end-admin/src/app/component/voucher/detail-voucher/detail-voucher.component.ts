@@ -14,10 +14,16 @@ export class DetailVoucherComponent implements OnInit {
     endDate: '',
     description: '',
     reducedValue: '',
+    maxReduced: '',
     voucherType: '',
-    conditionApply: '',
+    conditions: '',
     quantity: '',
-    customerAdminDTOList: [],
+    customerAdminDTOList: '',
+    limitCustomer: '',
+    allow: '',
+    apply: '',
+    optionCustomer: '',
+    createName: localStorage.getItem('fullname'),
   };
   constructor(private  activatedRoute: ActivatedRoute,
               private voucherService: VoucherService) { }
@@ -25,7 +31,7 @@ export class DetailVoucherComponent implements OnInit {
   ngOnInit(): void {
     // Lấy thông tin khuyến mãi dựa trên id từ tham số URL
     this.activatedRoute.params.subscribe((params) => {
-      const id = params['id'];
+      const id = params.id;
       console.log(id);
       this.voucherService.getDetailVoucher(id).subscribe((response: any[]) => {
         const firstElement = Array.isArray(response) ? response[0] : response;
@@ -38,7 +44,11 @@ export class DetailVoucherComponent implements OnInit {
         this.voucher.endDate = firstElement.endDate;
         this.voucher.quantity = firstElement.quantity;
         this.voucher.reducedValue = firstElement.reducedValue;
+        this.voucher.maxReduced = firstElement.maxReduced;
         this.voucher.startDate = firstElement.startDate;
+        this.voucher.allow = firstElement.allow;
+        this.voucher.apply = firstElement.apply;
+        this.voucher.limitCustomer = firstElement.limitCustomer;
         this.voucher.customerAdminDTOList = firstElement.customerAdminDTOList;
         console.log(this.voucher);
       });
@@ -51,6 +61,15 @@ export class DetailVoucherComponent implements OnInit {
       return 'Theo tiền';
     } else {
       return 'Không rõ';
+    }
+  }
+  getApplyText(): string {
+    if (this.voucher.apply === 0) {
+      return 'Tại quầy';
+    } else if (this.voucher.apply === 1) {
+      return 'Mua online';
+    } else {
+      return 'Tất cả mọi nơi';
     }
   }
 }

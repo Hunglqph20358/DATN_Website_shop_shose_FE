@@ -31,7 +31,7 @@ export class ActionVoucherShipComponent implements OnInit, ICellRendererAngularC
 
   editItem(): void {
     console.log(this.data);
-    this.router.navigate(['/admin/edit-voucher', this.data.id]);
+    this.router.navigate(['/admin/edit-voucherFS', this.data.id]);
   }
 
   deleteItem(): void {
@@ -39,7 +39,7 @@ export class ActionVoucherShipComponent implements OnInit, ICellRendererAngularC
     if (confirmation) {
       this.voucherService.deleteVoucher(this.data.id)
         .subscribe(() => {
-            this.router.navigateByUrl('/admin/voucher');
+            this.router.navigateByUrl('/admin/voucherFS');
           },
           (error) => {
             console.error('Error delete discount', error);
@@ -47,7 +47,7 @@ export class ActionVoucherShipComponent implements OnInit, ICellRendererAngularC
     }
   }
   detail(): void {
-    this.router.navigate(['/admin/voucher', this.data.id]);
+    this.router.navigate(['/admin/voucherFS', this.data.id]);
   }
 }
 

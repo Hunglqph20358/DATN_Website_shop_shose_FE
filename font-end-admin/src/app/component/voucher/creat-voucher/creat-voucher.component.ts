@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { VoucherService } from 'src/app/service/voucher.service';
-import {Router} from "@angular/router";
-import {DiscountService} from "../../../service/discount.service";
+import {Router} from '@angular/router';
 
 @Component({
   selector: 'app-creat-voucher',
@@ -28,9 +27,17 @@ export class CreatVoucherComponent implements OnInit {
     appy: '',
     optionCustomer: '',
     createName: localStorage.getItem('fullname'),
+    isValidDateRange: () => {
+      return (
+        this.voucher.startDate &&
+        this.voucher.endDate &&
+        this.voucher.startDate < this.voucher.endDate
+      );
+    },
   };
+  currentDate: Date = new Date();
   gridApi: any;
-  fullname: string = '';
+  fullname = '';
   constructor(private voucherService: VoucherService,
               private  router: Router) {
     this.columnDefs = [
@@ -74,10 +81,14 @@ export class CreatVoucherComponent implements OnInit {
     ];
   }
   public rowSelection: 'single' | 'multiple' = 'multiple'; // Chọn nhiều dòng
+  pattern: '^[a-zA-Z0-9\s]+$';
+  so: '^\d+(\.\d+)?$';
+  isStartDateValid(): boolean {
+    return !this.voucher.startDate || this.voucher.startDate >= this.currentDate;
+  }
   ngOnInit(): void {
     this.voucherService.getCustomer().subscribe((response) => {
       this.rowData = response;
-      debugger
       console.log(response);
     });
   }

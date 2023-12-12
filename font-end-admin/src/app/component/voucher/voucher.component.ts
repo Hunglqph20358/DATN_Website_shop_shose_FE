@@ -1,8 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import {ChangeDetectorRef, Component, OnInit} from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { ActionVoucherComponent } from './action-voucher/action-voucher.component';
 import { VoucherService } from 'src/app/service/voucher.service';
-import {formatDateTime} from "../../util/util";
+import {formatDateTime} from '../../util/util';
+
 
 @Component({
   selector: 'app-bangvoucher',
@@ -10,14 +11,29 @@ import {formatDateTime} from "../../util/util";
   styleUrls: ['./voucher.component.css'],
 })
 export class VoucherComponent implements OnInit {
+  public rowSelection: 'single' | 'multiple' = 'multiple'; // Chọn nhiều dòng
   rowData = [];
+  rowData1 = [];
+  rowData2 = [];
   columnDefs;
   headerHeight = 50;
   rowHeight = 40;
-  public rowSelection: 'single' | 'multiple' = 'multiple'; // Chọn nhiều dòng
+  loc = '0';
+  idStaff = '';
+  startDate = '';
+  endDate = '';
+  searchResults: any[] = [];
+  isValidDateRange = () => {
+    return (
+      this.startDate &&
+      this.endDate &&
+      new Date(this.startDate) < new Date(this.endDate)
+    );
+  }
   constructor(
     private matDialog: MatDialog,
-    private apiService: VoucherService
+    private apiService: VoucherService,
+    private cdr: ChangeDetectorRef
   ) {
     this.columnDefs = [
       {
@@ -78,7 +94,7 @@ export class VoucherComponent implements OnInit {
       },
       {
         headerName: 'Sử dụng',
-        valueGetter : function (params) {
+        valueGetter(params) {
           const useVoucher = params.data.useVoucher || 0;
           const quantity = params.data.quantity || 1;
           return `${useVoucher} / ${quantity}`;
@@ -110,18 +126,18 @@ export class VoucherComponent implements OnInit {
   }
 
   statusRenderer(params) {
-    if (params.value == 0) {
+    if (params.value === 0) {
       return 'Còn hạn';
-    } else if (params.value == 1) {
+    } else if (params.value === 1) {
       return 'Hết hạn';
     } else {
       return 'Không rõ';
     }
   }
     statusType(params) {
-      if (params.value == 0) {
+      if (params.value === 0) {
         return 'Theo %';
-      } else if (params.value == 1) {
+      } else if (params.value === 1) {
         return 'Theo tiền';
       } else {
         return 'Không rõ';
@@ -131,6 +147,14 @@ export class VoucherComponent implements OnInit {
   ngOnInit(): void {
     this.apiService.getSomeData().subscribe((response) => {
       this.rowData = response;
+      this.searchResults = response;
+      console.log(response);
+    });
+    this.apiService.getVoucherKH().subscribe((response) => {
+      this.rowData1 = response;
+    });
+    this.apiService.getVoucherKKH().subscribe((response) => {
+      this.rowData2 = response;
       console.log(response);
     });
   }
@@ -150,5 +174,28 @@ export class VoucherComponent implements OnInit {
         console.error('Error in HTTP PUT request:', error);
       }
     );
+  }
+  searchByCustomer(event: any) {
+    const searchTerm = event.target.value;
+    this.apiService.searchByCustomer(searchTerm).subscribe(
+      (data) => {
+        this.searchResults = data;
+      },
+      (error) => {
+        console.error(error);
+      }
+    );
+  }
+  searchByVoucher(event: any) {
+    const searchTerm = event.target.value;
+    this.apiService.searchByVoucher(searchTerm).subscribe(
+      (data) => {
+        this.searchResults = data;
+      },
+      (error) => {
+        console.error(error);
+      }
+    );
+    this.cdr.detectChanges();
   }
 }
