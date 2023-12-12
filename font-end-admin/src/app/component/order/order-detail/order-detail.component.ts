@@ -1,4 +1,4 @@
-import {Component, Inject, OnInit} from '@angular/core';
+import {ChangeDetectorRef, Component, Inject, OnInit} from '@angular/core';
 import {formatMoney, padZero} from '../../../util/util';
 import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
 import {OrderDetailService} from '../../../service/order-detail.service';
@@ -18,9 +18,9 @@ export class OrderDetailComponent implements OnInit {
   gridApi;
   gridColumnApi;
   status: any;
-
+  totalQuantity: number = 0;
   constructor(private orderDetailService: OrderDetailService, public matRef: MatDialogRef<OrderDetailComponent>,
-              @Inject(MAT_DIALOG_DATA) public data: any, private orderService: OrderService, private toastr: ToastrService) {
+              @Inject(MAT_DIALOG_DATA) public data: any, private orderService: OrderService, private cdr: ChangeDetectorRef, private toastr: ToastrService) {
     this.rowData = [];
     this.columnDefs = [
       {
@@ -78,13 +78,15 @@ export class OrderDetailComponent implements OnInit {
         },
       }
     ];
-    this.status = this.data.status;
+    this.status = this.data.data.status;
   }
 
   ngOnInit(): void {
     // console.log(this.data);
-    this.orderDetailService.getAllOrderDetailByOrder(this.data.id).subscribe(res => {
+    console.log(this.data.data);
+    this.orderDetailService.getAllOrderDetailByOrder(this.data.data.id).subscribe(res => {
       this.rowData = res;
+      this.totalQuantity = this.rowData.reduce((total, orderDetail) => total + (orderDetail.quantity || 0), 0);
     });
   }
 
@@ -94,25 +96,120 @@ export class OrderDetailComponent implements OnInit {
   }
 
   cancelOrder() {
-    // @ts-ignore
     Swal.fire({
-      title: 'Bạn có chắc chắn muốn Hoàn hủy hóa đơn này không ?',
-      icon: 'waring',
+      title: 'Bạn có chắc chắn muốn hủy đơn hàng này không ?',
+      icon: 'warning',
       showCancelButton: true,
       confirmButtonText: 'Yes',
       cancelButtonText: 'No',
     }).then((result) => {
       if (result.isConfirmed) {
         const obj = {
-          id: this.data.id,
-          idStaff: 3
+          id: this.data.data.id,
+          idStaff: this.data.staff.id
         };
         this.orderService.cancelOrder(obj).subscribe(res => {
-          if (res.status === 'OK') {
-            this.toastr.success('Xoa Thanh Cong!', 'Remove', {
-              positionClass: 'toast-top-right'
-            });
-          }
+          this.toastr.success('Hủy đơn hàng Thanh Cong!', 'Thông báo', {
+            positionClass: 'toast-top-right'
+          });
+          this.cdr.detectChanges();
+          this.matRef.close('update-order');
+        });
+      }
+    });
+  }
+
+  xacNhanOrder() {
+    Swal.fire({
+      title: 'Bạn có muốn xác nhận đơn hàng này không ?',
+      icon: 'success',
+      showCancelButton: true,
+      confirmButtonText: 'Yes',
+      cancelButtonText: 'No',
+    }).then((result) => {
+      if (result.isConfirmed) {
+        const obj = {
+          id: this.data.data.id,
+          idStaff: this.data.staff.id
+        };
+        this.orderService.progressingOrder(obj).subscribe(res => {
+          this.toastr.success('Xác nhận thành công!', 'Thông báo', {
+            positionClass: 'toast-top-right'
+          });
+          this.cdr.detectChanges();
+          this.matRef.close('update-order');
+        });
+      }
+    });
+  }
+
+  giaoHangOrder() {
+    Swal.fire({
+      title: 'Bạn có muốn giao hàng đơn hàng này không ?',
+      icon: 'success',
+      showCancelButton: true,
+      confirmButtonText: 'Yes',
+      cancelButtonText: 'No',
+    }).then((result) => {
+      if (result.isConfirmed) {
+        const obj = {
+          id: this.data.data.id,
+          idStaff: this.data.staff.id
+        };
+        this.orderService.shipOrder(obj).subscribe(res => {
+          this.toastr.success('Đơn hàng đang được giao!', 'Thông báo', {
+            positionClass: 'toast-top-right'
+          });
+          this.matRef.close('update-order');
+        });
+        this.cdr.detectChanges();
+      }
+    });
+  }
+
+  hoanThanhOrder() {
+    Swal.fire({
+      title: 'Bạn có muốn hoàn thành đơn hàng này không ?',
+      icon: 'success',
+      showCancelButton: true,
+      confirmButtonText: 'Yes',
+      cancelButtonText: 'No',
+    }).then((result) => {
+      if (result.isConfirmed) {
+        const obj = {
+          id: this.data.data.id,
+          idStaff: this.data.staff.id
+        };
+        this.orderService.completeOrder(obj).subscribe(res => {
+          this.toastr.success('Đơn hàng đã hoàn thành!', 'Thông báo', {
+            positionClass: 'toast-top-right'
+          });
+          this.cdr.detectChanges();
+          this.matRef.close('update-order');
+        });
+      }
+    });
+  }
+
+  boLoOrder() {
+    Swal.fire({
+      title: 'Đơn hàng này có chắc chắn đã bỏ lỡ không ?',
+      icon: 'success',
+      showCancelButton: true,
+      confirmButtonText: 'Yes',
+      cancelButtonText: 'No',
+    }).then((result) => {
+      if (result.isConfirmed) {
+        const obj = {
+          id: this.data.data.id,
+          idStaff: this.data.staff.id
+        };
+        this.orderService.missedOrder(obj).subscribe(res => {
+          this.toastr.success('Bỏ lỡ đơn hàng thành công!', 'Thông báo', {
+            positionClass: 'toast-top-right'
+          });
+          this.cdr.detectChanges();
+          this.matRef.close('update-order');
         });
       }
     });

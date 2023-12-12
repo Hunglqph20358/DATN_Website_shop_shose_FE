@@ -9,60 +9,63 @@ import {AppComponent} from './app.component';
 import {HeaderComponent} from './layout/header/header.component';
 import {FooterComponent} from './layout/footer/footer.component';
 import {DegiayComponent} from './component/degiay/degiay.component';
-import { BrowserModule } from '@angular/platform-browser';
-import { ChangeDetectorRef, NgModule } from '@angular/core';
-import { ChatlieuComponent } from './component/chatlieu/chatlieu.component';
-import { MausacComponent } from './component/mausac/mausac.component';
-import { KichcoComponent } from './component/kichco/kichco.component';
-import { ThuonghieuComponent } from './component/thuonghieu/thuonghieu.component';
-import { ThemChatLieuComponent } from './component/chatlieu/them-chat-lieu/them-chat-lieu.component';
+import {BrowserModule} from '@angular/platform-browser';
+import {ChangeDetectorRef, NgModule} from '@angular/core';
+import {ChatlieuComponent} from './component/chatlieu/chatlieu.component';
+import {MausacComponent} from './component/mausac/mausac.component';
+import {KichcoComponent} from './component/kichco/kichco.component';
+import {ThuonghieuComponent} from './component/thuonghieu/thuonghieu.component';
+import {ThemChatLieuComponent} from './component/chatlieu/them-chat-lieu/them-chat-lieu.component';
 
-import { SidebarComponent } from './layout/sidebar/sidebar.component';
-import { DiscountComponent } from './component/discount/discount.component';
-import { VoucherComponent } from './component/voucher/voucher.component';
-import { AgGridModule } from 'ag-grid-angular';
-import { HomeComponent } from './component/home/home.component';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { CreatDiscountComponent } from './component/discount/creat-discount/creat-discount.component';
-import { ActionDiscountComponent } from './component/discount/action-discount/action-discount.component';
-import { CreatVoucherComponent } from './component/voucher/creat-voucher/creat-voucher.component';
-import { ActionVoucherComponent } from './component/voucher/action-voucher/action-voucher.component';
+import {SidebarComponent} from './layout/sidebar/sidebar.component';
+import {DiscountComponent} from './component/discount/discount.component';
+import {VoucherComponent} from './component/voucher/voucher.component';
+import {AgGridModule} from 'ag-grid-angular';
+import {HomeComponent} from './component/home/home.component';
+import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
+import {CreatDiscountComponent} from './component/discount/creat-discount/creat-discount.component';
+import {ActionDiscountComponent} from './component/discount/action-discount/action-discount.component';
+import {CreatVoucherComponent} from './component/voucher/creat-voucher/creat-voucher.component';
+import {ActionVoucherComponent} from './component/voucher/action-voucher/action-voucher.component';
 import {FormsModule} from '@angular/forms';
 import {ReactiveFormsModule} from '@angular/forms';
-import { HttpClientModule } from '@angular/common/http';
-import { EditDiscountComponent } from './component/discount/edit-discount/edit-discount.component';
-import { EditVoucherComponent } from './component/voucher/edit-voucher/edit-voucher.component';
-import { OrderComponent } from './component/order/order.component';
-import { OderProcessingComponent } from './component/oder-processing/oder-processing.component';
-import { StaffComponent } from './component/staff/staff.component';
+import {HttpClientModule} from '@angular/common/http';
+import {EditDiscountComponent} from './component/discount/edit-discount/edit-discount.component';
+import {EditVoucherComponent} from './component/voucher/edit-voucher/edit-voucher.component';
+import {OrderComponent} from './component/order/order.component';
+import {OderProcessingComponent} from './component/oder-processing/oder-processing.component';
+import {StaffComponent} from './component/staff/staff.component';
 import {LoginComponent} from './component/login/login.component';
-import {JwtHelperService, JWT_OPTIONS  } from '@auth0/angular-jwt';
-import { DanhmucComponent } from './component/danhmuc/danhmuc.component';
-import { SanphamComponent } from './component/sanpham/sanpham.component';
-import { SuaChatLieuComponent } from './component/chatlieu/sua-chat-lieu/sua-chat-lieu.component';
-import { ThemDanhMucComponent } from './component/danhmuc/them-danh-muc/them-danh-muc.component';
-import { SuaDanhMucComponent } from './component/danhmuc/sua-danh-muc/sua-danh-muc.component';
-import { ThemDeGiayComponent } from './component/degiay/them-de-giay/them-de-giay.component';
-import { SuaDeGiayComponent } from './component/degiay/sua-de-giay/sua-de-giay.component';
-import { ThemKichCoComponent } from './component/kichco/them-kich-co/them-kich-co.component';
-import { SuaKichCoComponent } from './component/kichco/sua-kich-co/sua-kich-co.component';
-import { ThemMauSacComponent } from './component/mausac/them-mau-sac/them-mau-sac.component';
-import { SuaMauSacComponent } from './component/mausac/sua-mau-sac/sua-mau-sac.component';
-import { ThemThuongHieuComponent } from './component/thuonghieu/them-thuong-hieu/them-thuong-hieu.component';
-import { SuaThuongHieuComponent } from './component/thuonghieu/sua-thuong-hieu/sua-thuong-hieu.component';
-import { ThemSanPhamComponent } from './component/sanpham/them-san-pham/them-san-pham.component';
-import { SuaSanPhamComponent } from './component/sanpham/sua-san-pham/sua-san-pham.component';
-import { ActionRendererComponent } from './component/chatlieu/action-renderer/action-renderer.component';
-import { ActionCategoryRedererComponent } from './component/danhmuc/action-category-rederer/action-category-rederer.component';
-import { MatMenuModule } from '@angular/material/menu';
-import { MatDialogModule } from '@angular/material/dialog';
-import { MatButtonModule } from '@angular/material/button';
-import { DetailDiscountComponent } from './component/discount/detail-discount/detail-discount.component';
-import { DetailVoucherComponent } from './component/voucher/detail-voucher/detail-voucher.component';
-import { SignUpComponent } from './component/sign-up/sign-up.component';
-import { ActionOrderComponent } from './component/order/action-order/action-order.component';
-import { OrderDetailComponent } from './component/order/order-detail/order-detail.component';
+import {JwtHelperService, JWT_OPTIONS} from '@auth0/angular-jwt';
+import {DanhmucComponent} from './component/danhmuc/danhmuc.component';
+import {SanphamComponent} from './component/sanpham/sanpham.component';
+import {SuaChatLieuComponent} from './component/chatlieu/sua-chat-lieu/sua-chat-lieu.component';
+import {ThemDanhMucComponent} from './component/danhmuc/them-danh-muc/them-danh-muc.component';
+import {SuaDanhMucComponent} from './component/danhmuc/sua-danh-muc/sua-danh-muc.component';
+import {ThemDeGiayComponent} from './component/degiay/them-de-giay/them-de-giay.component';
+import {SuaDeGiayComponent} from './component/degiay/sua-de-giay/sua-de-giay.component';
+import {ThemKichCoComponent} from './component/kichco/them-kich-co/them-kich-co.component';
+import {SuaKichCoComponent} from './component/kichco/sua-kich-co/sua-kich-co.component';
+import {ThemMauSacComponent} from './component/mausac/them-mau-sac/them-mau-sac.component';
+import {SuaMauSacComponent} from './component/mausac/sua-mau-sac/sua-mau-sac.component';
+import {ThemThuongHieuComponent} from './component/thuonghieu/them-thuong-hieu/them-thuong-hieu.component';
+import {SuaThuongHieuComponent} from './component/thuonghieu/sua-thuong-hieu/sua-thuong-hieu.component';
+import {ThemSanPhamComponent} from './component/sanpham/them-san-pham/them-san-pham.component';
+import {SuaSanPhamComponent} from './component/sanpham/sua-san-pham/sua-san-pham.component';
+import {ActionRendererComponent} from './component/chatlieu/action-renderer/action-renderer.component';
+import {ActionCategoryRedererComponent} from './component/danhmuc/action-category-rederer/action-category-rederer.component';
+import {MatMenuModule} from '@angular/material/menu';
+import {MatDialogModule} from '@angular/material/dialog';
+import {MatButtonModule} from '@angular/material/button';
+import {DetailDiscountComponent} from './component/discount/detail-discount/detail-discount.component';
+import {DetailVoucherComponent} from './component/voucher/detail-voucher/detail-voucher.component';
+import {SignUpComponent} from './component/sign-up/sign-up.component';
+import {ActionOrderComponent} from './component/order/action-order/action-order.component';
+import {OrderDetailComponent} from './component/order/order-detail/order-detail.component';
 import {NgSelectModule} from '@ng-select/ng-select';
+import { SalesCounterComponent } from './component/sales-counter/sales-counter.component';
+import {MatListModule} from '@angular/material/list';
+import {MatTable, MatTableModule} from '@angular/material/table';
 import {MatTabsModule} from '@angular/material/tabs';
 import {ToastrModule} from 'ngx-toastr';
 import { VoucherShipComponent } from './component/voucher-ship/voucher-ship.component';
@@ -72,6 +75,10 @@ import { EditVoucherShipComponent } from './component/voucher-ship/edit-voucher-
 import { DetailVoucherShipComponent } from './component/voucher-ship/detail-voucher-ship/detail-voucher-ship.component';
 import {MatNativeDateModule} from '@angular/material/core';
 import {MatDatepickerModule} from '@angular/material/datepicker';
+import { CustomerComponent } from './component/customer/customer.component';
+import { ImportFileComponent } from './component/sanpham/import-file/import-file.component';
+import { ThongKeComponent } from './component/thong-ke/thong-ke.component';
+import {ChartsModule} from '@progress/kendo-angular-charts';
 
 @NgModule({
   declarations: [
@@ -120,6 +127,11 @@ import {MatDatepickerModule} from '@angular/material/datepicker';
     SignUpComponent,
     ActionOrderComponent,
     OrderDetailComponent,
+    SalesCounterComponent,
+    CustomerComponent,
+    ImportFileComponent,
+    ThongKeComponent,
+    OrderDetailComponent,
     VoucherShipComponent,
     ActionVoucherShipComponent,
     CreatVoucherShipComponent,
@@ -145,15 +157,18 @@ import {MatDatepickerModule} from '@angular/material/datepicker';
     NgSelectModule,
     MatTabsModule,
     ToastrModule.forRoot(),
+    MatListModule,
+    MatTableModule,
+    ChartsModule,
     MatDatepickerModule,
     MatNativeDateModule,
     MatInputModule,
     MatFormFieldModule
   ],
   bootstrap: [AppComponent],
-  providers: [ { provide: JWT_OPTIONS, useValue: JWT_OPTIONS },
-    JwtHelperService],
-  entryComponents: [ActionRendererComponent]
+  providers: [{provide: JWT_OPTIONS, useValue: JWT_OPTIONS},
+    JwtHelperService, ToastrService],
+  entryComponents: [ActionRendererComponent],
 })
 export class AppModule {
 }

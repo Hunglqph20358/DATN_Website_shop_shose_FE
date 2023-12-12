@@ -11,6 +11,8 @@ import {PopupVoucherComponent} from './popup-voucher/popup-voucher.component';
 import {AddressService} from '../../service/address.service';
 import {VoucherService} from '../../service/voucher.service';
 import {UtilService} from '../../util/util.service';
+import {ValidateInput} from '../../model/validate-input.model';
+import {CommonFunction} from '../../util/common-function';
 
 @Component({
   selector: 'app-checkout',
@@ -41,7 +43,6 @@ export class CheckoutComponent implements OnInit {
     receiverPhone: '',
   };
   email;
-  dataCheckoutByNow;
 
   listProvince = [];
   listDistrict = [];
@@ -53,6 +54,9 @@ export class CheckoutComponent implements OnInit {
     phone: '',
     email: '',
   };
+  validReceiver: ValidateInput = new ValidateInput();
+  validEmail: ValidateInput = new ValidateInput();
+  validReceiverPhone: ValidateInput = new ValidateInput();
 
   constructor(private giaoHangService: GiaoHangService, private cartService: CartService,
               private cookieService: CookieService, private route: Router, private orderService: OrderService,
@@ -64,7 +68,7 @@ export class CheckoutComponent implements OnInit {
       const entries = JSON.parse(cartData);
       this.cartData = new Map(entries);
     }
-    const storedUserString = localStorage.getItem('users');
+    const storedUserString = localStorage.getItem('customer');
 
     if (storedUserString) {
       const storedUser = JSON.parse(storedUserString);
@@ -165,7 +169,20 @@ export class CheckoutComponent implements OnInit {
   }
 
   thanhToan() {
-    if (this.user == null || this.user === undefined) {
+    this.validateReceiver();
+    this.validateReceiverPhone();
+    this.validateEmail();
+    this.order.receiver = CommonFunction.trimText(this.order.receiver);
+    this.email = CommonFunction.trimText(this.email);
+    this.order.receiverPhone = CommonFunction.trimText(this.order.receiverPhone);
+    if (!this.validReceiver.done || !this.validEmail.done || !this.validReceiverPhone.done) {
+      return;
+    }
+    if (this.user.id === null && this.user.code === null) {
+      let province = this.listProvince.find(c => c.ProvinceID === this.addressNotLogin.provinceId);
+      // console.log(province);
+      let district = this.listDistrict.find(d => d.DistrictID === this.addressNotLogin.districtId);
+      let ward = this.listWard.find(w => w.WardCode === this.addressNotLogin.wardCode);
       if (this.checkChoicePay === 1) {
         const obj = {
           ...this.order,
@@ -173,8 +190,8 @@ export class CheckoutComponent implements OnInit {
           totalPayment: this.totalMoneyPay,
           shipPrice: this.shipFee,
           codeVoucher: this.voucher ? this.voucher.code : null,
-          addressReceived: this.addressNotLogin.specificAddress + ', ' + this.addressNotLogin.wards + ', '
-            + this.addressNotLogin.district + ', ' + this.addressNotLogin.province,
+          addressReceived: this.addressNotLogin.specificAddress + ', ' + ward.WardName + ', '
+            + district.DistrictName + ', ' + province.ProvinceName,
           paymentType: 1,
         };
         this.orderService.createOrderNotLogin(obj).subscribe(res => {
@@ -198,18 +215,23 @@ export class CheckoutComponent implements OnInit {
           totalPrice: this.totalMoney,
           shipPrice: this.shipFee,
           codeVoucher: this.voucher ? this.voucher.code : null,
-          addressReceived: this.addressNotLogin.specificAddress + ', ' + this.addressNotLogin.wards + ', '
-            + this.addressNotLogin.district + ', ' + this.addressNotLogin.province,
+          addressReceived: this.addressNotLogin.specificAddress + ', ' + ward.WardName + ', '
+            + district.DistrictName + ', ' + province.ProvinceName,
           paymentType: 0,
         };
         this.orderService.createOrderNotLogin(obj).subscribe(res => {
           if (res.status === 'OK') {
-            this.route.navigate(['/home']);
+            const objCheckOut = {
+              order: res.data,
+              listCart: this.listCart,
+              email: this.email
+            };
+            sessionStorage.setItem('order', JSON.stringify(objCheckOut));
+            this.route.navigate(['cart/checkout-detail']);
           }
         });
       }
     } else {
-      debugger
       if (this.checkChoicePay === 1) {
         const obj = {
           ...this.order,
@@ -254,7 +276,12 @@ export class CheckoutComponent implements OnInit {
         };
         this.orderService.createOrder(obj).subscribe(res => {
           if (res.status === 'OK') {
-            this.route.navigate(['/order']);
+            const objCheckOut = {
+              order: res.data,
+              listCart: this.listCart,
+            };
+            sessionStorage.setItem('order', JSON.stringify(objCheckOut));
+            this.route.navigate(['cart/checkout-detail']);
           }
         });
       }
@@ -265,7 +292,11 @@ export class CheckoutComponent implements OnInit {
     this.matDialog.open(AddressCheckoutComponent, {
       width: '40%',
       height: '65vh',
-      data: 3
+      data: this.user.id
+    }).afterClosed().subscribe(res => {
+      if (res === 'close-address') {
+        this.ngOnInit();
+      }
     });
   }
 
@@ -273,6 +304,7 @@ export class CheckoutComponent implements OnInit {
     this.matDialog.open(PopupVoucherComponent, {
       width: '45%',
       height: '70vh',
+      data: this.totalMoney
     }).afterClosed().subscribe(result => {
       if (result.event === 'saveVoucher') {
         this.voucherService.getVoucher(result.data.code).subscribe(res => {
@@ -282,5 +314,20 @@ export class CheckoutComponent implements OnInit {
         });
       }
     });
+  }
+
+  revoveInvalid(result) {
+    result.done = true;
+  }
+
+  validateReceiver() {
+    this.validReceiver = CommonFunction.validateInput(this.order.receiver, 250, null);
+  }
+
+  validateEmail() {
+    this.validEmail = CommonFunction.validateInput(this.email, 250, /^[^\s@]+@[^\s@]+\.[^\s@]+$/);
+  }
+  validateReceiverPhone() {
+    this.validReceiverPhone = CommonFunction.validateInput(this.order.receiverPhone, null, /^(0[2-9]|1[2-9]|2[2-9]|3[2-9]|4[2-9]|5[2-9]|6[2-9]|7[2-9]|8[2-9]|9[2-9])\d{8}$/);
   }
 }

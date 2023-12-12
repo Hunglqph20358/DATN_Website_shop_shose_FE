@@ -3,7 +3,7 @@
   <div class="col-md-4">
     <label class="form-label">Thành Phố</label>
     <ng-select [items]="listProvince" bindLabel="ProvinceName" bindValue="ProvinceID" placeholder="--Lựa chọn--"
-               [searchable]="false" [(ngModel)]="address.provinceId" [ngModelOptions]="{standalone: true}" (change)="getDistrict($event)">
+               [searchable]="false" [(ngModel)]="address.provinceId" [ngModelOptions]="{standalone: true}" (change)="getDistrict($event.ProvinceID)">
     </ng-select>
     <div class="invalid-feedback">
       Please select a valid country.
@@ -13,7 +13,7 @@
   <div class="col-md-4">
     <label for="" class="form-label">Quận Huyện</label>
     <ng-select [items]="listDistrict" bindLabel="DistrictName" bindValue="DistrictID" placeholder="--Lựa chọn--"
-               [searchable]="false" [(ngModel)]="address.districtId" [ngModelOptions]="{standalone: true}" (change)="getWard($event)">
+               [searchable]="false" [(ngModel)]="address.districtId" [ngModelOptions]="{standalone: true}" (change)="getWard($event.DistrictID)">
     </ng-select>
   </div>
   <div class="col-md-4">

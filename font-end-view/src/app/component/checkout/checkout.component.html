@@ -67,30 +67,35 @@
         <div class="row g-3">
           <div class="col-sm-6">
             <label for="firstName" class="form-label">Họ và Tên</label>
-            <input type="text" class="form-control" [(ngModel)]="order.receiver" [ngModelOptions]="{standalone: true}" id="firstName" placeholder="" required>
-<!--            <div class="invalid-feedback">-->
-<!--              Valid first name is required.-->
-<!--            </div>-->
+            <input type="text" class="form-control" [(ngModel)]="order.receiver" (keydown)="revoveInvalid(validReceiver)" (blur)="validateReceiver()" [ngModelOptions]="{standalone: true}" id="firstName" placeholder="Nhập họ và tên">
+            <div class="validate-input" *ngIf="!validReceiver.done">
+              <p class="validate-input-label" *ngIf="validReceiver.empty">Họ và tên không để trống</p>
+              <p class="validate-input-label" *ngIf="validReceiver.maxLength">Họ và tên tối đa 250 kí tự</p>
+            </div>
           </div>
 
           <div class="col-sm-6">
             <label for="lastName" class="form-label">SDT</label>
-            <input type="text" class="form-control" id="lastName" placeholder="" [(ngModel)]="order.receiverPhone" [ngModelOptions]="{standalone: true}" required>
-<!--            <div class="invalid-feedback">-->
-<!--              Valid last name is required.-->
-<!--            </div>-->
-          </div>
-
-
-          <div class="col-12" *ngIf="this.user.id === null || this.user.code === null">
-            <label for="email" class="form-label">Email</label>
-            <input type="email" class="form-control" id="email" [(ngModel)]="email" [ngModelOptions]="{standalone: true}" placeholder="you@example.com">
-            <div class="invalid-feedback">
-              Please enter a valid email address for shipping updates.
+            <input type="text" class="form-control" id="lastName" placeholder="Nhập SDT" (keydown)="revoveInvalid(validReceiverPhone)"
+                   (blur)="validateReceiverPhone()" [(ngModel)]="order.receiverPhone" [ngModelOptions]="{standalone: true}" >
+            <div class="validate-input" *ngIf="!validReceiverPhone.done">
+              <p class="validate-input-label" *ngIf="validReceiverPhone.empty">Số điện thoại không để trống</p>
+              <p class="validate-input-label" *ngIf="validReceiverPhone.regex">Số điện thoại không đúng định dạng</p>
             </div>
           </div>
 
-          <div class="col-sm-12" *ngIf="this.user.id !== null || this.user.code !== null">
+
+          <div class="col-12" *ngIf="this.user.id === null && this.user.code === null">
+            <label for="email" class="form-label">Email</label>
+            <input type="email" class="form-control" id="email" [(ngModel)]="email" (keydown)="revoveInvalid(validEmail)" (blur)="validateEmail()" [ngModelOptions]="{standalone: true}" placeholder="vui lòng nhập email">
+            <div class="validate-input" *ngIf="!validEmail.done">
+              <p class="validate-input-label" *ngIf="validEmail.empty">Email không để trống</p>
+              <p class="validate-input-label" *ngIf="validEmail.maxLength">Email tối đa 250 kí tự</p>
+              <p class="validate-input-label" *ngIf="validEmail.regex">Email không đúng định dạng</p>
+            </div>
+          </div>
+
+          <div class="col-sm-12" *ngIf="this.user.id !== null && this.user.code !== null">
             <label for="" class="form-label" style="font-weight: bold">Địa chỉ nhận hàng</label>
             <div style="display: flex; justify-content: space-between">
               <p *ngIf="address != null">{{address?.specificAddress + ', ' + address?.wards + ', '
@@ -100,7 +105,7 @@
               <button *ngIf="address == null" class="button-thaydoi" (click)="openPopupAddress();">Thêm địa chỉ</button>
             </div>
           </div>
-          <div class="row" *ngIf="this.user.id === null || this.user.code === null">
+          <div class="row" *ngIf="this.user.id === null && this.user.code === null">
             <label for="" class="form-label" style="font-weight: bold">Địa chỉ nhận hàng</label>
             <div class="col-md-4">
               <label class="form-label">Thành Phố</label>
@@ -143,7 +148,10 @@
         <div>
             <label class="form-check-label">Phí ship: </label> <input style="margin-left: 180px" type="text" value="{{shipFee | number:'1.0-0'}} đ" disabled>
           </div>
-          <div style="margin-top: 10px">
+          <div style="margin-top: 10px;">
+            <label class="form-check-label">Voucher giảm: </label> <input style="margin-left: 135px" type="text" value="{{voucher?.reducedValue | number:'1.0-0'}} đ" disabled>
+          </div>
+        <div style="margin-top: 10px">
             <label class="form-check-label">Tổng tiền phải thanh toán: </label> <input style="margin-left: 50px" type="text" value="{{totalMoneyPay | number:'1.0-0'}} đ" disabled>
           </div>
 

@@ -36,3 +36,13 @@ export function padZero(number) {
   }
   return number.toLocaleString('en-US');
 }
+
+export function getFormattedDateCurrent(date: Date): string {
+  const year = date.getFullYear();
+  const month = ('0' + (date.getMonth() + 1)).slice(-2);
+  const day = ('0' + date.getDate()).slice(-2);
+
+  return `${year}${month}${day}`;
+}
+
+export const MAX_FILE_SIZE_UPLOAD = 5242880;

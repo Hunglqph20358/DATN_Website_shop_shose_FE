@@ -35,7 +35,7 @@
         <p class="details-title text-color mb-1">Size</p>
         <div class="d-flex">
           <div class="selection" *ngFor="let s of listSize">
-            <button type="button" (click)="selectSize(s)" [disabled]="s.disabled" [class.red-selected-size]="s.isSelected">{{s.sizeNumber}}</button>
+            <button type="button" style="border-radius: 5px;width: 40px;" (click)="selectSize(s)" [disabled]="s.disabled" [class.red-selected-size]="s.isSelected">{{s.sizeNumber}}</button>
           </div>
         </div>
       </div>
@@ -46,7 +46,7 @@
         <p class="details-title text-color mb-1">Màu Sắc</p>
         <div class="d-flex">
           <div class="selection" *ngFor="let c of listColor">
-            <button type="button" (click)="selectColor(c)" [disabled]="c.disabled" [class.red-selected-color]="c.isSelected">{{c.name}}</button>
+            <button type="button" style="border-radius: 5px;width: 92px;" (click)="selectColor(c)" [disabled]="c.disabled" [class.red-selected-color]="c.isSelected">{{c.name}}</button>
           </div>
         </div>
       </div>
@@ -57,8 +57,8 @@
         <p class="details-title text-color mb-1">Số lượng :{{(getProductDetailQuantity() == 0 || getProductDetailQuantity()== null) ? product.totalQuantity : getProductDetailQuantity()}}</p>
       </div>
       <div class ="btn-groups">
-        <button class = "add-cart-btn" (click)="addToCart(product.id)"><i class = "fas fa-shopping-cart"></i>Thêm giỏ hàng</button>
-        <button class = "buy-now-btn" (click)="buyNow(product.id);"><i class = "fas fa-wallet"></i>Mua ngay</button>
+        <button class = "add-cart-btn" [disabled]="bothSizeAndColorSelected === false" [style.opacity]="bothSizeAndColorSelected === false ? '0.5': ''" (click)="addToCart(product.id)"><i class = "fas fa-shopping-cart"></i>Thêm giỏ hàng</button>
+        <button class = "buy-now-btn" [disabled]="bothSizeAndColorSelected === false" [style.opacity]="bothSizeAndColorSelected === false ? '0.5': ''" (click)="buyNow(product.id);"><i class = "fas fa-wallet"></i>Mua ngay</button>
       </div>
     </div>
   </div>
