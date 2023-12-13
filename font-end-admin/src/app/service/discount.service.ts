@@ -30,27 +30,8 @@ export class DiscountService {
     return this.http.put(url, discount);
   }
 
-  searchByDate(startDate: Date, endDate: Date): Observable<any> {
-    // Kiểm tra nếu startDate hoặc endDate là undefined hoặc null, tránh lỗi
-    if (!startDate || !endDate) {
-      console.error('Ngày bắt đầu hoặc ngày kết thúc không được xác định.');
-    }
-
-    // Chuyển đổi string thành Date chỉ khi giá trị là hợp lệ
-    const startDateTime = startDate instanceof Date ? startDate : null;
-    const endDateTime = endDate instanceof Date ? endDate : null;
-
-    // Kiểm tra nếu startDateTime hoặc endDateTime là null, không thực hiện tìm kiếm
-    if (!startDateTime || !endDateTime) {
-      console.error('Ngày bắt đầu hoặc ngày kết thúc không hợp lệ.');
-      return;
-    }
-
-    const params = new HttpParams()
-      .set('startDate', startDateTime.toISOString())
-      .set('endDate', endDateTime.toISOString());
-
-    return this.http.get<any>(`http://localhost:6868/api/admin/discount/searchByDate`, { params });
+  searchByDate(obj): Observable<any> {
+    return this.http.get<any>(`http://localhost:6868/api/admin/discount/searchByDate`,obj );
   }
 
 

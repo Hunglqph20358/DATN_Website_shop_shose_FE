@@ -36,38 +36,44 @@
       <input type="text" id="searchByBrand" style="width: 400px; height: 30px" placeholder="Tên thương hiệu" (input)="searchByBrand($event)">
     </div>
     <div class="search-box" *ngIf="loc === '4' ">
-      <div class="form-group">
-        <label for="startDate">Ngày bắt đầu</label>
-        <input
-          type="datetime-local"
-          class="form-control"
-          [ngModelOptions]="{ standalone: true }"
-          id="startDate"
-          [(ngModel)]="startDate"
-          name="startDate"
-          required
-        />
-        <div *ngIf="!startDate" class="alert alert-danger">
-          <div *ngIf="!startDate">Vui lòng chọn ngày bắt đầu.</div>
-        </div>
-      </div>
+<!--      <div class="form-group">-->
+<!--        <label for="startDate">Ngày bắt đầu</label>-->
+<!--        <input-->
+<!--          type="datetime-local"-->
+<!--          class="form-control"-->
+<!--          [ngModelOptions]="{ standalone: true }"-->
+<!--          id="startDate"-->
+<!--          [(ngModel)]="startDate"-->
+<!--          name="startDate"-->
+<!--          required-->
+<!--        />-->
+<!--        <div *ngIf="!startDate" class="alert alert-danger">-->
+<!--          <div *ngIf="!startDate">Vui lòng chọn ngày bắt đầu.</div>-->
+<!--        </div>-->
+<!--      </div>-->
 
-      <div class="form-group">
-        <label for="endDate">Ngày kết thúc</label>
-        <input
-          type="datetime-local"
-          class="form-control"
-          [ngModelOptions]="{ standalone: true }"
-          id="endDate"
-          [(ngModel)]="endDate"
-          name="endDate"
-          required
-        />
-        <div *ngIf="!endDate || !isValidDateRange()" class="alert alert-danger">
-          <div *ngIf="!endDate">Vui lòng chọn ngày kết thúc.</div>
-          <div *ngIf="!isValidDateRange()">Ngày kết thúc phải lớn hơn ngày bắt đầu.</div>
+<!--      <div class="form-group">-->
+<!--        <label for="endDate">Ngày kết thúc</label>-->
+<!--        <input-->
+<!--          type="datetime-local"-->
+<!--          class="form-control"-->
+<!--          [ngModelOptions]="{ standalone: true }"-->
+<!--          id="endDate"-->
+<!--          [(ngModel)]="endDate"-->
+<!--          name="endDate"-->
+<!--          required-->
+<!--        />-->
+<!--        <div *ngIf="!endDate || !isValidDateRange()" class="alert alert-danger">-->
+<!--          <div *ngIf="!endDate">Vui lòng chọn ngày kết thúc.</div>-->
+<!--          <div *ngIf="!isValidDateRange()">Ngày kết thúc phải lớn hơn ngày bắt đầu.</div>-->
+<!--        </div>-->
+<!--      </div>  -->
+      <div>
+        <div style="display: flex; justify-content: flex-end; margin-top: 10px">
+          <ejs-daterangepicker id='daterangepicker' placeholder='Chọn thời gian' [startDate]='startDate' [endDate]='endDate' (change)="getDater($event)"></ejs-daterangepicker>
+          <!--      <span *ngIf="checkDateRanges === false">Date range is valid</span>-->
         </div>
-      </div>    </div>
+    </div>
 
         <div class="grid">
         <ag-grid-angular

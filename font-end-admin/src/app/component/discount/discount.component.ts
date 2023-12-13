@@ -20,18 +20,22 @@ export class DiscountComponent implements OnInit {
   checkedIsdel = false;
   loc = '0';
   idStaff = '';
-  startDate = '';
-  endDate = '';
+  dateFromCurrent;
+  dateToCurrent;
   searchResults: any[] = [];
 
-  isValidDateRange = () => {
-    return (
-      this.startDate &&
-      this.endDate &&
-      new Date(this.startDate) < new Date(this.endDate)
-    );
-  }
+  // isValidDateRange = () => {
+  //   return (
+  //     this.startDate &&
+  //     this.endDate &&
+  //     new Date(this.startDate) < new Date(this.endDate)
+  //   );
+  // }
   constructor(private apiService: DiscountService) {
+    const currentDate = new Date();
+    this.dateFromCurrent = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
+
+    this.dateToCurrent = new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate());
     this.columnDefs = [
       {
         headerName: 'Mã',
@@ -133,6 +137,9 @@ export class DiscountComponent implements OnInit {
       this.rowData2 = response;
       console.log(response);
     });
+    this.getDiscount();
+    console.log(this.dateFromCurrent);
+    console.log(this.dateToCurrent);
   }
 
   checkIsdell(data: any) {
@@ -223,5 +230,28 @@ export class DiscountComponent implements OnInit {
 
   test(event: any) {
     console.log('data event: ', event);
+  }
+  getDiscount() {
+    const obj = {
+      dateFrom: formatDateYYYY_MM_dd(this.dateFromCurrent),
+      dateTo: formatDateYYYY_MM_dd(this.dateToCurrent)
+    };
+    this.apiService.searchByDate(obj).subscribe(
+      (data) => {
+        this.searchResults = data;
+      },
+      (error) => {
+        console.error('Error occurred during date range search:', error);
+        // You can provide a user-friendly error message here if needed
+      }
+    );
+}
+  getDater(data) {
+    console.log(data);
+    if(data.startDate && data.endDate){
+      this.dateFromCurrent = data.startDate;
+      this.dateToCurrent = data.endDate;
+      this.getDiscount();
+    }
   }
 }

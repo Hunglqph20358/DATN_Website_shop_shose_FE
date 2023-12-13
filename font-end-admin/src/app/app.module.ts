@@ -67,7 +67,7 @@ import { SalesCounterComponent } from './component/sales-counter/sales-counter.c
 import {MatListModule} from '@angular/material/list';
 import {MatTable, MatTableModule} from '@angular/material/table';
 import {MatTabsModule} from '@angular/material/tabs';
-import {ToastrModule} from 'ngx-toastr';
+import {ToastrModule, ToastrService} from 'ngx-toastr';
 import { VoucherShipComponent } from './component/voucher-ship/voucher-ship.component';
 import { ActionVoucherShipComponent } from './component/voucher-ship/action-voucher-ship/action-voucher-ship.component';
 import { CreatVoucherShipComponent } from './component/voucher-ship/creat-voucher-ship/creat-voucher-ship.component';
