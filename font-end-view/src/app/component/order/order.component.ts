@@ -5,6 +5,8 @@ import {formatDate, formatDateTime, formatMoney, formatTime} from '../../util/ut
 import {MatDialog} from '@angular/material/dialog';
 import {OrderDetailComponent} from './order-detail/order-detail.component';
 import {ActionOrderComponent} from './action-order/action-order.component';
+import {FormControl} from '@angular/forms';
+import {UtilService} from '../../util/util.service';
 
 @Component({
   selector: 'app-order',
@@ -12,7 +14,6 @@ import {ActionOrderComponent} from './action-order/action-order.component';
   styleUrls: ['./order.component.scss']
 })
 export class OrderComponent implements OnInit {
-
   active = 1;
   listStatus: any = [];
   status = 6;
@@ -27,8 +28,13 @@ export class OrderComponent implements OnInit {
     phone: '',
     email: '',
   };
-
-  constructor(private matDialog: MatDialog, private orderService: OrderService, private cdr: ChangeDetectorRef) {
+  modelSearch: any = {
+    dateFrom: null,
+    dateTo: null,
+    code: null,
+  };
+  constructor(private matDialog: MatDialog, private orderService: OrderService, private cdr: ChangeDetectorRef,
+              private utilService: UtilService) {
     const lst =
       [
         {name: 'Tất cả', id: 6},
@@ -195,6 +201,9 @@ export class OrderComponent implements OnInit {
 
   getAllOrder(): void {
     const obj = {
+      code: this.modelSearch.code,
+      dateFrom: this.modelSearch.dateFrom !== null ? formatDate(this.modelSearch.dateFrom) : null,
+      dateTo: this.modelSearch.dateTo !== null ? formatDate(this.modelSearch.dateTo) : null,
       status: this.status,
       idCustomer: this.user.id
     };
@@ -224,5 +233,14 @@ export class OrderComponent implements OnInit {
         this.ngOnInit();
       }
     });
+  }
+
+  changeDateFrom(event: any) {
+   console.log(formatDate(event));
+  }
+
+  searchOrder() {
+      this.getAllOrder();
+      this.cdr.detectChanges();
   }
 }

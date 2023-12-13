@@ -12,7 +12,7 @@ import {HttpClientModule} from '@angular/common/http';
 import {DetailsComponent} from './component/details/details.component';
 import {CheckoutComponent} from './component/checkout/checkout.component';
 import {NgSelectModule} from '@ng-select/ng-select';
-import {FormsModule} from '@angular/forms';
+import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {MatCheckboxModule} from '@angular/material/checkbox';
 import {JWT_OPTIONS, JwtHelperService} from '@auth0/angular-jwt';
 import {MatMenuModule} from '@angular/material/menu';
@@ -34,6 +34,10 @@ import {MatTabsModule} from '@angular/material/tabs';
 import { ForgotPasswordComponent } from './component/forgot-password/forgot-password.component';
 import { ResetPasswordComponent } from './component/reset-password/reset-password.component';
 import { InfoUserComponent } from './component/info-user/info-user.component';
+import {MatFormFieldModule} from '@angular/material/form-field';
+import {MatDatepickerModule} from '@angular/material/datepicker';
+import {MatNativeDateModule} from '@angular/material/core';
+import {MatInputModule} from '@angular/material/input';
 import {MatTableModule} from '@angular/material/table';
 
 @NgModule({
@@ -57,24 +61,29 @@ import {MatTableModule} from '@angular/material/table';
     ResetPasswordComponent,
     InfoUserComponent,
     ActionOrderComponent,
-    OrderNotLoginComponent
+    OrderNotLoginComponent,
   ],
-    imports: [
-        BrowserModule,
-        AppRoutingModule,
-        HttpClientModule,
-        NgSelectModule,
-        FormsModule,
-        MatCheckboxModule,
-        MatMenuModule,
-        MatDialogModule,
-        MatButtonModule,
-        BrowserAnimationsModule,
-        AgGridModule.withComponents([]),
-        ToastrModule.forRoot(),
-        MatTabsModule,
-        MatTableModule
-    ],
+  imports: [
+    BrowserModule,
+    AppRoutingModule,
+    HttpClientModule,
+    NgSelectModule,
+    FormsModule,
+    MatCheckboxModule,
+    MatMenuModule,
+    MatDialogModule,
+    MatButtonModule,
+    BrowserAnimationsModule,
+    AgGridModule.withComponents([]),
+    ToastrModule.forRoot(),
+    MatTabsModule,
+    MatFormFieldModule,
+    MatDatepickerModule,
+    MatNativeDateModule,
+    MatInputModule,
+    ReactiveFormsModule,
+    MatTableModule
+  ],
   providers: [{provide: JWT_OPTIONS, useValue: JWT_OPTIONS},
     JwtHelperService],
   bootstrap: [AppComponent]
