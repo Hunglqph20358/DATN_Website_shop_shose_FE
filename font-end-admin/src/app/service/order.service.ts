@@ -12,8 +12,8 @@ export class OrderService {
   constructor(private http: HttpClient) {
   }
 
-  getAllOrderAdmin(status: number): Observable<any> {
-    return this.http.get(`${apiURL}get-all-order?status=${status}`);
+  getAllOrderAdmin(obj): Observable<any> {
+    return this.http.post(`${apiURL}get-all-order`, obj);
   }
 
   cancelOrder(obj): Observable<any> {

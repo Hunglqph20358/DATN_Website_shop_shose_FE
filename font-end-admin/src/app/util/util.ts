@@ -12,6 +12,14 @@ export function formatDate(originalDate: string): string {
   return `${('0' + date.getDate()).slice(-2)}/${('0' + (date.getMonth() + 1)).slice(-2)}/${date.getFullYear()}`;
 }
 
+export function formatDateYYYY_MM_dd(originalDate: string): string {
+  const date = new Date(originalDate);
+  const year = date.getFullYear();
+  const month = ('0' + (date.getMonth() + 1)).slice(-2); // Tháng bắt đầu từ 0
+  const day = ('0' + date.getDate()).slice(-2);
+  return `${year}-${month}-${day}`;
+}
+
 export function formatTime(originalDate: string): string {
   const date = new Date(originalDate);
   return moment(date).format('HH:mm:ss');

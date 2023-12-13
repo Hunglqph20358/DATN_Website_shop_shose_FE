@@ -63,7 +63,7 @@ import {SignUpComponent} from './component/sign-up/sign-up.component';
 import {ActionOrderComponent} from './component/order/action-order/action-order.component';
 import {OrderDetailComponent} from './component/order/order-detail/order-detail.component';
 import {NgSelectModule} from '@ng-select/ng-select';
-import { SalesCounterComponent } from './component/sales-counter/sales-counter.component';
+import {SalesCounterComponent} from './component/sales-counter/sales-counter.component';
 import {MatListModule} from '@angular/material/list';
 import {MatTable, MatTableModule} from '@angular/material/table';
 import {MatTabsModule} from '@angular/material/tabs';
@@ -79,6 +79,10 @@ import { CustomerComponent } from './component/customer/customer.component';
 import { ImportFileComponent } from './component/sanpham/import-file/import-file.component';
 import { ThongKeComponent } from './component/thong-ke/thong-ke.component';
 import {ChartsModule} from '@progress/kendo-angular-charts';
+import 'hammerjs';
+import {MatDatepickerModule} from '@angular/material/datepicker';
+import {MatNativeDateModule} from '@angular/material/core';
+import { DateRangePickerModule } from '@syncfusion/ej2-angular-calendars';
 
 @NgModule({
   declarations: [
@@ -131,12 +135,6 @@ import {ChartsModule} from '@progress/kendo-angular-charts';
     CustomerComponent,
     ImportFileComponent,
     ThongKeComponent,
-    OrderDetailComponent,
-    VoucherShipComponent,
-    ActionVoucherShipComponent,
-    CreatVoucherShipComponent,
-    EditVoucherShipComponent,
-    DetailVoucherShipComponent
   ],
   imports: [
     BrowserModule,
@@ -163,7 +161,7 @@ import {ChartsModule} from '@progress/kendo-angular-charts';
     MatDatepickerModule,
     MatNativeDateModule,
     MatInputModule,
-    MatFormFieldModule
+    DateRangePickerModule
   ],
   bootstrap: [AppComponent],
   providers: [{provide: JWT_OPTIONS, useValue: JWT_OPTIONS},
