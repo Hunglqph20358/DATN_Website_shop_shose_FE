@@ -73,6 +73,12 @@ html, body {
 
 #page-content-wrapper {
   min-width: 100vw;
+  top: 100%;
+  left: 0;
+  width: 100%;
+  background-color: #fff;
+  border: 1px solid #ccc;
+  box-shadow: 0 10px 10px rgba(0, 0, 0, 0.1);
 }
 
 #wrapper.toggled #sidebar-wrapper {
@@ -98,6 +104,11 @@ html, body {
 @media (min-width: 768px) {
   #sidebar-wrapper {
     margin-left: 0;
+    top: 100%;
+    left: 0;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    box-shadow: 0 10px 10px rgba(0, 0, 0, 0.1);
   }
 
   #page-content-wrapper {

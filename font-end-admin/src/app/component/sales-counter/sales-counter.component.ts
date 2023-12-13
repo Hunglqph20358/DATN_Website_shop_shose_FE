@@ -16,6 +16,7 @@ import {LoginComponent} from '../login/login.component';
 import {CustomerComponent} from '../customer/customer.component';
 import {CustomerServiceService} from '../../service/customer-service.service';
 import {CustomerSalesDTO} from '../model/CustomerSalesDTO';
+import {OrderSalesCounterComponent} from '../order-sales-counter/order-sales-counter.component';
 @Component({
   selector: 'app-sales-counter',
   templateUrl: './sales-counter.component.html',
@@ -223,6 +224,18 @@ export class SalesCounterComponent implements OnInit {
 
   openDialog(): void {
     const dialogRef = this.dialog.open(CustomerComponent, {
+      width: '1200px',
+      height: '600px',
+      data: {name: this.name}
+    });
+    dialogRef.afterClosed().subscribe(result => {
+      console.log('The dialog was closed');
+      this.animal = result;
+    });
+  }
+
+  openDialogBill(): void {
+    const dialogRef = this.dialog.open(OrderSalesCounterComponent, {
       width: '1200px',
       height: '600px',
       data: {name: this.name}

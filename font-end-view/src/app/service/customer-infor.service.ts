@@ -22,4 +22,13 @@ export class CustomerInforService {
     this.id = this.infoCustomer.id;
     return this.http.put('http://localhost:6868/view/api/changePass/' + this.id, customerDTO);
   }
+  sendMailOTP(customerDTO: UsersDTO): Observable<any> {
+    return this.http.post('http://localhost:6868/view/api/send-mail-otp', customerDTO);
+  }
+  verifyOTP(cutomerDTO: UsersDTO): Observable<any> {
+    return this.http.post('http://localhost:6868/view/api/verify-otp', cutomerDTO);
+  }
+  resetPass(cutomerDTO: UsersDTO): Observable<any> {
+    return this.http.post('http://localhost:6868/view/api/reset-pass', cutomerDTO);
+  }
 }

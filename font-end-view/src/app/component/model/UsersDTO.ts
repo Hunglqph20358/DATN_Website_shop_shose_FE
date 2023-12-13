@@ -10,4 +10,5 @@ export class UsersDTO {
   password?: string;
   role?: string;
   newPass?: string;
+  otp?: string;
 }

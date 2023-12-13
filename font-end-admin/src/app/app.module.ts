@@ -73,6 +73,7 @@ import { ImportFileComponent } from './component/sanpham/import-file/import-file
 import { ThongKeComponent } from './component/thong-ke/thong-ke.component';
 import {ChartsModule} from '@progress/kendo-angular-charts';
 import { AddStaffComponent } from './component/staff/add-staff/add-staff.component';
+import { OrderSalesCounterComponent } from './component/order-sales-counter/order-sales-counter.component';
 
 @NgModule({
   declarations: [
@@ -126,6 +127,7 @@ import { AddStaffComponent } from './component/staff/add-staff/add-staff.compone
     ImportFileComponent,
     ThongKeComponent,
     AddStaffComponent,
+    OrderSalesCounterComponent,
   ],
   imports: [
     BrowserModule,
