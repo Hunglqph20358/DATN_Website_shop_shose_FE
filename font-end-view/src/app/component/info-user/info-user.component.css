@@ -22,3 +22,17 @@ button {
   border-radius: 4px;
   cursor: pointer;
 }
+.validate-input {
+  margin: 5px 0 0 !important;
+  color: red;
+  font-size: 12px;
+  line-height: 10px;
+  font-weight: 500;
+}
+.validate-input-label {
+  margin: 5px 0 0 !important;
+  color: red;
+  font-size: 12px;
+  line-height: 10px;
+  font-weight: 500;
+}

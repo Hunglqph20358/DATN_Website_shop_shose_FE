@@ -19,6 +19,7 @@ export class Order{
   totalPayment?: number;
   paymentType?: number;
   description?: string;
+  statusPayment?: string;
   status?: number;
   customerDTO: CustomerSalesDTO;
   email?: string;

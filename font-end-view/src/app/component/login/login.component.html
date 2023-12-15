@@ -10,13 +10,13 @@
       <p>Tên tài khoản</p>
       <div class="user">
         <i class="fa-solid fa-user"></i>
-        <input type="text" name="user" placeholder="User Name" class="username" [(ngModel)]="form.username"  [ngModelOptions]="{standalone: true}">
+        <input type="text" name="user" placeholder="User Name" class="username" [(ngModel)]="form.username"  [ngModelOptions]="{standalone: true}" autocomplete="off">
       </div>
 
       <p class="passworg_tag">Mật khẩu</p>
       <div class="password">
         <i class="fa-solid fa-lock"></i>
-        <input type="text" name="password" placeholder="Password" [(ngModel)]="form.password"  [ngModelOptions]="{standalone: true}">
+        <input type="password" name="password" placeholder="Password" [(ngModel)]="form.password"  [ngModelOptions]="{standalone: true}">
       </div>
       <div class="d-flex">
         <p class="sign-up">

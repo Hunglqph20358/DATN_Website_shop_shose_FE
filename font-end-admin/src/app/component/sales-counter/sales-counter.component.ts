@@ -17,6 +17,8 @@ import {CustomerComponent} from '../customer/customer.component';
 import {CustomerServiceService} from '../../service/customer-service.service';
 import {CustomerSalesDTO} from '../model/CustomerSalesDTO';
 import {OrderSalesCounterComponent} from '../order-sales-counter/order-sales-counter.component';
+import * as printJS from 'print-js';
+import {ToastrService} from 'ngx-toastr';
 @Component({
   selector: 'app-sales-counter',
   templateUrl: './sales-counter.component.html',
@@ -52,10 +54,11 @@ export class SalesCounterComponent implements OnInit {
   customerDTO: CustomerSalesDTO;
   selectedCustomer: any;
   idCustomer: number;
+  user: UsersDTO = {};
   constructor(private productService: ProductService, private cookieService: CookieService,
               private orderService: OrderService, private orderDetailService: OrderDetailService,
               private router: Router, private sizeService: SizeService, private colorService: MausacService,
-              private dialog: MatDialog, private customerService: CustomerServiceService
+              private dialog: MatDialog, private customerService: CustomerServiceService, private toastr: ToastrService
               ) { }
   search() {
     this.isProductListVisible = true;
@@ -101,7 +104,7 @@ export class SalesCounterComponent implements OnInit {
   }
   removeOrder(order: any) {
     const index = this.listOder.indexOf(order);
-    if (this.count >= 1){
+    if (this.count > 1){
       if (index !== -1) {
         this.listOder.splice(index, 1);
         this.count--;
@@ -124,7 +127,6 @@ export class SalesCounterComponent implements OnInit {
     this.clearSearchTerm();
   }
   addCustomer(row: any){
-    debugger
     if (!row.quantity) {
       row.quantity = 1;
     }
@@ -170,14 +172,16 @@ export class SalesCounterComponent implements OnInit {
 
   placeOrderSales(){
     console.log(this.idCustomer);
-    debugger
     console.log(this.selectedCustomer);
+    this.user = JSON.parse(localStorage.getItem('users'));
     const order: Order = {
       paymentType: 1,
       totalPrice: this.totalAllProducts,
       totalPayment: this.totalAllProducts,
       customerDTO: this.selectedCustomer,
       idCustomer: this.idCustomer,
+      idStaff: this.user.id,
+      statusPayment: this.selectedOption,
     };
     this.orderService.createOrderSales(order).subscribe(
       (response) => {
@@ -195,8 +199,11 @@ export class SalesCounterComponent implements OnInit {
 
         forkJoin(observables).subscribe(
           (orderDetailResponses) => {
-            alert('thanh toán thành công');
+            this.printInvoice();
+            this.toastr.success('Thanh toán thành công', 'Success');
             localStorage.removeItem('listProductPush');
+            this.selectedCustomer = '';
+            this.searcherCustomer = '';
             this.listProductPush = [];
             this.removeOrder(order);
             this.calculateTotalAllProducts();
@@ -215,7 +222,40 @@ export class SalesCounterComponent implements OnInit {
       }
     );
   }
+  generateOrderHTML(): string {
+    let orderHTML = `<div>`;
+    orderHTML += `<h2>Hóa đơn</h2>`;
+    orderHTML += `<p>Tên nhân viên: ${this.fullname}</p>`;
+    orderHTML += `<p>Tên khách hàng: ${this.selectedCustomer?.fullname}</p>`;
+    orderHTML += `<p>Số điện thoại: ${this.selectedCustomer?.phone}</p>`;
+    orderHTML += `<h3>Chi tiết đơn hàng</h3>`;
+    orderHTML += `<ul>`;
+    this.listProductPush.forEach(product => {
+      orderHTML += `<li>Mã: ${product.code}- Size: ${product.size}- Màu Sắc: ${product.color}-Tên: ${product.name} - ${product.quantity} x ${product.price} = ${product.total}</li>`;
+    });
+    orderHTML += `</ul>`;
+    orderHTML += `</div>`;
+    return orderHTML;
+  }
+  printInvoice() {
+    const invoiceHTML = this.generateOrderHTML();
+    const frame = document.createElement('iframe');
+    frame.style.display = 'none';
+    document.body.appendChild(frame);
+    frame.contentDocument.open();
+    frame.contentDocument.write(invoiceHTML);
+    frame.contentDocument.close();
+    printJS({
+      printable: frame.contentDocument.body,
+      type: 'html',
+      properties: ['name', 'quantity', 'price', 'total'],
+      header: '<h3 class="custom-h3">Hóa đơn bán hàng</h3>',
+      style: '.custom-h3 { color: red; }',
+      documentTitle: 'hoa don',
+    });
 
+    document.body.removeChild(frame);
+  }
   onTabChange(event: MatTabChangeEvent): void {
     const selectedTabIndex = event.index;
     this.currentOrderId = this.listOder[selectedTabIndex].id;
@@ -236,8 +276,8 @@ export class SalesCounterComponent implements OnInit {
 
   openDialogBill(): void {
     const dialogRef = this.dialog.open(OrderSalesCounterComponent, {
-      width: '1200px',
-      height: '600px',
+      width: '1300px',
+      height: '700px',
       data: {name: this.name}
     });
     dialogRef.afterClosed().subscribe(result => {
@@ -273,11 +313,13 @@ export class SalesCounterComponent implements OnInit {
     });
     this.sizeService.getAllSize().subscribe(data =>{
       this.listSizePR = data;
+      console.log(this.listSizePR);
     });
     this.colorService.getAllMauSac().subscribe(data =>{
       this.listColor = data;
     });
     this.selectedOption = '0';
+
   }
 
 }

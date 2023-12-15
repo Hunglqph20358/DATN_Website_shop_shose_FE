@@ -2,6 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import {UsersDTO} from '../model/UsersDTO';
 import {CustomerInforService} from '../../service/customer-infor.service';
 import {Router} from '@angular/router';
+import {ValidateInput} from '../../model/validate-input.model';
+import {CommonFunction} from '../../util/common-function';
+import {ToastrService} from 'ngx-toastr';
 
 @Component({
   selector: 'app-forgot-password',
@@ -11,8 +14,13 @@ import {Router} from '@angular/router';
 export class ForgotPasswordComponent implements OnInit {
   infoCustomer: UsersDTO = new UsersDTO();
   isOTPSent: boolean = false;
-  constructor(private customerIFService: CustomerInforService, private router: Router) { }
+  validEmail: ValidateInput = new ValidateInput();
+  constructor(private customerIFService: CustomerInforService, private router: Router, private toaxstr: ToastrService) { }
   sendMailOTP(){
+    this.validateEmail();
+    if (!this.validEmail.done){
+      return;
+    }
     localStorage.setItem('emailForgot', this.infoCustomer.email);
     const email: UsersDTO = {
       email: this.infoCustomer.email
@@ -32,9 +40,18 @@ export class ForgotPasswordComponent implements OnInit {
       if (data.status === '200'){
         this.router.navigate(['/reset-pass']);
       }
-    });
+    },
+      error => {
+        this.toaxstr.error('Mã OTP không chính xác','Error');
+      }
+    );
   }
   ngOnInit(): void {
   }
-
+  validateEmail(){
+    this.validEmail = CommonFunction.validateInput(this.infoCustomer.email, 250, /^[^\s@]+@[^\s@]+\.[^\s@]+$/);
+  }
+  revoveInvalid(result) {
+    result.done = true;
+  }
 }

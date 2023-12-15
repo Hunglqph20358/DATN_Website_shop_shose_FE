@@ -10,17 +10,17 @@
       <div class="order-list-body">
         <div class="oder-body-menu">
           <div class="order-sreach">
-            <form class="row g-3 align-items-center boder-search">
+            <form class="row g-3 align-items-center">
               <div class="row mb-3 col-md-4" style="margin-top: 15px">
                 <label for="inputEmail3" class="col-sm-2 col-form-label">Email</label>
                 <div class="col-sm-10">
                   <input type="email" class="form-control" id="inputEmail3">
                 </div>
               </div>
-              <div class="col-md-6">
+              <div class="col-md-5">
 
               </div>
-              <div class="col-md-2">
+              <div class="col-md-3">
                 <a href="/add-staff" class="btn btn-primary">Thêm Nhân Viên</a>
               </div>
             </form>
@@ -34,69 +34,42 @@
                 <th scope="col">STT</th>
                 <th scope="col">Mã Khách Hàng</th>
                 <th scope="col">Họ và tên</th>
-                <th scope="col">Ngày sinh</th>
-                <th scope="col">Giới tình</th>
-                <th scope="col">Địa chỉ</th>
+                <th scope="col">Giới tính</th>
+                <th scope="col">SDT</th>
+                <th scope="col">Địa Chỉ</th>
                 <th scope="col">Tên đăng nhập</th>
                 <th scope="col">Ngày tạo</th>
                 <th scope="col">trạng thái</th>
-                <th scope="col"></th>
+                <th scope="col">Thao tác</th>
               </tr>
               </thead>
               <tbody>
-              <tr>
-                <th scope="row">1</th>
-                <td>KH1707071</td>
-                <td>Nguyễn Văn Mạnh</td>
-                <td>25/03/2003</td>
-                <td>Nam</td>
-                <td>Thanh Hóa</td>
-                <td>manhnv</td>
-                <td>09/11/2023</td>
-                <td>Đang hoạt động</td>
-                <td></td>
-              </tr>
-              <tr>
-                <th scope="row">2</th>
-                <td>NV1707071</td>
-                <td>Nguyễn Thị Xuân</td>
-                <td>25/03/2003</td>
-                <td>Nữ</td>
-                <td>Hà Nội</td>
-                <td>xuannt</td>
-                <td>09/11/2023</td>
-                <td>Đang hoạt động</td>
-                <td></td>
-              </tr>
-              <tr>
-                <th scope="row">3</th>
-                <td>KH1707071</td>
-                <td>Lê Quang Hưng</td>
-                <td>25/03/2003</td>
-                <td>Nam</td>
-                <td>Hà Nội</td>
-                <td>hunglq</td>
-                <td>09/11/2023</td>
-                <td>Đang hoạt động</td>
-                <td></td>
-              </tr>
-              <tr>
-                <th scope="row">4</th>
-                <td>KH1707071</td>
-                <td>Trần Quang Khải</td>
-                <td>25/03/2003</td>
-                <td>Nam</td>
-                <td>Thái Bình</td>
-                <td>manhnv</td>
-                <td>09/11/2023</td>
-                <td>Đang hoạt động</td>
-                <td></td>
+              <tr *ngFor="let cus of listStaff; let i = index">
+                <td>{{ i + 1}}</td>
+                <td>{{cus.code}}</td>
+                <td>{{cus.fullname}}</td>
+                <td>{{cus.gender}}</td>
+                <td>{{cus.phone}}</td>
+                <td>{{cus.description}}</td>
+                <td>{{cus.username}}</td>
+                <td>{{cus.createDate}}</td>
+                <td>{{cus.idel === 0 ? 'Đang hoạt động' : 'Ngừng hoạt động'}}</td>
+                <td>
+                  <a [routerLink]="'/update-staff/' + cus.id" class="btn"><i class="bi bi-pencil-square"></i></a>
+                  <a class="btn" (click)="openDialog(cus)"><i class="bi bi-eye-fill"></i></a>
+                </td>
               </tr>
               </tbody>
             </table>
           </div>
         </div>
       </div>
+    </mat-tab>
+    <mat-tab>
+      <ng-template mat-tab-label>
+        Ngừng hoạt động
+      </ng-template>
+      <p>aaa</p>
     </mat-tab>
   </mat-tab-group>
 </div>
