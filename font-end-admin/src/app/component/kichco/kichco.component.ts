@@ -21,16 +21,16 @@ export class KichcoComponent implements OnInit {
               private cdr: ChangeDetectorRef) {
     this.columnDefs = [
       {
-        headerName: 'SizeNumber',
+        headerName: 'Số kích cỡ',
         field: 'sizeNumber',
         sortable: true,
         filter: true
       },
-      {headerName: 'createDate', field: 'createDate', sortable: true, filter: true, width: 350},
-      {headerName: 'Status', field: 'status', sortable: true, filter: true, valueGetter: (params) => {
+      {headerName: 'Ngày tạo', field: 'createDate', sortable: true, filter: true, width: 350},
+      {headerName: 'Trạng thái', field: 'status', sortable: true, filter: true, valueGetter: (params) => {
           return params.data.status === 0 ? 'Hoạt động' : 'Ngưng hoạt động';
         }},
-      {headerName: 'Action', field: '', cellRendererFramework: KichCoActionComponent, width: 385},
+      {headerName: 'Chức năng', field: '', cellRendererFramework: KichCoActionComponent, width: 385},
     ];
   }
 

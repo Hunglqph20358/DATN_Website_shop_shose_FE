@@ -32,7 +32,7 @@ export class DegiayComponent implements OnInit {
       {headerName: 'Trạng thái', field: 'status', sortable: true, filter: true, valueGetter: (params) => {
           return params.data.status === 0 ? 'Hoạt động' : 'Ngưng hoạt động';
         }},
-      {headerName: 'Action', field: '', cellRendererFramework: DeGiayActionComponent, width: 130},
+      {headerName: 'Chức năng', field: '', cellRendererFramework: DeGiayActionComponent, width: 130},
     ];
   }
 

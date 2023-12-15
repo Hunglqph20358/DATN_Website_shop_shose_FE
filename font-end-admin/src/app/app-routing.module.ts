@@ -29,6 +29,9 @@ import {OrderDetailComponent} from './component/order/order-detail/order-detail.
 import {ThemSanPhamComponent} from './component/sanpham/them-san-pham/them-san-pham.component';
 import {SuaSanPhamComponent} from './component/sanpham/sua-san-pham/sua-san-pham.component';
 import {SalesCounterComponent} from './component/sales-counter/sales-counter.component';
+import {ChitietsanphamComponent} from './component/chitietsanpham/chitietsanpham.component';
+import {ThemChiTietSanPhamComponent} from './component/chitietsanpham/them-chi-tiet-san-pham/them-chi-tiet-san-pham.component';
+import {SuaChiTietSanPhamComponent} from './component/chitietsanpham/sua-chi-tiet-san-pham/sua-chi-tiet-san-pham.component';
 
 const routes: Routes = [
   {path: '', redirectTo: 'staff', pathMatch: 'full'},
@@ -55,6 +58,9 @@ const routes: Routes = [
   {path: 'thuonghieu', component: ThuonghieuComponent},
   {path: 'admin/danh-muc', component: DanhmucComponent},
   {path: 'admin/san-pham', component: SanphamComponent},
+  {path: 'admin/chi-tiet-san-pham', component: ChitietsanphamComponent},
+  {path: 'them-chi-tiet-san-pham', component: ThemChiTietSanPhamComponent},
+  {path: 'sua-chi-tiet-san-pham/:idProduct', component: SuaChiTietSanPhamComponent},
   {path: 'them-san-pham', component: ThemSanPhamComponent},
   {path: 'sua-san-pham/:idProduct', component: SuaSanPhamComponent},
   {path: 'order-list', component: OrderComponent},

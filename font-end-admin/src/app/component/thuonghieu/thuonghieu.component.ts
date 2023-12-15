@@ -21,17 +21,17 @@ export class ThuonghieuComponent implements OnInit {
               private cdr: ChangeDetectorRef) {
     this.columnDefs = [
       {
-        headerName: 'BrandName',
+        headerName: 'Tên thương hiệu',
         field: 'name',
         sortable: true,
         filter: true
       },
-      {headerName: 'Create Date', field: 'createDate', sortable: true, filter: true},
-      {headerName: 'Update Date ', field: 'updateDate', sortable: true, filter: true},
-      {headerName: 'Status', field: 'status', sortable: true, filter: true, valueGetter: (params) => {
+      {headerName: 'Ngày tạo', field: 'createDate', sortable: true, filter: true},
+      {headerName: 'Ngày cập nhật', field: 'updateDate', sortable: true, filter: true},
+      {headerName: 'Trạng thái', field: 'status', sortable: true, filter: true, valueGetter: (params) => {
           return params.data.status === 0 ? 'Hoạt động' : 'Ngưng hoạt động';
         }},
-      {headerName: 'Action', field: '', cellRendererFramework: ThuongHieuActionComponent, width: 330},
+      {headerName: 'Chức năng', field: '', cellRendererFramework: ThuongHieuActionComponent, width: 330},
     ];
   }
 

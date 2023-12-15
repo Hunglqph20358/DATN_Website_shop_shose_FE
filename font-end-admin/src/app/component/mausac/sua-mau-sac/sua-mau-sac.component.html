@@ -1,11 +1,11 @@
-<h1 mat-dialog-title>UPDATE COLOR FORM</h1>
+<h1 mat-dialog-title>Cập nhật màu sắc</h1>
 <div mat-dialog-content class="example-container">
   <mat-form-field appearance="outline">
-    <mat-label>Name Color</mat-label>
-    <input matInput [(ngModel)]="data.name" placeholder="Name Color">
+    <mat-label>Tên màu</mat-label>
+    <input matInput [(ngModel)]="data.name" placeholder="Tên màu">
   </mat-form-field>
 </div>
 <div mat-dialog-actions [align]="'end'">
-  <button mat-raised-button color="warn" mat-dialog-close>CLOSE</button>
-  <button mat-raised-button color="primary"(click)="clickUpdate(data.id)" >UPDATE</button>
+  <button mat-raised-button color="warn" mat-dialog-close>Đóng</button>
+  <button mat-raised-button color="primary"(click)="clickUpdate(data.id)" >Cập nhật</button>
 </div>

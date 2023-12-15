@@ -7,6 +7,7 @@ import {ActionVoucherComponent} from '../voucher/action-voucher/action-voucher.c
 import * as FileSaver from 'file-saver';
 import {getFormattedDateCurrent} from '../../util/util';
 import {ImportFileComponent} from './import-file/import-file.component';
+import {SanPhamActionComponent} from './san-pham-action/san-pham-action.component';
 
 @Component({
   selector: 'app-sanpham',
@@ -21,40 +22,39 @@ export class SanphamComponent implements OnInit {
   rowHeight = 40;
   public rowSelection: 'single' | 'multiple' = 'multiple'; // Chọn nhiều dòng
   constructor(private matdialog: MatDialog,
-              private spsv: ProductService, private changeDetectorRef: ChangeDetectorRef) {
-              private spsv: ProductService,
+              private spsv: ProductService, private changeDetectorRef: ChangeDetectorRef,
               private cdr: ChangeDetectorRef) {
     this.columnDefs = [
       {
-        headerName: 'Code',
+        headerName: 'Mã',
         field: 'code',
         sortable: true,
         filter: true,
         width: 110
       },
-      {headerName: 'ProductName', field: 'name', sortable: true, filter: true, width: 150},
-      {headerName: 'Create Date', field: 'createDate', sortable: true, filter: true, width: 150},
-      {headerName: 'Update Date ', field: 'updateDate', sortable: true, filter: true, width: 150},
-      {headerName: 'CreateName ', field: 'createName', sortable: true, filter: true, width: 150},
-      {headerName: 'UpdateName ', field: 'updateName', sortable: true, filter: true, width: 150},
-      {headerName: 'Price ', field: 'price', sortable: true, filter: true, width: 150},
-      {headerName: 'NameBrand ', field: 'idBrand', sortable: true, filter: true, valueGetter: params => {
+      {headerName: 'Tên sản phẩm', field: 'name', sortable: true, filter: true, width: 150},
+      {headerName: 'Ngày tạo', field: 'createDate', sortable: true, filter: true, width: 150},
+      {headerName: 'Ngày cập nhật ', field: 'updateDate', sortable: true, filter: true, width: 150},
+      {headerName: 'Tên người tạo ', field: 'createName', sortable: true, filter: true, width: 150},
+      {headerName: 'Tên người cập nhật', field: 'updateName', sortable: true, filter: true, width: 150},
+      {headerName: 'Gía ', field: 'price', sortable: true, filter: true, width: 150},
+      {headerName: 'Tên thương hiệu ', field: 'idBrand', sortable: true, filter: true, valueGetter: params => {
           return params.data.brandAdminDTO.name;
         }, width: 150},
-      {headerName: 'NameCategory ', field: 'idCategory', sortable: true, filter: true, valueGetter: params => {
+      {headerName: 'Tên danh mục ', field: 'idCategory', sortable: true, filter: true, valueGetter: params => {
           return params.data.categoryAdminDTO.name;
         }, width: 150},
-      {headerName: 'NameMaterial ', field: 'idMaterial', sortable: true, filter: true, valueGetter: params => {
+      {headerName: 'Tên chất liệu ', field: 'idMaterial', sortable: true, filter: true, valueGetter: params => {
           return params.data.materialAdminDTO.name;
         }, width: 150},
-      {headerName: 'Description ', field: 'description', sortable: true, filter: true},
-      {headerName: 'Status', field: 'status', sortable: true, filter: true, valueGetter: (params) => {
+      {headerName: 'Mô tả ', field: 'description', sortable: true, filter: true},
+      {headerName: 'Trạng thái', field: 'status', sortable: true, filter: true, valueGetter: (params) => {
           return params.data.status === 0 ? 'Hoạt động' : 'Ngưng hoạt động';
         }, width: 150},
-      {headerName: 'SoleHeight', field: 'idSole', sortable: true, filter: true, valueGetter: params => {
+      {headerName: 'Chiều cao đế', field: 'idSole', sortable: true, filter: true, valueGetter: params => {
           return params.data.soleAdminDTO.soleHeight;
         }, width: 110},
-      {headerName: 'Action', field: '', cellRendererFramework: SanPhamActionComponent, width: 110},
+      {headerName: 'Chức năng', field: '', cellRendererFramework: SanPhamActionComponent, width: 110},
     ];
   }
   ngOnInit(): void {
@@ -101,3 +101,4 @@ export class SanphamComponent implements OnInit {
     });
   }
 }
+

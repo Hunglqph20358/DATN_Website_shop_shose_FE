@@ -75,6 +75,10 @@ import {OrderDetailComponent} from './component/order/order-detail/order-detail.
 import {MatMenuModule} from '@angular/material/menu';
 import {MatDialogModule} from '@angular/material/dialog';
 import {MatButtonModule} from '@angular/material/button';
+import { ChitietsanphamComponent } from './component/chitietsanpham/chitietsanpham.component';
+import { ThemChiTietSanPhamComponent } from './component/chitietsanpham/them-chi-tiet-san-pham/them-chi-tiet-san-pham.component';
+import { SuaChiTietSanPhamComponent } from './component/chitietsanpham/sua-chi-tiet-san-pham/sua-chi-tiet-san-pham.component';
+import { ChiTietSanPhamActionComponent } from './component/chitietsanpham/chi-tiet-san-pham-action/chi-tiet-san-pham-action.component';
 
 
 @NgModule({
@@ -132,6 +136,10 @@ import {MatButtonModule} from '@angular/material/button';
     SalesCounterComponent,
     CustomerComponent,
     ImportFileComponent,
+    ChitietsanphamComponent,
+    ThemChiTietSanPhamComponent,
+    SuaChiTietSanPhamComponent,
+    ChiTietSanPhamActionComponent,
   ],
   imports: [
     BrowserModule,

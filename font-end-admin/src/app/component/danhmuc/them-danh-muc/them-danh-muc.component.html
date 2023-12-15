@@ -1,8 +1,8 @@
-<h1 mat-dialog-title>ADD CATEGORY FORM</h1>
+<h1 mat-dialog-title>Thêm danh mục</h1>
 <div mat-dialog-content class="example-container">
   <mat-form-field appearance="outline">
-    <mat-label>Category Name</mat-label>
-    <input [(ngModel)]="Name" name="Name" matInput placeholder="Name" (change)="validate()">
+    <mat-label>Tên danh mục</mat-label>
+    <input [(ngModel)]="Name" name="Name" matInput placeholder="Tên danh mục" (change)="validate()">
     <small style="color: red;font-size: 12px" class="error-validate" *ngIf="blName">
       Vui lòng nhập tên chất liệu
     </small>
@@ -11,7 +11,7 @@
     </small>
   </mat-form-field>
   <mat-radio-group [(ngModel)]="Status" name="Status"(change)="validate()">
-    <mat-label>Status</mat-label>
+    <mat-label>Trạng thái</mat-label>
     <mat-radio-button  value="0">Hoat dong</mat-radio-button>
     <mat-radio-button value="1">Ngung hoat dong</mat-radio-button>
     <small style="color: red;font-size: 12px" class="error-validate" *ngIf="blStatus">
@@ -20,7 +20,7 @@
   </mat-radio-group>
 </div>
 <div mat-dialog-actions [align]="'end'">
-  <button mat-raised-button color="warn" mat-dialog-close>CLOSE</button>
-  <button mat-raised-button color="primary"(click)="clickadd()" [disabled]="checkValidateDisableSave">ADD</button>
+  <button mat-raised-button color="warn" mat-dialog-close>Đóng</button>
+  <button mat-raised-button color="primary"(click)="clickadd()" [disabled]="checkValidateDisableSave">Thêm</button>
 </div>
 

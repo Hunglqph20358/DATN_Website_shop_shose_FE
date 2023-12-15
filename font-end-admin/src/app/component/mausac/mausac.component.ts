@@ -21,14 +21,14 @@ export class MausacComponent implements OnInit {
               private cdr: ChangeDetectorRef) {
     this.columnDefs = [
       {
-        headerName: 'ColorName',
+        headerName: 'Tên màu',
         field: 'name',
         sortable: true,
         filter: true,
         width: 350
       },
-      {headerName: 'CreateDate', field: 'createDate', sortable: true, filter: true, width: 350},
-      {headerName: 'Action', field: '', cellRendererFramework: MauSacActionComponent, width: 430},
+      {headerName: 'Ngày tạo', field: 'createDate', sortable: true, filter: true, width: 350},
+      {headerName: 'Chức năng', field: '', cellRendererFramework: MauSacActionComponent, width: 430},
     ];
   }
 
