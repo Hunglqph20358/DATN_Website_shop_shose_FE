@@ -17,7 +17,7 @@ export class ThongKeComponent implements OnInit {
   seriesDataRevenue: number[] = [];
   seriesDataOrder: number[] = [];
   seriesDateStr: string[] = [];
-  categoriesRevenue: string[] = [];
+  categoriesRevenue = [];
   categoriesOrder: string[] = [];
   listProductBestSeller: any = [];
   dateFromCurrent;
@@ -64,6 +64,7 @@ export class ThongKeComponent implements OnInit {
       this.listProductBestSeller = res.listProductBestSeller;
       this.seriesDateStr = res.statisticalAdminDTOList.map((item: any) => item.dateStr);
       this.categoriesOrder = res.statisticalAdminDTOList.map((item: any) => item.quantityOrder);
+      this.categoriesRevenue = res.statisticalAdminDTOList.map((item: any) => item.revenue);
       console.log(this.seriesDateStr);
       console.log(this.categoriesOrder);
       this.cdr.detectChanges();
@@ -74,11 +75,10 @@ export class ThongKeComponent implements OnInit {
   changeGetStatistical() {
     this.getStatistical();
   }
+
   getDater(data) {
     console.log(data);
     if(data.startDate && data.endDate){
-      this.dateFromCurrent = data.startDate;
-      this.dateToCurrent = data.endDate;
       this.getStatistical();
     }
   }

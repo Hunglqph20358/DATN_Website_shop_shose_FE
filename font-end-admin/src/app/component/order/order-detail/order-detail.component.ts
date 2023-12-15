@@ -1,10 +1,11 @@
 import {ChangeDetectorRef, Component, Inject, OnInit} from '@angular/core';
 import {formatMoney, padZero} from '../../../util/util';
-import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
+import {MAT_DIALOG_DATA, MatDialog, MatDialogRef} from '@angular/material/dialog';
 import {OrderDetailService} from '../../../service/order-detail.service';
 import {OrderService} from '../../../service/order.service';
 import Swal from 'sweetalert2';
 import {ToastrService} from 'ngx-toastr';
+import {NoteOrderComponent} from '../note-order/note-order.component';
 
 @Component({
   selector: 'app-order-detail',
@@ -19,8 +20,11 @@ export class OrderDetailComponent implements OnInit {
   gridColumnApi;
   status: any;
   totalQuantity: number = 0;
+  noteOrder: string = null;
+  listOrderHistory: any = [];
   constructor(private orderDetailService: OrderDetailService, public matRef: MatDialogRef<OrderDetailComponent>,
-              @Inject(MAT_DIALOG_DATA) public data: any, private orderService: OrderService, private cdr: ChangeDetectorRef, private toastr: ToastrService) {
+              @Inject(MAT_DIALOG_DATA) public data: any, private orderService: OrderService, private cdr: ChangeDetectorRef, private toastr: ToastrService,
+              private matDiaLog: MatDialog) {
     this.rowData = [];
     this.columnDefs = [
       {
@@ -85,7 +89,8 @@ export class OrderDetailComponent implements OnInit {
     // console.log(this.data);
     console.log(this.data.data);
     this.orderDetailService.getAllOrderDetailByOrder(this.data.data.id).subscribe(res => {
-      this.rowData = res;
+      this.rowData = res.orderDetail;
+      this.listOrderHistory = res.orderHistory;
       this.totalQuantity = this.rowData.reduce((total, orderDetail) => total + (orderDetail.quantity || 0), 0);
     });
   }
@@ -96,17 +101,16 @@ export class OrderDetailComponent implements OnInit {
   }
 
   cancelOrder() {
-    Swal.fire({
-      title: 'Bạn có chắc chắn muốn hủy đơn hàng này không ?',
-      icon: 'warning',
-      showCancelButton: true,
-      confirmButtonText: 'Yes',
-      cancelButtonText: 'No',
-    }).then((result) => {
-      if (result.isConfirmed) {
+    this.matDiaLog.open(NoteOrderComponent, {
+      width: '90vh',
+      height: '38vh',
+    }).afterClosed().subscribe(res => {
+      if (res.event === 'close-note') {
+        this.noteOrder = res.data.note;
         const obj = {
           id: this.data.data.id,
-          idStaff: this.data.staff.id
+          idStaff: this.data.staff.id,
+          note: res.data.note
         };
         this.orderService.cancelOrder(obj).subscribe(res => {
           this.toastr.success('Hủy đơn hàng Thanh Cong!', 'Thông báo', {
@@ -120,17 +124,16 @@ export class OrderDetailComponent implements OnInit {
   }
 
   xacNhanOrder() {
-    Swal.fire({
-      title: 'Bạn có muốn xác nhận đơn hàng này không ?',
-      icon: 'success',
-      showCancelButton: true,
-      confirmButtonText: 'Yes',
-      cancelButtonText: 'No',
-    }).then((result) => {
-      if (result.isConfirmed) {
+    this.matDiaLog.open(NoteOrderComponent, {
+      width: '90vh',
+      height: '38vh',
+    }).afterClosed().subscribe(res => {
+      if (res.event === 'close-note') {
+        this.noteOrder = res.data.note;
         const obj = {
           id: this.data.data.id,
-          idStaff: this.data.staff.id
+          idStaff: this.data.staff.id,
+          note: res.data.note
         };
         this.orderService.progressingOrder(obj).subscribe(res => {
           this.toastr.success('Xác nhận thành công!', 'Thông báo', {
@@ -144,41 +147,39 @@ export class OrderDetailComponent implements OnInit {
   }
 
   giaoHangOrder() {
-    Swal.fire({
-      title: 'Bạn có muốn giao hàng đơn hàng này không ?',
-      icon: 'success',
-      showCancelButton: true,
-      confirmButtonText: 'Yes',
-      cancelButtonText: 'No',
-    }).then((result) => {
-      if (result.isConfirmed) {
+    this.matDiaLog.open(NoteOrderComponent, {
+      width: '90vh',
+      height: '38vh',
+    }).afterClosed().subscribe(res => {
+      if (res.event === 'close-note') {
+        this.noteOrder = res.data.note;
         const obj = {
           id: this.data.data.id,
-          idStaff: this.data.staff.id
+          idStaff: this.data.staff.id,
+          note: res.data.note
         };
         this.orderService.shipOrder(obj).subscribe(res => {
           this.toastr.success('Đơn hàng đang được giao!', 'Thông báo', {
             positionClass: 'toast-top-right'
           });
+          this.cdr.detectChanges();
           this.matRef.close('update-order');
         });
-        this.cdr.detectChanges();
       }
     });
   }
 
   hoanThanhOrder() {
-    Swal.fire({
-      title: 'Bạn có muốn hoàn thành đơn hàng này không ?',
-      icon: 'success',
-      showCancelButton: true,
-      confirmButtonText: 'Yes',
-      cancelButtonText: 'No',
-    }).then((result) => {
-      if (result.isConfirmed) {
+    this.matDiaLog.open(NoteOrderComponent, {
+      width: '90vh',
+      height: '38vh',
+    }).afterClosed().subscribe(res => {
+      if (res.event === 'close-note') {
+        this.noteOrder = res.data.note;
         const obj = {
           id: this.data.data.id,
-          idStaff: this.data.staff.id
+          idStaff: this.data.staff.id,
+          note: res.data.note
         };
         this.orderService.completeOrder(obj).subscribe(res => {
           this.toastr.success('Đơn hàng đã hoàn thành!', 'Thông báo', {
@@ -192,17 +193,16 @@ export class OrderDetailComponent implements OnInit {
   }
 
   boLoOrder() {
-    Swal.fire({
-      title: 'Đơn hàng này có chắc chắn đã bỏ lỡ không ?',
-      icon: 'success',
-      showCancelButton: true,
-      confirmButtonText: 'Yes',
-      cancelButtonText: 'No',
-    }).then((result) => {
-      if (result.isConfirmed) {
+    this.matDiaLog.open(NoteOrderComponent, {
+      width: '90vh',
+      height: '38vh',
+    }).afterClosed().subscribe(res => {
+      if (res.event === 'close-note') {
+        this.noteOrder = res.data.note;
         const obj = {
           id: this.data.data.id,
-          idStaff: this.data.staff.id
+          idStaff: this.data.staff.id,
+          note: res.data.note
         };
         this.orderService.missedOrder(obj).subscribe(res => {
           this.toastr.success('Bỏ lỡ đơn hàng thành công!', 'Thông báo', {

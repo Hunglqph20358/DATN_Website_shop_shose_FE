@@ -1,7 +1,8 @@
-import {Component, Inject, OnInit} from '@angular/core';
+import {ChangeDetectorRef, Component, Inject, OnInit} from '@angular/core';
 import {VoucherService} from '../../../service/voucher.service';
 import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
 import {ToastrService} from 'ngx-toastr';
+import {VoucherShipService} from '../../../service/voucher-ship.service';
 
 @Component({
   selector: 'app-popup-voucher',
@@ -11,25 +12,85 @@ import {ToastrService} from 'ngx-toastr';
 export class PopupVoucherComponent implements OnInit {
 
   listVoucher: any = [];
-  voucherChoice: string = null;
+  listVoucherShip: any = [];
+  voucherChoice: any = {
+    voucher: null,
+    voucherShip: null
+  };
+  codeSearch: any;
+  idCustomer = null;
+  checkConditionApply: boolean = false;
+  checkStartDate: boolean = false;
+
+
 
   constructor(private voucherService: VoucherService, public matDialogRef: MatDialogRef<PopupVoucherComponent>,
-              private toastr: ToastrService, @Inject(MAT_DIALOG_DATA) public data: any) {
+              private toastr: ToastrService, @Inject(MAT_DIALOG_DATA) public data: any, private cdr: ChangeDetectorRef,
+              private voucherShipService: VoucherShipService) {
+    const storedUserString = localStorage.getItem('customer');
+
+    if (storedUserString) {
+      const storedUser = JSON.parse(storedUserString);
+      this.idCustomer = storedUser.id;
+    }
   }
 
   ngOnInit(): void {
-    this.voucherService.getAllVoucher().subscribe(res => {
+    this.getVoucher();
+    this.getVoucherShip();
+  }
+
+  getVoucher() {
+    const obj = {
+      code: this.codeSearch !== undefined && this.codeSearch !== null ? this.codeSearch : '',
+      idCustomerLogin: this.idCustomer !== null ? this.idCustomer : null
+    };
+    this.voucherService.getAllVoucher(obj).subscribe(res => {
       this.listVoucher = res;
+      console.log('data: ', res);
     });
+    this.cdr.detectChanges();
+  }
+  getVoucherShip() {
+    const obj = {
+      code: this.codeSearch !== undefined && this.codeSearch !== null ? this.codeSearch : '',
+      idCustomerLogin: this.idCustomer !== null ? this.idCustomer : null
+    };
+    this.voucherShipService.getAllVoucherShip(obj).subscribe(res => {
+      this.listVoucherShip = res;
+      console.log('data: ', res);
+    });
+    this.cdr.detectChanges();
   }
 
   xacNhan() {
     console.log(this.voucherChoice);
     this.toastr.success('Áp dụng Voucher thành công', 'Thông báo');
-    this.matDialogRef.close({event: 'saveVoucher', data: {code: this.voucherChoice}});
+    this.matDialogRef.close({event: 'saveVoucher', data: this.voucherChoice});
   }
 
   closePopup() {
     this.matDialogRef.close('close-voucher');
+  }
+
+  searchVoucher() {
+    this.getVoucher();
+    this.cdr.detectChanges();
+  }
+
+  checkValidateVoucher(v: any) {
+    this.checkConditionApply = false;
+    this.checkStartDate = false;
+    if (new Date(v.startDate) > new Date()) {
+      this.checkStartDate = true;
+      return true;
+    }else if (v.conditionApply > this.data) {
+      this.checkConditionApply = true;
+      return true;
+    } else {
+      this.checkStartDate = false;
+      this.checkConditionApply = false;
+      return false;
+    }
   }
 }

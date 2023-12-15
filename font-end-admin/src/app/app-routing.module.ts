@@ -33,6 +33,9 @@ import {ChitietsanphamComponent} from './component/chitietsanpham/chitietsanpham
 import {ThemChiTietSanPhamComponent} from './component/chitietsanpham/them-chi-tiet-san-pham/them-chi-tiet-san-pham.component';
 import {SuaChiTietSanPhamComponent} from './component/chitietsanpham/sua-chi-tiet-san-pham/sua-chi-tiet-san-pham.component';
 import {ThongKeComponent} from './component/thong-ke/thong-ke.component';
+import {AddStaffComponent} from './component/staff/add-staff/add-staff.component';
+import {OrderSalesCounterComponent} from './component/order-sales-counter/order-sales-counter.component';
+import {UpdateStaffComponent} from './component/staff/update-staff/update-staff.component';
 
 const routes: Routes = [
   {path: '', redirectTo: 'staff', pathMatch: 'full'},
@@ -71,6 +74,9 @@ const routes: Routes = [
   // {path: 'order-detail', component: OrderDetailComponent},
   {path: 'sales-counter', component: SalesCounterComponent},
   {path: 'thong-ke', component: ThongKeComponent},
+  {path: 'add-staff', component: AddStaffComponent},
+  {path: 'order-sales-counter', component: OrderSalesCounterComponent},
+  {path: 'update-staff/:id', component: UpdateStaffComponent},
 ];
 
 @NgModule({
