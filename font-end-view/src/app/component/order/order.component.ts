@@ -224,6 +224,7 @@ export class OrderComponent implements OnInit {
   openXemChiTiet(dataOrder) {
     this.matDialog.open(OrderDetailComponent, {
       width: '150vh',
+      height: '90vh',
       data: {
         data: dataOrder,
         customer: this.user

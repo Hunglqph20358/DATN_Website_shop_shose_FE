@@ -13,7 +13,10 @@ export class PopupVoucherComponent implements OnInit {
 
   listVoucher: any = [];
   listVoucherShip: any = [];
-  voucherChoice = null;
+  voucherChoice: any = {
+    voucher: null,
+    voucherShip: null
+  };
   codeSearch: any;
   idCustomer = null;
   checkConditionApply: boolean = false;
@@ -63,7 +66,7 @@ export class PopupVoucherComponent implements OnInit {
   xacNhan() {
     console.log(this.voucherChoice);
     this.toastr.success('Áp dụng Voucher thành công', 'Thông báo');
-    this.matDialogRef.close({event: 'saveVoucher', data: {code: this.voucherChoice}});
+    this.matDialogRef.close({event: 'saveVoucher', data: this.voucherChoice});
   }
 
   closePopup() {

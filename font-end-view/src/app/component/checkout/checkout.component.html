@@ -110,38 +110,46 @@
             <div class="col-md-4">
               <label class="form-label">Thành Phố</label>
               <ng-select [items]="listProvince" bindLabel="ProvinceName" bindValue="ProvinceID" placeholder="--Lựa chọn--"
-                         [searchable]="false" [(ngModel)]="addressNotLogin.provinceId" [ngModelOptions]="{standalone: true}" (change)="getDistrict($event)">
+                         [searchable]="false" [(ngModel)]="addressNotLogin.provinceId" [ngModelOptions]="{standalone: true}" (keydown)="revoveInvalid(validProvince)" (blur)="validateProvince()" (change)="getDistrict($event)">
               </ng-select>
-              <div class="invalid-feedback">
-                Please select a valid country.
+              <div class="validate-input" *ngIf="!validProvince.done">
+                <p class="validate-input-label" *ngIf="validProvince.empty">Vui lòng không để trống</p>
               </div>
             </div>
 
             <div class="col-md-4">
               <label for="" class="form-label">Quận Huyện</label>
               <ng-select [items]="listDistrict" bindLabel="DistrictName" bindValue="DistrictID" placeholder="--Lựa chọn--"
-                         [searchable]="false" [(ngModel)]="addressNotLogin.districtId" [ngModelOptions]="{standalone: true}" (change)="getWard($event)">
+                         [searchable]="false" [(ngModel)]="addressNotLogin.districtId" [ngModelOptions]="{standalone: true}" (keydown)="revoveInvalid(validDistrict)" (blur)="validateDistrict()" (change)="getWard($event)">
               </ng-select>
+              <div class="validate-input" *ngIf="!validDistrict.done">
+                <p class="validate-input-label" *ngIf="validDistrict.empty">Vui lòng không để trống</p>
+              </div>
             </div>
             <div class="col-md-4">
               <label for="" class="form-label">Phường Xã</label>
               <ng-select [items]="listWard" bindLabel="WardName" bindValue="WardCode" placeholder="--Lựa chọn--"
-                         [searchable]="false" [ngModelOptions]="{standalone: true}" (change)="getPhiShip();" [(ngModel)]="addressNotLogin.wardCode">
+                         [searchable]="false" [ngModelOptions]="{standalone: true}" (change)="getPhiShip();" (keydown)="revoveInvalid(validWard)" (blur)="validateWard()" [(ngModel)]="addressNotLogin.wardCode">
               </ng-select>
-              <div class="invalid-feedback">
-                Please provide a valid state.
+              <div class="validate-input" *ngIf="!validWard.done">
+                <p class="validate-input-label" *ngIf="validWard.empty">Vui lòng không để trống</p>
               </div>
             </div>
             <label for="address" class="form-label">Địa chỉ cụ thể</label>
-            <input type="text" class="form-control" id="address" placeholder="" [ngModelOptions]="{standalone: true}" [(ngModel)]="addressNotLogin.specificAddress" required>
+            <input style="margin: auto;margin-left: 10px;" type="text" class="form-control" id="address" placeholder="" [ngModelOptions]="{standalone: true}" [(ngModel)]="addressNotLogin.specificAddress" required>
           </div>
 
+        </div>
+        <br>
+        <div class="mb-3">
+          <label for="exampleFormControlTextarea1" class="form-label" style="margin-left: -10px">Ghi chú</label>
+          <textarea style="margin-left: -10px" class="form-control" [(ngModel)]="this.order.description" id="exampleFormControlTextarea1" rows="3" [ngModelOptions]="{standalone: true}"></textarea>
         </div>
         <hr class="my-4">
 
         <div class="voucher">
           <h6>Voucher giảm giá:</h6>
-          <span>{{voucher?.code}}</span>
+          <span>{{voucher?.code}} , {{voucherShip?.code}}</span>
           <button class="btn btn-light" (click)="openVoucher();">Chọn Voucher</button>
         </div>
         <br>

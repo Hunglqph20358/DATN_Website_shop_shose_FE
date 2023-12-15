@@ -86,11 +86,12 @@
           </tr>
           </thead>
           <tbody>
-          <tr>
-            <th scope="row">1</th>
-            <td>Mark</td>
-            <td>Otto</td>
-            <td>@mdo</td>
+          <tr *ngFor="let oh of listOrderHistory; let i = index">
+            <th scope="row">{{i + 1}}</th>
+            <td>{{oh.staffDTO.fullname}}</td>
+            <td>{{oh.status}}</td>
+            <td>{{oh.createDate}}</td>
+            <td>{{oh.note}}</td>
           </tr>
           </tbody>
         </table>

@@ -12,4 +12,7 @@ export class VoucherShipService {
   getAllVoucherShip(obj): Observable<any>{
     return this.http.post(`${apiURL}get-all-voucher-ship`, obj);
   }
+  getVoucherShip(code: string): Observable<any>{
+    return this.http.get(`${apiURL}get-voucher-ship?code=${code}`);
+  }
 }

@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {ChangeDetectorRef, Component, OnInit} from '@angular/core';
 import {GiaoHangService} from '../../service/giao-hang.service';
 import {CartService} from '../../service/cart.service';
 import {CookieService} from 'ngx-cookie-service';
@@ -13,6 +13,8 @@ import {VoucherService} from '../../service/voucher.service';
 import {UtilService} from '../../util/util.service';
 import {ValidateInput} from '../../model/validate-input.model';
 import {CommonFunction} from '../../util/common-function';
+import {VoucherShipService} from '../../service/voucher-ship.service';
+import {ToastrService} from 'ngx-toastr';
 
 @Component({
   selector: 'app-checkout',
@@ -27,6 +29,7 @@ export class CheckoutComponent implements OnInit {
   totalSaveMoney: any;
   checkChoicePay = 0;
   shipFee = 0;
+  shipFeeReduce = null;
   address: any;
 
   addressNotLogin: any = {
@@ -38,9 +41,11 @@ export class CheckoutComponent implements OnInit {
 
   totalMoneyPay;
   voucher: any;
+  voucherShip: any;
   order: any = {
     receiver: '',
     receiverPhone: '',
+    description: ''
   };
   email;
 
@@ -57,11 +62,17 @@ export class CheckoutComponent implements OnInit {
   validReceiver: ValidateInput = new ValidateInput();
   validEmail: ValidateInput = new ValidateInput();
   validReceiverPhone: ValidateInput = new ValidateInput();
+  validProvince: ValidateInput = new ValidateInput();
+  validDistrict: ValidateInput = new ValidateInput();
+  validWard: ValidateInput = new ValidateInput();
 
   constructor(private giaoHangService: GiaoHangService, private cartService: CartService,
               private cookieService: CookieService, private route: Router, private orderService: OrderService,
               private paymentService: PaymentService, private matDialog: MatDialog,
-              private addressService: AddressService, private voucherService: VoucherService, public utilService: UtilService
+              private addressService: AddressService, private voucherService: VoucherService, public utilService: UtilService,
+              private voucherShipService: VoucherShipService,
+              private cdr: ChangeDetectorRef,
+              private toaStr: ToastrService
   ) {
     if (this.cookieService.check('checkout')) {
       const cartData = this.cookieService.get('checkout');
@@ -169,16 +180,20 @@ export class CheckoutComponent implements OnInit {
   }
 
   thanhToan() {
-    // this.order.receiver = CommonFunction.trimText(this.order.receiver);
-    // this.email = CommonFunction.trimText(this.email);
-    // this.order.receiverPhone = CommonFunction.trimText(this.order.receiverPhone);
-    // this.validateReceiver();
-    // this.validateReceiverPhone();
-    // this.validateEmail();
-    // if (!this.validReceiver.done || !this.validEmail.done || !this.validReceiverPhone.done) {
-    //   return;
-    // }
     if (this.user.id === null && this.user.code === null) {
+      this.order.receiver = CommonFunction.trimText(this.order.receiver);
+      this.email = CommonFunction.trimText(this.email);
+      this.order.receiverPhone = CommonFunction.trimText(this.order.receiverPhone);
+      this.validateReceiver();
+      this.validateReceiverPhone();
+      this.validateEmail();
+      this.validateProvince();
+      this.validateDistrict();
+      this.validateWard();
+      if (!this.validReceiver.done || !this.validEmail.done || !this.validReceiverPhone.done || !this.validProvince.done
+        || !this.validDistrict.done || !this.validWard.done) {
+        return;
+      }
       let province = this.listProvince.find(c => c.ProvinceID === this.addressNotLogin.provinceId);
       // console.log(province);
       let district = this.listDistrict.find(d => d.DistrictID === this.addressNotLogin.districtId);
@@ -232,6 +247,17 @@ export class CheckoutComponent implements OnInit {
         });
       }
     } else {
+      this.order.receiver = CommonFunction.trimText(this.order.receiver);
+      this.order.receiverPhone = CommonFunction.trimText(this.order.receiverPhone);
+      this.validateReceiver();
+      this.validateReceiverPhone();
+      if (!this.validReceiver.done || !this.validReceiverPhone.done) {
+        return;
+      }
+      if (this.address == null) {
+        this.toaStr.error('Vui lòng điền điền địa chỉ giao hàng');
+        return;
+      }
       if (this.checkChoicePay === 1) {
         const obj = {
           ...this.order,
@@ -296,6 +322,7 @@ export class CheckoutComponent implements OnInit {
     }).afterClosed().subscribe(res => {
       if (res === 'close-address') {
         this.ngOnInit();
+        this.cdr.detectChanges();
       }
     });
   }
@@ -307,21 +334,39 @@ export class CheckoutComponent implements OnInit {
       data: this.totalMoney
     }).afterClosed().subscribe(result => {
       if (result.event === 'saveVoucher') {
-        this.voucherService.getVoucher(result.data.code).subscribe(res => {
-          this.voucher = res.data;
-          if (res.data.voucherType === 1) {
-            const reducedVoucherPrice = parseFloat(((res.data.reducedValue / 100) * this.totalMoney).toFixed(2));
+        console.log(result.data);
+        if (result.data.voucher !== null) {
+          this.voucherService.getVoucher(result.data.voucher).subscribe(res => {
+            this.voucher = res.data;
+            if (res.data.voucherType === 1) {
+              const reducedVoucherPrice = parseFloat(((res.data.reducedValue / 100) * this.totalMoney).toFixed(2));
 
-            console.log(reducedVoucherPrice);
-            if (reducedVoucherPrice > res.data.maxReduced) {
-              this.totalMoneyPay = this.totalMoneyPay - this.voucher.maxReduced;
-              this.voucher.reducedValue = this.voucher.maxReduced;
-            }else {
+              console.log(reducedVoucherPrice);
+              if (reducedVoucherPrice > res.data.maxReduced) {
+                this.totalMoneyPay = this.totalMoneyPay - this.voucher.maxReduced;
+                this.voucher.reducedValue = this.voucher.maxReduced;
+              } else {
+                this.totalMoneyPay = this.totalMoneyPay - this.voucher.reducedValue;
+              }
+            } else {
               this.totalMoneyPay = this.totalMoneyPay - this.voucher.reducedValue;
             }
-          }
-          console.log(this.voucher);
-        });
+            this.cdr.detectChanges();
+          });
+        }
+        if (result.data.voucherShip !== null) {
+          this.voucherShipService.getVoucherShip(result.data.voucherShip).subscribe(res => {
+            this.voucherShip = res.data;
+            if (this.shipFee <= res.data.reducedValue) {
+              this.shipFeeReduce = this.shipFee;
+              this.totalMoneyPay = this.totalMoneyPay - this.shipFee;
+            } else {
+              this.totalMoneyPay = this.totalMoneyPay - res.data.reducedValue;
+              this.shipFeeReduce = res.data.reducedValue;
+            }
+            this.cdr.detectChanges();
+          });
+        }
       }
     });
   }
@@ -340,5 +385,17 @@ export class CheckoutComponent implements OnInit {
 
   validateReceiverPhone() {
     this.validReceiverPhone = CommonFunction.validateInput(this.order.receiverPhone, null, /^(0[2-9]|1[2-9]|2[2-9]|3[2-9]|4[2-9]|5[2-9]|6[2-9]|7[2-9]|8[2-9]|9[2-9])\d{8}$/);
+  }
+
+  validateProvince() {
+    this.validProvince = CommonFunction.validateInput(this.addressNotLogin.provinceId, null, null);
+  }
+
+  validateDistrict() {
+    this.validDistrict = CommonFunction.validateInput(this.addressNotLogin.districtId, null, null);
+  }
+
+  validateWard() {
+    this.validWard = CommonFunction.validateInput(this.addressNotLogin.wardCode, null, null);
   }
 }

@@ -21,7 +21,7 @@ export class OrderDetailComponent implements OnInit {
   status: any;
   totalQuantity: number = 0;
   noteOrder: string = null;
-
+  listOrderHistory: any = [];
   constructor(private orderDetailService: OrderDetailService, public matRef: MatDialogRef<OrderDetailComponent>,
               @Inject(MAT_DIALOG_DATA) public data: any, private orderService: OrderService, private cdr: ChangeDetectorRef, private toastr: ToastrService,
               private matDiaLog: MatDialog) {
@@ -89,7 +89,8 @@ export class OrderDetailComponent implements OnInit {
     // console.log(this.data);
     console.log(this.data.data);
     this.orderDetailService.getAllOrderDetailByOrder(this.data.data.id).subscribe(res => {
-      this.rowData = res;
+      this.rowData = res.orderDetail;
+      this.listOrderHistory = res.orderHistory;
       this.totalQuantity = this.rowData.reduce((total, orderDetail) => total + (orderDetail.quantity || 0), 0);
     });
   }
