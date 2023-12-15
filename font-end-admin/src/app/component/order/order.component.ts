@@ -1,6 +1,6 @@
 import {ChangeDetectorRef, Component, OnInit} from '@angular/core';
 import {ColDef} from 'ag-grid-community';
-import {formatDateTime, formatMoney} from '../../util/util';
+import {formatDate, formatDateTime, formatMoney} from '../../util/util';
 import {OrderService} from '../../service/order.service';
 import {ActionOrderComponent} from './action-order/action-order.component';
 import {OrderDetailComponent} from './order-detail/order-detail.component';
@@ -26,7 +26,11 @@ export class OrderComponent implements OnInit {
     phone: '',
     email: '',
   };
-
+  modelSearch: any = {
+    code: null,
+    dateFrom: null,
+    dateTo: null
+  };
   constructor(private matDialog: MatDialog, private orderService: OrderService, private cdr: ChangeDetectorRef) {
     const lst =
       [
@@ -211,7 +215,13 @@ export class OrderComponent implements OnInit {
   }
 
   getAllOrder(): void {
-    this.orderService.getAllOrderAdmin(this.status).subscribe(res => {
+    const obj = {
+      code: this.modelSearch.code,
+      dateFrom: this.modelSearch.dateFrom !== null ? formatDate(this.modelSearch.dateFrom) : null,
+      dateTo: this.modelSearch.dateTo !== null ? formatDate(this.modelSearch.dateTo) : null,
+      status: this.status
+    };
+    this.orderService.getAllOrderAdmin(obj).subscribe(res => {
       this.rowData = res;
       console.log(this.rowData);
     });
@@ -228,6 +238,7 @@ export class OrderComponent implements OnInit {
   openXemChiTiet(dataOrder) {
     this.matDialog.open(OrderDetailComponent, {
       width: '150vh',
+      height: '90vh',
       data: {
         data: dataOrder,
         staff: this.user
@@ -237,5 +248,10 @@ export class OrderComponent implements OnInit {
         this.ngOnInit();
       }
     });
+  }
+  searchOrder() {
+    console.log(this.modelSearch);
+    this.getAllOrder();
+    this.cdr.detectChanges();
   }
 }

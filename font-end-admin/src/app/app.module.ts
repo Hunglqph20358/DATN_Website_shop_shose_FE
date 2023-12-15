@@ -67,6 +67,9 @@ import {ThemSanPhamComponent} from './component/sanpham/them-san-pham/them-san-p
 import {SuaSanPhamComponent} from './component/sanpham/sua-san-pham/sua-san-pham.component';
 import {ActionRendererComponent} from './component/chatlieu/action-renderer/action-renderer.component';
 import {ActionCategoryRedererComponent} from './component/danhmuc/action-category-rederer/action-category-rederer.component';
+import {MatMenuModule} from '@angular/material/menu';
+import {MatDialogModule} from '@angular/material/dialog';
+import {MatButtonModule} from '@angular/material/button';
 import {DetailDiscountComponent} from './component/discount/detail-discount/detail-discount.component';
 import {DetailVoucherComponent} from './component/voucher/detail-voucher/detail-voucher.component';
 import {SignUpComponent} from './component/sign-up/sign-up.component';
@@ -80,6 +83,20 @@ import { ThemChiTietSanPhamComponent } from './component/chitietsanpham/them-chi
 import { SuaChiTietSanPhamComponent } from './component/chitietsanpham/sua-chi-tiet-san-pham/sua-chi-tiet-san-pham.component';
 import { ChiTietSanPhamActionComponent } from './component/chitietsanpham/chi-tiet-san-pham-action/chi-tiet-san-pham-action.component';
 
+import {NgSelectModule} from '@ng-select/ng-select';
+import {SalesCounterComponent} from './component/sales-counter/sales-counter.component';
+import {MatListModule} from '@angular/material/list';
+import {MatTable, MatTableModule} from '@angular/material/table';
+import {MatTabsModule} from '@angular/material/tabs';
+import {ToastrModule, ToastrService} from 'ngx-toastr';
+import {CustomerComponent} from './component/customer/customer.component';
+import {ImportFileComponent} from './component/sanpham/import-file/import-file.component';
+import {ThongKeComponent} from './component/thong-ke/thong-ke.component';
+import {ChartsModule} from '@progress/kendo-angular-charts';
+import 'hammerjs';
+import {MatDatepickerModule} from '@angular/material/datepicker';
+import {MatNativeDateModule} from '@angular/material/core';
+import { DateRangePickerModule } from '@syncfusion/ej2-angular-calendars';
 
 @NgModule({
   declarations: [
@@ -136,6 +153,7 @@ import { ChiTietSanPhamActionComponent } from './component/chitietsanpham/chi-ti
     SalesCounterComponent,
     CustomerComponent,
     ImportFileComponent,
+    ThongKeComponent,
     ChitietsanphamComponent,
     ThemChiTietSanPhamComponent,
     SuaChiTietSanPhamComponent,
@@ -161,7 +179,11 @@ import { ChiTietSanPhamActionComponent } from './component/chitietsanpham/chi-ti
     MatTabsModule,
     ToastrModule.forRoot(),
     MatListModule,
-    MatTableModule
+    MatTableModule,
+    ChartsModule,
+    MatDatepickerModule,
+    MatNativeDateModule,
+    DateRangePickerModule
   ],
   bootstrap: [AppComponent],
   providers: [{provide: JWT_OPTIONS, useValue: JWT_OPTIONS},

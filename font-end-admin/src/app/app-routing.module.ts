@@ -32,6 +32,7 @@ import {SalesCounterComponent} from './component/sales-counter/sales-counter.com
 import {ChitietsanphamComponent} from './component/chitietsanpham/chitietsanpham.component';
 import {ThemChiTietSanPhamComponent} from './component/chitietsanpham/them-chi-tiet-san-pham/them-chi-tiet-san-pham.component';
 import {SuaChiTietSanPhamComponent} from './component/chitietsanpham/sua-chi-tiet-san-pham/sua-chi-tiet-san-pham.component';
+import {ThongKeComponent} from './component/thong-ke/thong-ke.component';
 
 const routes: Routes = [
   {path: '', redirectTo: 'staff', pathMatch: 'full'},
@@ -69,6 +70,7 @@ const routes: Routes = [
   {path: 'sign-up', component: SignUpComponent},
   // {path: 'order-detail', component: OrderDetailComponent},
   {path: 'sales-counter', component: SalesCounterComponent},
+  {path: 'thong-ke', component: ThongKeComponent},
 ];
 
 @NgModule({

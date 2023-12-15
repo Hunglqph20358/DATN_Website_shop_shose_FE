@@ -1,5 +1,17 @@
 <div class="container">
   <div class="row"><h5>Chọn Voucher</h5></div>
+  <div class="row">
+    <div class="col">
+      <label for="search" class="col-form-label">Tìm kiếm</label>
+    </div>
+    <div class="col">
+      <input type="text" id="search" class="form-control" placeholder="Tìm kiếm">
+    </div>
+    <div class="col">
+    <button class="btn btn-primary">Tìm kiếm</button>
+    </div>
+  </div>
+  <br>
   <div class="row" style="border: 1px solid" *ngFor="let v of listVoucher">
     <div style="display: flex; justify-content: space-between" [style.opacity]="v.conditionApply > data ? '0.5': ''">
       <div style="display: flex">
@@ -7,8 +19,13 @@
           <img style="width: 70px; height: 70px" src="../../../../assets/image/680c03454d4a8e6510cde78faa437224_tn.png" alt="">
         </div>
         <div style="display:flex; margin-left: 10px; flex-direction: column">
-          <div class="row">
-            <label>Giảm: {{v.reducedValue | number:'1.0-0'}} đ</label>
+          <div class="row" style="display: flex">
+            <div class="col">
+              <label>Mã: {{v.code}}</label>
+            </div>
+            <div class="col">
+              <label>Giảm: {{v.reducedValue | number:'1.0-0'}} đ</label>
+            </div>
           </div>
           <div class="row">
             <label>Đơn tối thiểu: {{v.conditionApply | number:'1.0-0'}} đ</label>
@@ -22,8 +39,10 @@
         <input type="radio" style="transform: scale(1.5);" [value]="v.code" [(ngModel)]="voucherChoice" name="voucher" [disabled]="v.conditionApply > data">
       </div>
     </div>
+    <span style="color: red" *ngIf="v.conditionApply > data"><strong>Đơn hàng không đủ điều kiện</strong></span>
+
   </div>
-  <div style="display: flex">
+  <div style="display: flex; margin-top: 10px">
     <div>
       <button type="button" class="btn btn-secondary" (click)="closePopup();">Đóng</button>
     </div>
