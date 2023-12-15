@@ -169,15 +169,15 @@ export class CheckoutComponent implements OnInit {
   }
 
   thanhToan() {
-    this.order.receiver = CommonFunction.trimText(this.order.receiver);
-    this.email = CommonFunction.trimText(this.email);
-    this.order.receiverPhone = CommonFunction.trimText(this.order.receiverPhone);
-    this.validateReceiver();
-    this.validateReceiverPhone();
-    this.validateEmail();
-    if (!this.validReceiver.done || !this.validEmail.done || !this.validReceiverPhone.done) {
-      return;
-    }
+    // this.order.receiver = CommonFunction.trimText(this.order.receiver);
+    // this.email = CommonFunction.trimText(this.email);
+    // this.order.receiverPhone = CommonFunction.trimText(this.order.receiverPhone);
+    // this.validateReceiver();
+    // this.validateReceiverPhone();
+    // this.validateEmail();
+    // if (!this.validReceiver.done || !this.validEmail.done || !this.validReceiverPhone.done) {
+    //   return;
+    // }
     if (this.user.id === null && this.user.code === null) {
       let province = this.listProvince.find(c => c.ProvinceID === this.addressNotLogin.provinceId);
       // console.log(province);
@@ -303,13 +303,23 @@ export class CheckoutComponent implements OnInit {
   openVoucher() {
     this.matDialog.open(PopupVoucherComponent, {
       width: '45%',
-      height: '70vh',
+      height: '90vh',
       data: this.totalMoney
     }).afterClosed().subscribe(result => {
       if (result.event === 'saveVoucher') {
         this.voucherService.getVoucher(result.data.code).subscribe(res => {
           this.voucher = res.data;
-          this.totalMoneyPay = this.totalMoneyPay - this.voucher.reducedValue;
+          if (res.data.voucherType === 1) {
+            const reducedVoucherPrice = parseFloat(((res.data.reducedValue / 100) * this.totalMoney).toFixed(2));
+
+            console.log(reducedVoucherPrice);
+            if (reducedVoucherPrice > res.data.maxReduced) {
+              this.totalMoneyPay = this.totalMoneyPay - this.voucher.maxReduced;
+              this.voucher.reducedValue = this.voucher.maxReduced;
+            }else {
+              this.totalMoneyPay = this.totalMoneyPay - this.voucher.reducedValue;
+            }
+          }
           console.log(this.voucher);
         });
       }
@@ -327,6 +337,7 @@ export class CheckoutComponent implements OnInit {
   validateEmail() {
     this.validEmail = CommonFunction.validateInput(this.email, 250, /^[^\s@]+@[^\s@]+\.[^\s@]+$/);
   }
+
   validateReceiverPhone() {
     this.validReceiverPhone = CommonFunction.validateInput(this.order.receiverPhone, null, /^(0[2-9]|1[2-9]|2[2-9]|3[2-9]|4[2-9]|5[2-9]|6[2-9]|7[2-9]|8[2-9]|9[2-9])\d{8}$/);
   }

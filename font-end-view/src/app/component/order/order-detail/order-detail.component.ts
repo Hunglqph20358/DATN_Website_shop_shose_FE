@@ -1,10 +1,11 @@
 import {ChangeDetectorRef, Component, Inject, OnInit} from '@angular/core';
-import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
+import {MAT_DIALOG_DATA, MatDialog, MatDialogRef} from '@angular/material/dialog';
 import {OrderDetailService} from '../../../service/order-detail.service';
 import {formatMoney, formatNumber, padZero} from '../../../util/util';
 import Swal from 'sweetalert2';
 import {OrderService} from '../../../service/order.service';
 import {ToastrService} from 'ngx-toastr';
+import {NoteOrderComponent} from '../note-order/note-order.component';
 
 @Component({
   selector: 'app-order-detail',
@@ -22,7 +23,8 @@ export class OrderDetailComponent implements OnInit {
 
   constructor(private orderDetailService: OrderDetailService,
               public matRef: MatDialogRef<OrderDetailComponent>,
-              @Inject(MAT_DIALOG_DATA) public data: any, private orderService: OrderService, private cdr: ChangeDetectorRef, private toastr: ToastrService) {
+              @Inject(MAT_DIALOG_DATA) public data: any, private orderService: OrderService, private cdr: ChangeDetectorRef,
+              private toastr: ToastrService,private matDiaLog: MatDialog) {
     this.rowData = [];
     this.columnDefs = [
       {
@@ -98,17 +100,15 @@ export class OrderDetailComponent implements OnInit {
   }
 
   cancelOrder() {
-    Swal.fire({
-      title: 'Bạn có chắc chắn muốn hủy đơn hàng này không ?',
-      icon: 'warning',
-      showCancelButton: true,
-      confirmButtonText: 'Yes',
-      cancelButtonText: 'No',
-    }).then((result) => {
-      if (result.isConfirmed) {
+    this.matDiaLog.open(NoteOrderComponent, {
+      width: '90vh',
+      height: '38vh',
+    }).afterClosed().subscribe(res => {
+      if (res.event === 'close-note') {
         const obj = {
           id: this.data.data.id,
-          idCustomer: this.data.customer.id
+          idStaff: this.data.staff.id,
+          note: res.data.note
         };
         this.orderService.cancelOrderView(obj).subscribe(res => {
           this.toastr.success('Hủy đơn hàng Thanh Cong!', 'Thông báo', {

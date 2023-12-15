@@ -76,6 +76,7 @@ import 'hammerjs';
 import {MatDatepickerModule} from '@angular/material/datepicker';
 import {MatNativeDateModule} from '@angular/material/core';
 import { DateRangePickerModule } from '@syncfusion/ej2-angular-calendars';
+import { NoteOrderComponent } from './component/order/note-order/note-order.component';
 
 @NgModule({
   declarations: [
@@ -128,6 +129,7 @@ import { DateRangePickerModule } from '@syncfusion/ej2-angular-calendars';
     CustomerComponent,
     ImportFileComponent,
     ThongKeComponent,
+    NoteOrderComponent,
   ],
   imports: [
     BrowserModule,

@@ -38,6 +38,7 @@ import {MatFormFieldModule} from '@angular/material/form-field';
 import {MatDatepickerModule} from '@angular/material/datepicker';
 import {MatNativeDateModule} from '@angular/material/core';
 import {MatInputModule} from '@angular/material/input';
+import {NoteOrderComponent} from './component/order/note-order/note-order.component';
 
 @NgModule({
   declarations: [
@@ -61,6 +62,7 @@ import {MatInputModule} from '@angular/material/input';
     InfoUserComponent,
     ActionOrderComponent,
     OrderNotLoginComponent,
+    NoteOrderComponent
   ],
   imports: [
     BrowserModule,
