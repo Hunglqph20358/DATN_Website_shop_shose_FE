@@ -14,6 +14,11 @@ import {MausacService} from '../../service/mausac.service';
 import {MatDialog} from '@angular/material/dialog';
 import {LoginComponent} from '../login/login.component';
 import {CustomerComponent} from '../customer/customer.component';
+import {CustomerServiceService} from '../../service/customer-service.service';
+import {CustomerSalesDTO} from '../model/CustomerSalesDTO';
+import {OrderSalesCounterComponent} from '../order-sales-counter/order-sales-counter.component';
+import * as printJS from 'print-js';
+import {ToastrService} from 'ngx-toastr';
 @Component({
   selector: 'app-sales-counter',
   templateUrl: './sales-counter.component.html',
@@ -22,11 +27,17 @@ import {CustomerComponent} from '../customer/customer.component';
 
 export class SalesCounterComponent implements OnInit {
   public isProductListVisible: boolean = true;
+  public isCustomerNull: boolean = true;
   count = 1;
   searchTerm: string = '';
   showResults: boolean = false;
   listOder: any[] = [];
   searchResults: any[] = [];
+
+  searcherCustomer: string = '';
+  showCustomer: boolean = false;
+  searchCustomerResults: any[] = [];
+
   listProductPush: any[] = [];
   totalPrice: number = 0;
   totalAllProducts: number = 0;
@@ -39,10 +50,15 @@ export class SalesCounterComponent implements OnInit {
   listColor: any[];
   name: string;
   animal: string;
+  selectedOption: string = '1';
+  customerDTO: CustomerSalesDTO;
+  selectedCustomer: any;
+  idCustomer: number;
+  user: UsersDTO = {};
   constructor(private productService: ProductService, private cookieService: CookieService,
               private orderService: OrderService, private orderDetailService: OrderDetailService,
               private router: Router, private sizeService: SizeService, private colorService: MausacService,
-              private dialog: MatDialog
+              private dialog: MatDialog, private customerService: CustomerServiceService, private toastr: ToastrService
               ) { }
   search() {
     this.isProductListVisible = true;
@@ -57,6 +73,24 @@ export class SalesCounterComponent implements OnInit {
     }
     this.showResults = this.searchTerm.length > 0;
   }
+  searchCustomer(){
+    this.idCustomer = null;
+    this.isCustomerNull = true;
+    if (this.searcherCustomer.trim() === '' ){
+      console.log('Mời nhập sdt khách hàng');
+      this.isCustomerNull = false;
+    }else {
+      this.customerService.findCustomerByPhone(this.searcherCustomer).subscribe(
+        customer => {
+          this.searchCustomerResults = customer;
+          console.log(customer);
+          this.idCustomer = customer[0].id;
+          console.log(this.idCustomer);
+        }
+      );
+      this.showCustomer = this.searcherCustomer.length > 0;
+    }
+  }
   addOrder(){
     this.count++;
     let order = {
@@ -70,7 +104,7 @@ export class SalesCounterComponent implements OnInit {
   }
   removeOrder(order: any) {
     const index = this.listOder.indexOf(order);
-    if (this.count >= 1){
+    if (this.count > 1){
       if (index !== -1) {
         this.listOder.splice(index, 1);
         this.count--;
@@ -91,6 +125,15 @@ export class SalesCounterComponent implements OnInit {
     this.calculateTotalPrice();
     this.calculateTotalAllProducts();
     this.clearSearchTerm();
+  }
+  addCustomer(row: any){
+    if (!row.quantity) {
+      row.quantity = 1;
+    }
+    this.searcherCustomer = `${row.fullname} - ${row.phone}`;
+    this.selectedCustomer = row;
+    this.isCustomerNull = false;
+    console.log(this.selectedCustomer);
   }
   clearSearchTerm(): void {
     this.searchTerm = '';
@@ -126,12 +169,19 @@ export class SalesCounterComponent implements OnInit {
       return total + productTotal;
     }, 0);
   }
+
   placeOrderSales(){
+    console.log(this.idCustomer);
+    console.log(this.selectedCustomer);
+    this.user = JSON.parse(localStorage.getItem('users'));
     const order: Order = {
-      receiver: 'Nguyễn Văn Mạnh',
       paymentType: 1,
       totalPrice: this.totalAllProducts,
       totalPayment: this.totalAllProducts,
+      customerDTO: this.selectedCustomer,
+      idCustomer: this.idCustomer,
+      idStaff: this.user.id,
+      statusPayment: this.selectedOption,
     };
     this.orderService.createOrderSales(order).subscribe(
       (response) => {
@@ -149,15 +199,15 @@ export class SalesCounterComponent implements OnInit {
 
         forkJoin(observables).subscribe(
           (orderDetailResponses) => {
-            alert('thanh toán thành công');
+            this.printInvoice();
+            this.toastr.success('Thanh toán thành công', 'Success');
             localStorage.removeItem('listProductPush');
+            this.selectedCustomer = '';
+            this.searcherCustomer = '';
             this.listProductPush = [];
-
-            // Xóa tab order
             this.removeOrder(order);
-
-            // Cập nhật tổng số lượng sản phẩm
             this.calculateTotalAllProducts();
+            this.cookieService.set('listOrder', JSON.stringify(this.listOder));
             console.log('done detail');
             const index = this.listOder.findIndex( order => order.id === this.currentOrderId);
             if (index !== -1) {
@@ -172,6 +222,40 @@ export class SalesCounterComponent implements OnInit {
       }
     );
   }
+  generateOrderHTML(): string {
+    let orderHTML = `<div>`;
+    orderHTML += `<h2>Hóa đơn</h2>`;
+    orderHTML += `<p>Tên nhân viên: ${this.fullname}</p>`;
+    orderHTML += `<p>Tên khách hàng: ${this.selectedCustomer?.fullname}</p>`;
+    orderHTML += `<p>Số điện thoại: ${this.selectedCustomer?.phone}</p>`;
+    orderHTML += `<h3>Chi tiết đơn hàng</h3>`;
+    orderHTML += `<ul>`;
+    this.listProductPush.forEach(product => {
+      orderHTML += `<li>Mã: ${product.code}- Size: ${product.size}- Màu Sắc: ${product.color}-Tên: ${product.name} - ${product.quantity} x ${product.price} = ${product.total}</li>`;
+    });
+    orderHTML += `</ul>`;
+    orderHTML += `</div>`;
+    return orderHTML;
+  }
+  printInvoice() {
+    const invoiceHTML = this.generateOrderHTML();
+    const frame = document.createElement('iframe');
+    frame.style.display = 'none';
+    document.body.appendChild(frame);
+    frame.contentDocument.open();
+    frame.contentDocument.write(invoiceHTML);
+    frame.contentDocument.close();
+    printJS({
+      printable: frame.contentDocument.body,
+      type: 'html',
+      properties: ['name', 'quantity', 'price', 'total'],
+      header: '<h3 class="custom-h3">Hóa đơn bán hàng</h3>',
+      style: '.custom-h3 { color: red; }',
+      documentTitle: 'hoa don',
+    });
+
+    document.body.removeChild(frame);
+  }
   onTabChange(event: MatTabChangeEvent): void {
     const selectedTabIndex = event.index;
     this.currentOrderId = this.listOder[selectedTabIndex].id;
@@ -184,7 +268,18 @@ export class SalesCounterComponent implements OnInit {
       height: '600px',
       data: {name: this.name}
     });
+    dialogRef.afterClosed().subscribe(result => {
+      console.log('The dialog was closed');
+      this.animal = result;
+    });
+  }
 
+  openDialogBill(): void {
+    const dialogRef = this.dialog.open(OrderSalesCounterComponent, {
+      width: '1300px',
+      height: '700px',
+      data: {name: this.name}
+    });
     dialogRef.afterClosed().subscribe(result => {
       console.log('The dialog was closed');
       this.animal = result;
@@ -218,10 +313,13 @@ export class SalesCounterComponent implements OnInit {
     });
     this.sizeService.getAllSize().subscribe(data =>{
       this.listSizePR = data;
+      console.log(this.listSizePR);
     });
     this.colorService.getAllMauSac().subscribe(data =>{
       this.listColor = data;
     });
+    this.selectedOption = '0';
+
   }
 
 }

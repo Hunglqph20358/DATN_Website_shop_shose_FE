@@ -25,26 +25,28 @@
           </div>
         </div>
 
-        <div class="col-md-6">
-          <mat-tab-group *ngIf="count > 0" (selectedTabChange)="onTabChange($event)">
-            <mat-tab *ngFor="let o of listOder">
-              <ng-template mat-tab-label>
-                <span>{{ o.name }}</span>
-                <button (click)="removeOrder(o)" type="button" class="remove-btn-order">
-                  <i class="bi bi-x-circle"></i>
-                </button>
-              </ng-template>
-            </mat-tab>
-          </mat-tab-group>
-          <div>
+        <div class="col-md-6 row align-items-start">
+          <div class="col-md-7">
+            <mat-tab-group *ngIf="count > 0" (selectedTabChange)="onTabChange($event)">
+              <mat-tab *ngFor="let o of listOder">
+                <ng-template mat-tab-label>
+                  <span>{{ o.name }}</span>
+                  <button (click)="removeOrder(o)" type="button" class="remove-btn-order">
+                    <i class="bi bi-x-circle"></i>
+                  </button>
+                </ng-template>
+              </mat-tab>
+            </mat-tab-group>
+          </div>
+          <div class="col-md-4">
             <button (click)="addOrder()" type="button" class="add-btn-order">
-              |  <i class="bi bi-plus-circle"></i>
+              | <i class="bi bi-plus-circle"></i>
             </button>
           </div>
         </div>
 
         <div class="col-md-2">
-
+          <a class="btn" (click)="openDialogBill()"><i class="bi bi-receipt-cutoff"></i></a>
         </div>
 
       </div>
@@ -57,8 +59,8 @@
               <th></th>
               <th>Mã sản phẩm</th>
               <th>Tên sản phẩm</th>
-              <th>Màu Sắc</th>
               <th>Size</th>
+              <th>Màu sắc</th>
               <th>Số lượng</th>
               <th>Đơn giá</th>
               <th>Thành tiền</th>
@@ -67,21 +69,25 @@
             </thead>
             <tbody>
             <tr class="shadowed-row" *ngFor="let product of listProductPush; let i = index">
-              <th scope="row">1</th>
-              <td><button type="button" (click)="removeProduct(i)" class="remove-btn-order"><i class="bi bi-trash3-fill"></i></button></td>
+              <th scope="row">{{ i + 1 }}</th>
+              <td>
+                <button type="button" (click)="removeProduct(i)" class="remove-btn-order"><i
+                  class="bi bi-trash3-fill"></i></button>
+              </td>
               <td>{{product.code}}</td>
               <td>{{product.name}}</td>
               <td>
                 <select class="select-size" *ngFor="let s of listSizePR" [(ngModel)]="product.size">
-                  <option class="select-size"  selected>{{ s.name }}</option>
+                  <option class="select-size" selected>{{ s.sizeNumber }}</option>
                 </select>
               </td>
               <td>
                 <select class="select-size" *ngFor="let c of listColor" [(ngModel)]="product.color">
-                  <option class="select-size"  selected>{{ c.name }}</option>
+                  <option class="select-size" selected>{{ c.name }}</option>
                 </select>
               </td>
-              <td><input type="number"  min="0" class="quantity" [(ngModel)]="product.quantity" (ngModelChange)="calculateTotalPrice()"></td>
+              <td><input type="number" min="0" class="quantity" [(ngModel)]="product.quantity"
+                         (ngModelChange)="calculateTotalPrice()"></td>
               <td>{{product.price}}</td>
               <td>{{product.total}}</td>
               <td>
@@ -97,207 +103,97 @@
         <div class="col-4 col-right" style="padding-left: 5px">
           <form class="form-order">
             <div class="row mb-1">
-              <input class="col-sm-6 col-form-label name-nv custom-input" readonly name="fullname" [(ngModel)]="fullname">
+              <input class="col-sm-6 col-form-label name-nv custom-input" readonly name="fullname"
+                     [(ngModel)]="fullname">
               <label class="col-6 col-form-label time-order">17/11/2023 00:00</label>
             </div>
 
-            <div class="row mb-3">
+            <div class="row mb-1">
               <div class="col-sm-12 position-relative">
-                <input type="text" class="form-control" placeholder="Tìm khách hàng">
+                <input type="text" class="form-control " placeholder="Tìm khách hàng" name="customer"
+                       [(ngModel)]="searcherCustomer" (input)="searchCustomer()" autocomplete="off">
                 <ol>
-                    <a class="btn icon-add position-absolute top-0 end-0" (click)="openDialog()">
-                      <i class="bi bi-plus-lg"></i>
-                    </a>
+                  <a class="btn icon-add position-absolute top-0 end-0" (click)="openDialog()">
+                    <i class="bi bi-plus-lg"></i>
+                  </a>
                 </ol>
+                <div class="search-results-kh" *ngIf="searchCustomerResults">
+                  <mat-table [dataSource]="searchCustomerResults" *ngIf="isCustomerNull">
+                    <ng-container matColumnDef="fullname">
+                      <mat-cell *matCellDef="let cs"> {{ cs.fullname }} </mat-cell>
+                    </ng-container>
+
+                    <ng-container matColumnDef="phone">
+                      <mat-cell *matCellDef="let cs"> {{ cs.phone }} </mat-cell>
+                    </ng-container>
+
+                    <mat-row *matRowDef="let row; columns: ['fullname', 'phone']" (click)="addCustomer(row)"></mat-row>
+                  </mat-table>
+
+                </div>
               </div>
             </div>
 
-            <div class="row mb-2">
+            <div class="row mb-1">
               <label class="col-sm-6 col-form-label">Tổng Tiền:</label>
               <div class="col-sm-6">
-                <input type="text" class="form-control custom-input" name="sumPrice" readonly [(ngModel)]="totalAllProducts">
+                <input type="text" class="form-control custom-input" name="sumPrice" readonly
+                       [(ngModel)]="totalAllProducts">
               </div>
             </div>
-            <div class="row mb-2">
+            <div class="row mb-1">
               <label class="col-sm-6 col-form-label">Giảm giá:</label>
-              <div class="col-sm-6">
-                <input type="text" class="form-control custom-input" readonly>
+              <div class="col-sm-6 position-relative">
+                <input type="text" class="form-control custom-input">
+                <a class="btn icon-add position-absolute top-0 end-0">
+                  <i class="bi bi-plus-lg"></i>
+                </a>
               </div>
             </div>
-            <div class="row mb-2">
+            <div class="row mb-1">
               <label class="col-sm-6 col-form-label">Khách cần trả:</label>
               <div class="col-sm-6">
-                <input type="text" class="form-control custom-input" readonly name="priceCustomer" [(ngModel)]="totalAllProducts">
-              </div>
-            </div>
-            <div class="row mb-3">
-              <label class="col-sm-6 col-form-label ">Khách thanh toán:</label>
-              <div class="col-sm-6">
-                <input type="text" class="form-control custom-input" name="payCustomer" [(ngModel)]="totalAllProducts"ư >
+                <input type="text" class="form-control custom-input" readonly name="priceCustomer"
+                       [(ngModel)]="totalAllProducts">
               </div>
             </div>
             <div class="row mb-4">
               <div class="col-sm-12 d-flex">
-                <div class="col-sm-6">
-                  <input class="form-check-input " type="radio" name="gridRadios" id="gridRadios2" value="option2">
-                  <label class="form-check-label radio-custom">
-                    Tiền Mặt
-                  </label>
+                <div class="form-check form-check-inline col-md-6">
+                  <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio1" value="0"
+                         checked [(ngModel)]="selectedOption">
+                  <label class="form-check-label" for="inlineRadio1">Tiền Mặt</label>
                 </div>
-                <div class="col-sm-6">
-                  <input class="form-check-input" type="radio" name="gridRadios" id="gridRadios2" value="option2">
-                  <label class="form-check-label radio-custom">
-                    Chuyển Khoản
-                  </label>
+                <div class="form-check form-check-inline col-md-6">
+                  <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio2" value="1"
+                         [(ngModel)]="selectedOption">
+                  <label class="form-check-label" for="inlineRadio2">Chuyển Khoản</label>
                 </div>
               </div>
             </div>
-            <div class="row mb-3">
-              <div class="col-sm-12 ">
+            <div class="row mb-1">
+              <div class="col-sm-12" *ngIf="selectedOption === '0'">
                 <input type="text" class="form-control note-custom" placeholder="Ghi chú đơn hàng">
               </div>
+              <div class="col-sm-6 center" *ngIf="selectedOption === '1'">
+                <img class="col-sm-6 img" src="assets/image/frame.png">
+              </div>
             </div>
-            <div class="row mb-4">
+            <div class="row mb-4" *ngIf="selectedOption === '0'">
               <label class="col-sm-6 col-form-label">Tiền thừa trả khách:</label>
               <div class="col-sm-6 ">
                 <input type="text" class="form-control custom-input" readonly>
               </div>
             </div>
-            <button type="submit" class="btn btn-primary mb-4 col-sm-12 tt-custom" (click)="placeOrderSales()">Thanh Toán</button>
+            <button type="submit" class="btn btn-primary mb-4 col-sm-12 tt-custom" (click)="placeOrderSales()">Thanh
+              Toán
+            </button>
+
           </form>
         </div>
       </div>
     </mat-tab>
-    <!--    Bán Giao Hàng  -->
-    <mat-tab>
 
-      <ng-template mat-tab-label>
-        Bán giao hàng
-      </ng-template>
-      <div class="col-sm-12 search-product mb-2">
-        <div class="col-sm-4">
-          <input type="text" name="search-product" class="form-control" placeholder="Tìm kiếm sản phẩm">
-        </div>
-        <div class="col-sm-4">
-
-        </div>
-        <div class="col-sm-4">
-
-        </div>
-      </div>
-      <div class="page-content d-flex">
-        <div class="col-8 col-left">
-          <table class="table">
-            <thead>
-            <tr>
-              <th scope="row">STT</th>
-              <th></th>
-              <th>Mã sản phẩm</th>
-              <th>Tên sản phẩm</th>
-              <th>Màu Sắc</th>
-              <th>Size</th>
-              <th>Số lượng</th>
-              <th>Đơn giá</th>
-              <th>Thành tiền</th>
-              <th>Chi tiết</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr class="shadowed-row">
-              <th scope="row">1</th>
-              <td>Xóa</td>
-              <td>Mã sản phẩm</td>
-              <td>tên sản phẩm</td>
-              <td>số lượng</td>
-              <td>đơn giá</td>
-              <td>thành tiền</td>
-              <td>detail</td>
-            </tr>
-            <tr class="shadowed-row">
-              <th scope="row">1</th>
-              <td>Xóa</td>
-              <td>Mã sản phẩm</td>
-              <td>tên sản phẩm</td>
-              <td>số lượng</td>
-              <td>đơn giá</td>
-              <td>thành tiền</td>
-              <td>detail</td>
-            </tr>
-            </tbody>
-          </table>
-        </div>
-        <div class="col-4 col-right" style="padding-left: 5px">
-          <form class="form-order">
-            <div class="row mb-1">
-              <label class="col-sm-6 col-form-label name-nv">Nguyễn Văn Mạnh</label>
-              <label class="col-6 col-form-label time-order">17/11/2023 00:00</label>
-            </div>
-
-            <div class="row mb-3">
-              <div class="col-sm-12 position-relative">
-                <input type="text" class="form-control" placeholder="Tìm khách hàng">
-                <a href="#" class="btn icon-add position-absolute top-0 end-0">
-                  <i class="bi bi-plus-lg"></i>
-                </a>
-              </div>
-            </div>
-
-            <div class="row mb-2">
-              <label class="col-sm-6 col-form-label">Tổng Tiền:</label>
-              <div class="col-sm-6">
-                <input type="text" class="form-control custom-input" readonly>
-              </div>
-            </div>
-            <div class="row mb-2">
-              <label class="col-sm-6 col-form-label">Giảm giá:</label>
-              <div class="col-sm-6">
-                <input type="text" class="form-control custom-input" readonly>
-              </div>
-            </div>
-            <div class="row mb-2">
-              <label class="col-sm-6 col-form-label">Khách cần trả:</label>
-              <div class="col-sm-6">
-                <input type="text" class="form-control custom-input" readonly>
-              </div>
-            </div>
-            <div class="row mb-2">
-              <label class="col-sm-6 col-form-label ">Khách thanh toán:</label>
-              <div class="col-sm-6">
-                <input type="text" class="form-control custom-input">
-              </div>
-            </div>
-            <div class="row mb-2">
-              <div class="col-sm-12 d-flex">
-                <div class="col-sm-6">
-                  <input class="form-check-input " type="radio" name="gridRadios" id="gridRadios2" value="option2">
-                  <label class="form-check-label radio-custom">
-                    Tiền Mặt
-                  </label>
-                </div>
-                <div class="col-sm-6">
-                  <input class="form-check-input" type="radio" name="gridRadios" id="gridRadios2" value="option2">
-                  <label class="form-check-label radio-custom">
-                    Chuyển Khoản
-                  </label>
-                </div>
-              </div>
-            </div>
-            <div class="row mb-2">
-              <div class="col-sm-12 ">
-                <input type="text" class="form-control note-custom" placeholder="Ghi chú đơn hàng">
-              </div>
-            </div>
-            <div class="row mb-2">
-              <label class="col-sm-6 col-form-label">Tiền thừa trả khách:</label>
-              <div class="col-sm-6">
-                <input type="text" class="form-control custom-input" readonly>
-              </div>
-            </div>
-            <button type="submit" class="btn btn-primary mb-3 col-sm-12 tt-custom">Thanh Toán</button>
-          </form>
-        </div>
-      </div>
-    </mat-tab>
   </mat-tab-group>
 
 </div>

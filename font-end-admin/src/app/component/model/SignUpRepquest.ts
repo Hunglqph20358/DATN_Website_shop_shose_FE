@@ -6,8 +6,11 @@ export class SignUpRepquest{
   phone: string;
   birthday: string;
   gender: string;
+  description: string;
   role: string;
-  constructor(fullname: string, username: string, password: string, email: string, phone: string, birthday: string, gender: string, role: string) {
+  idel: number;
+
+  constructor(fullname: string, username: string, password: string, email: string, phone: string, birthday: string, gender: string, description: string, role: string, idel: number) {
     this.fullname = fullname;
     this.username = username;
     this.password = password;
@@ -15,6 +18,8 @@ export class SignUpRepquest{
     this.phone = phone;
     this.birthday = birthday;
     this.gender = gender;
+    this.description = description;
     this.role = role;
+    this.idel = idel;
   }
 }

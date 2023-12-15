@@ -1,18 +1,22 @@
 import { Component, OnInit } from '@angular/core';
-import {SignInService} from '../../service/authentication/sign-in.service';
+import {SignUpRepquest} from '../../model/SignUpRepquest';
+import {StaffService} from '../../../service/staff.service';
+import {UsersDTO} from '../../model/UsersDTO';
 import {Router} from '@angular/router';
-import {SignUpRepquest} from '../model/SignUpRepquest';
-import {ValidateInput} from '../../model/validate-input.model';
-import {CommonFunction} from '../../util/common-function';
+import {AuthService} from '../../../service/auth.service';
 import {ToastrService} from 'ngx-toastr';
+import {ValidateInput} from '../../model/validate-input';
+import {CommonFunction} from '../../../util/common-function';
+
 
 @Component({
-  selector: 'app-sign-up',
-  templateUrl: './sign-up.component.html',
-  styleUrls: ['./sign-up.component.css']
+  selector: 'app-add-staff',
+  templateUrl: './add-staff.component.html',
+  styleUrls: ['./add-staff.component.css']
 })
-export class SignUpComponent implements OnInit {
-  confirmPass = '';
+export class AddStaffComponent implements OnInit {
+  defaultImagePath = 'C:/Users/ADMIN/Downloads/PH20528.jpg';
+  selectedImage: string = this.defaultImagePath;
   form: any = {
     fullname: '',
     username: '',
@@ -21,7 +25,9 @@ export class SignUpComponent implements OnInit {
     phone: '',
     birthday: '',
     gender: 'Nam',
-    role: ''
+    description: '',
+    role: 'STAFF',
+    idel: 0,
   };
   signUpForm: SignUpRepquest;
   validReceiver: ValidateInput = new ValidateInput();
@@ -29,12 +35,8 @@ export class SignUpComponent implements OnInit {
   validReceiverPhone: ValidateInput = new ValidateInput();
   validUsername: ValidateInput = new ValidateInput();
   validReceiverPassword: ValidateInput = new ValidateInput();
-  validConfirm: boolean = true;
-  constructor(private signup: SignInService, private router: Router,private toastr: ToastrService) { }
-
-  ngOnInit(): void {
-  }
-  signUp() {
+  constructor(private staffService: AuthService, private router: Router, private toastr: ToastrService) { }
+  addStaff() {
     this.form.fullname = CommonFunction.trimText(this.form.fullname);
     this.form.phone = CommonFunction.trimText(this.form.phone);
     this.form.username = CommonFunction.trimText(this.form.username);
@@ -43,7 +45,6 @@ export class SignUpComponent implements OnInit {
     this.validateReceiverPhone();
     this.validateReceiverUsername();
     this.validateReceiverPassword();
-    this.validateConfirmPass();
     if (!this.validReceiver.done || !this.validEmail.done || !this.validReceiverPhone.done
       || !this.validUsername.done || !this.validReceiverPassword.done
     ) {
@@ -57,31 +58,57 @@ export class SignUpComponent implements OnInit {
       this.form.phone,
       this.form.birthday,
       this.form.gender,
+      this.form.description,
       this.form.role,
+      this.form.idel
     );
     console.log(this.signUpForm);
-    this.signup.signUp(this.signUpForm).subscribe(data => {
+    this.staffService.signUp(this.signUpForm).subscribe(data =>{
       console.log(data);
+      if (data.message === 'The email is existed'){
+        this.toastr.error('Email đã tồn tại', 'Lỗi');
+        return;
+      }
+      if (data.message === 'The Username is existed'){
+        this.toastr.error('Tên đăng nhập đã tồn tại', 'Lỗi');
+        return;
+      }
+      if (data.message === 'The phone is existed'){
+        this.toastr.error('Số điện thoại đã tồn tại', 'Lỗi');
+        return;
+      }
       if (data.message === 'Create Success'){
         alert('Đăng kí thành công ! ');
-        this.router.navigate(['login']);
+        this.router.navigate(['/staff']);
       }
-        if (data.message === 'The Username is existed'){
-          this.toastr.error('Tên tài khoản đã tồn tại', 'Error');
-        }else if (data.message === 'The Email is existed'){
-          this.toastr.error('Email đã tồn tại', 'Error');
-        }else if (data.message === 'The Phone is existed'){
-          this.toastr.error('Số điện thoại đã tồn tại', 'Error');
-        }
-    },
-      error => {
-
-      }
-    );
+    });
+  }
+  onAddImageClick() {
+    document.getElementById('profilePicture').click();
   }
 
+  onResetImageClick() {
+    document.getElementById('profilePicture')['value'] = '';
+    // Đặt ảnh mặc định
+    this.selectedImage = this.defaultImagePath;
+  }
+
+  onImageChange(event: any) {
+    const input = event.target;
+    const reader = new FileReader();
+
+    reader.onload = () => {
+      this.selectedImage = reader.result as string;
+    };
+
+    reader.readAsDataURL(input.files[0]);
+  }
+
+
+  ngOnInit(): void {
+  }
   revoveInvalid(result) {
-      result.done = true;
+    result.done = true;
   }
 
   validateReceiver() {
@@ -99,8 +126,5 @@ export class SignUpComponent implements OnInit {
   }
   validateReceiverPassword(){
     this.validReceiverPassword = CommonFunction.validateInput(this.form.password, 50, /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/);
-  }
-  validateConfirmPass(){
-    this.validConfirm = this.form.password === this.confirmPass;
   }
 }
