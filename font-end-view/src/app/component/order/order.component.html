@@ -10,23 +10,9 @@
           <input type="text" matTooltipClass="material-tooltip" [(ngModel)]="modelSearch.code" class="form-control w-100 input-sm overflow-dot place_text" id="input2" placeholder="Nhập mã đơn hàng" style="height: 35px; min-width: 220px!important;">
         </div>
       </div>
-      <div class="" style="margin-left: 20px">
-        <mat-form-field>
-          <mat-label>Thời gian từ</mat-label>
-          <input matInput [matDatepicker]="picker" [(ngModel)]="modelSearch.dateFrom" (ngModelChange)="changeDateFrom($event)">
-          <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
-          <mat-datepicker #picker></mat-datepicker>
-        </mat-form-field>
-      </div>
 
-      <div class="" style="margin-left: 10px">
-<!--        <label>Đến</label>-->
-        <mat-form-field color="accent">
-          <mat-label>Đến</mat-label>
-          <input matInput [matDatepicker]="picker2" [(ngModel)]="modelSearch.dateTo">
-          <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
-          <mat-datepicker #picker2 color="primary"></mat-datepicker>
-        </mat-form-field>
+      <div class="" style="margin-left: 20px; margin-top: 10px">
+        <ejs-daterangepicker id='daterangepicker' placeholder='Chọn thời gian' [(startDate)]="modelSearch.dateFrom" [(endDate)]="modelSearch.dateTo"></ejs-daterangepicker>
       </div>
       <div style="margin-left: 20px; margin-top: 10px;">
         <button style=" font-size: 14px" type="submit" class="btn btn-success" (click)="searchOrder();">Tìm kiếm</button>
