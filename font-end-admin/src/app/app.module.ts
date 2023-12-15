@@ -75,22 +75,10 @@ import {DetailVoucherComponent} from './component/voucher/detail-voucher/detail-
 import {SignUpComponent} from './component/sign-up/sign-up.component';
 import {ActionOrderComponent} from './component/order/action-order/action-order.component';
 import {OrderDetailComponent} from './component/order/order-detail/order-detail.component';
-import {MatMenuModule} from '@angular/material/menu';
-import {MatDialogModule} from '@angular/material/dialog';
-import {MatButtonModule} from '@angular/material/button';
 import { ChitietsanphamComponent } from './component/chitietsanpham/chitietsanpham.component';
 import { ThemChiTietSanPhamComponent } from './component/chitietsanpham/them-chi-tiet-san-pham/them-chi-tiet-san-pham.component';
 import { SuaChiTietSanPhamComponent } from './component/chitietsanpham/sua-chi-tiet-san-pham/sua-chi-tiet-san-pham.component';
 import { ChiTietSanPhamActionComponent } from './component/chitietsanpham/chi-tiet-san-pham-action/chi-tiet-san-pham-action.component';
-
-import {NgSelectModule} from '@ng-select/ng-select';
-import {SalesCounterComponent} from './component/sales-counter/sales-counter.component';
-import {MatListModule} from '@angular/material/list';
-import {MatTable, MatTableModule} from '@angular/material/table';
-import {MatTabsModule} from '@angular/material/tabs';
-import {ToastrModule, ToastrService} from 'ngx-toastr';
-import {CustomerComponent} from './component/customer/customer.component';
-import {ImportFileComponent} from './component/sanpham/import-file/import-file.component';
 import {ThongKeComponent} from './component/thong-ke/thong-ke.component';
 import {ChartsModule} from '@progress/kendo-angular-charts';
 import 'hammerjs';
