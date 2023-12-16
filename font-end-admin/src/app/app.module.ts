@@ -80,8 +80,7 @@ import { ImportFileComponent } from './component/sanpham/import-file/import-file
 import { ThongKeComponent } from './component/thong-ke/thong-ke.component';
 import {ChartsModule} from '@progress/kendo-angular-charts';
 import 'hammerjs';
-import {MatDatepickerModule} from '@angular/material/datepicker';
-import {MatNativeDateModule} from '@angular/material/core';
+
 import { DateRangePickerModule } from '@syncfusion/ej2-angular-calendars';
 
 @NgModule({
@@ -135,6 +134,11 @@ import { DateRangePickerModule } from '@syncfusion/ej2-angular-calendars';
     CustomerComponent,
     ImportFileComponent,
     ThongKeComponent,
+    CreatVoucherShipComponent,
+    EditVoucherShipComponent,
+    ActionVoucherShipComponent,
+    DetailVoucherShipComponent,
+    VoucherShipComponent
   ],
   imports: [
     BrowserModule,

@@ -16,9 +16,15 @@ export class DetailVoucherShipComponent implements OnInit {
     endDate: '',
     description: '',
     reducedValue: '',
+    maxReduced: '',
     voucherType: '',
+    conditions: '',
     quantity: '',
-    customerAdminDTOList: [],
+    customerAdminDTOList: '',
+    limitCustomer: '',
+    allow: '',
+    optionCustomer: '',
+    createName: localStorage.getItem('fullname'),
   };
   constructor(private  activatedRoute: ActivatedRoute,
               private voucherService: VoucherShipService) { }
@@ -29,27 +35,40 @@ export class DetailVoucherShipComponent implements OnInit {
       const id = params.id;
       console.log(id);
       this.voucherService.getDetailVoucher(id).subscribe((response: any[]) => {
-        const firstElement = response[0];
+        const firstElement = Array.isArray(response) ? response[0] : response;
         console.log(firstElement);
         this.voucher.id = firstElement.id;
         this.voucher.name = firstElement.name;
         this.voucher.description = firstElement.description;
         this.voucher.conditions = firstElement.conditions;
-        this.voucher.voucherType = firstElement.voucherType;
         this.voucher.endDate = firstElement.endDate;
         this.voucher.quantity = firstElement.quantity;
         this.voucher.reducedValue = firstElement.reducedValue;
+        this.voucher.maxReduced = firstElement.maxReduced;
+        this.voucher.voucherType = firstElement.voucherType;
         this.voucher.startDate = firstElement.startDate;
+        this.voucher.allow = firstElement.allow;
+        this.voucher.limitCustomer = firstElement.limitCustomer;
         this.voucher.customerAdminDTOList = firstElement.customerAdminDTOList;
         console.log(this.voucher);
       });
     });
   }
+
   getVoucherTypeText(): string{
     if (this.voucher.voucherType === 0) {
       return 'Theo %';
     } else if (this.voucher.voucherType === 1) {
       return 'Theo tiền';
+    } else {
+      return 'Không rõ';
+    }
+  }
+  getAllow(): string{
+    if (this.voucher.allow === 0) {
+      return 'Không cho phép';
+    } else if (this.voucher.apply === 1) {
+      return 'Cho phép';
     } else {
       return 'Không rõ';
     }

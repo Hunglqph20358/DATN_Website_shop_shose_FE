@@ -39,6 +39,12 @@ export class ActionVoucherComponent implements OnInit, ICellRendererAngularComp 
     this.router.navigate(['/admin/voucher', this.data.id]);
   }
   delete(): void {
-    this.router.navigate(['/admin/voucher', this.data.id]);
+    if (confirm('Bạn có muốn xóa không?')) {
+      this.voucherService.deleteVoucher(this.data.id).subscribe((response) => {
+        // Xử lý phản hồi nếu cần, ví dụ: hiển thị thông báo thành công
+        alert('Xóa voucher thành công');
+        this.router.navigateByUrl('/admin/voucher');
+      });
+    }
   }
 }

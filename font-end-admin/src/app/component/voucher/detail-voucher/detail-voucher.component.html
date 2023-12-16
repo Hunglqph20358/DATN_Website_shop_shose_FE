@@ -1,73 +1,77 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Voucher Details</title>
-</head>
-<body>
-<h1>Voucher Details</h1>
-<table>
-  <tr>
-    <th>Tên:</th>
-    <td>{{voucher.name}}</td>
-  </tr>
-  <tr>
-    <th>Ngày bắt đầu:</th>
-    <td>{{voucher.startDate}}</td>
-  </tr>
-  <tr>
-    <th>Ngày kết thúc:</th>
-    <td>{{voucher.endDate}}</td>
-  </tr>
-  <tr>
-    <th>Nội dung:</th>
-    <td>{{voucher.description}}</td>
-  </tr>
-  <tr>
-    <th>Điều kiện áp dụng:</th>
-    <td>{{voucher.conditions}}</td>
-  </tr>
-  <tr>
-    <th>Loại voucher:</th>
-    <td>{{getVoucherTypeText()}}</td>
-  </tr>
-  <tr>
-    <th>Giá trị giảm:</th>
-    <td>{{voucher.reducedValue}}</td>
-  </tr>
-  <tr *ngIf="voucher.voucherType === 0">
-    <th>Giá trị giảm tối đa:</th>
-    <td>{{voucher.maxReduced}}</td>
-  </tr>
-  <tr>
-    <th>Mỗi khách hàng sử dụng tối đa:</th>
-    <td>{{voucher.limitCustomer}}</td>
-  </tr>
-  <tr>
-    <th>Nơi áp dụng:</th>
-    <td>{{getApplyText()}}</td>
-  </tr>
-  <tr>
-    <th>Người tạo:</th>
-    <td>{{voucher.createName}}</td>
-  </tr>
-  <tr>
-    <th>Cho phép sử dụng cùng discount:</th>
-    <td>{{voucher.allow == 1 ? 'Cho phép': 'Không cho phép'}}</td>
-  </tr>
-  <tr>
-    <th>Số lượng voucher:</th>
-    <td>{{voucher.quantity}}</td>
-  </tr>
-  <div class="form-group">
-    <label for="customer">Khách hàng</label>
-    <div class="grid">
-      <ul>
-        <li *ngFor="let customer of voucher.customerAdminDTOList">{{ customer.code}} - {{ customer.fullname}}</li>
-      </ul>
+<section class="content-header">
+  <div class="container-fluid">
+    <div class="row mb-2">
+      <div class="col-md-12">
+        <div class="card card-primary">
+          <div class="card-header">
+            <h3 class="card-title">Voucher Details</h3>
+          </div>
+          <div class="card-body">
+            <table class="table">
+              <tbody>
+              <tr>
+                <th scope="row">Tên</th>
+                <td>{{ voucher.name }}</td>
+              </tr>
+              <tr>
+                <th scope="row">Nội dung</th>
+                <td>{{ voucher.description }}</td>
+              </tr>
+              <tr>
+                <th scope="row">Ngày bắt đầu</th>
+                <td>{{ voucher.startDate }}</td>
+              </tr>
+              <tr>
+                <th scope="row">Ngày kết thúc</th>
+                <td>{{ voucher.endDate }}</td>
+              </tr>
+              <tr>
+                <th scope="row">Loại voucher</th>
+                <td>{{ getVoucherTypeText() }}</td>
+              </tr>
+              <tr>
+                <th scope="row">Giá trị giảm</th>
+                <td>{{ voucher.reducedValue }}</td>
+              </tr>
+              <tr *ngIf="voucher.voucherType == 0">
+                <th scope="row">Giá trị giảm tối đa</th>
+                <td>{{ voucher.maxReduced }}</td>
+              </tr>
+              <tr>
+                <th scope="row">Nơi áp dụng</th>
+                <td>{{ getApplyText() }}</td>
+              </tr>
+              <tr>
+                <th scope="row">Số lượng</th>
+                <td>{{ voucher.quantity }}</td>
+              </tr>
+              <tr>
+                <th scope="row">Giới hạn số lần sử dụng của mỗi khách hàng</th>
+                <td>{{ voucher.limitCustomer }}</td>
+              </tr>
+              <tr>
+                <th scope="row">Cho phép sử dụng cùng giảm giá</th>
+                <td>{{ getAllow() }}</td>
+              </tr>
+              <tr>
+                <th scope="row">Người tạo</th>
+                <td>{{ voucher.createName }}</td>
+              </tr>
+              <tr>
+                <th scope="row">Khách hàng</th>
+                <td>
+                  <ul>
+                    <li *ngFor="let c of voucher.customerAdminDTOList">
+                      {{ c.code }} - {{ c.fullname }}
+                    </li>
+                  </ul>
+                </td>
+              </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
-</table>
-</body>
-</html>
+</section>

@@ -53,7 +53,7 @@ export class ActionDiscountComponent
     if (confirm('Bạn có muốn xóa không?')) {
       this.discountService.deleteDiscount(this.data.id).subscribe((response) => {
         // Xử lý phản hồi nếu cần, ví dụ: hiển thị thông báo thành công
-        console.log('Discount deleted successfully', response);
+        alert('Xóa giảm giá thành công');
         this.router.navigateByUrl('/admin/discount');
       });
     }

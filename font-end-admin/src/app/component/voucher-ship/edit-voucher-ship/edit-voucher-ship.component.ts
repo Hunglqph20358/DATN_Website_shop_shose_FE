@@ -26,6 +26,9 @@ export class EditVoucherShipComponent implements OnInit {
   columnDefs;
   headerHeight = 50;
   rowHeight = 40;
+  pattern: '^[a-zA-Z0-9\s]+$';
+  so: '^\d+(\.\d+)?$';
+  currentDate: Date = new Date();
   gridApi: any;
   constructor(private activatedRoute: ActivatedRoute,
               private service: VoucherShipService,
@@ -71,6 +74,9 @@ export class EditVoucherShipComponent implements OnInit {
     ];
   }
   public rowSelection: 'single' | 'multiple' = 'multiple'; // Chọn nhiều dòng
+  isStartDateValid(): boolean {
+    return !this.voucher.startDate || this.voucher.startDate >= this.currentDate;
+  }
   onGridReady(params: any) {
     this.gridApi = params.api;
   }
@@ -103,7 +109,7 @@ export class EditVoucherShipComponent implements OnInit {
         this.rou.navigateByUrl('/admin/voucherFS');
       });
   }
-  toggleAllowVoucher() {
+  toggleAllowDiscount() {
     this.voucher.allow = this.voucher.allow === 1 ? 0 : 1;
   }
 }

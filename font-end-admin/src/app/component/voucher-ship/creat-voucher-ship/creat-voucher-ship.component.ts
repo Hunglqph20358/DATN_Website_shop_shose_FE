@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import {VoucherService} from "../../../service/voucher.service";
-import {Router} from "@angular/router";
-import {VoucherShipService} from "../../../service/voucher-ship.service";
+import {Router} from '@angular/router';
+import {VoucherShipService} from '../../../service/voucher-ship.service';
 
 @Component({
   selector: 'app-creat-voucher-ship',
@@ -20,13 +19,15 @@ export class CreatVoucherShipComponent implements OnInit {
     endDate: '',
     description: '',
     reducedValue: '',
-    voucherType: '',
     conditions: '',
     quantity: '',
     customerAdminDTOList: '',
     limitCustomer: '',
     allow: '',
   };
+  pattern: '^[a-zA-Z0-9\s]+$';
+  so: '^\d+(\.\d+)?$';
+  currentDate: Date = new Date();
   gridApi: any;
   constructor(private voucherService: VoucherShipService,
               private  router: Router) {
@@ -71,6 +72,9 @@ export class CreatVoucherShipComponent implements OnInit {
     ];
   }
   public rowSelection: 'single' | 'multiple' = 'multiple'; // Chọn nhiều dòng
+  isStartDateValid(): boolean {
+    return !this.voucher.startDate || this.voucher.startDate >= this.currentDate;
+  }
   ngOnInit(): void {
     this.voucherService.getCustomer().subscribe((response) => {
       this.rowData = response;

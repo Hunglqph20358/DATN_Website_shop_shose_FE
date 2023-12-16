@@ -72,4 +72,13 @@ export class DetailVoucherComponent implements OnInit {
       return 'Tất cả mọi nơi';
     }
   }
+  getAllow(): string{
+    if (this.voucher.allow === 0) {
+      return 'Không cho phép';
+    } else if (this.voucher.apply === 1) {
+      return 'Cho phép';
+    } else {
+      return 'Không rõ';
+    }
+  }
 }

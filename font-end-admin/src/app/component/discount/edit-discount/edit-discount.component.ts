@@ -115,6 +115,10 @@ export class EditDiscountComponent implements OnInit {
   }
   // Phương thức cập nhật thông tin khuyến mãi
   editDiscount() {
+    const userConfirmed = confirm('Bạn có muốn thêm giảm giá không?');
+    if (!userConfirmed) {
+      return;
+    }
     this.activatedRoute.params.subscribe((params) => {
       const id = params.id;
       console.log(this.gridApi.getSelectedRows());
@@ -125,8 +129,15 @@ export class EditDiscountComponent implements OnInit {
       this.discountService
         .updateDiscount(id, obj)
         .subscribe(() => {
+          alert('Sửa giảm giá thành công!');
           this.router.navigateByUrl('/admin/discount');
-        });
+        },
+          (error) => {
+            // Handle errors if the discount creation fails
+            alert('Sửa giảm giá thất bại!');
+            console.error('Error adding discount', error);
+          }
+        );
       console.log(obj);
     });
   }

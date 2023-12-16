@@ -1,73 +1,39 @@
 <div class="example-button-row" >
-  <button mat-raised-button color="primary" style="margin-bottom: 20px; margin-left: 20px" routerLink="/admin/creat-voucher">Thêm Voucher</button>
+  <button mat-raised-button color="primary" style="margin-bottom: 20px; margin-left: 20px" routerLink="/admin/creat-voucher" >Thêm Voucher</button>
 </div>
 <mat-tab-group>
   <mat-tab>
     <ng-template mat-tab-label>
       Tất Cả
     </ng-template>
-    <div>
-      <div class="filter-container">
-        <div class="form-group">
-          <label>Điều kiện lọc</label>
-          <select
-            class="form-control"
-            id="discountType"
-            name="discountType"
-            required
-            [(ngModel)]="loc"
-          >
-            <option >Điều kiện lọc</option>
-            <option value="0">Theo điều kiện sử dụng</option>
-            <option value="1">Theo voucher</option>
-            <option value="2">Theo khách hàng</option>
-            <option value="3">Theo khoảng thời gian</option>
-          </select>
-        </div>
-        <div class="search-box" *ngIf="loc === '0' ">
-          <input type="text" id="searchByValue" style="width: 400px; height: 30px" placeholder="Điều kiện sử dụng" (input)="searchByVoucher($event)">
-        </div>
-        <div class="search-box" *ngIf="loc === '1' ">
-          <input type="text" id="searchByVoucher" style="width: 400px; height: 30px" placeholder="Tên hoặc mã voucher" (input)="searchByVoucher($event)">
-        </div>
-        <div class="search-box" *ngIf="loc === '2' ">
-          <input type="text" id="searchByCustomer" style="width: 400px; height: 30px" placeholder="Tên hoặc mã hoặc sdt khách hàng" (input)="searchByCustomer($event)">
-        </div>
-        <div class="search-box" *ngIf="loc === '3' ">
-          <div class="form-group">
-            <label for="startDate">Ngày bắt đầu</label>
-            <input
-              type="datetime-local"
-              class="form-control"
-              [ngModelOptions]="{ standalone: true }"
-              id="startDate"
-              [(ngModel)]="startDate"
-              name="startDate"
-              required
-            />
-            <div *ngIf="!startDate" class="alert alert-danger">
-              <div *ngIf="!startDate">Vui lòng chọn ngày bắt đầu.</div>
-            </div>
-          </div>
+    <div class="form-group">
+      <label>Điều kiện lọc</label>
+      <select
+        class="form-control"
+        id="discountType"
+        name="discountType"
+        required
+        [(ngModel)]="loc"
+      >
+        <option >Điều kiện lọc</option>
+        <option value="1">Theo voucher</option>
+        <option value="2">Theo khách hàng</option>
+        <option value="3">Theo khoảng thời gian</option>
+      </select>
+    </div>
 
-          <div class="form-group">
-            <label for="endDate">Ngày kết thúc</label>
-            <input
-              type="datetime-local"
-              class="form-control"
-              [ngModelOptions]="{ standalone: true }"
-              id="endDate"
-              [(ngModel)]="endDate"
-              name="endDate"
-              required
-            />
-            <div *ngIf="!endDate || !isValidDateRange()" class="alert alert-danger">
-              <div *ngIf="!endDate">Vui lòng chọn ngày kết thúc.</div>
-              <div *ngIf="!isValidDateRange()">Ngày kết thúc phải lớn hơn ngày bắt đầu.</div>
-            </div>
-          </div>
-        </div>
-
+    <div class="search-box" *ngIf="loc === '1' ">
+      <input type="text" id="searchByVoucher" style="width: 400px; height: 30px" placeholder="Tên hoặc mã voucher" (input)="searchByVoucher($event)">
+    </div>
+    <div class="search-box" *ngIf="loc === '2' ">
+      <input type="text" id="searchByCustomer" style="width: 400px; height: 30px" placeholder="Tên hoặc mã hoặc sdt khách hàng" (input)="searchByCustomer($event)">
+    </div>
+    <div class="search-box" *ngIf="loc === '3' ">
+      <div style="display: flex; justify-content: flex-end; margin-top: 10px">
+        <ejs-daterangepicker id='daterangepicker' placeholder='Chọn thời gian' [startDate]='dateFromCurrent' [endDate]='dateToCurrent' (change)="getDater($event)"></ejs-daterangepicker>
+        <!--      <span *ngIf="checkDateRanges === false">Date range is valid</span>-->
+      </div>
+    </div>
       <div class="grid">
         <ag-grid-angular
           style="width: 100%; height: 500px;"
@@ -81,8 +47,6 @@
           [domLayout]="'autoHeight'"
         ></ag-grid-angular>
       </div>
-      </div>
-    </div>
   </mat-tab>
 
   <mat-tab>

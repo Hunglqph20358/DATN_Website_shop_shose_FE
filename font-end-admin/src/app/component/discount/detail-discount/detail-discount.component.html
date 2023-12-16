@@ -7,52 +7,58 @@
             <h3 class="card-title">Giảm giá</h3>
           </div>
           <div class="card-body">
-            <div class="form-group">
-              <label for="name">Tên</label>
-              <div>{{ discount.name }}</div>
-            </div>
-            <div class="form-group">
-              <label for="description">Nội dung</label>
-              <div>{{ discount.description }}</div>
-            </div>
-            <div class="form-group">
-              <label for="startDate">Ngày bắt đầu</label>
-              <div>{{ discount.startDate }}</div>
-            </div>
-            <div class="form-group">
-              <label for="endDate">Ngày kết thúc</label>
-              <div>{{ discount.endDate }}</div>
-            </div>
-            <div class="form-group">
-              <label for="discountType">Loại giảm giá</label>
-              <div>{{ discount.discountType == 0 ? 'Theo %' : 'Theo tiền mặt' }}</div>
-            </div>
-            <div class="form-group">
-              <label for="reducedValue">Giá trị giảm</label>
-              <div>{{ discount.reducedValue }}</div>
-            </div>
-            <div class="form-group" *ngIf="discount.discountType == 0">
-              <label for="maxReduced">Giá trị giảm tối đa</label>
-              <div>{{ discount.maxReduced }}</div>
-            </div>
-            <div class="form-group" >
-              <label for="maxReduced">Số lượng</label>
-              <div>{{ discount.quantity }}</div>
-            </div>
-            <div class="form-group" >
-              <label for="maxReduced">Người tạo</label>
-              <div>{{ discount.createName }}</div>
-            </div>
-            <div class="form-group">
-              <label for="product">Sản phẩm giảm</label>
-              <ul>
-                <li *ngFor="let product of discount.productDTOList">
-                  {{ product.code }} - {{ product.name }} - {{ product.price }}
-                </li>
-              </ul>
-            </div>
+            <table class="table">
+              <tbody>
+              <tr>
+                <th scope="row">Tên</th>
+                <td>{{ discount.name }}</td>
+              </tr>
+              <tr>
+                <th scope="row">Nội dung</th>
+                <td>{{ discount.description }}</td>
+              </tr>
+              <tr>
+                <th scope="row">Ngày bắt đầu</th>
+                <td>{{ discount.startDate }}</td>
+              </tr>
+              <tr>
+                <th scope="row">Ngày kết thúc</th>
+                <td>{{ discount.endDate }}</td>
+              </tr>
+              <tr>
+                <th scope="row">Loại giảm giá</th>
+                <td>{{ discount.discountType == 0 ? 'Theo %' : 'Theo tiền mặt' }}</td>
+              </tr>
+              <tr>
+                <th scope="row">Giá trị giảm</th>
+                <td>{{ discount.reducedValue }}</td>
+              </tr>
+              <tr *ngIf="discount.discountType == 0">
+                <th scope="row">Giá trị giảm tối đa</th>
+                <td>{{ discount.maxReduced }}</td>
+              </tr>
+              <tr>
+                <th scope="row">Số lượng</th>
+                <td>{{ discount.quantity }}</td>
+              </tr>
+              <tr>
+                <th scope="row">Người tạo</th>
+                <td>{{ discount.createName }}</td>
+              </tr>
+              <tr>
+                <th scope="row">Sản phẩm giảm</th>
+                <td>
+                  <ul>
+                    <li *ngFor="let product of discount.productDTOList">
+                      {{ product.code }} - {{ product.name }} - {{ product.price }}
+                    </li>
+                  </ul>
+                </td>
+              </tr>
+              </tbody>
+            </table>
+          </div>
         </div>
-      </div>
       </div>
     </div>
   </div>

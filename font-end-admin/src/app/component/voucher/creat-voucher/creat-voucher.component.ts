@@ -23,7 +23,7 @@ export class CreatVoucherComponent implements OnInit {
     quantity: '',
     customerAdminDTOList: '',
     limitCustomer: '',
-    allow: '',
+    allow : '',
     appy: '',
     optionCustomer: '',
     createName: localStorage.getItem('fullname'),
@@ -97,6 +97,10 @@ export class CreatVoucherComponent implements OnInit {
   }
   addVoucher() {
     const arrayCustomer = this.voucher.optionCustomer === '0' ? this.rowData : this.gridApi.getSelectedRows();
+    const userConfirmed = confirm('Bạn có muốn thêm giảm giá không?');
+    if (!userConfirmed) {
+      return;
+    }
     const obj = {
        ...this.voucher,
        customerAdminDTOList: arrayCustomer,
@@ -105,15 +109,18 @@ export class CreatVoucherComponent implements OnInit {
       (response) => {
         // Handle the response if needed, e.g., show a success message
         console.log('Discount added successfully', response);
+        alert('Thêm voucher thành công');
         this.router.navigateByUrl('/admin/voucher');
       },
       (error) => {
         // Handle errors if the discount creation fails
+        alert('Thêm voucher thất bại');
         console.error('Error adding discount', error);
       }
     );
   }
   toggleAllowDiscount() {
+    // Chuyển đổi giá trị của allow
     this.voucher.allow = this.voucher.allow === 1 ? 0 : 1;
   }
 }

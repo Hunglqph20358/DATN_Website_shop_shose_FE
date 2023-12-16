@@ -36,6 +36,9 @@ export class VoucherService {
     const url = `${this.apiUrl}/kichHoat/${id}`;
     return this.http.put(url, { /* provide data if needed */ }, { observe: 'response' });
   }
+  searchByDate(obj): Observable<any> {
+    return this.http.get<any>(`http://localhost:6868/api/admin/voucher/searchByDate`, obj );
+  }
   searchByCustomer(search: string): Observable<any> {
     const params = new HttpParams()
       .set('search', search);

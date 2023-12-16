@@ -61,14 +61,14 @@ export class CreatDiscountComponent implements OnInit {
       },
       {
         headerName: 'Tên thương hiệu',
-        field: 'brandDTO.name',
+        field: 'brandAdminDTO.name',
         sortable: true,
         filter: true,
         editable: true,
       },
       {
         headerName: 'Loại',
-        field: 'categoryDTO.name',
+        field: 'categoryAdminDTO.name',
         sortable: true,
         filter: true,
         editable: true,
@@ -119,6 +119,10 @@ export class CreatDiscountComponent implements OnInit {
   addDiscount() {
     const arrayProduct = this.discount.spap === '0' ? this.rowData : this.gridApi.getSelectedRows();
     this.disableCheckPriceProduct = false;
+    const userConfirmed = confirm('Bạn có muốn thêm giảm giá không?');
+    if (!userConfirmed) {
+      return;
+    }
     // tslint:disable-next-line:prefer-for-of
     for (let i = 0; i < arrayProduct.length; i++) {
       // tslint:disable-next-line:triple-equals
@@ -144,10 +148,12 @@ export class CreatDiscountComponent implements OnInit {
         (response) => {
           // Handle the response if needed, e.g., show a success message
           console.log('Discount added successfully', response);
+          alert('Thêm giảm giá thành công!');
           this.router.navigateByUrl('/admin/discount');
         },
         (error) => {
           // Handle errors if the discount creation fails
+          alert('Thêm giảm giá thất bại!');
           console.error('Error adding discount', error);
         }
       );

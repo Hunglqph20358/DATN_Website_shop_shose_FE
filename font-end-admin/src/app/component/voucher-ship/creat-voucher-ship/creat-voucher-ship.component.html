@@ -18,6 +18,10 @@
                   [(ngModel)]="voucher.name"
                   placeholder="Tên"
                 />
+                <div *ngIf="!voucher.name || (voucher.name && voucher.name.length < 5)" class="alert alert-danger">
+                  <div *ngIf="!voucher.name">Vui lòng nhập tên.</div>
+                  <div *ngIf="voucher.name && voucher.name.length < 5">Tên phải có ít nhất 5 kí tự.</div>
+                </div>
               </div>
               <div class="form-group">
                 <label for="startDate">Ngày bắt đầu</label>
@@ -28,6 +32,14 @@
                   [ngModelOptions]="{ standalone: true }"
                   [(ngModel)]="voucher.startDate"
                 />
+                <div *ngIf="!voucher.startDate || voucher.startDate < currentDate" class="alert alert-danger">
+                  <div *ngIf="!voucher.startDate">
+                    Vui lòng chọn ngày bắt đầu.
+                  </div>
+                  <div *ngIf="voucher.startDate && !isStartDateValid()">
+                    Ngày bắt đầu phải lớn hơn hoặc bằng ngày hiện tại.
+                  </div>
+                </div>
               </div>
               <div class="form-group">
                 <label for="endDate">Ngày kết thúc</label>
@@ -38,6 +50,10 @@
                   [ngModelOptions]="{ standalone: true }"
                   [(ngModel)]="voucher.endDate"
                 />
+                <div *ngIf="!voucher.endDate || !voucher.isValidDateRange()" class="alert alert-danger">
+                  <div *ngIf="!voucher.endDate">Vui lòng chọn ngày kết thúc.</div>
+                  <div *ngIf="!voucher.isValidDateRange()">Ngày kết thúc phải lớn hơn ngày bắt đầu.</div>
+                </div>
               </div>
               <div class="form-group">
                 <label for="description">Nội dung</label>
@@ -49,6 +65,9 @@
                   [(ngModel)]="voucher.description"
                   placeholder="Nội dung"
                 />
+                <div *ngIf="!voucher.description" class="alert alert-danger">
+                  <div *ngIf="!voucher.description">Vui lòng nhập nội dung.</div>
+                </div>
               </div>
               <div class="form-group">
                 <label>Điều kiện sử dụng</label>
@@ -63,6 +82,8 @@
                         [(ngModel)]="voucher.conditions"
                         placeholder="Giá trị đơn hàng"
                       />
+                      <div *ngIf="!voucher.conditions" class="alert alert-danger">Vui lòng nhập điều kiện sử dụng.</div>
+                      <div *ngIf="voucher.conditions && !voucher.conditions.match(so)" class="alert alert-danger">Điều kiện sử dụng phải là số không âm.</div>
                     </div>
                   </div>
                 </div>
@@ -80,6 +101,9 @@
                   <option value="1">Theo tiền</option>
                   <!-- Thêm các loại voucher khác nếu cần -->
                 </select>
+                <div *ngIf="!voucher.voucherType" class="alert alert-danger">
+                  <div *ngIf="!voucher.voucherType">Vui lòng chọn loại voucher.</div>
+                </div>
               </div>
 
               <div class="form-group" >
@@ -96,6 +120,9 @@
                 <div *ngIf="voucher.voucherType === '0' && voucher.reducedValue > 100" class="text-danger">
                   Giá trị giảm không được quá 100%
                 </div>
+                <div *ngIf="!voucher.reducedValue" class="alert alert-danger">
+                  <div *ngIf="!voucher.reducedValue">Vui lòng nhập giá trị giảm.</div>
+                </div>
               </div>
 
               <div class="form-group" *ngIf="voucher.voucherType == '0'">
@@ -108,6 +135,9 @@
                   [(ngModel)]="voucher.maxReduced"
                   placeholder="Giá trị giảm tối đa"
                 />
+                <div *ngIf="!voucher.maxReduced" class="alert alert-danger">
+                  <div *ngIf="!voucher.maxReduced">Vui lòng nhập giá trị giảm tối đa.</div>
+                </div>
               </div>
               <div class="form-group">
                 <label for="quantity">Số lượng</label>
@@ -119,6 +149,9 @@
                   [(ngModel)]="voucher.quantity"
                   placeholder="Số lượng"
                 />
+                <div *ngIf="!voucher.quantity" class="alert alert-danger">
+                  <div *ngIf="!voucher.quantity">Vui lòng nhập số lượng.</div>
+                </div>
               </div>
               <div class="form-group">
                 <label for="discountType">Khách hàng áp dụng</label>
@@ -152,7 +185,7 @@
 
                 </div>
               </div>
-              <div class="form-group">
+              <div class="form-group" *ngIf="voucher.optionCustomer == 1">
                 <label for="limitCustomer">Giới hạn số lần sử dụng với mỗi khách hàng</label>
                 <input
                   type="number"
@@ -162,6 +195,9 @@
                   [(ngModel)]="voucher.limitCustomer"
                   placeholder="Số lượng"
                 />
+                <div *ngIf="!voucher.limitCustomer" class="alert alert-danger">
+                  <div *ngIf="!voucher.limitCustomer">Vui lòng nhập giới hạn sử dụng.</div>
+                </div>
               </div>
               <div class="form-group">
                 <div class="form-check">

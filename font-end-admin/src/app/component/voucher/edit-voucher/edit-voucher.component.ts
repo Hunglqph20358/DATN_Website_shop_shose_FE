@@ -8,26 +8,7 @@ import {VoucherService} from "../../../service/voucher.service";
   styleUrls: ['./edit-voucher.component.css'],
 })
 export class EditVoucherComponent implements OnInit {
-  isHidden = true;
-  gridApi: any;
-  rowData = [];
-  columnDefs;
-  headerHeight = 50;
-  rowHeight = 40;
-  fullname = '';
-  check: boolean;
-  voucher: any = {
-    id: '',
-    name: '',
-    startDate: '',
-    endDate: '',
-    description: '',
-    reducedValue: '',
-    voucherType: '',
-    conditions: '',
-    quantity: '',
-    idel: '',
-  };
+
   constructor(private activatedRoute: ActivatedRoute,
               private voucherService: VoucherService,
               private rou: Router) {
@@ -71,7 +52,45 @@ export class EditVoucherComponent implements OnInit {
       },
     ];
   }
+  isHidden = true;
+  gridApi: any;
+  rowData = [];
+  columnDefs;
+  headerHeight = 50;
+  rowHeight = 40;
+  fullname = '';
+  check: boolean;
+  voucher: any = {
+    name: '',
+    startDate: '',
+    endDate: '',
+    description: '',
+    reducedValue: '',
+    voucherType: '',
+    conditions: '',
+    quantity: '',
+    customerAdminDTOList: '',
+    limitCustomer: '',
+    allow: '',
+    appy: '',
+    optionCustomer: '',
+    createName: localStorage.getItem('fullname'),
+    isValidDateRange: () => {
+      return (
+        this.voucher.startDate &&
+        this.voucher.endDate &&
+        this.voucher.startDate < this.voucher.endDate
+      );
+    },
+  };
+  currentDate: Date = new Date();
+  pattern: '^[a-zA-Z0-9\s]+$';
+  so: '^\d+(\.\d+)?$';
   public rowSelection: 'single' | 'multiple' = 'multiple'; // Chọn nhiều dòng
+
+  isStartDateValid(): boolean {
+    return !this.voucher.startDate || this.voucher.startDate >= this.currentDate;
+  }
   onGridReady(params: any) {
     this.gridApi = params.api;
   }
@@ -94,6 +113,7 @@ export class EditVoucherComponent implements OnInit {
         this.voucher.voucherType = firstElement.voucherType;
         this.voucher.endDate = firstElement.endDate;
         this.voucher.quantity = firstElement.quantity;
+        this.voucher.customerAdminDTOList = firstElement.customerAdminDTOList;
         this.voucher.reducedValue = firstElement.reducedValue;
         this.voucher.startDate = firstElement.startDate;
         console.log(this.voucher);
@@ -102,16 +122,32 @@ export class EditVoucherComponent implements OnInit {
     console.log(this.voucher);
   }
   editVoucher(){
+    const arrayCustomer = this.voucher.optionCustomer === '0' ? this.rowData : this.gridApi.getSelectedRows();
+    const obj = {
+      ...this.voucher,
+      customerAdminDTOList: arrayCustomer,
+    };
     this.check = false;
     if (this.voucher.idel === 0) {
       this.check = true;
     }
+    const userConfirmed = confirm('Bạn có muốn sửa voucher không?');
+    if (!userConfirmed) {
+      return;
+    }
     if (this.check === false){
       this.voucherService
-        .updateVoucher(this.voucher.id, this.voucher)
+        .updateVoucher(this.voucher.id, obj)
         .subscribe(() => {
+          alert('Sửa voucher thành công');
           this.rou.navigateByUrl('/admin/voucher');
-        });
+        },
+          (error) => {
+            // Handle errors if the discount creation fails
+            alert('Sửa voucher thất bại!');
+            console.error('Error edit voucher', error);
+          }
+        );
     }
   }
   toggleAllowDiscount() {

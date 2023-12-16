@@ -55,6 +55,7 @@ const routes: Routes = [
     } },
   {path: 'admin/edit-discount/:id', component: EditDiscountComponent},
   {path: 'admin/edit-voucher/:id', component: EditVoucherComponent},
+  {path: 'admin/edit-voucherFS/:id', component: EditVoucherShipComponent},
   {path: 'degiay', component: DegiayComponent},
   {path: 'chatlieu', component: ChatlieuComponent},
   {path: 'mausac', component: MausacComponent},

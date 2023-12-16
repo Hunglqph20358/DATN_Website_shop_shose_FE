@@ -1,7 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {ActionDiscountComponent} from './action-discount/action-discount.component';
 import {DiscountService} from '../../service/discount.service';
-import {formatDateTime} from '../../util/util';
+import {formatDateTime, formatDateYYYY_MM_dd} from '../../util/util';
 import {FormControl, FormGroup} from '@angular/forms';
 
 
@@ -19,7 +19,9 @@ export class DiscountComponent implements OnInit {
   rowHeight = 40;
   checkedIsdel = false;
   loc = '0';
+  export = '0';
   idStaff = '';
+  role: '';
   dateFromCurrent;
   dateToCurrent;
   searchResults: any[] = [];
@@ -137,6 +139,7 @@ export class DiscountComponent implements OnInit {
       this.rowData2 = response;
       console.log(response);
     });
+    this.role = JSON.parse(localStorage.getItem('role'));
     this.getDiscount();
     console.log(this.dateFromCurrent);
     console.log(this.dateToCurrent);
@@ -248,7 +251,7 @@ export class DiscountComponent implements OnInit {
 }
   getDater(data) {
     console.log(data);
-    if(data.startDate && data.endDate){
+    if (data.startDate && data.endDate){
       this.dateFromCurrent = data.startDate;
       this.dateToCurrent = data.endDate;
       this.getDiscount();

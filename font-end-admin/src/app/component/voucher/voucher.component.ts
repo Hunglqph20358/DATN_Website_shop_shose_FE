@@ -2,7 +2,7 @@ import {ChangeDetectorRef, Component, OnInit} from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { ActionVoucherComponent } from './action-voucher/action-voucher.component';
 import { VoucherService } from 'src/app/service/voucher.service';
-import {formatDateTime} from '../../util/util';
+import {formatDateTime, formatDateYYYY_MM_dd} from '../../util/util';
 
 
 @Component({
@@ -20,21 +20,18 @@ export class VoucherComponent implements OnInit {
   rowHeight = 40;
   loc = '0';
   idStaff = '';
-  startDate = '';
-  endDate = '';
+  role: '';
+  dateFromCurrent ;
+  dateToCurrent ;
   searchResults: any[] = [];
-  isValidDateRange = () => {
-    return (
-      this.startDate &&
-      this.endDate &&
-      new Date(this.startDate) < new Date(this.endDate)
-    );
-  }
   constructor(
     private matDialog: MatDialog,
     private apiService: VoucherService,
     private cdr: ChangeDetectorRef
   ) {
+    const currentDate = new Date();
+    this.dateFromCurrent = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
+    this.dateToCurrent = new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate());
     this.columnDefs = [
       {
         headerName: 'Mã',
@@ -66,19 +63,19 @@ export class VoucherComponent implements OnInit {
         sortable: true,
         filter: true,
       },
-      {
-        headerName: 'Loại voucher',
-        field: 'voucherType',
-        sortable: true,
-        filter: true,
-        cellRenderer: this.statusType.bind(this),
-      },
-      {
-        headerName: 'Giá trị giảm',
-        field: 'reducedValue',
-        sortable: true,
-        filter: true,
-      },
+      // {
+      //   headerName: 'Loại voucher',
+      //   field: 'voucherType',
+      //   sortable: true,
+      //   filter: true,
+      //   cellRenderer: this.statusType.bind(this),
+      // },
+      // {
+      //   headerName: 'Giá trị giảm',
+      //   field: 'reducedValue',
+      //   sortable: true,
+      //   filter: true,
+      // },
       {
         headerName: 'Nội dung',
         field: 'description',
@@ -157,6 +154,7 @@ export class VoucherComponent implements OnInit {
       this.rowData2 = response;
       console.log(response);
     });
+    this.role = JSON.parse(localStorage.getItem('role'));
   }
   checkIsdell(data: any) {
     console.log('ID to be sent:', data.id);
@@ -197,5 +195,28 @@ export class VoucherComponent implements OnInit {
       }
     );
     this.cdr.detectChanges();
+  }
+  getVoucher() {
+    const obj = {
+      dateFrom: formatDateYYYY_MM_dd(this.dateFromCurrent),
+      dateTo: formatDateYYYY_MM_dd(this.dateToCurrent)
+    };
+    this.apiService.searchByDate(obj).subscribe(
+      (data) => {
+        this.searchResults = data;
+      },
+      (error) => {
+        console.error('Error occurred during date range search:', error);
+        // You can provide a user-friendly error message here if needed
+      }
+    );
+  }
+  getDater(data) {
+    console.log(data);
+    if (data.startDate && data.endDate){
+      this.dateFromCurrent = data.startDate;
+      this.dateToCurrent = data.endDate;
+      this.getVoucher();
+    }
   }
 }
