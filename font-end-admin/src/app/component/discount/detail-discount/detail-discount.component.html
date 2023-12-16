@@ -48,11 +48,22 @@
               <tr>
                 <th scope="row">Sản phẩm giảm</th>
                 <td>
-                  <ul>
-                    <li *ngFor="let product of discount.productDTOList">
-                      {{ product.code }} - {{ product.name }} - {{ product.price }}
-                    </li>
-                  </ul>
+                  <table border="1">
+                    <thead>
+                    <tr>
+                      <th>Mã sản phẩm</th>
+                      <th>Tên sản phẩm</th>
+                      <th>Giá sản phẩm</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr *ngFor="let product of discount.productDTOList">
+                      <td>{{ product.code }}</td>
+                      <td>{{ product.name }}</td>
+                      <td>{{ product.price }}</td>
+                    </tr>
+                    </tbody>
+                  </table>
                 </td>
               </tr>
               </tbody>

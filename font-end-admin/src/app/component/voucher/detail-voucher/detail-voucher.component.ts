@@ -75,7 +75,7 @@ export class DetailVoucherComponent implements OnInit {
   getAllow(): string{
     if (this.voucher.allow === 0) {
       return 'Không cho phép';
-    } else if (this.voucher.apply === 1) {
+    } else if (this.voucher.allow === 1) {
       return 'Cho phép';
     } else {
       return 'Không rõ';

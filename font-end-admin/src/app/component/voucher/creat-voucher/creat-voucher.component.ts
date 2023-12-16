@@ -95,9 +95,13 @@ export class CreatVoucherComponent implements OnInit {
   onGridReady(params: any) {
     this.gridApi = params.api;
   }
+  toggleAllowDiscount() {
+    // Chuyển đổi giá trị của allow
+    this.voucher.allow = this.voucher.allow === 1 ? 0 : 1;
+  }
   addVoucher() {
     const arrayCustomer = this.voucher.optionCustomer === '0' ? this.rowData : this.gridApi.getSelectedRows();
-    const userConfirmed = confirm('Bạn có muốn thêm giảm giá không?');
+    const userConfirmed = confirm('Bạn có muốn thêm voucher không?');
     if (!userConfirmed) {
       return;
     }
@@ -119,8 +123,5 @@ export class CreatVoucherComponent implements OnInit {
       }
     );
   }
-  toggleAllowDiscount() {
-    // Chuyển đổi giá trị của allow
-    this.voucher.allow = this.voucher.allow === 1 ? 0 : 1;
-  }
+
 }
