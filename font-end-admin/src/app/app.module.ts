@@ -82,6 +82,12 @@ import {ChartsModule} from '@progress/kendo-angular-charts';
 import 'hammerjs';
 
 import { DateRangePickerModule } from '@syncfusion/ej2-angular-calendars';
+import { NoteOrderComponent } from './component/order/note-order/note-order.component';
+import { AddStaffComponent } from './component/staff/add-staff/add-staff.component';
+import { OrderSalesCounterComponent } from './component/order-sales-counter/order-sales-counter.component';
+import { UpdateStaffComponent } from './component/staff/update-staff/update-staff.component';
+import { DetailStaffComponent } from './component/staff/detail-staff/detail-staff.component';
+import { OrderSalesDetailComponent } from './component/order-sales-counter/order-sales-detail/order-sales-detail.component';
 
 @NgModule({
   declarations: [
@@ -134,6 +140,12 @@ import { DateRangePickerModule } from '@syncfusion/ej2-angular-calendars';
     CustomerComponent,
     ImportFileComponent,
     ThongKeComponent,
+    NoteOrderComponent,
+    AddStaffComponent,
+    OrderSalesCounterComponent,
+    UpdateStaffComponent,
+    DetailStaffComponent,
+    OrderSalesDetailComponent,
     CreatVoucherShipComponent,
     EditVoucherShipComponent,
     ActionVoucherShipComponent,

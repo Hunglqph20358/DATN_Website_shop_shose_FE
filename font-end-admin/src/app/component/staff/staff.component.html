@@ -1,54 +1,76 @@
 <div class="staff-list-body">
-  <div class="d-flex">
-    <h1 class="title">Tài Khoản Nhân Viên</h1>
-    <button type="button" class="btn btn-light btn-add-order">Thêm Tài Khoản</button>
-  </div>
-  <div class="order-list-body mt-3">
-    <div class="oder-body-menu">
-      <div class="order-sreach">
-        <form class="row g-3">
-          <div class="d-flex">
-            <label class="col-form-label">Search</label>
-            <div class="col-sm-2">
-              <input type="password" class="form-control">
-            </div>
-            <div class="col-sm-2">
-              <button type="submit" class="btn btn-primary mb-3">Search</button>
-            </div>
+  <mat-tab-group>
+    <mat-tab>
+      <ng-template mat-tab-label>
+        Đang hoạt động
+      </ng-template>
+      <div class="mb-4" style="margin-top: 30px">
+        <h1 class="title">Danh sách Nhân Viên</h1>
+      </div>
+      <div class="order-list-body">
+        <div class="oder-body-menu">
+          <div class="order-sreach">
+            <form class="row g-3 align-items-center">
+              <div class="row mb-3 col-md-4" style="margin-top: 15px">
+                <label for="inputEmail3" class="col-sm-2 col-form-label">Email</label>
+                <div class="col-sm-10">
+                  <input type="email" class="form-control" id="inputEmail3">
+                </div>
+              </div>
+              <div class="col-md-5">
+
+              </div>
+              <div class="col-md-3">
+                <a href="/add-staff" class="btn btn-primary">Thêm Nhân Viên</a>
+              </div>
+            </form>
           </div>
-        </form>
+        </div>
+        <div class="order-table">
+          <div>
+            <table class="table">
+              <thead>
+              <tr>
+                <th scope="col">STT</th>
+                <th scope="col">Mã Khách Hàng</th>
+                <th scope="col">Họ và tên</th>
+                <th scope="col">Giới tính</th>
+                <th scope="col">SDT</th>
+                <th scope="col">Địa Chỉ</th>
+                <th scope="col">Tên đăng nhập</th>
+                <th scope="col">Ngày tạo</th>
+                <th scope="col">trạng thái</th>
+                <th scope="col">Thao tác</th>
+              </tr>
+              </thead>
+              <tbody>
+              <tr *ngFor="let cus of listStaff; let i = index">
+                <td>{{ i + 1}}</td>
+                <td>{{cus.code}}</td>
+                <td>{{cus.fullname}}</td>
+                <td>{{cus.gender}}</td>
+                <td>{{cus.phone}}</td>
+                <td>{{cus.description}}</td>
+                <td>{{cus.username}}</td>
+                <td>{{cus.createDate}}</td>
+                <td>{{cus.idel === 0 ? 'Đang hoạt động' : 'Ngừng hoạt động'}}</td>
+                <td>
+                  <a [routerLink]="'/update-staff/' + cus.id" class="btn"><i class="bi bi-pencil-square"></i></a>
+                  <a class="btn" (click)="openDialog(cus)"><i class="bi bi-eye-fill"></i></a>
+                </td>
+              </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
       </div>
-    </div>
-    <div class="order-table">
-      <div>
-        <table class="table">
-          <thead>
-          <tr>
-            <th scope="col">Code</th>
-            <th scope="col">Full Name</th>
-            <th scope="col">Gender</th>
-            <th scope="col">Birthday</th>
-            <th scope="col">Address</th>
-            <th scope="col">Phone</th>
-            <th scope="col">Create Date</th>
-            <th scope="col">User Name</th>
-            <th scope="col">Pass Word</th>
-            <th scope="col">Role</th>
-            <th scope="col">Status</th>
-            <th scope="col">Action</th>
-          </tr>
-          </thead>
-          <tbody>
-          <tr>
-            <th scope="row">1</th>
-            <td>Mark</td>
-            <td>Otto</td>
-            <td>@mdo</td>
-          </tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
-  </div>
+    </mat-tab>
+    <mat-tab>
+      <ng-template mat-tab-label>
+        Ngừng hoạt động
+      </ng-template>
+      <p>aaa</p>
+    </mat-tab>
+  </mat-tab-group>
 </div>
 

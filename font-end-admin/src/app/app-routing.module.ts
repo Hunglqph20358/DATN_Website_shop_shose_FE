@@ -28,6 +28,9 @@ import {SignUpComponent} from './component/sign-up/sign-up.component';
 import {OrderDetailComponent} from './component/order/order-detail/order-detail.component';
 import {SalesCounterComponent} from './component/sales-counter/sales-counter.component';
 import {ThongKeComponent} from './component/thong-ke/thong-ke.component';
+import {AddStaffComponent} from './component/staff/add-staff/add-staff.component';
+import {OrderSalesCounterComponent} from './component/order-sales-counter/order-sales-counter.component';
+import {UpdateStaffComponent} from './component/staff/update-staff/update-staff.component';
 import {CreatVoucherShipComponent} from "./component/voucher-ship/creat-voucher-ship/creat-voucher-ship.component";
 import {DetailVoucherShipComponent} from "./component/voucher-ship/detail-voucher-ship/detail-voucher-ship.component";
 import {VoucherShipComponent} from "./component/voucher-ship/voucher-ship.component";
@@ -70,6 +73,9 @@ const routes: Routes = [
   // {path: 'order-detail', component: OrderDetailComponent},
   {path: 'sales-counter', component: SalesCounterComponent},
   {path: 'thong-ke', component: ThongKeComponent},
+  {path: 'add-staff', component: AddStaffComponent},
+  {path: 'order-sales-counter', component: OrderSalesCounterComponent},
+  {path: 'update-staff/:id', component: UpdateStaffComponent},
 ];
 
 @NgModule({

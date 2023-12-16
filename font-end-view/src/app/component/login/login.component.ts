@@ -4,6 +4,7 @@ import {AuthService} from '../../service/authentication/auth.service';
 import {Router} from '@angular/router';
 import {AuthJwtService} from '../../service/authentication/auth-jwt.service';
 import {SignInService} from '../../service/authentication/sign-in.service';
+import {ToastrService} from 'ngx-toastr';
 
 @Component({
   selector: 'app-login',
@@ -17,24 +18,27 @@ export class LoginComponent implements OnInit {
     password: ''
   };
   signFrom: SignInFrom;
-  constructor(private signIn: SignInService, private router: Router, private jwt: AuthJwtService) { }
+  constructor(private signIn: SignInService, private router: Router, private jwt: AuthJwtService, private toastr: ToastrService) { }
   login() {
     this.signFrom = new SignInFrom(
       this.form.username,
       this.form.password
     );
     console.log(this.signFrom);
-    this.signIn.signIn(this.signFrom).subscribe(data =>{
+    this.signIn.signIn(this.signFrom).subscribe(data => {
         localStorage.setItem('token', data.token);
         console.log(data.usersDTO);
+        localStorage.setItem('users', JSON.stringify(data.usersDTO));
         localStorage.setItem('customer', JSON.stringify(data.usersDTO));
-        this.router.navigate(['shopping-cart']);
+        this.router.navigate(['']).then(() => {
+          location.reload();
+        });
     },
       error => {
-        if (error.status === 403){
-          alert('Mật kHẩu không chính xác');
+        if (error.status === 400){
+          this.toastr.error('Mật khẩu sai ', 'Error');
         }else if (error.status === 401){
-          alert('Không tìm thấy user');
+          this.toastr.error('Không tìm thấy Tên tài khoản ', 'Error');
         }
       }
     );

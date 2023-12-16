@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import {TokenService} from '../../service/token.service';
 import {SignForm} from '../model/SignForm';
 import {AuthJwtService} from '../../service/auth-jwt.service';
+import {ToastrService} from 'ngx-toastr';
 
 @Component({
   selector: 'app-login',
@@ -17,7 +18,7 @@ export class LoginComponent implements OnInit {
     password: ''
   };
   signFrom: SignForm;
-  constructor(private authService: AuthService, private router: Router, private tokenService: TokenService, private jwt: AuthJwtService) { }
+  constructor(private authService: AuthService, private router: Router, private tokenService: TokenService, private jwt: AuthJwtService, private toas: ToastrService) { }
   login() {
     this.signFrom = new SignForm(
       this.form.username,
@@ -37,7 +38,10 @@ export class LoginComponent implements OnInit {
         localStorage.setItem('fullname', data.usersDTO.fullname);
         localStorage.setItem('idStaff', data.usersDTO.id.toString());
       }
-    });
+    }, error => {
+        this.toas.error('thông tin tài khoản hoặc mật khẩu không chính xác', 'Lỗi');
+      }
+    );
   }
   ngOnInit(): void {
   }

@@ -9,6 +9,9 @@
   /*overflow-y: scroll;*/
   margin-left: 10px;
 }
+.col-right{
+height: 560px;
+}
 table {
   border-collapse: collapse;
   width: 100%;
@@ -84,6 +87,17 @@ tr.shadowed-row {
   border: 1px solid #ccc;
   box-shadow: 0 10px 10px rgba(0, 0, 0, 0.1);
 }
+.search-results-kh{
+  position: absolute;
+  top: 100%;
+  left: 0;
+  width: 100%;
+  z-index: 100;
+  display: block;
+  background-color: #fff;
+  border: 1px solid #ccc;
+  box-shadow: 0 10px 10px rgba(0, 0, 0, 0.1);
+}
 
 .mat-list-item {
   cursor: pointer;
@@ -112,6 +126,10 @@ tr.shadowed-row {
 }
 .select-size{
   width: 60px;
+}
+.img{
+  width: 200px;
+  height: 200px;
 }
 
 

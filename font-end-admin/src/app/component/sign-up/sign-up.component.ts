@@ -18,7 +18,9 @@ export class SignUpComponent implements OnInit {
     phone: '',
     birthday: '',
     gender: '',
-    role: ''
+    description: '',
+    role: '',
+    idel: 0,
   };
   signUpForm: SignUpRepquest;
   constructor(private signup: AuthService, private router: Router) { }
@@ -31,7 +33,9 @@ export class SignUpComponent implements OnInit {
       this.form.phone,
       this.form.birthday,
       this.form.gender,
-      this.form.role
+      this.form.description,
+      this.form.role,
+      this.form.idel
     );
     console.log(this.signUpForm);
     this.signup.signUp(this.signUpForm).subscribe(data =>{

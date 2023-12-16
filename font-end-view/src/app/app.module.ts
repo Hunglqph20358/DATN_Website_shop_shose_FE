@@ -38,6 +38,9 @@ import {MatFormFieldModule} from '@angular/material/form-field';
 import {MatDatepickerModule} from '@angular/material/datepicker';
 import {MatNativeDateModule} from '@angular/material/core';
 import {MatInputModule} from '@angular/material/input';
+import {MatTableModule} from '@angular/material/table';
+import {NoteOrderComponent} from './component/order/note-order/note-order.component';
+import {DateRangePickerModule} from '@syncfusion/ej2-angular-calendars';
 
 @NgModule({
   declarations: [
@@ -61,6 +64,7 @@ import {MatInputModule} from '@angular/material/input';
     InfoUserComponent,
     ActionOrderComponent,
     OrderNotLoginComponent,
+    NoteOrderComponent
   ],
   imports: [
     BrowserModule,
@@ -81,7 +85,8 @@ import {MatInputModule} from '@angular/material/input';
     MatNativeDateModule,
     MatInputModule,
     ReactiveFormsModule,
-
+    DateRangePickerModule
+    MatTableModule
   ],
   providers: [{provide: JWT_OPTIONS, useValue: JWT_OPTIONS},
     JwtHelperService],

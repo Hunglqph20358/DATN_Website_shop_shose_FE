@@ -3,27 +3,27 @@
 
   <h2>Thêm Khách Hàng</h2>
 
-  <form action="#" method="post" id="employeeForm">
+  <form (ngSubmit)="addCustomerSC()">
     <div class="row align-items-start">
       <div class="col-md-5 ">
         <div class="form-group">
           <label for="maKhachHang">Mã khách hàng:</label>
-          <input type="text" class="form-control" id="maKhachHang" name="maKhachHang" placeholder="Mã mặc định" required>
+          <input type="text" class="form-control" id="maKhachHang" name="maKhachHang" placeholder="Mã mặc định" readonly >
         </div>
 
         <div class="form-group">
           <label for="tenKhachHang">Tên khách hàng:</label>
-          <input type="text" class="form-control" id="tenKhachHang" name="tenKhachHang" placeholder="Tên khách hàng" required>
+          <input type="text" class="form-control" id="tenKhachHang" name="tenKhachHang" placeholder="Tên khách hàng" required [(ngModel)]="customer.fullname" [ngModelOptions]="{standalone: true}">
         </div>
 
         <div class="form-group">
           <label for="dienThoai">Điện thoại:</label>
-          <input type="tel" class="form-control" id="dienThoai" name="dienThoai" placeholder="Điện thoại" required>
+          <input type="tel" class="form-control" id="dienThoai" name="dienThoai" placeholder="Điện thoại" required [(ngModel)]="customer.phone">
         </div>
 
         <div class="form-group">
           <label for="diaChi">Địa chỉ:</label>
-          <input type="text" class="form-control" id="diaChi" name="diaChi" placeholder="Số nhà, tòa nhà, ngõ, đường" required>
+          <input type="text" class="form-control" id="diaChi" name="diaChi" placeholder="Số nhà, tòa nhà, ngõ, đường" required >
         </div>
 
         <div class="form-group">
@@ -54,9 +54,9 @@
 
         <div class="form-group">
           <label for="gioiTinh">Giới tính:</label>
-          <select class="form-control" id="gioiTinh" name="gioiTinh" required>
-            <option value="nam">Nam</option>
-            <option value="nu">Nữ</option>
+          <select class="form-control" id="gioiTinh" name="gioiTinh" required [(ngModel)]="customer.gender">
+            <option value="Nam">Nam</option>
+            <option value="Nữ">Nữ</option>
           </select>
         </div>
       </div>
