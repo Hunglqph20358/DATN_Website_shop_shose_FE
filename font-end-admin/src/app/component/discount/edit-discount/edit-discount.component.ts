@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { DiscountService } from 'src/app/service/discount.service';
+import {ToastrService} from "ngx-toastr";
 
 @Component({
   selector: 'app-edit-discount',
@@ -16,7 +17,6 @@ export class EditDiscountComponent implements OnInit {
       startDate: '',
       endDate: '',
       description: '',
-      quantity: '',
       createName: localStorage.getItem('fullname'),
     },
     spap: '',
@@ -36,10 +36,13 @@ export class EditDiscountComponent implements OnInit {
   columnDefs;
   headerHeight = 50;
   rowHeight = 40;
+  disableCheckPriceProduct = false;
+  iđStaff = '';
 
   constructor(private discountService: DiscountService,
               private router: Router,
-              private activatedRoute: ActivatedRoute) {
+              private activatedRoute: ActivatedRoute,
+              private toastr: ToastrService) {
     this.columnDefs = [
       {
         headerName: 'Mã sản phẩm',
@@ -59,27 +62,35 @@ export class EditDiscountComponent implements OnInit {
       },
       {
         headerName: 'Tên thương hiệu',
-        field: 'brandDTO.name',
+        field: 'brandAdminDTO.name',
         sortable: true,
         filter: true,
         editable: true,
       },
       {
         headerName: 'Loại',
-        field: 'categoryDTO.name',
+        field: 'categoryAdminDTO.name',
+        sortable: true,
+        filter: true,
+        editable: true,
+      },
+      {
+        headerName: 'Giá',
+        field: 'price',
         sortable: true,
         filter: true,
         editable: true,
       },
       {
         headerName: 'Số lượt bán',
-        field: 'totalSold',
+        field: 'totalQuantity',
         sortable: true,
         filter: true,
         editable: true,
       },
     ];
   }
+  currentDate: Date = new Date();
   public rowSelection: 'single' | 'multiple' = 'multiple'; // Chọn nhiều dòng
   ngOnInit(): void {
     this.discountService.getProduct().subscribe((response) => {
@@ -105,6 +116,7 @@ export class EditDiscountComponent implements OnInit {
             firstDiscount.description;
           this.discount.reducedValue = firstDiscount.reducedValue;
           this.discount.discountType = firstDiscount.discountType;
+          this.discount.maxReduced = firstDiscount.maxReduced;
 
           console.log(this.discount);
         });
@@ -115,30 +127,46 @@ export class EditDiscountComponent implements OnInit {
   }
   // Phương thức cập nhật thông tin khuyến mãi
   editDiscount() {
-    const userConfirmed = confirm('Bạn có muốn thêm giảm giá không?');
+    const arrayProduct = this.discount.spap === '0' ? this.rowData : this.gridApi.getSelectedRows();
+    this.disableCheckPriceProduct = false;
+    const userConfirmed = confirm('Bạn có muốn sửa giảm giá không?');
     if (!userConfirmed) {
       return;
     }
-    this.activatedRoute.params.subscribe((params) => {
-      const id = params.id;
-      console.log(this.gridApi.getSelectedRows());
+    // tslint:disable-next-line:prefer-for-of
+    for (let i = 0; i < arrayProduct.length; i++) {
+      // tslint:disable-next-line:triple-equals
+      if (this.discount.reducedValue > arrayProduct[i].price && this.discount.discountType == 1) {
+        this.disableCheckPriceProduct = true;
+        alert('Giá trị giảm lớn hơn giá sản phẩm');
+        return;
+      }
+      this.iđStaff = localStorage.getItem('idStaff');
+      // tslint:disable-next-line:triple-equals
+      if (this.discount.maxReduced > arrayProduct[i].price && this.discount.discountType == 0) {
+        this.disableCheckPriceProduct = true;
+        alert('Giá trị giảm lớn hơn giá sản phẩm');
+        return;
+      }
+    }
+    if (this.disableCheckPriceProduct === false) {
       const obj = {
         ...this.discount,
-        productDTOList: this.gridApi.getSelectedRows(),
+        productDTOList: arrayProduct,
       };
-      this.discountService
-        .updateDiscount(id, obj)
-        .subscribe(() => {
-          alert('Sửa giảm giá thành công!');
+      this.discountService.updateDiscount(this.discount.discountAdminDTO.id, obj).subscribe(
+        (response) => {
+          // Handle the response if needed, e.g., show a success message
+          console.log('Discount added successfully', response);
+          this.toastr.success('Sửa giảm giá thành công');
           this.router.navigateByUrl('/admin/discount');
         },
-          (error) => {
-            // Handle errors if the discount creation fails
-            alert('Sửa giảm giá thất bại!');
-            console.error('Error adding discount', error);
-          }
-        );
-      console.log(obj);
-    });
+        (error) => {
+          // Handle errors if the discount creation fails
+          this.toastr.success('Sửa giảm giá thất bại');
+          console.error('Error adding discount', error);
+        }
+      );
+    }
   }
 }

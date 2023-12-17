@@ -12,6 +12,7 @@ export class DetailVoucherComponent implements OnInit {
     name: '',
     startDate: '',
     endDate: '',
+    createDate: '',
     description: '',
     reducedValue: '',
     maxReduced: '',
@@ -48,6 +49,7 @@ export class DetailVoucherComponent implements OnInit {
         this.voucher.startDate = firstElement.startDate;
         this.voucher.allow = firstElement.allow;
         this.voucher.apply = firstElement.apply;
+        this.voucher.createDate = firstElement.createDate;
         this.voucher.limitCustomer = firstElement.limitCustomer;
         this.voucher.customerAdminDTOList = firstElement.customerAdminDTOList;
         console.log(this.voucher);
@@ -65,7 +67,7 @@ export class DetailVoucherComponent implements OnInit {
   }
   getApplyText(): string {
     if (this.voucher.apply === 0) {
-      return 'Tại quầy';
+      return 'Tại cửa hàng';
     } else if (this.voucher.apply === 1) {
       return 'Mua online';
     } else {

@@ -36,7 +36,7 @@
       <input type="text" id="searchByBrand" style="width: 400px; height: 30px" placeholder="Tên thương hiệu" (input)="searchByBrand($event)">
     </div>
 
-      <div>
+      <div class="search-box" *ngIf="loc === '4' ">
         <div style="display: flex; justify-content: flex-end; margin-top: 10px">
           <ejs-daterangepicker id='daterangepicker' placeholder='Chọn thời gian' [startDate]='dateFromCurrent' [endDate]='dateToCurrent' (change)="getDater($event)"></ejs-daterangepicker>
           <!--      <span *ngIf="checkDateRanges === false">Date range is valid</span>-->

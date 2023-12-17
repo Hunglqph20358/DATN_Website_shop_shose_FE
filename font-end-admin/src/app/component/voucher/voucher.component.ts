@@ -2,7 +2,8 @@ import {ChangeDetectorRef, Component, OnInit} from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { ActionVoucherComponent } from './action-voucher/action-voucher.component';
 import { VoucherService } from 'src/app/service/voucher.service';
-import {formatDateTime, formatDateYYYY_MM_dd} from '../../util/util';
+import {formatDate, formatDateTime, formatDateYYYY_MM_dd} from '../../util/util';
+import {ToastrService} from "ngx-toastr";
 
 
 @Component({
@@ -21,13 +22,14 @@ export class VoucherComponent implements OnInit {
   loc = '0';
   idStaff = '';
   role: '';
-  dateFromCurrent ;
-  dateToCurrent ;
+  dateFromCurrent = null;
+  dateToCurrent = null;
   searchResults: any[] = [];
   constructor(
     private matDialog: MatDialog,
     private apiService: VoucherService,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private  toastr: ToastrService
   ) {
     const currentDate = new Date();
     this.dateFromCurrent = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
@@ -36,6 +38,12 @@ export class VoucherComponent implements OnInit {
       {
         headerName: 'Mã',
         field: 'code',
+        sortable: true,
+        filter: true,
+      },
+      {
+        headerName: 'Tên',
+        field: 'name',
         sortable: true,
         filter: true,
       },
@@ -63,32 +71,6 @@ export class VoucherComponent implements OnInit {
         sortable: true,
         filter: true,
       },
-      // {
-      //   headerName: 'Loại voucher',
-      //   field: 'voucherType',
-      //   sortable: true,
-      //   filter: true,
-      //   cellRenderer: this.statusType.bind(this),
-      // },
-      // {
-      //   headerName: 'Giá trị giảm',
-      //   field: 'reducedValue',
-      //   sortable: true,
-      //   filter: true,
-      // },
-      {
-        headerName: 'Nội dung',
-        field: 'description',
-        sortable: true,
-        filter: true,
-      },
-      {
-        headerName: 'Trạng thái',
-        field: 'status',
-        sortable: true,
-        filter: true,
-        cellRenderer: this.statusRenderer.bind(this),
-      },
       {
         headerName: 'Sử dụng',
         valueGetter(params) {
@@ -101,17 +83,38 @@ export class VoucherComponent implements OnInit {
         headerName: 'Hiển thị',
         field: '',
         cellRenderer: (params) => {
+          const isChecked = params.data.idel === 1;
           return `<div>
       <label class="switch1">
-        <input type="checkbox" ${params.data.idel === 1 ? 'checked' : ''  }>
+        <input type="checkbox" ${isChecked ? 'checked' : ''}>
         <span class="slider round"></span>
       </label>
     </div>`;
         },
         onCellClicked: (params) => {
-          // Use params.node.data to access the data property
-          return this.checkIsdell(params.node.data);
+          const useVoucher = params.data.useVoucher || 0;
+          const quantity = params.data.quantity || 1;
+          // Bỏ kiểm tra idell nếu usecount bằng quantity
+          if (useVoucher === quantity) {
+            return;
+          }
+
+          // Ngược lại, kiểm tra idell bình thường
+          this.checkIsdell(params.node.data, params.node.index);
         }
+      },
+      {
+        headerName: 'Nội dung',
+        field: 'description',
+        sortable: true,
+        filter: true,
+      },
+      {
+        headerName: 'Trạng thái',
+        field: 'status',
+        sortable: true,
+        filter: true,
+        cellRenderer: this.statusRenderer.bind(this),
       },
       {
         headerName: 'Action',
@@ -156,22 +159,41 @@ export class VoucherComponent implements OnInit {
     });
     this.role = JSON.parse(localStorage.getItem('role'));
   }
-  checkIsdell(data: any) {
-    console.log('ID to be sent:', data.id);
-
-    // Truyền dữ liệu thông qua HTTP PUT request
-    this.apiService.KichHoat(data.id).subscribe(
-      (response) => {
-        if (Array.isArray(response)) {
-          this.rowData = response;
-        } else {
-          console.error('Invalid response format:', response);
-        }
-      },
-      (error) => {
-        console.error('Error in HTTP PUT request:', error);
+  checkIsdell(data: any, index: any) {
+    console.log(data, index);
+    if (data.idel === 0) {
+      const userConfirmed = confirm('Bạn có muốn kích hoạt voucher không?');
+      if (!userConfirmed) {
+        return;
       }
-    );
+      // Truyền dữ liệu thông qua HTTP PUT request
+      this.apiService.KichHoat(data.id).subscribe(
+        (res) => {
+          this.rowData[index].idel = res.data.idel;
+          this.cdr.detectChanges();
+          this.toastr.success('Kích hoạt thành công');
+          this.apiService.sendEmail(res).subscribe(
+            response => console.log('sendEmail response:', response),
+            error => console.error('sendEmail error:', error)
+          );
+        },
+        error => {
+          this.toastr.error('Kích hoạt thất bại');
+        });
+    } else {
+      const userConfirmed = confirm('Bạn có muốn hủy bỏ kích hoạt voucher  không?');
+      if (!userConfirmed) {
+        return;
+      }
+      // Truyền dữ liệu thông qua HTTP PUT request
+      this.apiService.KichHoat(data.id).subscribe(res => {
+          this.toastr.success('Hủy bỏ kích hoạt thành công');
+        },
+        error => {
+          this.toastr.error('Hủy bỏ kích hoạt thất bại');
+        });
+    }
+    this.cdr.detectChanges();
   }
   searchByCustomer(event: any) {
     const searchTerm = event.target.value;
@@ -183,6 +205,7 @@ export class VoucherComponent implements OnInit {
         console.error(error);
       }
     );
+    this.cdr.detectChanges();
   }
   searchByVoucher(event: any) {
     const searchTerm = event.target.value;
@@ -196,12 +219,13 @@ export class VoucherComponent implements OnInit {
     );
     this.cdr.detectChanges();
   }
-  getVoucher() {
-    const obj = {
-      dateFrom: formatDateYYYY_MM_dd(this.dateFromCurrent),
-      dateTo: formatDateYYYY_MM_dd(this.dateToCurrent)
+  searchByDate(obj) {
+    const dateRange = {
+      fromDate: obj.dateFrom,
+      toDate: obj.dateTo
     };
-    this.apiService.searchByDate(obj).subscribe(
+
+    this.apiService.searchByDate(dateRange).subscribe(
       (data) => {
         this.searchResults = data;
       },
@@ -210,13 +234,20 @@ export class VoucherComponent implements OnInit {
         // You can provide a user-friendly error message here if needed
       }
     );
+    this.cdr.detectChanges();
   }
   getDater(data) {
     console.log(data);
     if (data.startDate && data.endDate){
       this.dateFromCurrent = data.startDate;
       this.dateToCurrent = data.endDate;
-      this.getVoucher();
+      const obj = {
+        dateFrom: formatDate(this.dateFromCurrent),
+        dateTo: formatDate(this.dateToCurrent)
+      };
+      this.searchByDate(obj);
+    }else {
+      this.ngOnInit();
     }
   }
 }

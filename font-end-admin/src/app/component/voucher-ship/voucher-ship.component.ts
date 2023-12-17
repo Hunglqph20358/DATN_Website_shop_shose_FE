@@ -1,10 +1,11 @@
 import {ChangeDetectorRef, Component, OnInit} from '@angular/core';
 import {MatDialog} from '@angular/material/dialog';
 import {VoucherService} from '../../service/voucher.service';
-import {formatDateTime, formatDateYYYY_MM_dd} from '../../util/util';
+import {formatDate, formatDateTime, formatDateYYYY_MM_dd} from '../../util/util';
 import {ActionVoucherComponent} from '../voucher/action-voucher/action-voucher.component';
 import {VoucherShipService} from "../../service/voucher-ship.service";
 import {ActionVoucherShipComponent} from "./action-voucher-ship/action-voucher-ship.component";
+import {ToastrService} from "ngx-toastr";
 
 @Component({
   selector: 'app-voucher-ship',
@@ -20,14 +21,15 @@ export class VoucherShipComponent implements OnInit {
   columnDefs;
   headerHeight = 50;
   rowHeight = 40;
-  dateFromCurrent ;
-  dateToCurrent ;
+  dateFromCurrent = null;
+  dateToCurrent = null;
   searchResults: any[] = [];
   public rowSelection: 'single' | 'multiple' = 'multiple'; // Chọn nhiều dòng
   constructor(
     private matDialog: MatDialog,
     private apiService: VoucherShipService,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private  toastr: ToastrService
   ) {
     const currentDate = new Date();
     this.dateFromCurrent = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
@@ -70,19 +72,6 @@ export class VoucherShipComponent implements OnInit {
         filter: true,
       },
       {
-        headerName: 'Nội dung',
-        field: 'description',
-        sortable: true,
-        filter: true,
-      },
-      {
-        headerName: 'Trạng thái',
-        field: 'status',
-        sortable: true,
-        filter: true,
-        cellRenderer: this.statusRenderer.bind(this),
-      },
-      {
         headerName: 'Sử dụng',
         valueGetter(params) {
           const useVoucher = params.data.useVoucher || 0;
@@ -94,17 +83,38 @@ export class VoucherShipComponent implements OnInit {
         headerName: 'Hiển thị',
         field: '',
         cellRenderer: (params) => {
+          const isChecked = params.data.idel === 1;
           return `<div>
       <label class="switch1">
-        <input type="checkbox" ${params.data.idel === 1 ? 'checked' : ''  }>
+        <input type="checkbox" ${isChecked ? 'checked' : ''}>
         <span class="slider round"></span>
       </label>
     </div>`;
         },
         onCellClicked: (params) => {
-          // Use params.node.data to access the data property
-          return this.checkIsdell(params.node.data);
+          const useVoucher = params.data.useVoucher || 0;
+          const quantity = params.data.quantity || 1;
+          // Bỏ kiểm tra idell nếu usecount bằng quantity
+          if (useVoucher === quantity) {
+            return;
+          }
+
+          // Ngược lại, kiểm tra idell bình thường
+          this.checkIsdell(params.node.data);
         }
+      },
+      {
+        headerName: 'Nội dung',
+        field: 'description',
+        sortable: true,
+        filter: true,
+      },
+      {
+        headerName: 'Trạng thái',
+        field: 'status',
+        sortable: true,
+        filter: true,
+        cellRenderer: this.statusRenderer.bind(this),
       },
       {
         headerName: 'Action',
@@ -124,15 +134,6 @@ export class VoucherShipComponent implements OnInit {
       return 'Không rõ';
     }
   }
-  statusType(params) {
-    if (params.value === 0) {
-      return 'Theo %';
-    } else if (params.value === 1) {
-      return 'Theo tiền';
-    } else {
-      return 'Không rõ';
-    }
-  }
 
   ngOnInit(): void {
       this.apiService.getSomeData().subscribe((response) => {
@@ -148,25 +149,41 @@ export class VoucherShipComponent implements OnInit {
         console.log(response);
       });
       this.role = JSON.parse(localStorage.getItem('role'));
+      console.log(this.role + 'hahaahah');
+      console.log(localStorage.getItem('role'));
     }
-    checkIsdell(data: any) {
-      console.log('ID to be sent:', data.id);
-
+  checkIsdell(data: any) {
+    if (data.idel === 0) {
+      const userConfirmed = confirm('Bạn có muốn kích hoạt voucher freeship không?');
+      if (!userConfirmed) {
+        return;
+      }
       // Truyền dữ liệu thông qua HTTP PUT request
       this.apiService.KichHoat(data.id).subscribe(
-        (response) => {
-          if (Array.isArray(response)) {
-            this.rowData = response;
-            this.cdr.detectChanges();
-          } else {
-            console.error('Invalid response format:', response);
-          }
+        (res) => {
+          this.toastr.success('Kích hoạt thành công');
+          this.searchResults = res;
+          this.apiService.sendEmail(res);
         },
-        (error) => {
-          console.error('Error in HTTP PUT request:', error);
-        }
-      );
+        error => {
+          this.toastr.error('Kích hoạt thất bại');
+        });
+    } else {
+      const userConfirmed = confirm('Bạn có muốn hủy bỏ kích hoạt voucher freeship  không?');
+      if (!userConfirmed) {
+        return;
+      }
+      // Truyền dữ liệu thông qua HTTP PUT request
+      this.apiService.KichHoat(data.id).subscribe(res => {
+          this.toastr.success('Hủy bỏ kích hoạt thành công');
+          this.searchResults = res;
+        },
+        error => {
+          this.toastr.error('Hủy bỏ kích hoạt thất bại');
+        });
     }
+    this.cdr.detectChanges();
+  }
     searchByCustomer(event: any) {
       const searchTerm = event.target.value;
       this.apiService.searchByCustomer(searchTerm).subscribe(
@@ -190,28 +207,36 @@ export class VoucherShipComponent implements OnInit {
       );
       this.cdr.detectChanges();
     }
-    getVoucher() {
-      const obj = {
-        dateFrom: formatDateYYYY_MM_dd(this.dateFromCurrent),
-        dateTo: formatDateYYYY_MM_dd(this.dateToCurrent)
-      };
-      this.apiService.searchByDate(obj).subscribe(
-        (data) => {
-          this.searchResults = data;
-        },
-        (error) => {
-          console.error('Error occurred during date range search:', error);
-          // You can provide a user-friendly error message here if needed
-        }
-      );
-    }
-    getDater(data) {
-      console.log(data);
-      if (data.startDate && data.endDate){
-        this.dateFromCurrent = data.startDate;
-        this.dateToCurrent = data.endDate;
-        this.getVoucher();
+  searchByDate(obj) {
+    const dateRange = {
+      fromDate: obj.dateFrom,
+      toDate: obj.dateTo
+    };
+
+    this.apiService.searchByDate(dateRange).subscribe(
+      (data) => {
+        this.searchResults = data;
+      },
+      (error) => {
+        console.error('Error occurred during date range search:', error);
+        // You can provide a user-friendly error message here if needed
       }
+    );
+    this.cdr.detectChanges();
+  }
+  getDater(data) {
+    console.log(data);
+    if (data.startDate && data.endDate){
+      this.dateFromCurrent = data.startDate;
+      this.dateToCurrent = data.endDate;
+      const obj = {
+        dateFrom: formatDate(this.dateFromCurrent),
+        dateTo: formatDate(this.dateToCurrent)
+      };
+      this.searchByDate(obj);
+    }else {
+      this.ngOnInit();
     }
+  }
 }
 

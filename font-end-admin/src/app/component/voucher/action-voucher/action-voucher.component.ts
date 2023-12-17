@@ -1,10 +1,11 @@
-import { Component, OnInit } from '@angular/core';
+import {ChangeDetectorRef, Component, OnInit} from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { GridApi, ICellRendererParams } from 'ag-grid-community';
 import { Router } from '@angular/router';
 import { VoucherService } from 'src/app/service/voucher.service';
 import { DetailVoucherComponent } from '../detail-voucher/detail-voucher.component';
 import {ICellRendererAngularComp} from "ag-grid-angular";
+import {ToastrService} from "ngx-toastr";
 
 @Component({
   selector: 'app-action-voucher',
@@ -17,7 +18,9 @@ export class ActionVoucherComponent implements OnInit, ICellRendererAngularComp 
   constructor(
     private matDialog: MatDialog,
     private router: Router,
-    private voucherService: VoucherService
+    private voucherService: VoucherService,
+    private toastr: ToastrService,
+    private  cdr: ChangeDetectorRef
   ) {}
   ngOnInit(): void {
     console.log(this.data.id);
@@ -42,9 +45,13 @@ export class ActionVoucherComponent implements OnInit, ICellRendererAngularComp 
     if (confirm('Bạn có muốn xóa không?')) {
       this.voucherService.deleteVoucher(this.data.id).subscribe((response) => {
         // Xử lý phản hồi nếu cần, ví dụ: hiển thị thông báo thành công
-        alert('Xóa voucher thành công');
+        this.toastr.success('Xóa voucher thành công');
         this.router.navigateByUrl('/admin/voucher');
-      });
+      },
+        error => {
+          this.toastr.error('Xóa voucher thất bại');
+        });
     }
+    this.cdr.detectChanges();
   }
 }

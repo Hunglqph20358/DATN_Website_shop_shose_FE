@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {VoucherService} from '../../../service/voucher.service';
 import {VoucherShipService} from "../../../service/voucher-ship.service";
+import {ToastrService} from "ngx-toastr";
 
 @Component({
   selector: 'app-edit-voucher-ship',
@@ -12,16 +13,24 @@ export class EditVoucherShipComponent implements OnInit {
 
   isHidden = true;
   voucher: any = {
-    id: '',
     name: '',
     startDate: '',
     endDate: '',
     description: '',
     reducedValue: '',
-    voucherType: '',
     conditions: '',
     quantity: '',
+    customerAdminDTOList: '',
+    limitCustomer: '',
+    isValidDateRange: () => {
+      return (
+        this.voucher.startDate &&
+        this.voucher.endDate &&
+        this.voucher.startDate < this.voucher.endDate
+      );
+    },
   };
+  check: boolean;
   rowData = [];
   columnDefs;
   headerHeight = 50;
@@ -30,9 +39,11 @@ export class EditVoucherShipComponent implements OnInit {
   so: '^\d+(\.\d+)?$';
   currentDate: Date = new Date();
   gridApi: any;
+
   constructor(private activatedRoute: ActivatedRoute,
               private service: VoucherShipService,
-              private rou: Router) {
+              private rou: Router,
+              private toastr: ToastrService) {
     this.columnDefs = [
       {
         headerName: 'Mã Khách hàng',
@@ -81,20 +92,24 @@ export class EditVoucherShipComponent implements OnInit {
     this.gridApi = params.api;
   }
   ngOnInit(): void {
+    this.service.getCustomer().subscribe((response) => {
+      this.rowData = response;
+      console.log(response);
+    });
     this.isHidden = true;
     this.activatedRoute.params.subscribe((params) => {
       const id = params.id;
       console.log(id);
       this.service.getDetailVoucher(id).subscribe((response: any[]) => {
-        const firstElement = response[0];
+        const firstElement = Array.isArray(response) ? response[0] : response;
         console.log(firstElement);
         this.voucher.id = firstElement.id;
         this.voucher.name = firstElement.name;
         this.voucher.description = firstElement.description;
         this.voucher.conditions = firstElement.conditions;
-        this.voucher.voucherType = firstElement.voucherType;
         this.voucher.endDate = firstElement.endDate;
         this.voucher.quantity = firstElement.quantity;
+        this.voucher.customerAdminDTOList = firstElement.customerAdminDTOList;
         this.voucher.reducedValue = firstElement.reducedValue;
         this.voucher.startDate = firstElement.startDate;
         console.log(this.voucher);
@@ -103,13 +118,32 @@ export class EditVoucherShipComponent implements OnInit {
     console.log(this.voucher);
   }
   editVoucher(){
-    this.service
-      .updateVoucher(this.voucher.id, this.voucher)
-      .subscribe(() => {
-        this.rou.navigateByUrl('/admin/voucherFS');
-      });
-  }
-  toggleAllowDiscount() {
-    this.voucher.allow = this.voucher.allow === 1 ? 0 : 1;
+    const arrayCustomer = this.voucher.optionCustomer === '0' ? null : this.gridApi.getSelectedRows();
+    const obj = {
+      ...this.voucher,
+      customerAdminDTOList: arrayCustomer,
+    };
+    this.check = false;
+    if (this.voucher.idel === 0) {
+      this.check = true;
+    }
+    const userConfirmed = confirm('Bạn có muốn sửa voucher không?');
+    if (!userConfirmed) {
+      return;
+    }
+    if (this.check === false){
+      this.service
+        .updateVoucher(this.voucher.id, obj)
+        .subscribe(() => {
+            this.toastr.success('Sửa voucher thành công');
+            this.rou.navigateByUrl('/admin/voucherFS');
+          },
+          (error) => {
+            // Handle errors if the discount creation fails
+            this.toastr.error('Sửa voucher thất bại');
+            console.error('Error edit voucher', error);
+          }
+        );
+    }
   }
 }

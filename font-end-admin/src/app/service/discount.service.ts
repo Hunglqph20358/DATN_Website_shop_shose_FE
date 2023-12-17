@@ -31,7 +31,7 @@ export class DiscountService {
   }
 
   searchByDate(obj): Observable<any> {
-    return this.http.get<any>(`http://localhost:6868/api/admin/discount/searchByDate`,obj );
+    return this.http.get<any>(`http://localhost:6868/api/admin/discount/searchByDate?fromDate=${obj.fromDate}&toDate=${obj.toDate}` );
   }
 
 
@@ -57,9 +57,9 @@ export class DiscountService {
       .set('search', search);
     return this.http.get<any>(`http://localhost:6868/api/admin/discount/searchByCategory`, { params });
   }
-  KichHoat( id: number ) {
-    const url = `${this.apiUrl2}/${id}`;
-    return this.http.put(url, { /* provide data if needed */ }, { observe: 'response' });
+  KichHoat(id: number ): Observable<any> {
+    const url = `${this.apiUrl}/kichHoat/${id}`;
+    return this.http.put(url, null);
   }
 
 

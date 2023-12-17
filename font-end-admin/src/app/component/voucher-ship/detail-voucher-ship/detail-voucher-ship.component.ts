@@ -16,13 +16,11 @@ export class DetailVoucherShipComponent implements OnInit {
     endDate: '',
     description: '',
     reducedValue: '',
-    maxReduced: '',
-    voucherType: '',
     conditions: '',
     quantity: '',
+    createDate: '',
     customerAdminDTOList: '',
     limitCustomer: '',
-    allow: '',
     optionCustomer: '',
     createName: localStorage.getItem('fullname'),
   };
@@ -44,33 +42,12 @@ export class DetailVoucherShipComponent implements OnInit {
         this.voucher.endDate = firstElement.endDate;
         this.voucher.quantity = firstElement.quantity;
         this.voucher.reducedValue = firstElement.reducedValue;
-        this.voucher.maxReduced = firstElement.maxReduced;
-        this.voucher.voucherType = firstElement.voucherType;
         this.voucher.startDate = firstElement.startDate;
-        this.voucher.allow = firstElement.allow;
+        this.voucher.createDate = firstElement.createDate;
         this.voucher.limitCustomer = firstElement.limitCustomer;
         this.voucher.customerAdminDTOList = firstElement.customerAdminDTOList;
         console.log(this.voucher);
       });
     });
-  }
-
-  getVoucherTypeText(): string{
-    if (this.voucher.voucherType === 0) {
-      return 'Theo %';
-    } else if (this.voucher.voucherType === 1) {
-      return 'Theo tiền';
-    } else {
-      return 'Không rõ';
-    }
-  }
-  getAllow(): string{
-    if (this.voucher.allow === 0) {
-      return 'Không cho phép';
-    } else if (this.voucher.apply === 1) {
-      return 'Cho phép';
-    } else {
-      return 'Không rõ';
-    }
   }
 }

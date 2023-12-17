@@ -171,21 +171,9 @@
                     [domLayout]="'autoHeight'"
                     (gridReady)="onGridReady($event)"
                   ></ag-grid-angular>
-
-                </div>
-              </div>
-              <div class="form-group">
-                <label for="limitCustomer">Số lượng</label>
-                <input
-                  type="number"
-                  class="form-control"
-                  id="limitCustomer"
-                  [ngModelOptions]="{ standalone: true }"
-                  [(ngModel)]="discount.discountAdminDTO.quantity"
-                  placeholder="Số lượng"
-                />
-                <div *ngIf="!discount.discountAdminDTO.quantity" class="alert alert-danger">
-                  <div *ngIf="!discount.discountAdminDTO.quantity">Vui lòng nhập số lượng</div>
+<!--                  <div *ngIf="!(discount.productDTOList?.length > 0)" class="alert alert-danger">-->
+<!--                    Vui lòng chọn ít nhất một sản phẩm-->
+<!--                  </div>-->
                 </div>
               </div>
             </div>

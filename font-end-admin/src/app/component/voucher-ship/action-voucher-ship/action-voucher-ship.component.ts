@@ -1,9 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import {ChangeDetectorRef, Component, OnInit} from '@angular/core';
 import {ICellRendererAngularComp} from "ag-grid-angular";
 import {MatDialog} from "@angular/material/dialog";
 import {Router} from "@angular/router";
 import {VoucherService} from "../../../service/voucher.service";
 import {ICellRendererParams} from "ag-grid-community";
+import {ToastrService} from "ngx-toastr";
 
 @Component({
   selector: 'app-action-voucher-ship',
@@ -16,7 +17,9 @@ export class ActionVoucherShipComponent implements OnInit, ICellRendererAngularC
   constructor(
     private matDialog: MatDialog,
     private router: Router,
-    private voucherService: VoucherService
+    private voucherService: VoucherService,
+    private toastr: ToastrService,
+    private cdr: ChangeDetectorRef
   ) {}
   ngOnInit(): void {
     console.log(this.data.id);
@@ -39,12 +42,15 @@ export class ActionVoucherShipComponent implements OnInit, ICellRendererAngularC
     if (confirmation) {
       this.voucherService.deleteVoucher(this.data.id)
         .subscribe(() => {
-            this.router.navigateByUrl('/admin/voucherFS');
+          this.toastr.success('Xóa thành công');
+          this.router.navigateByUrl('/admin/voucherFS');
           },
           (error) => {
+            this.toastr.error('Xóa thất bại');
             console.error('Error delete discount', error);
           });
     }
+    this.cdr.detectChanges();
   }
   detail(): void {
     this.router.navigate(['/admin/voucherFS', this.data.id]);

@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {VoucherService} from "../../../service/voucher.service";
+import {ToastrService} from "ngx-toastr";
 
 @Component({
   selector: 'app-edit-voucher',
@@ -11,7 +12,8 @@ export class EditVoucherComponent implements OnInit {
 
   constructor(private activatedRoute: ActivatedRoute,
               private voucherService: VoucherService,
-              private rou: Router) {
+              private rou: Router,
+              private toastr: ToastrService) {
     this.columnDefs = [
       {
         headerName: 'Mã Khách hàng',
@@ -52,6 +54,7 @@ export class EditVoucherComponent implements OnInit {
       },
     ];
   }
+  checkAllow: boolean = false;
   isHidden = true;
   gridApi: any;
   rowData = [];
@@ -67,11 +70,10 @@ export class EditVoucherComponent implements OnInit {
     description: '',
     reducedValue: '',
     voucherType: '',
-    conditions: '',
-    quantity: '',
+    conditions: 0,
+    quantity: 0,
+    limitCustomer: 0,
     customerAdminDTOList: '',
-    limitCustomer: '',
-    allow: '',
     appy: '',
     optionCustomer: '',
     createName: localStorage.getItem('fullname'),
@@ -115,14 +117,17 @@ export class EditVoucherComponent implements OnInit {
         this.voucher.quantity = firstElement.quantity;
         this.voucher.customerAdminDTOList = firstElement.customerAdminDTOList;
         this.voucher.reducedValue = firstElement.reducedValue;
+        this.voucher.apply = firstElement.apply;
+        this.voucher.limitCustomer = firstElement.limitCustomer;
         this.voucher.startDate = firstElement.startDate;
+        this.voucher.allow = firstElement.allow;
         console.log(this.voucher);
       });
     });
     console.log(this.voucher);
   }
   editVoucher(){
-    const arrayCustomer = this.voucher.optionCustomer === '0' ? this.rowData : this.gridApi.getSelectedRows();
+    const arrayCustomer = this.voucher.optionCustomer === '0' ? null : this.gridApi.getSelectedRows();
     const obj = {
       ...this.voucher,
       customerAdminDTOList: arrayCustomer,
@@ -139,18 +144,19 @@ export class EditVoucherComponent implements OnInit {
       this.voucherService
         .updateVoucher(this.voucher.id, obj)
         .subscribe(() => {
-          alert('Sửa voucher thành công');
+          this.toastr.success('Sửa voucher thành công');
           this.rou.navigateByUrl('/admin/voucher');
         },
           (error) => {
             // Handle errors if the discount creation fails
-            alert('Sửa voucher thất bại!');
+            this.toastr.error('Sửa voucher thất bại');
             console.error('Error edit voucher', error);
           }
         );
     }
   }
-  toggleAllowDiscount() {
-    this.voucher.allow = this.voucher.allow === 1 ? 0 : 1;
+  toggleAllowDiscount(event: any) {
+    this.checkAllow = event.target.checked;
+    console.log(event);
   }
 }

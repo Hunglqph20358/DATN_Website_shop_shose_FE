@@ -1,8 +1,9 @@
-import {Component, OnInit} from '@angular/core';
+import {ChangeDetectorRef, Component, OnInit} from '@angular/core';
 import {ActionDiscountComponent} from './action-discount/action-discount.component';
 import {DiscountService} from '../../service/discount.service';
-import {formatDateTime, formatDateYYYY_MM_dd} from '../../util/util';
+import {formatDate, formatDateTime, formatDateYYYY_MM_dd} from '../../util/util';
 import {FormControl, FormGroup} from '@angular/forms';
+import {ToastrService} from "ngx-toastr";
 
 
 @Component({
@@ -22,8 +23,8 @@ export class DiscountComponent implements OnInit {
   export = '0';
   idStaff = '';
   role: '';
-  dateFromCurrent;
-  dateToCurrent;
+  dateFromCurrent = null;
+  dateToCurrent = null;
   searchResults: any[] = [];
 
   // isValidDateRange = () => {
@@ -33,11 +34,8 @@ export class DiscountComponent implements OnInit {
   //     new Date(this.startDate) < new Date(this.endDate)
   //   );
   // }
-  constructor(private apiService: DiscountService) {
-    const currentDate = new Date();
-    this.dateFromCurrent = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
-
-    this.dateToCurrent = new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate());
+  constructor(private apiService: DiscountService, private cdr: ChangeDetectorRef,
+              private toastr: ToastrService) {
     this.columnDefs = [
       {
         headerName: 'Mã',
@@ -83,27 +81,26 @@ export class DiscountComponent implements OnInit {
         cellRenderer: this.statusRenderer.bind(this),
       },
       {
-        headerName: 'Đã sử dụng',
+        headerName: 'Số lượng sản phẩm đã áp dụng',
         valueGetter: (params) => {
           const useDiscount = params.data.used_count || 0;
-          const quantity = params.data.quantity || 1;
-          return `${useDiscount} / ${quantity}`;
+          return `${useDiscount}`;
         }
       },
       {
         headerName: 'Hiển thị',
         field: '',
         cellRenderer: (params) => {
+          const isChecked = params.data.idel === 1;
           return `<div>
       <label class="switch1">
-        <input type="checkbox" ${params.data.idel === 1 ? 'checked' : ''}>
+        <input type="checkbox" ${isChecked ? 'checked' : ''}>
         <span class="slider round"></span>
       </label>
     </div>`;
         },
         onCellClicked: (params) => {
-          // Use params.node.data to access the data property
-          return this.checkIsdell(params.node.data);
+          this.checkIsdell(params.node.data);
         }
       },
       {
@@ -140,27 +137,40 @@ export class DiscountComponent implements OnInit {
       console.log(response);
     });
     this.role = JSON.parse(localStorage.getItem('role'));
-    this.getDiscount();
     console.log(this.dateFromCurrent);
     console.log(this.dateToCurrent);
   }
 
   checkIsdell(data: any) {
-    console.log('ID to be sent:', data.id);
-
-    // Truyền dữ liệu thông qua HTTP PUT request
-    this.apiService.KichHoat(data.id).subscribe(
-      (response) => {
-        if (Array.isArray(response)) {
-          this.rowData = response;
-        } else {
-          console.error('Invalid response format:', response);
-        }
-      },
-      (error) => {
-        console.error('Error in HTTP PUT request:', error);
+    if (data.idel === 0) {
+      const userConfirmed = confirm('Bạn có muốn kích hoạt giảm giá không?');
+      if (!userConfirmed) {
+        return;
       }
-    );
+      // Truyền dữ liệu thông qua HTTP PUT request
+      this.apiService.KichHoat(data.id).subscribe(
+        (res) => {
+          this.toastr.success('Kích hoạt thành công');
+          this.searchResults = res;
+        },
+        error => {
+          this.toastr.error('Kích hoạt thất bại');
+        });
+    } else {
+      const userConfirmed = confirm('Bạn có muốn hủy bỏ kích hoạt giảm giá không?');
+      if (!userConfirmed) {
+        return;
+      }
+      // Truyền dữ liệu thông qua HTTP PUT request
+      this.apiService.KichHoat(data.id).subscribe(res => {
+          this.toastr.success('Hủy bỏ kích hoạt thành công');
+          this.searchResults = res;
+        },
+        error => {
+          this.toastr.error('Hủy bỏ kích hoạt thất bại');
+        });
+    }
+    this.cdr.detectChanges();
   }
   searchByCategory(event: any) {
     const searchTerm = event.target.value;
@@ -207,39 +217,16 @@ export class DiscountComponent implements OnInit {
       }
     );
   }
-
-  searchByDate(startDate: string, endDate: string) {
-    if (startDate && endDate) {
-      // Assuming your API service accepts a date range for searching
-      const dateRange = { startDate, endDate };
-
-      // @ts-ignore
-      this.apiService.searchByDate(dateRange).subscribe(
-        (data) => {
-          this.searchResults = data;
-        },
-        (error) => {
-          console.error('Error occurred during date range search:', error);
-          // You can provide a user-friendly error message here if needed
-        }
-      );
-    } else {
-      console.warn('Invalid date range.');
-      // Optionally, you can provide feedback to the user that the date range is invalid
-    }
-  }
-
-
-
   test(event: any) {
     console.log('data event: ', event);
   }
-  getDiscount() {
-    const obj = {
-      dateFrom: formatDateYYYY_MM_dd(this.dateFromCurrent),
-      dateTo: formatDateYYYY_MM_dd(this.dateToCurrent)
+  searchByDate(obj) {
+    const dateRange = {
+      fromDate: obj.dateFrom,
+      toDate: obj.dateTo
     };
-    this.apiService.searchByDate(obj).subscribe(
+
+    this.apiService.searchByDate(dateRange).subscribe(
       (data) => {
         this.searchResults = data;
       },
@@ -248,13 +235,20 @@ export class DiscountComponent implements OnInit {
         // You can provide a user-friendly error message here if needed
       }
     );
-}
+    this.cdr.detectChanges();
+  }
   getDater(data) {
     console.log(data);
     if (data.startDate && data.endDate){
       this.dateFromCurrent = data.startDate;
       this.dateToCurrent = data.endDate;
-      this.getDiscount();
+      const obj = {
+        dateFrom: formatDate(this.dateFromCurrent),
+        dateTo: formatDate(this.dateToCurrent)
+      };
+      this.searchByDate(obj);
+    }else {
+      this.ngOnInit();
     }
   }
 }

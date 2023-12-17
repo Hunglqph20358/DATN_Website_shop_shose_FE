@@ -25,42 +25,35 @@
                 <th scope="row">Ngày kết thúc</th>
                 <td>{{ voucher.endDate }}</td>
               </tr>
-              <tr>
-                <th scope="row">Loại voucher</th>
-                <td>{{ getVoucherTypeText() }}</td>
-              </tr>
+
               <tr>
                 <th scope="row">Giá trị giảm</th>
                 <td>{{ voucher.reducedValue }}</td>
               </tr>
-              <tr *ngIf="voucher.voucherType == 0">
-                <th scope="row">Giá trị giảm tối đa</th>
-                <td>{{ voucher.maxReduced }}</td>
-              </tr>
+
               <tr>
                 <th scope="row">Số lượng</th>
                 <td>{{ voucher.quantity }}</td>
-              </tr>
-              <tr>
-                <th scope="row">Giới hạn số lần sử dụng của mỗi khách hàng</th>
-                <td>{{ voucher.limitCustomer }}</td>
-              </tr>
-              <tr>
-                <th scope="row">Cho phép sử dụng cùng giảm giá</th>
-                <td>{{ getAllow() }}</td>
               </tr>
               <tr>
                 <th scope="row">Người tạo</th>
                 <td>{{ voucher.createName }}</td>
               </tr>
               <tr>
+                <th scope="row">Ngày tạo</th>
+                <td>{{ voucher.createDate }}</td>
+              </tr>
+              <tr>
                 <th scope="row">Khách hàng</th>
                 <td>
-                  <ul>
+                  <ul *ngIf="voucher.customerAdminDTOList && voucher.customerAdminDTOList.length > 0; else noCustomers">
                     <li *ngFor="let c of voucher.customerAdminDTOList">
                       {{ c.code }} - {{ c.fullname }}
                     </li>
                   </ul>
+                  <ng-template #noCustomers>
+                    Tất cả khách hàng
+                  </ng-template>
                 </td>
               </tr>
               </tbody>

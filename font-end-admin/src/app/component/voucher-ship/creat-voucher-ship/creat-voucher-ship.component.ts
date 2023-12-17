@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import {Router} from '@angular/router';
 import {VoucherShipService} from '../../../service/voucher-ship.service';
+import {ToastrService} from "ngx-toastr";
 
 @Component({
   selector: 'app-creat-voucher-ship',
@@ -23,14 +24,22 @@ export class CreatVoucherShipComponent implements OnInit {
     quantity: '',
     customerAdminDTOList: '',
     limitCustomer: '',
-    allow: '',
+    createName: localStorage.getItem('fullname'),
+    isValidDateRange: () => {
+      return (
+        this.voucher.startDate &&
+        this.voucher.endDate &&
+        this.voucher.startDate < this.voucher.endDate
+      );
+    },
   };
   pattern: '^[a-zA-Z0-9\s]+$';
   so: '^\d+(\.\d+)?$';
   currentDate: Date = new Date();
   gridApi: any;
   constructor(private voucherService: VoucherShipService,
-              private  router: Router) {
+              private  router: Router,
+              private toastr: ToastrService) {
     this.columnDefs = [
       {
         headerName: 'Mã Khách hàng',
@@ -78,7 +87,6 @@ export class CreatVoucherShipComponent implements OnInit {
   ngOnInit(): void {
     this.voucherService.getCustomer().subscribe((response) => {
       this.rowData = response;
-      debugger
       console.log(response);
     });
   }
@@ -86,23 +94,25 @@ export class CreatVoucherShipComponent implements OnInit {
     this.gridApi = params.api;
   }
   addVoucher() {
+    const arrayCustomer = this.voucher.optionCustomer === '0' ? null : this.gridApi.getSelectedRows();
+    const userConfirmed = confirm('Bạn có muốn thêm voucher không?');
+    if (!userConfirmed) {
+      return;
+    }
     const obj = {
       ...this.voucher,
-      customerAdminDTOList: this.gridApi.getSelectedRows(),
+      customerAdminDTOList: arrayCustomer,
     };
     this.voucherService.createVoucher(obj).subscribe(
       (response) => {
         // Handle the response if needed, e.g., show a success message
-        console.log('Discount added successfully', response);
+        this.toastr.success('Thêm voucher  thành công');
         this.router.navigateByUrl('/admin/voucherFS');
       },
       (error) => {
         // Handle errors if the discount creation fails
-        console.error('Error adding discount', error);
+        this.toastr.error('Thêm voucher thất bại');
       }
     );
-  }
-  toggleAllowDiscount() {
-    this.voucher.allow = this.voucher.allow === 1 ? 0 : 1;
   }
 }

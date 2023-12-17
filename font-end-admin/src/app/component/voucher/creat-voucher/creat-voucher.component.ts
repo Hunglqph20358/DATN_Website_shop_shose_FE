@@ -1,6 +1,7 @@
-import { Component, OnInit } from '@angular/core';
-import { VoucherService } from 'src/app/service/voucher.service';
+import {Component, OnInit} from '@angular/core';
+import {VoucherService} from 'src/app/service/voucher.service';
 import {Router} from '@angular/router';
+import {ToastrService} from "ngx-toastr";
 
 @Component({
   selector: 'app-creat-voucher',
@@ -12,6 +13,7 @@ export class CreatVoucherComponent implements OnInit {
   columnDefs;
   headerHeight = 50;
   rowHeight = 40;
+  checkAllow: boolean = false;
   voucher: any = {
     name: '',
     startDate: '',
@@ -19,11 +21,10 @@ export class CreatVoucherComponent implements OnInit {
     description: '',
     reducedValue: '',
     voucherType: '',
-    conditions: '',
-    quantity: '',
+    conditions: 0,
+    quantity: 0,
+    limitCustomer: 0,
     customerAdminDTOList: '',
-    limitCustomer: '',
-    allow : '',
     appy: '',
     optionCustomer: '',
     createName: localStorage.getItem('fullname'),
@@ -38,8 +39,10 @@ export class CreatVoucherComponent implements OnInit {
   currentDate: Date = new Date();
   gridApi: any;
   fullname = '';
+
   constructor(private voucherService: VoucherService,
-              private  router: Router) {
+              private  router: Router,
+              private toastr: ToastrService) {
     this.columnDefs = [
       {
         headerName: 'Mã Khách hàng',
@@ -80,45 +83,53 @@ export class CreatVoucherComponent implements OnInit {
       },
     ];
   }
+
   public rowSelection: 'single' | 'multiple' = 'multiple'; // Chọn nhiều dòng
   pattern: '^[a-zA-Z0-9\s]+$';
   so: '^\d+(\.\d+)?$';
+
   isStartDateValid(): boolean {
     return !this.voucher.startDate || this.voucher.startDate >= this.currentDate;
   }
+
   ngOnInit(): void {
     this.voucherService.getCustomer().subscribe((response) => {
       this.rowData = response;
       console.log(response);
     });
   }
+
   onGridReady(params: any) {
     this.gridApi = params.api;
   }
-  toggleAllowDiscount() {
-    // Chuyển đổi giá trị của allow
-    this.voucher.allow = this.voucher.allow === 1 ? 0 : 1;
+
+  toggleAllowDiscount(event: any) {
+    this.checkAllow = event.target.checked;
+    console.log(event);
   }
+
   addVoucher() {
-    const arrayCustomer = this.voucher.optionCustomer === '0' ? this.rowData : this.gridApi.getSelectedRows();
     const userConfirmed = confirm('Bạn có muốn thêm voucher không?');
     if (!userConfirmed) {
       return;
     }
+    const arrayCustomer = this.voucher.optionCustomer === '0' ? null : this.gridApi.getSelectedRows();
     const obj = {
-       ...this.voucher,
-       customerAdminDTOList: arrayCustomer,
-     };
+      ...this.voucher,
+      allow: this.checkAllow === true ? 1 : 0,
+      customerAdminDTOList: arrayCustomer,
+    };
     this.voucherService.createVoucher(obj).subscribe(
       (response) => {
         // Handle the response if needed, e.g., show a success message
         console.log('Discount added successfully', response);
-        alert('Thêm voucher thành công');
+        this.toastr.success('Thêm voucher thành công');
+
         this.router.navigateByUrl('/admin/voucher');
       },
       (error) => {
         // Handle errors if the discount creation fails
-        alert('Thêm voucher thất bại');
+        this.toastr.error('Thêm voucher thất bại');
         console.error('Error adding discount', error);
       }
     );

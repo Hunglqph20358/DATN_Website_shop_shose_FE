@@ -15,7 +15,7 @@ export class DetailDiscountComponent implements OnInit {
       startDate: '',
       endDate: '',
       description: '',
-      quantity: '',
+      createDate: '',
       createName: localStorage.getItem('fullname'),
     },
     spap: '',
@@ -31,7 +31,6 @@ export class DetailDiscountComponent implements OnInit {
     // Lấy thông tin khuyến mãi dựa trên id từ tham số URL
     this.router.params.subscribe((params) => {
       const id = params.id;
-      console.log(id);
       this.discountService
         .getDetailDiscount(id)
         .subscribe((response: any) => {
@@ -44,16 +43,14 @@ export class DetailDiscountComponent implements OnInit {
             firstDiscount.startDate;
           this.discount.endDate =
             firstDiscount.endDate;
-          this.discount.quantity =
-            firstDiscount.quantity;
+          this.discount.createDate =
+            firstDiscount.createDate;
           this.discount.createName =
             firstDiscount.createName;
           this.discount.discountType = firstDiscount.discountType;
           this.discount.reducedValue = firstDiscount.reducedValue;
           this.discount.productDTOList = firstDiscount.productDTOList;
           this.discount.maxReduced = firstDiscount.maxReduced;
-
-          // Log the discount data after it has been fetched
           console.log(this.discount);
         });
     });

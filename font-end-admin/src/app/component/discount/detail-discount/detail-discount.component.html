@@ -38,32 +38,24 @@
                 <td>{{ discount.maxReduced }}</td>
               </tr>
               <tr>
-                <th scope="row">Số lượng</th>
-                <td>{{ discount.quantity }}</td>
-              </tr>
-              <tr>
                 <th scope="row">Người tạo</th>
                 <td>{{ discount.createName }}</td>
               </tr>
               <tr>
-                <th scope="row">Sản phẩm giảm</th>
+                <th scope="row">Ngày tạo</th>
+                <td>{{ discount.createDate }}</td>
+              </tr>
+              <tr>
+                <th scope="row">Sản phẩm</th>
                 <td>
-                  <table border="1">
-                    <thead>
-                    <tr>
-                      <th>Mã sản phẩm</th>
-                      <th>Tên sản phẩm</th>
-                      <th>Giá sản phẩm</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <tr *ngFor="let product of discount.productDTOList">
-                      <td>{{ product.code }}</td>
-                      <td>{{ product.name }}</td>
-                      <td>{{ product.price }}</td>
-                    </tr>
-                    </tbody>
-                  </table>
+                  <ul *ngIf="discount.productDTOList && discount.productDTOList.length > 0; else noCustomers">
+                    <li *ngFor="let c of discount.productDTOList">
+                      {{ c.code }} - {{ c.name }}- {{ c.price }}
+                    </li>
+                  </ul>
+                  <ng-template #noCustomers>
+                    Tất cả sản phẩm
+                  </ng-template>
                 </td>
               </tr>
               </tbody>

@@ -58,15 +58,23 @@
                 <td>{{ voucher.createName }}</td>
               </tr>
               <tr>
+                <th scope="row">Ngày tạo</th>
+                <td>{{ voucher.createDate }}</td>
+              </tr>
+              <tr>
                 <th scope="row">Khách hàng</th>
                 <td>
-                  <ul>
+                  <ul *ngIf="voucher.customerAdminDTOList && voucher.customerAdminDTOList.length > 0; else noCustomers">
                     <li *ngFor="let c of voucher.customerAdminDTOList">
                       {{ c.code }} - {{ c.fullname }}
                     </li>
                   </ul>
+                  <ng-template #noCustomers>
+                    Tất cả khách hàng
+                  </ng-template>
                 </td>
               </tr>
+
               </tbody>
             </table>
           </div>

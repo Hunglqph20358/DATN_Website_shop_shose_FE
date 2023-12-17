@@ -163,7 +163,7 @@
                   <label for="discountType">Nơi áp dụng</label>
                   <select
                     class="form-control"
-                    id="kkad"
+                    id="apply"
                     [ngModelOptions]="{ standalone: true }"
                     [(ngModel)]="voucher.apply"
                   >
@@ -204,9 +204,12 @@
                       [domLayout]="'autoHeight'"
                       (gridReady)="onGridReady($event)"
                     ></ag-grid-angular>
+                    <div *ngIf="!(voucher.customerAdminDTOList?.length > 0)" class="alert alert-danger">
+                      Vui lòng chọn ít nhất một khách hàng
+                    </div>
                   </div>
                 </div>
-                <div class="form-group">
+                <div class="form-group" *ngIf="voucher.optionCustomer == 1">
                   <label for="limitCustomer">Giới hạn số lần sử dụng với mỗi khách hàng</label>
                   <input
                     type="number"
@@ -214,7 +217,7 @@
                     id="limitCustomer"
                     [ngModelOptions]="{ standalone: true }"
                     [(ngModel)]="voucher.limitCustomer"
-                    placeholder="Số lượng"
+                    placeholder="Số lần sử dụng"
                   />
                   <div *ngIf="!voucher.limitCustomer" class="alert alert-danger">
                     <div *ngIf="!voucher.limitCustomer">Vui lòng nhập giới hạn sử dụng.</div>
@@ -222,8 +225,8 @@
                 </div>
                 <div class="form-group">
                   <div class="form-check">
-                    <input class="form-check-input" type="checkbox" value="" id="allow"
-                           [checked]="voucher.allow === 1" (change)="toggleAllowDiscount()">
+                    <input class="form-check-input" type="checkbox" id="allow"
+                           (change)="toggleAllowDiscount($event)">
                     <label class="form-check-label" for="allow">
                       Cho phép xử dụng cùng giảm giá
                     </label>

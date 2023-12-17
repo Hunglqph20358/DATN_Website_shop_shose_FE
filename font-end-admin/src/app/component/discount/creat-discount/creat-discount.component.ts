@@ -3,6 +3,7 @@ import {NgModule} from '@angular/core';
 import {DiscountService} from '../../../service/discount.service';
 import {FormsModule} from '@angular/forms';
 import {Router} from '@angular/router';
+import {ToastrService} from "ngx-toastr";
 
 @Component({
   selector: 'app-creat-discount',
@@ -16,7 +17,6 @@ export class CreatDiscountComponent implements OnInit {
       startDate: '',
       endDate: '',
       description: '',
-      quantity: '',
       createName: localStorage.getItem('fullname'),
     },
     spap: '',
@@ -41,7 +41,8 @@ export class CreatDiscountComponent implements OnInit {
   disableCheckPriceProduct = false;
   iđStaff = '';
   constructor(private discountService: DiscountService,
-              private router: Router) {
+              private router: Router,
+              private toastr: ToastrService) {
     this.columnDefs = [
       {
         headerName: 'Mã sản phẩm',
@@ -89,10 +90,6 @@ export class CreatDiscountComponent implements OnInit {
       },
     ];
   }
-  isStartDateValid(): boolean {
-    return !this.discount.startDate || this.discount.startDate >= this.currentDate;
-  }
-
   public rowSelection: 'single' | 'multiple' = 'multiple'; // Chọn nhiều dòng
   ngOnInit(): void {
     this.discountService.getProduct().subscribe((response) => {
@@ -101,7 +98,9 @@ export class CreatDiscountComponent implements OnInit {
     });
     console.log(this.currentDate);
   }
-
+  isStartDateValid(): boolean {
+    return !this.discount.startDate || this.discount.startDate >= this.currentDate;
+  }
   onGridReady(params: any) {
     this.gridApi = params.api;
   }
@@ -148,12 +147,12 @@ export class CreatDiscountComponent implements OnInit {
         (response) => {
           // Handle the response if needed, e.g., show a success message
           console.log('Discount added successfully', response);
-          alert('Thêm giảm giá thành công!');
+          this.toastr.success('Thêm giảm giá thành công');
           this.router.navigateByUrl('/admin/discount');
         },
         (error) => {
           // Handle errors if the discount creation fails
-          alert('Thêm giảm giá thất bại!');
+          this.toastr.success('Thêm giảm giá thất bại');
           console.error('Error adding discount', error);
         }
       );
