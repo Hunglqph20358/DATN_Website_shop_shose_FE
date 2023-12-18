@@ -68,19 +68,27 @@ import {MatListModule} from '@angular/material/list';
 import {MatTable, MatTableModule} from '@angular/material/table';
 import {MatTabsModule} from '@angular/material/tabs';
 import {ToastrModule, ToastrService} from 'ngx-toastr';
-import {CustomerComponent} from './component/customer/customer.component';
-import {ImportFileComponent} from './component/sanpham/import-file/import-file.component';
-import {ThongKeComponent} from './component/thong-ke/thong-ke.component';
+import { VoucherShipComponent } from './component/voucher-ship/voucher-ship.component';
+import { ActionVoucherShipComponent } from './component/voucher-ship/action-voucher-ship/action-voucher-ship.component';
+import { CreatVoucherShipComponent } from './component/voucher-ship/creat-voucher-ship/creat-voucher-ship.component';
+import { EditVoucherShipComponent } from './component/voucher-ship/edit-voucher-ship/edit-voucher-ship.component';
+import { DetailVoucherShipComponent } from './component/voucher-ship/detail-voucher-ship/detail-voucher-ship.component';
+import {MatNativeDateModule} from '@angular/material/core';
+import {MatDatepickerModule} from '@angular/material/datepicker';
+import { CustomerComponent } from './component/customer/customer.component';
+import { ImportFileComponent } from './component/sanpham/import-file/import-file.component';
+import { ThongKeComponent } from './component/thong-ke/thong-ke.component';
 import {ChartsModule} from '@progress/kendo-angular-charts';
 import 'hammerjs';
-import {MatDatepickerModule} from '@angular/material/datepicker';
-import {MatNativeDateModule} from '@angular/material/core';
+
 import { DateRangePickerModule } from '@syncfusion/ej2-angular-calendars';
+import { NoteOrderComponent } from './component/order/note-order/note-order.component';
 import { AddStaffComponent } from './component/staff/add-staff/add-staff.component';
 import { OrderSalesCounterComponent } from './component/order-sales-counter/order-sales-counter.component';
 import { UpdateStaffComponent } from './component/staff/update-staff/update-staff.component';
 import { DetailStaffComponent } from './component/staff/detail-staff/detail-staff.component';
 import { OrderSalesDetailComponent } from './component/order-sales-counter/order-sales-detail/order-sales-detail.component';
+import {DatePipe} from "@angular/common";
 import {ZXingScannerModule} from '@zxing/ngx-scanner';
 import { ActionStaffComponent } from './component/staff/action-staff/action-staff.component';
 
@@ -135,12 +143,18 @@ import { ActionStaffComponent } from './component/staff/action-staff/action-staf
     CustomerComponent,
     ImportFileComponent,
     ThongKeComponent,
+    NoteOrderComponent,
     AddStaffComponent,
     OrderSalesCounterComponent,
     UpdateStaffComponent,
     DetailStaffComponent,
     OrderSalesDetailComponent,
     ActionStaffComponent,
+    CreatVoucherShipComponent,
+    EditVoucherShipComponent,
+    ActionVoucherShipComponent,
+    DetailVoucherShipComponent,
+    VoucherShipComponent
   ],
   imports: [
     BrowserModule,
@@ -168,10 +182,12 @@ import { ActionStaffComponent } from './component/staff/action-staff/action-staf
     MatNativeDateModule,
     DateRangePickerModule,
     ZXingScannerModule
+    MatInputModule,
+    DateRangePickerModule
   ],
   bootstrap: [AppComponent],
   providers: [{provide: JWT_OPTIONS, useValue: JWT_OPTIONS},
-    JwtHelperService, ToastrService],
+    JwtHelperService, ToastrService, DatePipe],
   entryComponents: [ActionRendererComponent],
 })
 export class AppModule {

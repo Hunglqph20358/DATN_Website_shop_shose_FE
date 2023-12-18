@@ -27,27 +27,44 @@
                   [ngModelOptions]="{ standalone: true }"
                   [(ngModel)]="voucher.name"
                   placeholder="Tên"
+                  (keydown)="revoveInvalid(validName)" (blur)="validateName()"
                 />
+                <div class="validate-input" *ngIf="!validName.done" class="alert alert-danger">
+                  <p class="validate-input-label" *ngIf="validName.empty">Tên không để trống</p>
+                  <p class="validate-input-label" *ngIf="validName.maxLength">Tên tối đa 250 kí tự</p>
+                </div>
               </div>
               <div class="form-group">
                 <label for="startDate">Ngày bắt đầu</label>
                 <input
-                  type="date"
+                  type="datetime-local"
                   class="form-control"
                   id="startDate"
                   [ngModelOptions]="{ standalone: true }"
                   [(ngModel)]="voucher.startDate"
                 />
+                <div *ngIf="!voucher.startDate || voucher.startDate < currentDate" class="alert alert-danger">
+                  <div *ngIf="!voucher.startDate">
+                    Vui lòng chọn ngày bắt đầu.
+                  </div>
+                  <div *ngIf="voucher.startDate && !isStartDateValid()">
+                    Ngày bắt đầu phải lớn hơn hoặc bằng ngày hiện tại.
+                  </div>
+                </div>
               </div>
               <div class="form-group">
                 <label for="endDate">Ngày kết thúc</label>
                 <input
-                  type="date"
+                  type="datetime-local"
                   class="form-control"
                   id="endDate"
                   [ngModelOptions]="{ standalone: true }"
                   [(ngModel)]="voucher.endDate"
                 />
+                <div *ngIf="!voucher.endDate || !voucher.isValidDateRange()" class="alert alert-danger">
+                  <div *ngIf="!voucher.endDate">Vui lòng chọn ngày kết thúc.</div>
+                  <div *ngIf="!voucher.isValidDateRange()">Ngày kết thúc phải lớn hơn ngày bắt đầu.</div>
+                </div>
               </div>
               <div class="form-group">
                 <label for="description">Nội dung</label>
@@ -58,40 +75,48 @@
                   [ngModelOptions]="{ standalone: true }"
                   [(ngModel)]="voucher.description"
                   placeholder="Nội dung"
+                  (keydown)="revoveInvalid(validDescription)" (blur)="validateDescription()"
                 />
-              </div>
-              <div class="form-group">
-                <label>Điều kiện sử dụng</label>
-                <div class="row">
-                  <div class="col-md-6">
-                    <div class="form-group">
-                      <input
-                        type="number"
-                        class="form-control"
-                        id="condition"
-                        [ngModelOptions]="{ standalone: true }"
-                        [(ngModel)]="voucher.conditionApply"
-                        placeholder="Giá trị đơn hàng"
-                      />
-                    </div>
-                  </div>
+                <div class="validate-input" *ngIf="!validDescription.done" class="alert alert-danger">
+                  <p class="validate-input-label" *ngIf="validDescription.empty">Nội dung không để trống</p>
+                  <p class="validate-input-label" *ngIf="validDescription.maxLength">Nội dung tối đa 250 kí tự</p>
                 </div>
               </div>
               <div class="form-group">
-                <label for="voucherType">Loại voucher</label>
+                <label for="condition">Điều kiện sử dụng</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="condition"
+                  [(ngModel)]="voucher.conditionApply"
+                  name="condition"
+                  placeholder="Giá trị đơn hàng"
+                  required
+                  (keydown)="revoveInvalid(validconditionApply)" (blur)="validateConditionApply()"
+                />
+                <div class="validate-input" *ngIf="!validconditionApply.done" class="alert alert-danger">
+                  <p class="validate-input-label" *ngIf="validconditionApply.empty">Điều kiện sử dụng không để trống</p>
+                  <p class="validate-input-label" *ngIf="validconditionApply.regex">Điều kiện sử dụng phải là số</p>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="discountType">Loại voucher</label>
                 <select
                   class="form-control"
-                  id="voucherType"
+                  id="discountType"
                   [ngModelOptions]="{ standalone: true }"
                   [(ngModel)]="voucher.voucherType"
                 >
-                  <option value="">Chọn loại voucher</option>
-                  <option value="0">Theo %</option>
+                  <option value="0" slected >Theo %</option>
                   <option value="1">Theo tiền</option>
-                  <!-- Thêm các loại voucher khác nếu cần -->
                 </select>
+                <div *ngIf="!voucher.voucherType" class="alert alert-danger">
+                  <div *ngIf="!voucher.voucherType">Vui lòng chọn loại voucher.</div>
+                </div>
               </div>
-              <div class="form-group">
+
+              <div class="form-group" >
                 <label for="reducedValue">Giá trị giảm</label>
                 <input
                   type="text"
@@ -100,7 +125,33 @@
                   [ngModelOptions]="{ standalone: true }"
                   [(ngModel)]="voucher.reducedValue"
                   placeholder="Giá trị giảm"
+                  [max]="voucher.voucherType === '0' ? 100 : null"
+                  (keydown)="revoveInvalid(validReducedValue)" (blur)="validateReducedValue()"
                 />
+                <div *ngIf="voucher.voucherType === '0' && voucher.voucherType > 100 " class="text-danger">
+                  Giá trị giảm không được quá 100%
+                </div>
+                <div class="validate-input" *ngIf="!validReducedValue.done" class="alert alert-danger">
+                  <p class="validate-input-label" *ngIf="validReducedValue.empty">Giá trị giảm không để trống</p>
+                  <p class="validate-input-label" *ngIf="validReducedValue.regex">Giá trị giảm phải là số</p>
+                </div>
+              </div>
+
+              <div class="form-group" *ngIf="voucher.voucherType == '0'">
+                <label for="maxReduced">Giá trị giảm tối đa</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="maxReduced"
+                  [ngModelOptions]="{ standalone: true }"
+                  [(ngModel)]="voucher.maxReduced"
+                  placeholder="Giá trị giảm tối đa"
+                  (keydown)="revoveInvalid(validMaxReduced)" (blur)="validateMaxReducedValue()"
+                />
+                <div class="validate-input" *ngIf="!validMaxReduced.done" class="alert alert-danger">
+                  <p class="validate-input-label" *ngIf="validMaxReduced.empty">Giá trị giảm tối đa không để trống</p>
+                  <p class="validate-input-label" *ngIf="validMaxReduced.regex">Giá trị giảm tối đa phải là số</p>
+                </div>
               </div>
               <div class="form-group">
                 <label for="quantity">Số lượng</label>
@@ -112,6 +163,73 @@
                   [(ngModel)]="voucher.quantity"
                   placeholder="Số lượng"
                 />
+                <div *ngIf="!voucher.quantity" class="alert alert-danger">
+                  <div *ngIf="!voucher.quantity">Vui lòng nhập số lượng.</div>
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="discountType">Nơi áp dụng</label>
+                <select
+                  class="form-control"
+                  id="kkad"
+                  [ngModelOptions]="{ standalone: true }"
+                  [(ngModel)]="voucher.apply"
+                >
+                  <option value="2" selected>Tất cả mọi nơi</option>
+                  <option value="0">Tại cửa hàng</option>
+                  <option value="1">Mua online</option>
+                  <!-- Thêm các loại voucher khác nếu cần -->
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="discountType">Khách hàng áp dụng</label>
+                <select
+                  class="form-control"
+                  id="kkad"
+                  [ngModelOptions]="{ standalone: true }"
+                  [(ngModel)]="voucher.optionCustomer"
+                >
+                  <option value="0" selected>Tất cả khách hàng</option>
+                  <option value="1">Tùy chọn</option>
+                </select>
+              </div>
+              <div class="form-group" *ngIf="voucher.optionCustomer == 1">
+                <label for="customer">Khách hàng</label>
+                <div class="grid">
+                  <ag-grid-angular
+                    style="width: 100%; height: 300px"
+                    class="ag-theme-balham"
+                    [rowData]="rowData"
+                    [columnDefs]="columnDefs"
+                    [rowSelection]="rowSelection"
+                    [headerHeight]="headerHeight"
+                    [rowHeight]="rowHeight"
+                    [pagination]="true"
+                    [paginationPageSize]="5"
+                    [domLayout]="'autoHeight'"
+                    (gridReady)="onGridReady($event)"
+                  ></ag-grid-angular>
+                </div>
+              </div>
+              <div class="form-group" *ngIf="voucher.optionCustomer == 1">
+                <label for="limitCustomer">Giới hạn số lần sử dụng với mỗi khách hàng</label>
+                <input
+                  type="number"
+                  class="form-control"
+                  id="limitCustomer"
+                  [ngModelOptions]="{ standalone: true }"
+                  [(ngModel)]="voucher.limitCustomer"
+                  placeholder="Số lần sử dụng"
+                />
+              </div>
+              <div class="form-group">
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" id="allow"
+                         (change)="toggleAllowDiscount($event)">
+                  <label class="form-check-label" for="allow">
+                    Cho phép xử dụng cùng giảm giá
+                  </label>
+                </div>
               </div>
               <div class="card-footer">
                 <button type="submit" class="btn btn-primary" (click)="editVoucher()">Submit</button>

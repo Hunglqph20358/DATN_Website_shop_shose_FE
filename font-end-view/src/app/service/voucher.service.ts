@@ -10,8 +10,8 @@ export class VoucherService {
 
   constructor(private http: HttpClient) { }
 
-  getAllVoucher(): Observable<any>{
-    return this.http.get(`${apiURL}get-all-voucher`);
+  getAllVoucher(obj): Observable<any>{
+    return this.http.post(`${apiURL}get-all-voucher`, obj);
   }
   getVoucher(code: string): Observable<any>{
     return this.http.get(`${apiURL}get-voucher?code=${code}`);

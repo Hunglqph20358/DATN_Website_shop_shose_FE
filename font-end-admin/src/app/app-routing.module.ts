@@ -13,7 +13,7 @@ import {RoleGuardService} from './service/role-guard.service';
 
 import {DegiayComponent} from './component/degiay/degiay.component';
 import {ChatlieuComponent} from './component/chatlieu/chatlieu.component';
-import {MausacComponent} from "./component/mausac/mausac.component";
+import {MausacComponent} from './component/mausac/mausac.component';
 import {KichcoComponent} from "./component/kichco/kichco.component";
 import {ThuonghieuComponent} from "./component/thuonghieu/thuonghieu.component";
 import {CreatDiscountComponent} from "./component/discount/creat-discount/creat-discount.component";
@@ -31,25 +31,43 @@ import {ThongKeComponent} from './component/thong-ke/thong-ke.component';
 import {AddStaffComponent} from './component/staff/add-staff/add-staff.component';
 import {OrderSalesCounterComponent} from './component/order-sales-counter/order-sales-counter.component';
 import {UpdateStaffComponent} from './component/staff/update-staff/update-staff.component';
+import {CreatVoucherShipComponent} from "./component/voucher-ship/creat-voucher-ship/creat-voucher-ship.component";
+import {DetailVoucherShipComponent} from "./component/voucher-ship/detail-voucher-ship/detail-voucher-ship.component";
+import {VoucherShipComponent} from "./component/voucher-ship/voucher-ship.component";
+import {EditVoucherShipComponent} from './component/voucher-ship/edit-voucher-ship/edit-voucher-ship.component';
 
 const routes: Routes = [
   {path: '', redirectTo: 'staff', pathMatch: 'full'},
   {path: 'admin/login', component: LoginComponent},
   {path: 'admin/don-hang', component: HomeComponent},
   {path: 'admin/creat-discount', component: CreatDiscountComponent},
-  {path: 'admin/creat-voucher', component: CreatVoucherComponent},
+  {path: 'admin/creat-voucherFS', component: CreatVoucherShipComponent},
+  {path: 'admin/creat-voucher', component: CreatVoucherComponent },
   {path: 'admin/discount', component: DiscountComponent},
   {path: 'admin/discount/:id', component: DetailDiscountComponent},
   {path: 'admin/voucher/:id', component: DetailVoucherComponent},
+  {path: 'admin/voucherFS/:id', component: DetailVoucherShipComponent},
   {path: 'admin/voucher', component: VoucherComponent},
-  {path: 'admin/sua-giam-gia', component: EditDiscountComponent},
-  {path: 'admin/sua-voucher', component: EditVoucherComponent},
+  {path: 'admin/voucherFS', component: VoucherShipComponent},
+  {path: 'admin/sua-giam-gia', component: EditDiscountComponent,  canActivate: [RoleGuardService],
+    data: {
+      expectedRole: ['ADMIN']
+    }},
+  {path: 'admin/sua-voucher', component: EditVoucherComponent, canActivate: [RoleGuardService],
+    data: {
+      expectedRole: ['ADMIN']
+    }},
+  {path: 'admin/sua-voucherFS', component: EditVoucherShipComponent,  canActivate: [RoleGuardService],
+    data: {
+      expectedRole: ['ADMIN']
+    }},
   {path: 'degiay', component: DegiayComponent, canActivate: [RoleGuardService],
     data: {
       expectedRole: ['ADMIN']
     } },
   {path: 'admin/edit-discount/:id', component: EditDiscountComponent},
   {path: 'admin/edit-voucher/:id', component: EditVoucherComponent},
+  {path: 'admin/edit-voucherFS/:id', component: EditVoucherShipComponent},
   {path: 'degiay', component: DegiayComponent},
   {path: 'chatlieu', component: ChatlieuComponent},
   {path: 'mausac', component: MausacComponent},
