@@ -15,6 +15,7 @@ import {ValidateInput} from '../../model/validate-input.model';
 import {CommonFunction} from '../../util/common-function';
 import {VoucherShipService} from '../../service/voucher-ship.service';
 import {ToastrService} from 'ngx-toastr';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-checkout',
@@ -194,58 +195,72 @@ export class CheckoutComponent implements OnInit {
         || !this.validDistrict.done || !this.validWard.done) {
         return;
       }
-      let province = this.listProvince.find(c => c.ProvinceID === this.addressNotLogin.provinceId);
-      // console.log(province);
-      let district = this.listDistrict.find(d => d.DistrictID === this.addressNotLogin.districtId);
-      let ward = this.listWard.find(w => w.WardCode === this.addressNotLogin.wardCode);
-      if (this.checkChoicePay === 1) {
-        const obj = {
-          ...this.order,
-          totalPrice: this.totalMoney,
-          totalPayment: this.totalMoneyPay,
-          shipPrice: this.shipFee,
-          codeVoucher: this.voucher ? this.voucher.code : null,
-          addressReceived: this.addressNotLogin.specificAddress + ', ' + ward.WardName + ', '
-            + district.DistrictName + ', ' + province.ProvinceName,
-          paymentType: 1,
-        };
-        this.orderService.createOrderNotLogin(obj).subscribe(res => {
-          if (res.status === 'OK') {
-            const objCheckOut = {
-              order: res.data,
-              listCart: this.listCart,
-              email: this.email
+      Swal.fire({
+        title: 'Bạn có xác nhận thanh toán đơn hàng ?',
+        text: '',
+        icon: 'info',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Đồng ý'
+      }).then((result) => {
+        if (result.isConfirmed) {
+          let province = this.listProvince.find(c => c.ProvinceID === this.addressNotLogin.provinceId);
+          // console.log(province);
+          let district = this.listDistrict.find(d => d.DistrictID === this.addressNotLogin.districtId);
+          let ward = this.listWard.find(w => w.WardCode === this.addressNotLogin.wardCode);
+          if (this.checkChoicePay === 1) {
+            const obj = {
+              ...this.order,
+              totalPrice: this.totalMoney,
+              totalPayment: this.totalMoneyPay,
+              shipPrice: this.shipFee,
+              codeVoucher: this.voucher ? this.voucher?.code : null,
+              codeVoucherShip: this.voucherShip ? this.voucherShip?.code : null,
+              addressReceived: this.addressNotLogin.specificAddress + ', ' + ward.WardName + ', '
+                + district.DistrictName + ', ' + province.ProvinceName,
+              paymentType: 1,
             };
-            sessionStorage.setItem('order', JSON.stringify(objCheckOut));
-            this.paymentService.createPayment(this.totalMoneyPay).subscribe(resPay => {
-              if (resPay.status === 'OK') {
-                window.location.href = resPay.url;
+            this.orderService.createOrderNotLogin(obj).subscribe(res => {
+              if (res.status === 'OK') {
+                const objCheckOut = {
+                  order: res.data,
+                  listCart: this.listCart,
+                  email: this.email
+                };
+                sessionStorage.setItem('order', JSON.stringify(objCheckOut));
+                this.paymentService.createPayment(this.totalMoneyPay).subscribe(resPay => {
+                  if (resPay.status === 'OK') {
+                    window.location.href = resPay.url;
+                  }
+                });
+              }
+            });
+          } else {
+            const obj = {
+              ...this.order,
+              totalPrice: this.totalMoney,
+              shipPrice: this.shipFee,
+              codeVoucher: this.voucher ? this.voucher?.code : null,
+              codeVoucherShip: this.voucherShip ? this.voucherShip?.code : null,
+              addressReceived: this.addressNotLogin.specificAddress + ', ' + ward.WardName + ', '
+                + district.DistrictName + ', ' + province.ProvinceName,
+              paymentType: 0,
+            };
+            this.orderService.createOrderNotLogin(obj).subscribe(res => {
+              if (res.status === 'OK') {
+                const objCheckOut = {
+                  order: res.data,
+                  listCart: this.listCart,
+                  email: this.email
+                };
+                sessionStorage.setItem('order', JSON.stringify(objCheckOut));
+                this.route.navigate(['cart/checkout-detail']);
               }
             });
           }
-        });
-      } else {
-        const obj = {
-          ...this.order,
-          totalPrice: this.totalMoney,
-          shipPrice: this.shipFee,
-          codeVoucher: this.voucher ? this.voucher.code : null,
-          addressReceived: this.addressNotLogin.specificAddress + ', ' + ward.WardName + ', '
-            + district.DistrictName + ', ' + province.ProvinceName,
-          paymentType: 0,
-        };
-        this.orderService.createOrderNotLogin(obj).subscribe(res => {
-          if (res.status === 'OK') {
-            const objCheckOut = {
-              order: res.data,
-              listCart: this.listCart,
-              email: this.email
-            };
-            sessionStorage.setItem('order', JSON.stringify(objCheckOut));
-            this.route.navigate(['cart/checkout-detail']);
-          }
-        });
-      }
+        }
+      });
     } else {
       this.order.receiver = CommonFunction.trimText(this.order.receiver);
       this.order.receiverPhone = CommonFunction.trimText(this.order.receiverPhone);
@@ -258,59 +273,73 @@ export class CheckoutComponent implements OnInit {
         this.toaStr.error('Vui lòng điền điền địa chỉ giao hàng');
         return;
       }
-      if (this.checkChoicePay === 1) {
-        const obj = {
-          ...this.order,
-          customerDTO: {
-            code: this.user.code,
-          },
-          totalPrice: this.totalMoney,
-          totalPayment: this.totalMoneyPay,
-          shipPrice: this.shipFee,
-          codeVoucher: this.voucher ? this.voucher.code : null,
-          addressReceived: this.address.specificAddress + ', ' + this.address.wards + ', '
-            + this.address.district + ', ' + this.address.province,
-          paymentType: 1,
+      Swal.fire({
+        title: 'Bạn có xác nhận thanh toán đơn hàng ?',
+        text: '',
+        icon: 'info',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Đồng ý'
+      }).then((result) => {
+        if (result.isConfirmed) {
+          if (this.checkChoicePay === 1) {
+            const obj = {
+              ...this.order,
+              customerDTO: {
+                code: this.user.code,
+              },
+              totalPrice: this.totalMoney,
+              totalPayment: this.totalMoneyPay,
+              shipPrice: this.voucherShip ? this.shipFeeReduce : this.shipFee,
+              codeVoucher: this.voucher ? this.voucher?.code : null,
+              codeVoucherShip: this.voucherShip ? this.voucherShip?.code : null,
+              addressReceived: this.address.specificAddress + ', ' + this.address.wards + ', '
+                + this.address.district + ', ' + this.address.province,
+              paymentType: 1,
 
-        };
-        this.orderService.createOrder(obj).subscribe(res => {
-          if (res.status === 'OK') {
-            const objCheckOut = {
-              order: res.data,
-              listCart: this.listCart,
             };
-            sessionStorage.setItem('order', JSON.stringify(objCheckOut));
-            this.paymentService.createPayment(this.totalMoneyPay).subscribe(resPay => {
-              if (resPay.status === 'OK') {
-                window.location.href = resPay.url;
+            this.orderService.createOrder(obj).subscribe(res => {
+              if (res.status === 'OK') {
+                const objCheckOut = {
+                  order: res.data,
+                  listCart: this.listCart,
+                };
+                sessionStorage.setItem('order', JSON.stringify(objCheckOut));
+                this.paymentService.createPayment(this.totalMoneyPay).subscribe(resPay => {
+                  if (resPay.status === 'OK') {
+                    window.location.href = resPay.url;
+                  }
+                });
+              }
+            });
+          } else {
+            const obj = {
+              ...this.order,
+              customerDTO: {
+                code: this.user.code,
+              },
+              totalPrice: this.totalMoney,
+              shipPrice: this.shipFee,
+              codeVoucher: this.voucher ? this.voucher?.code : null,
+              codeVoucherShip: this.voucherShip ? this.voucherShip?.code : null,
+              addressReceived: this.address.specificAddress + ', ' + this.address.wards + ', '
+                + this.address.district + ', ' + this.address.province,
+              paymentType: 0,
+            };
+            this.orderService.createOrder(obj).subscribe(res => {
+              if (res.status === 'OK') {
+                const objCheckOut = {
+                  order: res.data,
+                  listCart: this.listCart,
+                };
+                sessionStorage.setItem('order', JSON.stringify(objCheckOut));
+                this.route.navigate(['cart/checkout-detail']);
               }
             });
           }
-        });
-      } else {
-        const obj = {
-          ...this.order,
-          customerDTO: {
-            code: this.user.code,
-          },
-          totalPrice: this.totalMoney,
-          shipPrice: this.shipFee,
-          codeVoucher: this.voucher ? this.voucher.code : null,
-          addressReceived: this.address.specificAddress + ', ' + this.address.wards + ', '
-            + this.address.district + ', ' + this.address.province,
-          paymentType: 0,
-        };
-        this.orderService.createOrder(obj).subscribe(res => {
-          if (res.status === 'OK') {
-            const objCheckOut = {
-              order: res.data,
-              listCart: this.listCart,
-            };
-            sessionStorage.setItem('order', JSON.stringify(objCheckOut));
-            this.route.navigate(['cart/checkout-detail']);
-          }
-        });
-      }
+        }
+      });
     }
   }
 
@@ -328,6 +357,7 @@ export class CheckoutComponent implements OnInit {
   }
 
   openVoucher() {
+    // this.totalMoneyPay = this.totalMoney;
     this.matDialog.open(PopupVoucherComponent, {
       width: '45%',
       height: '90vh',

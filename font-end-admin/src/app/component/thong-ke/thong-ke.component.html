@@ -7,9 +7,9 @@
       </div>
     </div>
     <div class="block">
-      <h3 class="title">Hôm nay</h3>
+      <h3 class="title">Doanh thu hôm nay</h3>
       <div class="block-item">
-        <div class="left">{{utilService.formatMoney(totalRevenueToday)}}</div>
+        <div class="left">{{totalOrderToDay}} Đơn hàng /{{utilService.formatMoney(totalRevenueToday)}}</div>
       </div>
     </div>
     <div class="block">
@@ -31,9 +31,9 @@
           <kendo-chart-title text="Biểu đồ thống kê"></kendo-chart-title>
           <kendo-chart-tooltip [shared]="true">
             <ng-template kendoChartSharedTooltipTemplate let-category="category" let-points="points" let-indx="i">
-              <div>Ngay:  {{ category }} </div>
-              <div *ngFor="let point of points; index as i">
-                Đơn hàng: {{ point.value }} / {{utilService.formatMoney(categoriesRevenue[i])}}
+              <div><strong>Ngày:</strong>  {{ category }} </div>
+              <div *ngFor="let point of points; let i = index">
+                <strong>Đơn hàng:</strong> {{ point.value }} / {{getRevenue(category)}}
               </div>
             </ng-template>
           </kendo-chart-tooltip>
@@ -43,7 +43,7 @@
 
           </kendo-chart-category-axis>
           <kendo-chart-series>
-            <kendo-chart-series-item type="column" [gap]="3" [spacing]=".25" [data]="[categoriesOrder]">
+            <kendo-chart-series-item type="column" [gap]="3"  [spacing]=".25" [data]="categoriesOrder">
             </kendo-chart-series-item>
           </kendo-chart-series>
         </kendo-chart>

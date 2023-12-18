@@ -6,6 +6,7 @@ import {OrderService} from '../../../service/order.service';
 import Swal from 'sweetalert2';
 import {ToastrService} from 'ngx-toastr';
 import {NoteOrderComponent} from '../note-order/note-order.component';
+import {UtilService} from '../../../util/util.service';
 
 @Component({
   selector: 'app-order-detail',
@@ -24,7 +25,7 @@ export class OrderDetailComponent implements OnInit {
   listOrderHistory: any = [];
   constructor(private orderDetailService: OrderDetailService, public matRef: MatDialogRef<OrderDetailComponent>,
               @Inject(MAT_DIALOG_DATA) public data: any, private orderService: OrderService, private cdr: ChangeDetectorRef, private toastr: ToastrService,
-              private matDiaLog: MatDialog) {
+              private matDiaLog: MatDialog, public utilService: UtilService) {
     this.rowData = [];
     this.columnDefs = [
       {

@@ -57,6 +57,7 @@ export class OrderComponent implements OnInit {
         headerName: 'Mã đơn hàng',
         field: 'code',
         suppressMovable: true,
+        sortable: true,
         cellStyle: {
           'font-weight': '500',
           'font-size': '12px',
@@ -78,6 +79,7 @@ export class OrderComponent implements OnInit {
       {
         headerName: 'Ngày Tạo',
         field: 'createDate',
+        sortable: true,
         suppressMovable: true,
         valueFormatter: params => {
           return formatDateTime(params.data.createDate);
@@ -101,6 +103,8 @@ export class OrderComponent implements OnInit {
         headerName: 'Khách Hàng',
         field: 'customerAdminDTO.fullname',
         suppressMovable: true,
+        filter: true,
+        sortable: true,
         cellStyle: {
           'font-weight': '500',
           'font-size': '12px',
@@ -117,6 +121,7 @@ export class OrderComponent implements OnInit {
       },
       {
         headerName: 'Thanh Toán',
+        sortable: true,
         field: 'statusPayment',
         valueFormatter: params => {
           return params.data.statusPayment === 0 ? 'Đã thanh toán' : 'Chưa thanh toán';
@@ -137,6 +142,7 @@ export class OrderComponent implements OnInit {
       }, {
         headerName: 'Tổng Tiền',
         field: 'totalPayment',
+        sortable: true,
         suppressMovable: true,
         valueFormatter: params => {
           return formatMoney(params.data.totalPayment);
@@ -158,6 +164,8 @@ export class OrderComponent implements OnInit {
         headerName: 'Trạng Thái',
         field: 'status',
         suppressMovable: true,
+        filter: true,
+        sortable: true,
         valueGetter: (params) => {
           const status = params.data.status;
           switch (status) {

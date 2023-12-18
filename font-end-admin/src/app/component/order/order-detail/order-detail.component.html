@@ -90,7 +90,7 @@
             <th scope="row">{{i + 1}}</th>
             <td>{{oh.staffDTO.fullname}}</td>
             <td>{{oh.status}}</td>
-            <td>{{oh.createDate}}</td>
+            <td>{{utilService.formatDateTime(oh.createDate)}}</td>
             <td>{{oh.note}}</td>
           </tr>
           </tbody>

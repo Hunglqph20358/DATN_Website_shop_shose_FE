@@ -2,6 +2,7 @@ import {Component, OnInit} from '@angular/core';
 import {apiURL} from '../../config/apiURL';
 import {UsersDTO} from '../../component/model/UsersDTO';
 import {BehaviorSubject} from 'rxjs';
+import {CartService} from '../../service/cart.service';
 
 @Component({
   selector: 'app-header',
@@ -11,7 +12,11 @@ import {BehaviorSubject} from 'rxjs';
 export class HeaderComponent implements OnInit {
   infoCustomer: UsersDTO;
   size: number;
-  constructor() {
+  totalProducts: number = 0;
+  constructor(private cartService: CartService) {
+    this.cartService.totalProducts$.subscribe((totalProducts) => {
+      this.totalProducts = totalProducts;
+    });
   }
 
   api = apiURL;

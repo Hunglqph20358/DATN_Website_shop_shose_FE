@@ -6,6 +6,7 @@ import Swal from 'sweetalert2';
 import {OrderService} from '../../../service/order.service';
 import {ToastrService} from 'ngx-toastr';
 import {NoteOrderComponent} from '../note-order/note-order.component';
+import {UtilService} from '../../../util/util.service';
 
 @Component({
   selector: 'app-order-detail',
@@ -20,11 +21,11 @@ export class OrderDetailComponent implements OnInit {
   gridColumnApi;
   status: any;
   totalQuantity: number = 0;
-
+  listOrderHistory: any = [];
   constructor(private orderDetailService: OrderDetailService,
               public matRef: MatDialogRef<OrderDetailComponent>,
               @Inject(MAT_DIALOG_DATA) public data: any, private orderService: OrderService, private cdr: ChangeDetectorRef,
-              private toastr: ToastrService,private matDiaLog: MatDialog) {
+              private toastr: ToastrService, private matDiaLog: MatDialog, public utilService: UtilService) {
     this.rowData = [];
     this.columnDefs = [
       {
@@ -89,7 +90,8 @@ export class OrderDetailComponent implements OnInit {
     // console.log(this.data);
     console.log(this.data.data);
     this.orderDetailService.getAllOrderDetailByOrder(this.data.data.id).subscribe(res => {
-      this.rowData = res;
+      this.rowData = res.orderDetail;
+      this.listOrderHistory = res.orderHistory;
       this.totalQuantity = this.rowData.reduce((total, orderDetail) => total + (orderDetail.quantity || 0), 0);
     });
   }
