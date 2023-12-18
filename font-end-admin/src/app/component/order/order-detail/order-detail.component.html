@@ -32,7 +32,7 @@
         <td></td>
         <td></td>
         <td></td>
-        <td>{{data.data?.totalPrice}}</td>
+        <td>{{utilService.formatMoney(data.data?.totalPrice)}}</td>
       </tr>
       <tr>
         <th scope="row">Tổng số lượng sản phẩm</th>
@@ -49,18 +49,25 @@
         <td>{{this.data.data?.codeVoucher}}</td>
       </tr>
       <tr>
+        <th scope="row">Voucher Ship</th>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td>{{this.data.data?.codeVoucherShip}}</td>
+      </tr>
+      <tr>
         <th scope="row">Phí vận chuyển</th>
         <td></td>
         <td></td>
         <td></td>
-        <td>{{data.data?.shipPrice}}</td>
+        <td>{{utilService.formatMoney(data.data?.shipPrice)}}</td>
       </tr>
       <tr>
         <th scope="row">Tổng thanh toán</th>
         <td></td>
         <td></td>
         <td></td>
-        <td>{{ data.data?.totalPayment !== null ? data.data?.totalPayment : 0 }}</td>
+        <td>{{ data.data?.totalPayment !== null ? utilService.formatMoney(data.data?.totalPayment) : 0 }}</td>
       </tr>
       <tr>
         <th scope="row">Hình thức thanh toán</th>
@@ -73,7 +80,14 @@
     </table>
     <br>
     <div class="row">
-      <h4><strong>Lịch sử</strong></h4>
+      <div style="display:flex; justify-content: space-between">
+        <div>
+          <h4><strong>Lịch sử</strong></h4>
+        </div>
+        <div>
+          <button class="btn btn-primary" (click)="sendEmailFromCustomer()">Gửi email</button>
+        </div>
+      </div>
       <div>
         <table class="table">
           <thead>

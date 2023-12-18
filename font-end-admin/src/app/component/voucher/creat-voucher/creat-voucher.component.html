@@ -98,8 +98,8 @@
                   [ngModelOptions]="{ standalone: true }"
                   [(ngModel)]="voucher.voucherType"
                 >
-                  <option value="0" slected >Theo %</option>
-                  <option value="1">Theo tiền</option>
+                  <option value="1" slected >Theo %</option>
+                  <option value="0">Theo tiền</option>
                 </select>
                 <div *ngIf="!voucher.voucherType" class="alert alert-danger">
                   <div *ngIf="!voucher.voucherType">Vui lòng chọn loại voucher.</div>
@@ -115,10 +115,10 @@
                   [ngModelOptions]="{ standalone: true }"
                   [(ngModel)]="voucher.reducedValue"
                   placeholder="Giá trị giảm"
-                  [max]="voucher.voucherType === '0' ? 100 : null"
+                  [max]="voucher.voucherType === '1' ? 100 : null"
                   (keydown)="revoveInvalid(validReducedValue)" (blur)="validateReducedValue()"
                 />
-                <div *ngIf="voucher.voucherType === '0' && voucher.voucherType > 100 " class="text-danger">
+                <div *ngIf="voucher.voucherType === '1' && voucher.voucherType > 100 " class="text-danger">
                   Giá trị giảm không được quá 100%
                 </div>
                 <div class="validate-input" *ngIf="!validReducedValue.done" class="alert alert-danger">
@@ -127,7 +127,7 @@
                 </div>
               </div>
 
-              <div class="form-group" *ngIf="voucher.voucherType == '0'">
+              <div class="form-group" *ngIf="voucher.voucherType == '1'">
                 <label for="maxReduced">Giá trị giảm tối đa</label>
                 <input
                   type="text"

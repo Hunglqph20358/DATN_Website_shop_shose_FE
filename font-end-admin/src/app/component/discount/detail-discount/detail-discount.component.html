@@ -27,13 +27,13 @@
               </tr>
               <tr>
                 <th scope="row">Loại giảm giá</th>
-                <td>{{ discount.discountType == 0 ? 'Theo %' : 'Theo tiền mặt' }}</td>
+                <td>{{ discount.discountType == 1 ? 'Theo %' : 'Theo tiền mặt' }}</td>
               </tr>
               <tr>
                 <th scope="row">Giá trị giảm</th>
                 <td>{{ discount.reducedValue }}</td>
               </tr>
-              <tr *ngIf="discount.discountType == 0">
+              <tr *ngIf="discount.discountType == 1">
                 <th scope="row">Giá trị giảm tối đa</th>
                 <td>{{ discount.maxReduced }}</td>
               </tr>

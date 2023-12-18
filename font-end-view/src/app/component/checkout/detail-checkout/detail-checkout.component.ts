@@ -84,17 +84,8 @@ export class DetailCheckoutComponent implements OnInit {
       });
       Promise.all(orderDetailPromises)
         .then(() => {
-          if (this.email === null || this.email === undefined) {
             this.emailService.sendEmail(this.order).subscribe(res => {
             });
-          } else {
-            const obj = {
-              ...this.order,
-              email: this.email
-            };
-            this.emailService.sendEmailNotLogin(obj).subscribe(res => {
-            });
-          }
         })
         .catch(error => {
           console.error('Error creating order details:', error);

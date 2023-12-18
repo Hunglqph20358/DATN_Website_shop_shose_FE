@@ -109,7 +109,7 @@ export class OrderDetailComponent implements OnInit {
       if (res.event === 'close-note') {
         const obj = {
           id: this.data.data.id,
-          idStaff: this.data.staff.id,
+          idCustomer: this.data.customer.id,
           note: res.data.note
         };
         this.orderService.cancelOrderView(obj).subscribe(res => {

@@ -23,6 +23,7 @@ export class OrderDetailComponent implements OnInit {
   totalQuantity: number = 0;
   noteOrder: string = null;
   listOrderHistory: any = [];
+
   constructor(private orderDetailService: OrderDetailService, public matRef: MatDialogRef<OrderDetailComponent>,
               @Inject(MAT_DIALOG_DATA) public data: any, private orderService: OrderService, private cdr: ChangeDetectorRef, private toastr: ToastrService,
               private matDiaLog: MatDialog, public utilService: UtilService) {
@@ -211,6 +212,24 @@ export class OrderDetailComponent implements OnInit {
           });
           this.cdr.detectChanges();
           this.matRef.close('update-order');
+        });
+      }
+    });
+  }
+
+  sendEmailFromCustomer() {
+    Swal.fire({
+      title: 'Bạn có muốn gửi Email đến khách hàng ?',
+      text: '',
+      icon: 'info',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Đồng ý'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.orderDetailService.sendEmailFromCustomer(this.data.data).subscribe(res => {
+          this.toastr.success('Gửi email đến khách hàng thành công!');
         });
       }
     });
