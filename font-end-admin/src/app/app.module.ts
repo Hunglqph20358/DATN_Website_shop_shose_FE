@@ -81,6 +81,8 @@ import { OrderSalesCounterComponent } from './component/order-sales-counter/orde
 import { UpdateStaffComponent } from './component/staff/update-staff/update-staff.component';
 import { DetailStaffComponent } from './component/staff/detail-staff/detail-staff.component';
 import { OrderSalesDetailComponent } from './component/order-sales-counter/order-sales-detail/order-sales-detail.component';
+import {ZXingScannerModule} from '@zxing/ngx-scanner';
+import { ActionStaffComponent } from './component/staff/action-staff/action-staff.component';
 
 @NgModule({
   declarations: [
@@ -138,6 +140,7 @@ import { OrderSalesDetailComponent } from './component/order-sales-counter/order
     UpdateStaffComponent,
     DetailStaffComponent,
     OrderSalesDetailComponent,
+    ActionStaffComponent,
   ],
   imports: [
     BrowserModule,
@@ -163,7 +166,8 @@ import { OrderSalesDetailComponent } from './component/order-sales-counter/order
     ChartsModule,
     MatDatepickerModule,
     MatNativeDateModule,
-    DateRangePickerModule
+    DateRangePickerModule,
+    ZXingScannerModule
   ],
   bootstrap: [AppComponent],
   providers: [{provide: JWT_OPTIONS, useValue: JWT_OPTIONS},

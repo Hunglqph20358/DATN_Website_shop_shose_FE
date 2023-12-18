@@ -1,14 +1,7 @@
 <div class="container">
   <h1 class="mb-4">Nhân Viên</h1>
   <form class="row g-3" (ngSubmit)="addStaff()">
-    <div class="col-md-12">
-      <label for="profilePicture" class="form-label">Ảnh Đại Diện</label>
-      <input type="file" class="form-control visually-hidden" id="profilePicture" accept="image/*" (change)="onImageChange($event)">
-      <div class="d-flex  align-items-center mb-3">
-        <img src="{{ selectedImage }}" alt="Ảnh đại diện" class="img-thumbnail" style="max-width: 100%;">
-        <button type="button" class="btn btn-secondary ms-2" (click)="onAddImageClick()">Thêm Ảnh</button>
-      </div>
-    </div>
+
     <div class="col-md-6">
       <label for="fullName" class="form-label">Họ và Tên</label>
       <input type="text" class="form-control" id="fullName" name="fullname" placeholder="Nhập họ và tên" [(ngModel)]="form.fullname" [ngModelOptions]="{standalone: true}" (keydown)="revoveInvalid(validReceiver)" (blur)="validateReceiver()">

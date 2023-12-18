@@ -34,4 +34,7 @@ export class OrderService {
   createOrderSales(order: Order): Observable<any>{
     return this.http.post<any>('http://localhost:6868/sales-counter/api/create-order', order);
   }
+  getAllOrderSalesAdmin(obj): Observable<any> {
+    return this.http.post(`http://localhost:6868/sales-counter/api/get-all-order`, obj);
+  }
 }

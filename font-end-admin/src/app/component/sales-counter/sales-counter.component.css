@@ -131,6 +131,9 @@ tr.shadowed-row {
   width: 200px;
   height: 200px;
 }
+.camera-container {
+  display: none;
+}
 
 
 

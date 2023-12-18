@@ -47,7 +47,8 @@ export class UpdateStaffComponent implements OnInit {
     this.validateReceiver();
     this.validateEmail();
     this.validateReceiverPhone();
-    if (!this.validReceiver.done || !this.validEmail.done || !this.validReceiverPhone.done){
+    // this.validateReceiverPassword();
+    if (!this.validReceiver.done || !this.validEmail.done || !this.validReceiverPhone.done ){
       return;
     }
     this.id = this.activeRoute.snapshot.paramMap.get('id');
