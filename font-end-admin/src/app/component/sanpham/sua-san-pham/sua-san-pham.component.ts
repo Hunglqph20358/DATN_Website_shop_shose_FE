@@ -10,7 +10,9 @@ import {BrandInterface} from '../../../interface/brand-interface';
 import {SoleInterface} from '../../../interface/sole-interface';
 import {MaterialInterface} from '../../../interface/material-interface';
 import {ActivatedRoute, Router} from '@angular/router';
-
+import {ValidateInput} from '../../model/validate-input';
+import {CommonFunction} from '../../../util/common-function';
+import Swal from 'sweetalert2';
 @Component({
   selector: 'app-sua-san-pham',
   templateUrl: './sua-san-pham.component.html',
@@ -35,7 +37,13 @@ export class SuaSanPhamComponent implements OnInit {
   material: MaterialInterface[] = [];
   rowData = [];
   data: any;
-
+  validName: ValidateInput = new ValidateInput();
+  validBrand: ValidateInput = new ValidateInput();
+  validCategory: ValidateInput = new ValidateInput();
+  validSole: ValidateInput = new ValidateInput();
+  validMaterial: ValidateInput = new ValidateInput();
+  validPrice: ValidateInput = new ValidateInput();
+  validDescription: ValidateInput = new ValidateInput();
   constructor(private prdsv: ProductService,
               private brsv: BrandService,
               private ctsv: CategoryService,
@@ -97,8 +105,57 @@ export class SuaSanPhamComponent implements OnInit {
       this.material = res;
     });
   }
+  revoveInvalid(result) {
+    result.done = true;
+  }
+
+  validateName() {
+    this.validName = CommonFunction.validateInput(this.product.name, 250, null);
+  }
+  validateDescription() {
+    this.validDescription = CommonFunction.validateInput(this.product.description, 250, null);
+  }
+  validatePrice() {
+    this.validPrice = CommonFunction.validateInput(this.product.price, 250, null);
+  }
+  validateBrand() {
+    this.validBrand = CommonFunction.validateInput(this.product.idBrand, 250, null);
+  }
+  validateCategory() {
+    this.validCategory = CommonFunction.validateInput(this.product.idCategory, 250, null);
+  }
+  validateSole() {
+    this.validSole = CommonFunction.validateInput(this.product.idSole, 250, null);
+  }
+  validateMaterial() {
+    this.validMaterial = CommonFunction.validateInput(this.product.idMaterial, 250, null);
+  }
 
   clickUpdate(id: number) {
+    this.product.name = CommonFunction.trimText(this.product.name);
+    this.product.description = CommonFunction.trimText(this.product.description);
+    this.product.price = CommonFunction.trimText(this.product.price);
+    this.validateName();
+    this.validateDescription();
+    this.validatePrice();
+    this.validateBrand();
+    this.validateCategory();
+    this.validateSole();
+    this.validateMaterial();
+    if (!this.validName.done || !this.validDescription.done || !this.validPrice.done || !this.validBrand
+    || !this.validCategory.done || !this.validSole.done || !this.validMaterial.done) {
+      return;
+    }
+    Swal.fire({
+      title: 'Bạn chắc muốn sửa?',
+      text: 'Bạn sẽ không thể hoàn tác!',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Sửa!'
+    }).then((result1) => {
+      if (result1.isConfirmed) {
     const product = {
       code: this.product.code,
       name: this.product.name,
@@ -119,6 +176,13 @@ export class SuaSanPhamComponent implements OnInit {
         console.error('product add error', error);
       }
     );
+    Swal.fire(
+          'Sửa!',
+          'Sửa thành công',
+          'success'
+        );
+      }
+    });
   }
 
 }

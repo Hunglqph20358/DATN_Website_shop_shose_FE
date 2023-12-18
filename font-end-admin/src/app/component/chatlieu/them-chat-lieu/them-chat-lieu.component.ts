@@ -2,6 +2,9 @@ import {Component, Inject, OnInit} from '@angular/core';
 import {MatDialogRef, MAT_DIALOG_DATA} from '@angular/material/dialog';
 import {MaterialpostService} from '../../../service/materialpost.service';
 import * as _ from 'lodash';
+import {ValidateInput} from '../../model/validate-input';
+import {CommonFunction} from '../../../util/common-function';
+import Swal from 'sweetalert2';
 
 
 @Component({
@@ -12,13 +15,9 @@ import * as _ from 'lodash';
 export class ThemChatLieuComponent implements OnInit {
   Name: string;
   Description: string;
-  Status: number;
-  blName: boolean;
-  blDescription: boolean;
-  blStatus: boolean;
-  maxLengthName: boolean;
-  checkValidateDisableSave = false;
-
+  Status: number = 0;
+  validName: ValidateInput = new ValidateInput();
+  validDescription: ValidateInput = new ValidateInput();
   rowData = [];
 
   constructor(
@@ -34,13 +33,29 @@ export class ThemChatLieuComponent implements OnInit {
   }
 
   clickadd() {
-    if (this.validate()) {
-      const category = {
+    this.Name = CommonFunction.trimText(this.Name);
+    this.Description = CommonFunction.trimText(this.Description);
+    this.validateName();
+    this.validateDescription();
+    if (!this.validName.done || !this.validDescription.done) {
+      return;
+    }
+    Swal.fire({
+      title: 'Bạn muốn thêm?',
+      text: 'Thao tác này sẽ không hoàn tác!',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Thêm'
+    }).then((result1) => {
+      if (result1.isConfirmed) {
+    const material = {
         name: this.Name,
         description: this.Description,
         status: this.Status
       };
-      this.mtsv.CreateMaterial(category).subscribe(
+    this.mtsv.CreateMaterial(material).subscribe(
         result => {
           console.log('Material add success', result);
           this.dialogRef.close('addMaterial');
@@ -49,75 +64,26 @@ export class ThemChatLieuComponent implements OnInit {
           console.error('Material add error', error);
         }
       );
-    }
+    Swal.fire(
+          'Thêm',
+          'Thêm thành công',
+          'success'
+        );
+      }
+    });
   }
 
   ngOnInit(): void {
     this.getMaterial();
   }
-
-  clearAllErrors() {
-    this.blName = false;
-    // this.codePatten = false;
-    // this.maxlengthCode = false;
-    // this.blName = false;
-    this.maxLengthName = false;
-    this.blStatus = false;
-    this.blDescription = false;
-    // this.blGradeLevel = false;
-    // this.blDept = false;
-    // this.maxlengthDescription = false;
+  revoveInvalid(result) {
+    result.done = true;
   }
 
-  validate(): boolean {
-    const errors = [];
-    if (_.isNil(this.Name.trim()) || _.isEmpty(this.Name.trim())) {
-      errors.push('blName');
-    }
-    if (_.isNil(this.Name) || this.Name.trim().length > 250) {
-      errors.push('maxLengthName');
-    }
-    if (_.isNil(this.Description.trim()) || _.isEmpty(this.Description.trim())) {
-      errors.push('blDescription');
-    }
-    if (_.isNil(this.Status)) {
-      errors.push('blStatus');
-    }
-    // if (this.subjectSchool.code.trim().match(/[^\x00-\x7F]+/)) {
-    //   errors.push('codePatten');
-    // }
-    // if (_.isNil(this.subjectSchool.name.trim()) || _.isEmpty(this.subjectSchool.name.trim())) {
-    //   errors.push('blName');
-    // }
-    // if (this.subjectSchool.name.trim().length > 250) {
-    //   errors.push('maxlengthName');
-    // }
-    // if (_.isNil(this.subjectSchool.gradeLevel)) {
-    //   errors.push('blGradeLevel');
-    // }
-    // if (this.subjectSchool.department.length === 0) {
-    //   errors.push('blDept');
-    // }
-    // if (this.subjectSchool.description.trim().length > 500) {
-    //   this.maxlengthDescription = true;
-    //   errors.push('maxlengthDescription');
-    // }
-    this.clearAllErrors();
-    this.setErrors(errors);
-    // if (errors.length <= 0) {
-    //   this.checkValidateDisableSave = false;
-    //   return true;
-    // } else {
-    //   this.checkValidateDisableSave = true;
-    //   return false;
-    // }
-    this.checkValidateDisableSave = errors.length > 0;
-    return errors.length === 0;
+  validateName() {
+    this.validName = CommonFunction.validateInput(this.Name, 250, null);
   }
-
-  setErrors(errorArray) {
-    for (const error of errorArray) {
-      this[error] = true;
-    }
+  validateDescription() {
+    this.validDescription = CommonFunction.validateInput(this.Description, 250, null);
   }
 }

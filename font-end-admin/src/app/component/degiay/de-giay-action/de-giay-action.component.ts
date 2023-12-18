@@ -4,6 +4,7 @@ import {MatDialog} from '@angular/material/dialog';
 import {SoleService} from '../../../service/sole.service';
 import {DegiayComponent} from '../degiay.component';
 import {ICellRendererAngularComp} from 'ag-grid-angular';
+import Swal from 'sweetalert2';
 @Component({
   selector: 'app-de-giay-action',
   templateUrl: './de-giay-action.component.html',
@@ -49,11 +50,28 @@ export class DeGiayActionComponent implements ICellRendererAngularComp, OnInit {
     });
   }
   deleteSole(sole?: any) {
+    Swal.fire({
+      title: 'Bạn có chắc muốn xóa!',
+      text: 'Bạn sẽ không thể hoàn tác!',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Xóa!'
+    }).then((result) => {
+      if (result.isConfirmed) {
     sole = this.params.id;
     console.log(sole);
     this.slsv.DeleteSole(sole).subscribe(() => {
       this.degiayComponent.ngOnInit();
       this.cdr.detectChanges();
+    });
+    Swal.fire(
+          'Xóa!',
+          'Xóa thành công',
+          'success'
+    );
+      }
     });
   }
 

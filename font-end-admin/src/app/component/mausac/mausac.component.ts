@@ -25,7 +25,7 @@ export class MausacComponent implements OnInit {
         field: 'name',
         sortable: true,
         filter: true,
-        width: 350
+        width: 330
       },
       {headerName: 'Ngày tạo', field: 'createDate', sortable: true, filter: true, width: 350},
       {headerName: 'Chức năng', field: '', cellRendererFramework: MauSacActionComponent, width: 430},

@@ -31,7 +31,7 @@ export class ThuonghieuComponent implements OnInit {
       {headerName: 'Trạng thái', field: 'status', sortable: true, filter: true, valueGetter: (params) => {
           return params.data.status === 0 ? 'Hoạt động' : 'Ngưng hoạt động';
         }},
-      {headerName: 'Chức năng', field: '', cellRendererFramework: ThuongHieuActionComponent, width: 330},
+      {headerName: 'Chức năng', field: '', cellRendererFramework: ThuongHieuActionComponent, width: 310},
     ];
   }
 

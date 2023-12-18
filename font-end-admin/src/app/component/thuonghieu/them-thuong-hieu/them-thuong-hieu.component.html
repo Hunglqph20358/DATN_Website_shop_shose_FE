@@ -2,7 +2,11 @@
 <div mat-dialog-content class="example-container">
   <mat-form-field appearance="outline">
     <mat-label>Tên thương hiệu</mat-label>
-    <input matInput [(ngModel)]="Name" placeholder="Tên thương hiệu">
+    <input matInput [(ngModel)]="Name" placeholder="Tên thương hiệu" (keydown)="revoveInvalid(validName)" (blur)="validateName()">
+    <div class="validate-input" *ngIf="!validName.done">
+      <p class="validate-input-label" *ngIf="validName.empty">Tên không được để trống</p>
+      <p class="validate-input-label" *ngIf="validName.maxLength">Tên màu sắc 250 kí tự</p>
+    </div>
   </mat-form-field>
   <mat-radio-group [(ngModel)]="status">
     <mat-label>Trạng thái</mat-label>

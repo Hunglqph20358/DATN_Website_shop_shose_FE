@@ -2,25 +2,20 @@
 <div mat-dialog-content class="example-container">
   <mat-form-field appearance="outline">
     <mat-label>Tên danh mục</mat-label>
-    <input [(ngModel)]="Name" name="Name" matInput placeholder="Tên danh mục" (change)="validate()">
-    <small style="color: red;font-size: 12px" class="error-validate" *ngIf="blName">
-      Vui lòng nhập tên chất liệu
-    </small>
-    <small style="color: red;font-size: 12px" class="error-validate" *ngIf="maxLengthName">
-      Vui lòng nhập tên dưới 250 kí tự
-    </small>
+    <input [(ngModel)]="Name" name="Name" matInput placeholder="Tên danh mục" (keydown)="revoveInvalid(validName)" (blur)="validateName()">
+    <div class="validate-input" *ngIf="!validName.done">
+      <p class="validate-input-label" *ngIf="validName.empty">Tên không được để trống</p>
+      <p class="validate-input-label" *ngIf="validName.maxLength">Tên màu sắc 250 kí tự</p>
+    </div>
   </mat-form-field>
-  <mat-radio-group [(ngModel)]="Status" name="Status"(change)="validate()">
+  <mat-radio-group [(ngModel)]="Status" name="Status">
     <mat-label>Trạng thái</mat-label>
-    <mat-radio-button  value="0">Hoat dong</mat-radio-button>
-    <mat-radio-button value="1">Ngung hoat dong</mat-radio-button>
-    <small style="color: red;font-size: 12px" class="error-validate" *ngIf="blStatus">
-      Vui lòng chọn trạng thái
-    </small>
+    <mat-radio-button  [value]="0">Hoat dong</mat-radio-button>
+    <mat-radio-button [value]="1">Ngung hoat dong</mat-radio-button>
   </mat-radio-group>
 </div>
 <div mat-dialog-actions [align]="'end'">
   <button mat-raised-button color="warn" mat-dialog-close>Đóng</button>
-  <button mat-raised-button color="primary"(click)="clickadd()" [disabled]="checkValidateDisableSave">Thêm</button>
+  <button mat-raised-button color="primary"(click)="clickadd()">Thêm</button>
 </div>
 

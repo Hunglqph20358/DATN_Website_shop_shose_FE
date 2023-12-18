@@ -4,6 +4,7 @@ import {MatDialog} from '@angular/material/dialog';
 import {BrandService} from '../../../service/brand.service';
 import {ICellRendererAngularComp} from 'ag-grid-angular';
 import {ThuonghieuComponent} from '../thuonghieu.component';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-thuong-hieu-action',
@@ -43,10 +44,27 @@ export class ThuongHieuActionComponent implements ICellRendererAngularComp, OnIn
     });
   }
   deleteBrand(brand?: any) {
+    Swal.fire({
+      title: 'Bạn có chắc muốn xóa!',
+      text: 'Bạn sẽ không thể hoàn tác!',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Xóa!'
+    }).then((result) => {
+      if (result.isConfirmed) {
     brand = this.params.id;
     this.brsv.DeleteBrand(brand).subscribe(() => {
       this.thuonghieuComponent.ngOnInit();
       this.cdr.detectChanges();
+    });
+    Swal.fire(
+          'Xóa!',
+          'Xóa thành công',
+          'success'
+        );
+      }
     });
   }
 

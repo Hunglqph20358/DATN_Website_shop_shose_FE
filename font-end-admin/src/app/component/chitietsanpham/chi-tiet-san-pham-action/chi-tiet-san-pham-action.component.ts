@@ -7,7 +7,7 @@ import {ProductdetailService} from '../../../service/productdetail.service';
 import {ChitietsanphamComponent} from '../chitietsanpham.component';
 import {SuaDanhMucComponent} from '../../danhmuc/sua-danh-muc/sua-danh-muc.component';
 import {SuaChiTietSanPhamComponent} from '../sua-chi-tiet-san-pham/sua-chi-tiet-san-pham.component';
-
+import Swal from 'sweetalert2';
 @Component({
   selector: 'app-chi-tiet-san-pham-action',
   templateUrl: './chi-tiet-san-pham-action.component.html',
@@ -45,10 +45,27 @@ export class ChiTietSanPhamActionComponent implements ICellRendererAngularComp, 
     });
   }
   deleteProductDetail(productDetail?: any) {
+    Swal.fire({
+      title: 'Bạn có chắc muốn xóa!',
+      text: 'Bạn sẽ không thể hoàn tác!',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Xóa!'
+    }).then((result) => {
+      if (result.isConfirmed) {
     productDetail = this.params.id;
     this.prddtsv.DeleteProductDetail(productDetail).subscribe(() => {
       this.chitietsanphamComponent.ngOnInit();
       this.cdr.detectChanges();
+    });
+    Swal.fire(
+          'Xóa!',
+          'Xóa thành công',
+          'success'
+        );
+      }
     });
   }
 

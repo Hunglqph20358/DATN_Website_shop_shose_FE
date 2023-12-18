@@ -6,6 +6,7 @@ import {MatDialog} from '@angular/material/dialog';
 import {SanphamComponent} from '../sanpham.component';
 import {ProductService} from '../../../service/product.service';
 import {ActivatedRoute} from '@angular/router';
+import Swal from 'sweetalert2';
 @Component({
   selector: 'app-san-pham-action',
   templateUrl: './san-pham-action.component.html',
@@ -25,10 +26,27 @@ export class SanPhamActionComponent implements ICellRendererAngularComp, OnInit 
     this.getAllProduct();
   }
   deleteProduct(product?: any) {
+    Swal.fire({
+      title: 'Bạn có chắc muốn xóa!',
+      text: 'Bạn sẽ không thể hoàn tác!',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Xóa!'
+    }).then((result) => {
+      if (result.isConfirmed) {
     product = this.params.id;
     this.prdsv.DeleteProduct(product).subscribe(() => {
       this.sanphamComponent.ngOnInit();
       this.cdr.detectChanges();
+    });
+    Swal.fire(
+          'Xóa!',
+          'Xóa thành công',
+          'success'
+        );
+      }
     });
   }
   openUpdate(){

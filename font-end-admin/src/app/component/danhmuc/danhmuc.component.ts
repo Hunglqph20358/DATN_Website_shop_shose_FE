@@ -27,7 +27,7 @@ export class DanhmucComponent implements OnInit {
       {headerName: 'Trạng thái', field: 'status', sortable: true, filter: true, valueGetter: (params) => {
           return params.data.status === 0 ? 'Hoạt động' : 'Ngưng hoạt động';
         }, width: 250},
-      {headerName: 'Chức năng', field: '', cellRendererFramework: ActionCategoryRedererComponent, width: 169}];
+      {headerName: 'Chức năng', field: '', cellRendererFramework: ActionCategoryRedererComponent, width: 140}];
   }
 
   ngOnInit(): void {

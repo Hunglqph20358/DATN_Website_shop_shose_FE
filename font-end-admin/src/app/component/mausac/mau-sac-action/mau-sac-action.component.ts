@@ -4,6 +4,7 @@ import {ICellRendererAngularComp} from 'ag-grid-angular';
 import {MatDialog} from '@angular/material/dialog';
 import {MausacService} from '../../../service/mausac.service';
 import {MausacComponent} from '../mausac.component';
+import Swal from 'sweetalert2';
 @Component({
   selector: 'app-mau-sac-action',
   templateUrl: './mau-sac-action.component.html',
@@ -49,10 +50,27 @@ export class MauSacActionComponent implements ICellRendererAngularComp, OnInit {
     });
   }
   deleteColor(color?: any) {
-    color = this.params.id;
-    this.mssv.DeleteMauSac(color).subscribe(() => {
-      this.mausacComponent.ngOnInit();
-      this.cdr.detectChanges();
+    Swal.fire({
+      title: 'Bạn có chắc muốn xóa!',
+      text: 'Bạn sẽ không thể hoàn tác!',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Xóa!'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        color = this.params.id;
+        this.mssv.DeleteMauSac(color).subscribe(() => {
+          this.mausacComponent.ngOnInit();
+          this.cdr.detectChanges();
+        });
+        Swal.fire(
+          'Xóa!',
+          'Xóa thành công',
+          'success'
+        );
+      }
     });
   }
 

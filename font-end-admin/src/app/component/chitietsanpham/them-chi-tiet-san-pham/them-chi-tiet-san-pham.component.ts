@@ -7,7 +7,9 @@ import {SizeService} from '../../../service/size.service';
 import {SizeInterface} from '../../../interface/size-interface';
 import {ColorInterface} from '../../../interface/color-interface';
 import {ProductInterface} from '../../../interface/product-interface';
-
+import {ValidateInput} from '../../model/validate-input';
+import {CommonFunction} from '../../../util/common-function';
+import Swal from 'sweetalert2';
 @Component({
   selector: 'app-them-chi-tiet-san-pham',
   templateUrl: './them-chi-tiet-san-pham.component.html',
@@ -17,12 +19,16 @@ export class ThemChiTietSanPhamComponent implements OnInit {
   IdProduct: number;
   IdColor: number;
   IdSize: number;
-  shoeCollar: number;
+  shoeCollar: number = 0;
   quantity: string;
   size: SizeInterface[] = [];
   color: ColorInterface[] = [];
   product: ProductInterface[] = [];
   rowData = [];
+  validQuantity: ValidateInput = new ValidateInput();
+  validColor: ValidateInput = new ValidateInput();
+  validSize: ValidateInput = new ValidateInput();
+  validProduct: ValidateInput = new ValidateInput();
   constructor(public dialogRef: MatDialogRef<ThemChiTietSanPhamComponent>,
               @Inject(MAT_DIALOG_DATA) public data: any,
               private prddtsv: ProductdetailService,
@@ -50,15 +56,49 @@ export class ThemChiTietSanPhamComponent implements OnInit {
       this.product = res;
     });
   }
+  revoveInvalid(result) {
+    result.done = true;
+  }
+
+  validateQuantity() {
+    this.validQuantity = CommonFunction.validateInput(this.quantity, 250, null);
+  }
+  validateColor() {
+    this.validColor = CommonFunction.validateInput(this.IdColor, 250, null);
+  }
+  validateSize() {
+    this.validSize = CommonFunction.validateInput(this.IdSize, 250, null);
+  }
+  validateProduct() {
+    this.validProduct = CommonFunction.validateInput(this.IdProduct, 250, null);
+  }
   clickadd(){
-      const productDetail = {
+    this.quantity = CommonFunction.trimText(this.quantity);
+    this.validateQuantity();
+    this.validateColor();
+    this.validateProduct();
+    this.validateSize();
+    if (!this.validQuantity.done || !this.validProduct.done || !this.validColor.done || !this.validSize.done ) {
+      return;
+    }
+    Swal.fire({
+      title: 'Bạn muốn thêm?',
+      text: 'Thao tác này sẽ không hoàn tác!',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Thêm!'
+    }).then((result1) => {
+      if (result1.isConfirmed) {
+    const productDetail = {
         idProduct: this.IdProduct,
         idColor: this.IdColor,
         idSize: this.IdSize,
         shoeCollar: this.shoeCollar,
         quantity: this.quantity
       };
-      this.prddtsv.CreateProductDetail(productDetail).subscribe(
+    this.prddtsv.CreateProductDetail(productDetail).subscribe(
         result => {
           console.log('productDetail add success', result);
           this.dialogRef.close('addProductDetail');
@@ -67,6 +107,13 @@ export class ThemChiTietSanPhamComponent implements OnInit {
           console.error('productDetail add error', error);
         }
       );
+    Swal.fire({
+          title: 'Thêm!',
+          text: 'Thêm thành công',
+          icon: 'success'
+        });
+      }
+    });
   }
 
 }

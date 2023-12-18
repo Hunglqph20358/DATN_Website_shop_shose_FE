@@ -24,14 +24,15 @@ export class DegiayComponent implements OnInit {
         headerName: 'Chiều cao đế',
         field: 'soleHeight',
         sortable: true,
-        filter: true
+        filter: true, width: 130
       },
-      {headerName: 'Chất liệu đế', field: 'soleMaterial', sortable: true, filter: true},
-      {headerName: 'Ngày bắt đầu', field: 'createDate', sortable: true, filter: true},
-      {headerName: 'Ngày Sửa ', field: 'updateDate', sortable: true, filter: true},
+      {headerName: 'Chất liệu đế', field: 'soleMaterial', sortable: true, filter: true, width: 170},
+      {headerName: 'Ngày bắt đầu', field: 'createDate', sortable: true, filter: true, width: 160},
+      {headerName: 'Ngày Sửa ', field: 'updateDate', sortable: true, filter: true, width: 160},
+      {headerName: 'Mô tả', field: 'description', sortable: true, filter: true},
       {headerName: 'Trạng thái', field: 'status', sortable: true, filter: true, valueGetter: (params) => {
           return params.data.status === 0 ? 'Hoạt động' : 'Ngưng hoạt động';
-        }},
+        }, width: 160},
       {headerName: 'Chức năng', field: '', cellRendererFramework: DeGiayActionComponent, width: 130},
     ];
   }

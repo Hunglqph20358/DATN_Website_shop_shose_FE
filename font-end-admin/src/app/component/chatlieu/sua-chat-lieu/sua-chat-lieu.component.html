@@ -2,28 +2,23 @@
 <div mat-dialog-content class="example-container">
   <mat-form-field appearance="outline">
     <mat-label>Tên chất liệu</mat-label>
-    <input [(ngModel)]="data.name" name="name" #Name="ngModel" matInput placeholder="Tên chất liệu" (change)="validate()">
-    <small style="color: red;font-size: 12px" class="error-validate" *ngIf="blName">
-      Vui lòng nhập tên chất liệu
-    </small>
-    <small style="color: red;font-size: 12px" class="error-validate" *ngIf="maxLengthName">
-      Vui lòng nhập tên dưới 250 kí tự
-    </small>
+    <input [(ngModel)]="data.name" name="name" #Name="ngModel" matInput placeholder="Tên chất liệu" (keydown)="revoveInvalid(validName)" (blur)="validateName()">
+    <div class="validate-input" *ngIf="!validName.done">
+      <p class="validate-input-label" *ngIf="validName.empty">Tên không được để trống</p>
+      <p class="validate-input-label" *ngIf="validName.maxLength">Tên màu sắc 250 kí tự</p>
+    </div>
   </mat-form-field>
   <mat-form-field appearance="outline">
     <mat-label>Mô tả</mat-label>
-    <input [(ngModel)]="data.description"  name="Description" #Name="ngModel" matInput placeholder="Mô tả" (change)="validate()">
-    <small style="color: red;font-size: 12px" class="error-validate" *ngIf="blDescription">
-      Vui lòng nhập mô tả chất liệu
-    </small>
+    <input [(ngModel)]="data.description"  name="Description" #Name="ngModel" matInput placeholder="Mô tả" (keydown)="revoveInvalid(validDescription)" (blur)="validateDescription()">
+    <div class="validate-input" *ngIf="!validDescription.done">
+      <p class="validate-input-label" *ngIf="validDescription.empty">Mô tả không được để trống</p>
+    </div>
   </mat-form-field>
-  <mat-radio-group [(ngModel)]="data.status"  name="status" #Name="ngModel"(change)="validate()">
+  <mat-radio-group [(ngModel)]="data.status"  name="status" #Name="ngModel">
     <mat-label>Trạng thái</mat-label>
     <mat-radio-button [value]="0" >Hoạt Động </mat-radio-button>
     <mat-radio-button [value]="1">Ngừng Hoạt Động</mat-radio-button>
-    <small style="color: red;font-size: 12px" class="error-validate" *ngIf="blStatus">
-      Vui lòng chọn trạng thái
-    </small>
   </mat-radio-group>
 </div>
 <div mat-dialog-actions [align]="'end'">

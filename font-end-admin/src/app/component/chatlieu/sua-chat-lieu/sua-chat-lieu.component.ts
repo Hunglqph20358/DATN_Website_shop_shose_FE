@@ -2,6 +2,9 @@ import {ChangeDetectorRef, Component, Inject, OnInit} from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import {MaterialpostService} from '../../../service/materialpost.service';
 import * as _ from 'lodash';
+import {CommonFunction} from '../../../util/common-function';
+import {ValidateInput} from '../../model/validate-input';
+import Swal from 'sweetalert2';
 @Component({
   selector: 'app-sua-chat-lieu',
   templateUrl: './sua-chat-lieu.component.html',
@@ -9,16 +12,30 @@ import * as _ from 'lodash';
 })
 export class SuaChatLieuComponent implements OnInit{
   rowData = [];
-  blName: boolean;
-  blDescription: boolean;
-  blStatus: boolean;
-  maxLengthName: boolean;
-  checkValidateDisableSave = false;
+  validName: ValidateInput = new ValidateInput();
+  validDescription: ValidateInput = new ValidateInput();
   constructor(
     public dialogRef: MatDialogRef<SuaChatLieuComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any,
     private mtsv: MaterialpostService) { }
   clickUpdate(id: number){
+    this.data.name = CommonFunction.trimText(this.data.name);
+    this.data.description = CommonFunction.trimText(this.data.description);
+    this.validateName();
+    this.validateDescription();
+    if (this.validName.done === false || !this.validDescription.done) {
+      return;
+    }
+    Swal.fire({
+      title: 'Bạn chắc muốn sửa?',
+      text: 'Bạn sẽ không thể hoàn tác!',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Sửa!'
+    }).then((result1) => {
+      if (result1.isConfirmed) {
     const material = {
       name: this.data.name,
       description: this.data.description,
@@ -33,69 +50,23 @@ export class SuaChatLieuComponent implements OnInit{
         console.error('Material add error', error);
       }
     );
+    Swal.fire(
+          'Sửa!',
+          'Sửa thành công',
+          'success'
+        );
+      }
+    });
   }
   ngOnInit(): void {
   }
-  setErrors(errorArray) {
-    for (const error of errorArray) {
-      this[error] = true;
-    }
+  revoveInvalid(result) {
+    result.done = true;
   }
-  validate(): boolean {
-    debugger
-    const errors = [];
-    if (_.isNil(this.data.name.trim()) || _.isEmpty(this.data.name.trim())) {
-      errors.push('blName');
-    }
-    if (_.isNil(this.data.name) || this.data.name.trim().length > 250) {
-      errors.push('maxLengthName');
-    }
-    if (_.isNil(this.data.description.trim()) || _.isEmpty(this.data.description.trim())) {
-      errors.push('blDescription');
-    }
-    if (_.isNil(this.data.status)) {
-      errors.push('blStatus');
-    }
-    // if (this.subjectSchool.code.trim().match(/[^\x00-\x7F]+/)) {
-    //   errors.push('codePatten');
-    // }
-    // if (_.isNil(this.subjectSchool.name.trim()) || _.isEmpty(this.subjectSchool.name.trim())) {
-    //   errors.push('blName');
-    // }
-    // if (this.subjectSchool.name.trim().length > 250) {
-    //   errors.push('maxlengthName');
-    // }
-    // if (_.isNil(this.subjectSchool.gradeLevel)) {
-    //   errors.push('blGradeLevel');
-    // }
-    // if (this.subjectSchool.department.length === 0) {
-    //   errors.push('blDept');
-    // }
-    // if (this.subjectSchool.description.trim().length > 500) {
-    //   this.maxlengthDescription = true;
-    //   errors.push('maxlengthDescription');
-    // }
-    this.clearAllErrors();
-    this.setErrors(errors);
-    if (errors.length <= 0) {
-      this.checkValidateDisableSave = false;
-      return true;
-    } else {
-      this.checkValidateDisableSave = true;
-      return false;
-    }
+  validateName() {
+    this.validName = CommonFunction.validateInput(this.data.name, 250, null);
   }
-  clearAllErrors() {
-    this.blName = false;
-    // this.codePatten = false;
-    // this.maxlengthCode = false;
-    // this.blName = false;
-    this.maxLengthName = false;
-    this.blStatus = false;
-    this.blDescription = false;
-    // this.blGradeLevel = false;
-    // this.blDept = false;
-    // this.maxlengthDescription = false;
+  validateDescription() {
+    this.validDescription = CommonFunction.validateInput(this.data.description, 250, null);
   }
-
 }

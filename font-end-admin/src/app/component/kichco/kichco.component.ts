@@ -30,7 +30,7 @@ export class KichcoComponent implements OnInit {
       {headerName: 'Trạng thái', field: 'status', sortable: true, filter: true, valueGetter: (params) => {
           return params.data.status === 0 ? 'Hoạt động' : 'Ngưng hoạt động';
         }},
-      {headerName: 'Chức năng', field: '', cellRendererFramework: KichCoActionComponent, width: 385},
+      {headerName: 'Chức năng', field: '', cellRendererFramework: KichCoActionComponent, width: 360},
     ];
   }
 

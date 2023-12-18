@@ -34,7 +34,7 @@ export class ChatlieuComponent implements OnInit {
           return params.data.status === 0 ? 'Hoạt động' : 'Ngưng hoạt động';
         }
       },
-      {headerName: 'Chức năng', field: '', cellRendererFramework: ActionRendererComponent, width: 130},
+      {headerName: 'Chức năng', field: '', cellRendererFramework: ActionRendererComponent, width: 110},
     ];
   }
 

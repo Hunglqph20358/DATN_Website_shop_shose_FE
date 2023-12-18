@@ -34,7 +34,7 @@ export class ChitietsanphamComponent implements OnInit {
       {headerName: 'Tên màu sắc', field: 'idColor', sortable: true, filter: true, width: 150, valueGetter: params => {
           return params.data.colorDTO.name;
         }},
-      {headerName: 'Số size', field: 'idSize', sortable: true, filter: true, width: 150, valueGetter: params => {
+      {headerName: 'Số size', field: 'idSize', sortable: true, filter: true, width: 100, valueGetter: params => {
           return params.data.sizeDTO.sizeNumber;
         }},
       {headerName: 'Số lượng', field: 'quantity', sortable: true, filter: true, width: 150},
@@ -59,7 +59,7 @@ export class ChitietsanphamComponent implements OnInit {
       // {headerName: 'Chiều cao đế', field: 'idSole', sortable: true, filter: true, valueGetter: params => {
       //     return params.data.soleAdminDTO.soleHeight;
       //   }, width: 110},
-      {headerName: 'Chức năng', field: '', cellRendererFramework: ChiTietSanPhamActionComponent, width: 110},
+      {headerName: 'Chức năng', field: '', cellRendererFramework: ChiTietSanPhamActionComponent, width: 110, height: 50},
     ]; }
 
   ngOnInit(): void {

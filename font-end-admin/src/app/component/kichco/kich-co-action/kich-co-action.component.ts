@@ -4,6 +4,7 @@ import {ICellRendererAngularComp} from 'ag-grid-angular';
 import {MatDialog} from '@angular/material/dialog';
 import {SizeService} from '../../../service/size.service';
 import {KichcoComponent} from '../kichco.component';
+import Swal from 'sweetalert2';
 @Component({
   selector: 'app-kich-co-action',
   templateUrl: './kich-co-action.component.html',
@@ -50,11 +51,28 @@ export class KichCoActionComponent implements ICellRendererAngularComp, OnInit {
     });
   }
   deleteSize(size?: any) {
+    Swal.fire({
+      title: 'Bạn có chắc muốn xóa!',
+      text: 'Bạn sẽ không thể hoàn tác!',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Xóa!'
+    }).then((result) => {
+      if (result.isConfirmed) {
     size = this.params.id;
     console.log(size);
     this.szsv.DeleteSize(size).subscribe(() => {
       this.kichcoComponent.ngOnInit();
       this.cdr.detectChanges();
+    });
+    Swal.fire(
+          'Xóa!',
+          'Xóa thành công',
+          'success'
+        );
+      }
     });
   }
 
