@@ -16,7 +16,7 @@ import {ActionStaffComponent} from './action-staff/action-staff.component';
 @Component({
   selector: 'app-staff',
   templateUrl: './staff.component.html',
-  styleUrls: ['./staff.component.css']
+  styleUrls: ['./staff.component.scss']
 })
 export class StaffComponent implements OnInit {
   animal: string;

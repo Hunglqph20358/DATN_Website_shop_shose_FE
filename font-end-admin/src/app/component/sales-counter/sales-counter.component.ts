@@ -95,9 +95,6 @@ export class SalesCounterComponent implements OnInit {
       this.customerService.findCustomerByPhone(this.searcherCustomer).subscribe(
         customer => {
           this.searchCustomerResults = customer;
-          console.log(customer);
-          this.idCustomer = customer[0].id;
-          console.log(this.idCustomer);
         }
       );
       this.showCustomer = this.searcherCustomer.length > 0;
@@ -154,6 +151,7 @@ export class SalesCounterComponent implements OnInit {
     this.searcherCustomer = `${row.fullname} - ${row.phone}`;
     this.selectedCustomer = row;
     this.isCustomerNull = false;
+    this.idCustomer = this.selectedCustomer.id;
     console.log(this.selectedCustomer);
   }
   clearSearchTerm(): void {
@@ -200,6 +198,7 @@ export class SalesCounterComponent implements OnInit {
 
   }
   placeOrderSales(){
+    debugger
     console.log(this.idCustomer);
     console.log(this.selectedCustomer);
     if (this.listProductPush.length === 0){
