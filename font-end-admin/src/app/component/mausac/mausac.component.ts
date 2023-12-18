@@ -1,9 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import {ChangeDetectorRef, Component, OnInit} from '@angular/core';
 import {MatDialog} from "@angular/material/dialog";
 import {ThemMauSacComponent} from "./them-mau-sac/them-mau-sac.component";
-import {SuaMauSacComponent} from "./sua-mau-sac/sua-mau-sac.component";
 import {MausacService} from "../../service/mausac.service";
-import {ActionVoucherComponent} from "../voucher/action-voucher/action-voucher.component";
+import {MauSacActionComponent} from './mau-sac-action/mau-sac-action.component';
+import {ActionCategoryRedererComponent} from '../danhmuc/action-category-rederer/action-category-rederer.component';
 
 @Component({
   selector: 'app-mausac',
@@ -17,36 +17,39 @@ export class MausacComponent implements OnInit {
   rowHeight = 40;
   public rowSelection: 'single' | 'multiple' = 'multiple'; // Chọn nhiều dòng
   constructor(private matdialog: MatDialog,
-              private mssv: MausacService) {
+              private mssv: MausacService,
+              private cdr: ChangeDetectorRef) {
     this.columnDefs = [
       {
-        headerName: 'ColorName',
+        headerName: 'Tên màu',
         field: 'name',
         sortable: true,
         filter: true,
-        checkboxSelection: true,
-        headerCheckboxSelection: true
+        width: 330
       },
-      {headerName: 'CreateDate', field: 'createDate', sortable: true, filter: true},
-      {headerName: 'Action', field: '', cellRendererFramework: ActionVoucherComponent},
+      {headerName: 'Ngày tạo', field: 'createDate', sortable: true, filter: true, width: 350},
+      {headerName: 'Chức năng', field: '', cellRendererFramework: MauSacActionComponent, width: 430},
     ];
   }
 
   ngOnInit(): void {
+    this.getAllColor();
+  }
+  getAllColor(){
     this.mssv.getAllMauSac().subscribe(res => {
       this.rowData = res;
     });
   }
   openAdd(){
-    this.matdialog.open(ThemMauSacComponent, {
+    const dialogref = this.matdialog.open(ThemMauSacComponent, {
       width: '65vh',
       height: '45vh'
     });
-  }
-  openUpdate(){
-    this.matdialog.open(SuaMauSacComponent, {
-      width: '65vh',
-      height: '45vh'
+    dialogref.afterClosed().subscribe(result => {
+      if (result === 'addColor'){
+        this.ngOnInit();
+        this.cdr.detectChanges();
+      }
     });
   }
 }
