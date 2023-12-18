@@ -49,7 +49,7 @@ export class ImportFileComponent implements OnInit {
     this.productService.exportExcelProductTemplate().subscribe((data: Blob) => {
       const currentDate = new Date();
       const formattedDate = getFormattedDateCurrent(currentDate);
-      const fileName = `DS_SanPham_${formattedDate}.xlsx`;
+      const fileName = `DS_SanPham_Mau_${formattedDate}.xlsx`;
       FileSaver.saveAs(data, fileName);
     });
     this.changeDetectorRef.detectChanges();

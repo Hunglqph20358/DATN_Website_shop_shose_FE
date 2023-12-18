@@ -24,15 +24,17 @@ export class ChatlieuComponent implements OnInit {
         headerName: 'Tên',
         field: 'name',
         sortable: true,
-        filter: true,
-        checkboxSelection: true,
-        headerCheckboxSelection: true
+        filter: true
       },
       {headerName: 'Ngày bắt đầu', field: 'createDate', sortable: true, filter: true},
       {headerName: 'Ngày Sửa ', field: 'updateDate', sortable: true, filter: true},
       {headerName: 'Mô tả', field: 'description', sortable: true, filter: true},
-      {headerName: 'Trạng thái', field: 'status', sortable: true, filter: true},
-      {headerName: 'Action', field: '', cellRendererFramework: ActionRendererComponent},
+      {
+        headerName: 'Trạng thái', field: 'status', sortable: true, filter: true, valueGetter: (params) => {
+          return params.data.status === 0 ? 'Hoạt động' : 'Ngưng hoạt động';
+        }
+      },
+      {headerName: 'Chức năng', field: '', cellRendererFramework: ActionRendererComponent, width: 110},
     ];
   }
 
@@ -52,15 +54,10 @@ export class ChatlieuComponent implements OnInit {
       height: '65vh',
     });
     dialogref.afterClosed().subscribe(result => {
-      if (result) {
-        this.createMaterial(result);
+      if (result === 'addMaterial') {
+        this.ngOnInit();
+        this.cdr.detectChanges();
       }
-    });
-  }
-
-  createMaterial(material: any) {
-    this.mtsv.CreateMaterial(material).subscribe(() => {
-      this.getMaterial();
     });
   }
 }

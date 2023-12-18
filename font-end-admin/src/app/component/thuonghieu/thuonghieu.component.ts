@@ -1,11 +1,9 @@
-import { Component, OnInit } from '@angular/core';
-import {ThemDanhMucComponent} from "../danhmuc/them-danh-muc/them-danh-muc.component";
-import {SuaDanhMucComponent} from "../danhmuc/sua-danh-muc/sua-danh-muc.component";
+import {ChangeDetectorRef, Component, OnInit} from '@angular/core';
 import {MatDialog} from "@angular/material/dialog";
 import {ThemThuongHieuComponent} from "./them-thuong-hieu/them-thuong-hieu.component";
-import {SuaThuongHieuComponent} from "./sua-thuong-hieu/sua-thuong-hieu.component";
 import {BrandService} from "../../service/brand.service";
-import {ActionVoucherComponent} from "../voucher/action-voucher/action-voucher.component";
+import {ThuongHieuActionComponent} from './thuong-hieu-action/thuong-hieu-action.component';
+import {MauSacActionComponent} from '../mausac/mau-sac-action/mau-sac-action.component';
 
 @Component({
   selector: 'app-thuonghieu',
@@ -19,38 +17,42 @@ export class ThuonghieuComponent implements OnInit {
   rowHeight = 40;
   public rowSelection: 'single' | 'multiple' = 'multiple'; // Chọn nhiều dòng
   constructor(private matdialog: MatDialog,
-              private brsv: BrandService) {
+              private brsv: BrandService,
+              private cdr: ChangeDetectorRef) {
     this.columnDefs = [
       {
-        headerName: 'BrandName',
+        headerName: 'Tên thương hiệu',
         field: 'name',
         sortable: true,
-        filter: true,
-        checkboxSelection: true,
-        headerCheckboxSelection: true
+        filter: true
       },
-      {headerName: 'Create Date', field: 'createDate', sortable: true, filter: true},
-      {headerName: 'Update Date ', field: 'updateDate', sortable: true, filter: true},
-      {headerName: 'Status', field: 'status', sortable: true, filter: true},
-      {headerName: 'Action', field: '', cellRendererFramework: ActionVoucherComponent},
+      {headerName: 'Ngày tạo', field: 'createDate', sortable: true, filter: true},
+      {headerName: 'Ngày cập nhật', field: 'updateDate', sortable: true, filter: true},
+      {headerName: 'Trạng thái', field: 'status', sortable: true, filter: true, valueGetter: (params) => {
+          return params.data.status === 0 ? 'Hoạt động' : 'Ngưng hoạt động';
+        }},
+      {headerName: 'Chức năng', field: '', cellRendererFramework: ThuongHieuActionComponent, width: 310},
     ];
   }
 
   ngOnInit(): void {
+    this.getAllBrand();
+  }
+  getAllBrand(){
     this.brsv.getAllBrand().subscribe(res => {
       this.rowData = res;
     });
   }
   openAdd(){
-    this.matdialog.open(ThemThuongHieuComponent, {
+    const dialogref = this.matdialog.open(ThemThuongHieuComponent, {
       width: '60vh',
       height: '60vh'
     });
-  }
-  openUpdate(){
-    this.matdialog.open(SuaThuongHieuComponent, {
-      width: '60vh',
-      height: '60vh'
+    dialogref.afterClosed().subscribe(result => {
+      if (result === 'addBrand'){
+        this.ngOnInit();
+        this.cdr.detectChanges();
+      }
     });
   }
 }
