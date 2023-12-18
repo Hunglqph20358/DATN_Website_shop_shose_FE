@@ -89,8 +89,9 @@ import { UpdateStaffComponent } from './component/staff/update-staff/update-staf
 import { DetailStaffComponent } from './component/staff/detail-staff/detail-staff.component';
 import { OrderSalesDetailComponent } from './component/order-sales-counter/order-sales-detail/order-sales-detail.component';
 import {DatePipe} from "@angular/common";
-import {ZXingScannerModule} from '@zxing/ngx-scanner';
+
 import { ActionStaffComponent } from './component/staff/action-staff/action-staff.component';
+import {ZXingScannerModule} from '@zxing/ngx-scanner';
 
 @NgModule({
   declarations: [
@@ -181,9 +182,9 @@ import { ActionStaffComponent } from './component/staff/action-staff/action-staf
     MatDatepickerModule,
     MatNativeDateModule,
     DateRangePickerModule,
-    ZXingScannerModule
     MatInputModule,
-    DateRangePickerModule
+    DateRangePickerModule,
+    ZXingScannerModule
   ],
   bootstrap: [AppComponent],
   providers: [{provide: JWT_OPTIONS, useValue: JWT_OPTIONS},

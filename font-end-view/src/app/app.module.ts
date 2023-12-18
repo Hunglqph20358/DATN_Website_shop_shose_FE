@@ -85,7 +85,7 @@ import {DateRangePickerModule} from '@syncfusion/ej2-angular-calendars';
     MatNativeDateModule,
     MatInputModule,
     ReactiveFormsModule,
-    DateRangePickerModule
+    DateRangePickerModule,
     MatTableModule
   ],
   providers: [{provide: JWT_OPTIONS, useValue: JWT_OPTIONS},

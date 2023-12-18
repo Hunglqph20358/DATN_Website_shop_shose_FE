@@ -243,6 +243,7 @@ export class SalesCounterComponent implements OnInit {
             localStorage.removeItem('listProductPush');
             this.selectedCustomer = '';
             this.searcherCustomer = '';
+            this.idCustomer = null;
             this.priceCustomer = 0;
             this.priceVoucher = 0;
             this.listProductPush = [];
