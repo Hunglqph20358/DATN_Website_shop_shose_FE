@@ -1,50 +1,34 @@
 import {ChangeDetectorRef, Component, OnInit} from '@angular/core';
-import { MatDialog } from '@angular/material/dialog';
-import { ActionVoucherComponent } from './action-voucher/action-voucher.component';
-import { VoucherService } from 'src/app/service/voucher.service';
+import {MatDialog} from '@angular/material/dialog';
+import {VoucherService} from '../../service/voucher.service';
 import {formatDate, formatDateTime, formatDateYYYY_MM_dd, getFormattedDateCurrent} from '../../util/util';
+import {ActionVoucherComponent} from '../voucher/action-voucher/action-voucher.component';
+import {VoucherShipService} from "../../service/voucher-ship.service";
+import {ActionVoucherShipComponent} from "./action-voucher-ship/action-voucher-ship.component";
 import {ToastrService} from "ngx-toastr";
 import * as FileSaver from 'file-saver';
-import * as printJS from "print-js";
-
-
 
 @Component({
-  selector: 'app-bangvoucher',
-  templateUrl: './voucher.component.html',
-  styleUrls: ['./voucher.component.css'],
+  selector: 'app-voucher-ship',
+  templateUrl: './voucher-ship.component.html',
+  styleUrls: ['./voucher-ship.component.css']
 })
-export class VoucherComponent implements OnInit {
-  public rowSelection: 'single' | 'multiple' = 'multiple'; // Chọn nhiều dòng
+export class VoucherShipComponent implements OnInit {
   rowData = [];
   rowData1 = [];
   rowData2 = [];
+  role: '';
+  loc = '0';
   columnDefs;
   headerHeight = 50;
   rowHeight = 40;
-  loc = '0';
-  idStaff = '';
-  role: '';
   dateFromCurrent = null;
   dateToCurrent = null;
   searchResults: any[] = [];
-  voucher: any = {
-    name: '',
-    startDate: '',
-    endDate: '',
-    description: '',
-    reducedValue: '',
-    voucherType: '',
-    conditionApply: 0,
-    quantity: 0,
-    limitCustomer: '',
-    customerAdminDTOList: '',
-    appy: '',
-    optionCustomer: ''
-  };
+  public rowSelection: 'single' | 'multiple' = 'multiple'; // Chọn nhiều dòng
   constructor(
     private matDialog: MatDialog,
-    private apiService: VoucherService,
+    private apiService: VoucherShipService,
     private cdr: ChangeDetectorRef,
     private  toastr: ToastrService
   ) {
@@ -142,11 +126,12 @@ export class VoucherComponent implements OnInit {
         sortable: true,
         filter: true,
         cellRenderer: this.statusRenderer.bind(this),
+        maxWidth: 150,
       },
       {
         headerName: 'Action',
         field: '',
-        cellRendererFramework: ActionVoucherComponent,
+        cellRendererFramework: ActionVoucherShipComponent,
         pinned: 'right',
       },
     ];
@@ -161,35 +146,28 @@ export class VoucherComponent implements OnInit {
       return 'Không rõ';
     }
   }
-    statusType(params) {
-      if (params.value === 0) {
-        return 'Theo %';
-      } else if (params.value === 1) {
-        return 'Theo tiền';
-      } else {
-        return 'Không rõ';
-      }
-  }
 
   ngOnInit(): void {
-    this.apiService.getSomeData().subscribe((response) => {
-      this.rowData = response;
-      this.searchResults = response;
-      console.log(response);
-    });
-    this.apiService.getVoucherKH().subscribe((response) => {
-      this.rowData1 = response;
-    });
-    this.apiService.getVoucherKKH().subscribe((response) => {
-      this.rowData2 = response;
-      console.log(response);
-    });
-    this.role = JSON.parse(localStorage.getItem('role'));
-  }
+      this.apiService.getSomeData().subscribe((response) => {
+        this.rowData = response;
+        this.searchResults = response;
+        console.log(response);
+      });
+      this.apiService.getVoucherKH().subscribe((response) => {
+        this.rowData1 = response;
+      });
+      this.apiService.getVoucherKKH().subscribe((response) => {
+        this.rowData2 = response;
+        console.log(response);
+      });
+      this.role = JSON.parse(localStorage.getItem('role'));
+      console.log(this.role + 'hahaahah');
+      console.log(localStorage.getItem('role'));
+    }
   checkIsdell(data: any, index: any) {
     console.log(data, index);
     if (data.idel === 0) {
-      const userConfirmed = confirm('Bạn có muốn kích hoạt voucher không?');
+      const userConfirmed = confirm('Bạn có muốn kích hoạt voucher freeship không?');
       if (!userConfirmed) {
         return;
       }
@@ -209,7 +187,7 @@ export class VoucherComponent implements OnInit {
         });
       this.cdr.detectChanges();
     } else {
-      const userConfirmed = confirm('Bạn có muốn hủy bỏ kích hoạt voucher  không?');
+      const userConfirmed = confirm('Bạn có muốn hủy bỏ kích hoạt voucher freeship không?');
       if (!userConfirmed) {
         return;
       }
@@ -228,35 +206,35 @@ export class VoucherComponent implements OnInit {
     this.apiService.exportExcel().subscribe((data: Blob) => {
       const currentDate = new Date();
       const formattedDate = getFormattedDateCurrent(currentDate);
-      const fileName = `DS_Voucher_${formattedDate}.xlsx`;
+      const fileName = `DS_VoucherFS_${formattedDate}.xlsx`;
       FileSaver.saveAs(data, fileName);
     });
     this.cdr.detectChanges();
   }
-  searchByCustomer(event: any) {
-    const searchTerm = event.target.value;
-    this.apiService.searchByCustomer(searchTerm).subscribe(
-      (data) => {
-        this.searchResults = data;
-      },
-      (error) => {
-        console.error(error);
-      }
-    );
-    this.cdr.detectChanges();
-  }
-  searchByVoucher(event: any) {
-    const searchTerm = event.target.value;
-    this.apiService.searchByVoucher(searchTerm).subscribe(
-      (data) => {
-        this.searchResults = data;
-      },
-      (error) => {
-        console.error(error);
-      }
-    );
-    this.cdr.detectChanges();
-  }
+    searchByCustomer(event: any) {
+      const searchTerm = event.target.value;
+      this.apiService.searchByCustomer(searchTerm).subscribe(
+        (data) => {
+          this.searchResults = data;
+        },
+        (error) => {
+          console.error(error);
+        }
+      );
+      this.cdr.detectChanges();
+    }
+    searchByVoucher(event: any) {
+      const searchTerm = event.target.value;
+      this.apiService.searchByVoucher(searchTerm).subscribe(
+        (data) => {
+          this.searchResults = data;
+        },
+        (error) => {
+          console.error(error);
+        }
+      );
+      this.cdr.detectChanges();
+    }
   searchByDate(obj) {
     const dateRange = {
       fromDate: obj.dateFrom,
@@ -288,38 +266,5 @@ export class VoucherComponent implements OnInit {
       this.ngOnInit();
     }
   }
-  generateVoucherHTML(): string {
-    let orderHTML = `<div>`;
-    orderHTML += `<h2>Voucher</h2>`;
-    orderHTML += `<p>Mã voucher: ${this.voucher.code}</p>`;
-    orderHTML += `<p>Tên voucher: ${this.voucher.name}</p>`;
-    orderHTML += `<p>Giá trị giảm: ${this.voucher?.reducedValue}</p>`;
-    orderHTML += `<h3>Chi tiết khách hàng</h3>`;
-    orderHTML += `<ul>`;
-    // this.rowData.forEach(product => {
-    //   orderHTML += `<li>Mã: ${product.code}- Size: ${product.size}- Màu Sắc: ${product.color}-Tên: ${product.name} - ${product.quantity} x ${product.price} = ${product.total}</li>`;
-    // });
-    orderHTML += `</ul>`;
-    orderHTML += `</div>`;
-    return orderHTML;
-  }
-  printInvoice() {
-    const invoiceHTML = this.generateVoucherHTML();
-    const frame = document.createElement('iframe');
-    frame.style.display = 'none';
-    document.body.appendChild(frame);
-    frame.contentDocument.open();
-    frame.contentDocument.write(invoiceHTML);
-    frame.contentDocument.close();
-    printJS({
-      printable: frame.contentDocument.body,
-      type: 'html',
-      properties: ['code', 'name', 'reducedValue'],
-      header: '<h3 class="custom-h3">Voucher</h3>',
-      style: '.custom-h3 { color: red; }',
-      documentTitle: 'voucher',
-    });
-
-    document.body.removeChild(frame);
-  }
 }
+
