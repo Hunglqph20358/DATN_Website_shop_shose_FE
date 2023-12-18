@@ -26,7 +26,12 @@ import {EditDiscountComponent} from "./component/discount/edit-discount/edit-dis
 import {EditVoucherComponent} from "./component/voucher/edit-voucher/edit-voucher.component";
 import {SignUpComponent} from './component/sign-up/sign-up.component';
 import {OrderDetailComponent} from './component/order/order-detail/order-detail.component';
+import {ThemSanPhamComponent} from './component/sanpham/them-san-pham/them-san-pham.component';
+import {SuaSanPhamComponent} from './component/sanpham/sua-san-pham/sua-san-pham.component';
 import {SalesCounterComponent} from './component/sales-counter/sales-counter.component';
+import {ChitietsanphamComponent} from './component/chitietsanpham/chitietsanpham.component';
+import {ThemChiTietSanPhamComponent} from './component/chitietsanpham/them-chi-tiet-san-pham/them-chi-tiet-san-pham.component';
+import {SuaChiTietSanPhamComponent} from './component/chitietsanpham/sua-chi-tiet-san-pham/sua-chi-tiet-san-pham.component';
 import {ThongKeComponent} from './component/thong-ke/thong-ke.component';
 import {AddStaffComponent} from './component/staff/add-staff/add-staff.component';
 import {OrderSalesCounterComponent} from './component/order-sales-counter/order-sales-counter.component';
@@ -48,6 +53,12 @@ const routes: Routes = [
   {path: 'admin/voucher/:id', component: DetailVoucherComponent},
   {path: 'admin/voucherFS/:id', component: DetailVoucherShipComponent},
   {path: 'admin/voucher', component: VoucherComponent},
+  {path: 'admin/sua-giam-gia', component: EditDiscountComponent},
+  {path: 'admin/sua-voucher', component: EditVoucherComponent},
+  // {path: 'degiay', component: DegiayComponent, canActivate: [RoleGuardService],
+  //   data: {
+  //     expectedRole: ['ADMIN']
+  //   } },
   {path: 'admin/voucherFS', component: VoucherShipComponent},
   {path: 'admin/sua-giam-gia', component: EditDiscountComponent,  canActivate: [RoleGuardService],
     data: {
@@ -75,6 +86,11 @@ const routes: Routes = [
   {path: 'thuonghieu', component: ThuonghieuComponent},
   {path: 'admin/danh-muc', component: DanhmucComponent},
   {path: 'admin/san-pham', component: SanphamComponent},
+  {path: 'admin/chi-tiet-san-pham', component: ChitietsanphamComponent},
+  {path: 'them-chi-tiet-san-pham', component: ThemChiTietSanPhamComponent},
+  {path: 'sua-chi-tiet-san-pham/:idProduct', component: SuaChiTietSanPhamComponent},
+  {path: 'them-san-pham', component: ThemSanPhamComponent},
+  {path: 'sua-san-pham/:idProduct', component: SuaSanPhamComponent},
   {path: 'order-list', component: OrderComponent},
   {path: 'order-processing', component: OderProcessingComponent},
   {path: 'staff', component: StaffComponent, canActivate: [AuthGuard]},

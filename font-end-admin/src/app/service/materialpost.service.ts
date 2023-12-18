@@ -8,7 +8,7 @@ import {apiURL} from '../config/apiUrl';
 export class MaterialpostService {
   constructor(private  http: HttpClient) { }
   getAllMaterial(): Observable<any>{
-      return this.http.get(`${apiURL}material/hien-thi`);
+    return this.http.get(`${apiURL}material/hien-thi`);
   }
   CreateMaterial(material: any): Observable<any>{
     return this.http.post(`${apiURL}material/add`, material);
