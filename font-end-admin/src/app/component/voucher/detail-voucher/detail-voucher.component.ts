@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import {ActivatedRoute} from "@angular/router";
 import {VoucherService} from "../../../service/voucher.service";
+import {UtilService} from "../../../util/util.service";
 
 @Component({
   selector: 'app-detail-voucher',
@@ -15,9 +16,9 @@ export class DetailVoucherComponent implements OnInit {
     createDate: '',
     description: '',
     reducedValue: '',
-    maxReduced: '',
+    maxReduced: 0,
     voucherType: '',
-    conditions: '',
+    conditionApply: '',
     quantity: '',
     customerAdminDTOList: '',
     limitCustomer: '',
@@ -27,7 +28,8 @@ export class DetailVoucherComponent implements OnInit {
     createName: localStorage.getItem('fullname'),
   };
   constructor(private  activatedRoute: ActivatedRoute,
-              private voucherService: VoucherService) { }
+              private voucherService: VoucherService,
+              public util: UtilService) { }
 
   ngOnInit(): void {
     // Lấy thông tin khuyến mãi dựa trên id từ tham số URL
@@ -40,7 +42,7 @@ export class DetailVoucherComponent implements OnInit {
         this.voucher.id = firstElement.id;
         this.voucher.name = firstElement.name;
         this.voucher.description = firstElement.description;
-        this.voucher.conditions = firstElement.conditions;
+        this.voucher.conditionApply = firstElement.conditionApply;
         this.voucher.voucherType = firstElement.voucherType;
         this.voucher.endDate = firstElement.endDate;
         this.voucher.quantity = firstElement.quantity;

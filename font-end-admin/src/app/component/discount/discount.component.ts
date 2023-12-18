@@ -1,9 +1,11 @@
 import {ChangeDetectorRef, Component, OnInit} from '@angular/core';
 import {ActionDiscountComponent} from './action-discount/action-discount.component';
 import {DiscountService} from '../../service/discount.service';
-import {formatDate, formatDateTime, formatDateYYYY_MM_dd} from '../../util/util';
+import {formatDate, formatDateTime, formatDateYYYY_MM_dd, getFormattedDateCurrent} from '../../util/util';
 import {FormControl, FormGroup} from '@angular/forms';
+import * as FileSaver from 'file-saver';
 import {ToastrService} from "ngx-toastr";
+import * as printJS from "print-js";
 
 
 @Component({
@@ -19,21 +21,13 @@ export class DiscountComponent implements OnInit {
   headerHeight = 50;
   rowHeight = 40;
   checkedIsdel = false;
-  loc = '0';
+  loc = '5';
   export = '0';
   idStaff = '';
   role: '';
   dateFromCurrent = null;
   dateToCurrent = null;
   searchResults: any[] = [];
-
-  // isValidDateRange = () => {
-  //   return (
-  //     this.startDate &&
-  //     this.endDate &&
-  //     new Date(this.startDate) < new Date(this.endDate)
-  //   );
-  // }
   constructor(private apiService: DiscountService, private cdr: ChangeDetectorRef,
               private toastr: ToastrService) {
     this.columnDefs = [
@@ -43,15 +37,14 @@ export class DiscountComponent implements OnInit {
         sortable: true,
         filter: true,
         minWidth: 70,
-        maxWidth: 80,
+        maxWidth: 150,
       },
       {
         headerName: 'Tên',
         field: 'name',
         sortable: true,
         filter: true,
-        minWidth: 70,
-        maxWidth: 80,
+        minWidth: 80,
       },
       {
         headerName: 'Ngày bắt đầu',
@@ -79,13 +72,15 @@ export class DiscountComponent implements OnInit {
         sortable: true,
         filter: true,
         cellRenderer: this.statusRenderer.bind(this),
+        maxWidth: 150,
       },
       {
         headerName: 'Số lượng sản phẩm đã áp dụng',
         valueGetter: (params) => {
           const useDiscount = params.data.used_count || 0;
           return `${useDiscount}`;
-        }
+        },
+        maxWidth: 150,
       },
       {
         headerName: 'Hiển thị',
@@ -100,8 +95,9 @@ export class DiscountComponent implements OnInit {
     </div>`;
         },
         onCellClicked: (params) => {
-          this.checkIsdell(params.node.data);
-        }
+          this.checkIsdell(params.node.data, params.node.index);
+        },
+        maxWidth: 150,
       },
       {
         headerName: 'Action',
@@ -141,21 +137,25 @@ export class DiscountComponent implements OnInit {
     console.log(this.dateToCurrent);
   }
 
-  checkIsdell(data: any) {
+  checkIsdell(data: any, index: any) {
+    // console.log("data: ", data);
+    // console.log("index: ", index);
     if (data.idel === 0) {
-      const userConfirmed = confirm('Bạn có muốn kích hoạt giảm giá không?');
-      if (!userConfirmed) {
-        return;
-      }
+      // const userConfirmed = confirm('Bạn có muốn kích hoạt giảm giá không?');
+      // if (!userConfirmed) {
+      //   return;
+      // }
       // Truyền dữ liệu thông qua HTTP PUT request
       this.apiService.KichHoat(data.id).subscribe(
         (res) => {
           this.toastr.success('Kích hoạt thành công');
           this.searchResults = res;
+          location.reload();
         },
         error => {
           this.toastr.error('Kích hoạt thất bại');
         });
+      this.cdr.detectChanges();
     } else {
       const userConfirmed = confirm('Bạn có muốn hủy bỏ kích hoạt giảm giá không?');
       if (!userConfirmed) {
@@ -163,6 +163,7 @@ export class DiscountComponent implements OnInit {
       }
       // Truyền dữ liệu thông qua HTTP PUT request
       this.apiService.KichHoat(data.id).subscribe(res => {
+          location.reload();
           this.toastr.success('Hủy bỏ kích hoạt thành công');
           this.searchResults = res;
         },
@@ -216,6 +217,15 @@ export class DiscountComponent implements OnInit {
         console.error(error);
       }
     );
+  }
+  Excel() {
+    this.apiService.exportExcel().subscribe((data: Blob) => {
+      const currentDate = new Date();
+      const formattedDate = getFormattedDateCurrent(currentDate);
+      const fileName = `DS_GiamGia_${formattedDate}.xlsx`;
+      FileSaver.saveAs(data, fileName);
+    });
+    this.cdr.detectChanges();
   }
   test(event: any) {
     console.log('data event: ', event);

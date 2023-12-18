@@ -32,6 +32,13 @@ export class UtilService {
     const t = moment(date).format('HH:mm:ss');
     return `${t} ${d}`;
   }
+  format(originalDate: string): string {
+    const date = new Date(originalDate);
+    date.setHours(date.getHours() + 5);
+    const d = `${('0' + date.getDate()).slice(-2)}/${('0' + (date.getMonth() + 1)).slice(-2)}/${date.getFullYear()}`;
+    const t = moment(date).format('HH:mm:ss');
+    return `${t} ${d}`;
+  }
 
   formatNumber(value) {
     const roundedValue = Number(value.toFixed(2));

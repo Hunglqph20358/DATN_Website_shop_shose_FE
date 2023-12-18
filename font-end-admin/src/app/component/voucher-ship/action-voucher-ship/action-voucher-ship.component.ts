@@ -5,6 +5,7 @@ import {Router} from "@angular/router";
 import {VoucherService} from "../../../service/voucher.service";
 import {ICellRendererParams} from "ag-grid-community";
 import {ToastrService} from "ngx-toastr";
+import Swal from "sweetalert2";
 
 @Component({
   selector: 'app-action-voucher-ship',
@@ -37,20 +38,29 @@ export class ActionVoucherShipComponent implements OnInit, ICellRendererAngularC
     this.router.navigate(['/admin/edit-voucherFS', this.data.id]);
   }
 
-  deleteItem(): void {
-    const confirmation = confirm('Bạn có chắc chắn muốn xóa dòng này?');
-    if (confirmation) {
-      this.voucherService.deleteVoucher(this.data.id)
-        .subscribe(() => {
-          this.toastr.success('Xóa thành công');
-          this.router.navigateByUrl('/admin/voucherFS');
+  delete(): void {
+    Swal.fire({
+      title: 'Bạn có muốn xóa voucher freeship không?',
+      icon: 'error',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Xóa'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.voucherService.deleteVoucher(this.data.id).subscribe((response) => {
+            this.router.navigateByUrl('/admin/voucherFS');
           },
-          (error) => {
-            this.toastr.error('Xóa thất bại');
-            console.error('Error delete discount', error);
+          error => {
+            this.toastr.error('Xóa voucher freeship thất bại');
           });
-    }
-    this.cdr.detectChanges();
+        location.reload();
+      }
+      Swal.fire({
+        title: 'Xóa voucher freeship thành công!',
+        icon: 'success'
+      });
+    });
   }
   detail(): void {
     this.router.navigate(['/admin/voucherFS', this.data.id]);

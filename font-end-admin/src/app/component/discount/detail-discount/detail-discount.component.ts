@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { DiscountService } from 'src/app/service/discount.service';
 import { ActivatedRoute } from "@angular/router";
+import {UtilService} from "../../../util/util.service";
 
 @Component({
   selector: 'app-detail-discount',
@@ -25,7 +26,8 @@ export class DetailDiscountComponent implements OnInit {
   };
 
   constructor(private discountService: DiscountService,
-              private router: ActivatedRoute) {}
+              private router: ActivatedRoute,
+              public util: UtilService) {}
 
   ngOnInit(): void {
     // Lấy thông tin khuyến mãi dựa trên id từ tham số URL

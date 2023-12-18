@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import {ActivatedRoute} from "@angular/router";
 import {VoucherService} from "../../../service/voucher.service";
 import {VoucherShipService} from "../../../service/voucher-ship.service";
+import {UtilService} from "../../../util/util.service";
 
 @Component({
   selector: 'app-detail-voucher-ship',
@@ -16,7 +17,7 @@ export class DetailVoucherShipComponent implements OnInit {
     endDate: '',
     description: '',
     reducedValue: '',
-    conditions: '',
+    conditionApply: '',
     quantity: '',
     createDate: '',
     customerAdminDTOList: '',
@@ -25,7 +26,8 @@ export class DetailVoucherShipComponent implements OnInit {
     createName: localStorage.getItem('fullname'),
   };
   constructor(private  activatedRoute: ActivatedRoute,
-              private voucherService: VoucherShipService) { }
+              private voucherService: VoucherShipService,
+              public util: UtilService) { }
 
   ngOnInit(): void {
     // Lấy thông tin khuyến mãi dựa trên id từ tham số URL
@@ -38,7 +40,7 @@ export class DetailVoucherShipComponent implements OnInit {
         this.voucher.id = firstElement.id;
         this.voucher.name = firstElement.name;
         this.voucher.description = firstElement.description;
-        this.voucher.conditions = firstElement.conditions;
+        this.voucher.conditionApply = firstElement.conditionApply;
         this.voucher.endDate = firstElement.endDate;
         this.voucher.quantity = firstElement.quantity;
         this.voucher.reducedValue = firstElement.reducedValue;
@@ -46,6 +48,7 @@ export class DetailVoucherShipComponent implements OnInit {
         this.voucher.createDate = firstElement.createDate;
         this.voucher.limitCustomer = firstElement.limitCustomer;
         this.voucher.customerAdminDTOList = firstElement.customerAdminDTOList;
+        this.voucher.optionCustomer = firstElement.optionCustomer;
         console.log(this.voucher);
       });
     });

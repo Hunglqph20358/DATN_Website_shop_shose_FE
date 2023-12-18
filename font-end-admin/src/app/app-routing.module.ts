@@ -42,16 +42,25 @@ const routes: Routes = [
   {path: 'admin/don-hang', component: HomeComponent},
   {path: 'admin/creat-discount', component: CreatDiscountComponent},
   {path: 'admin/creat-voucherFS', component: CreatVoucherShipComponent},
-  {path: 'admin/creat-voucher', component: CreatVoucherComponent},
+  {path: 'admin/creat-voucher', component: CreatVoucherComponent },
   {path: 'admin/discount', component: DiscountComponent},
   {path: 'admin/discount/:id', component: DetailDiscountComponent},
   {path: 'admin/voucher/:id', component: DetailVoucherComponent},
   {path: 'admin/voucherFS/:id', component: DetailVoucherShipComponent},
   {path: 'admin/voucher', component: VoucherComponent},
   {path: 'admin/voucherFS', component: VoucherShipComponent},
-  {path: 'admin/sua-giam-gia', component: EditDiscountComponent},
-  {path: 'admin/sua-voucher', component: EditVoucherComponent},
-  {path: 'admin/sua-voucherFS', component: EditVoucherShipComponent},
+  {path: 'admin/sua-giam-gia', component: EditDiscountComponent,  canActivate: [RoleGuardService],
+    data: {
+      expectedRole: ['ADMIN']
+    }},
+  {path: 'admin/sua-voucher', component: EditVoucherComponent, canActivate: [RoleGuardService],
+    data: {
+      expectedRole: ['ADMIN']
+    }},
+  {path: 'admin/sua-voucherFS', component: EditVoucherShipComponent,  canActivate: [RoleGuardService],
+    data: {
+      expectedRole: ['ADMIN']
+    }},
   {path: 'degiay', component: DegiayComponent, canActivate: [RoleGuardService],
     data: {
       expectedRole: ['ADMIN']

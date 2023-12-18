@@ -1,7 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { DiscountService } from 'src/app/service/discount.service';
-import {ToastrService} from "ngx-toastr";
+import {ToastrService} from 'ngx-toastr';
+import Swal from 'sweetalert2';
+import {ValidateInput} from "../../model/validate-input";
+import {CommonFunction} from "../../../util/common-function";
+import {DatePipe} from "@angular/common";
 
 @Component({
   selector: 'app-edit-discount',
@@ -19,10 +23,10 @@ export class EditDiscountComponent implements OnInit {
       description: '',
       createName: localStorage.getItem('fullname'),
     },
-    spap: '',
-    reducedValue: '',
-    discountType: '',
-    maxReduced: '',
+    spap: '0',
+    reducedValue: '0',
+    discountType: '0',
+    maxReduced: 0,
     isValidDateRange: () => {
       return (
         this.discount.discountAdminDTO.startDate &&
@@ -31,6 +35,10 @@ export class EditDiscountComponent implements OnInit {
       );
     },
   };
+  validName: ValidateInput = new ValidateInput();
+  validDescription: ValidateInput = new ValidateInput();
+  validReducedValue: ValidateInput = new ValidateInput();
+  validMaxReduced: ValidateInput = new ValidateInput();
   gridApi: any;
   rowData = [];
   columnDefs;
@@ -42,7 +50,8 @@ export class EditDiscountComponent implements OnInit {
   constructor(private discountService: DiscountService,
               private router: Router,
               private activatedRoute: ActivatedRoute,
-              private toastr: ToastrService) {
+              private toastr: ToastrService,
+              private datePipe: DatePipe) {
     this.columnDefs = [
       {
         headerName: 'Mã sản phẩm',
@@ -109,9 +118,9 @@ export class EditDiscountComponent implements OnInit {
           this.discount.discountAdminDTO.name =
             firstDiscount.name;
           this.discount.discountAdminDTO.startDate =
-            firstDiscount.startDate;
+            this.formatDate(firstDiscount.startDate);
           this.discount.discountAdminDTO.endDate =
-            firstDiscount.endDate;
+            this.formatDate(firstDiscount.endDate);
           this.discount.discountAdminDTO.description =
             firstDiscount.description;
           this.discount.reducedValue = firstDiscount.reducedValue;
@@ -127,46 +136,81 @@ export class EditDiscountComponent implements OnInit {
   }
   // Phương thức cập nhật thông tin khuyến mãi
   editDiscount() {
-    const arrayProduct = this.discount.spap === '0' ? this.rowData : this.gridApi.getSelectedRows();
-    this.disableCheckPriceProduct = false;
-    const userConfirmed = confirm('Bạn có muốn sửa giảm giá không?');
-    if (!userConfirmed) {
+    this.validateName();
+    this.validateReducedValue();
+    this.validateDescription();
+    this.validateMaxReducedValue();
+    if (!this.validName.done || !this.validDescription.done || !this.validReducedValue.done
+      || !this.validMaxReduced.done
+    ) {
       return;
     }
-    // tslint:disable-next-line:prefer-for-of
-    for (let i = 0; i < arrayProduct.length; i++) {
-      // tslint:disable-next-line:triple-equals
-      if (this.discount.reducedValue > arrayProduct[i].price && this.discount.discountType == 1) {
-        this.disableCheckPriceProduct = true;
-        alert('Giá trị giảm lớn hơn giá sản phẩm');
-        return;
-      }
-      this.iđStaff = localStorage.getItem('idStaff');
-      // tslint:disable-next-line:triple-equals
-      if (this.discount.maxReduced > arrayProduct[i].price && this.discount.discountType == 0) {
-        this.disableCheckPriceProduct = true;
-        alert('Giá trị giảm lớn hơn giá sản phẩm');
-        return;
-      }
-    }
-    if (this.disableCheckPriceProduct === false) {
-      const obj = {
-        ...this.discount,
-        productDTOList: arrayProduct,
-      };
-      this.discountService.updateDiscount(this.discount.discountAdminDTO.id, obj).subscribe(
-        (response) => {
-          // Handle the response if needed, e.g., show a success message
-          console.log('Discount added successfully', response);
-          this.toastr.success('Sửa giảm giá thành công');
-          this.router.navigateByUrl('/admin/discount');
-        },
-        (error) => {
-          // Handle errors if the discount creation fails
-          this.toastr.success('Sửa giảm giá thất bại');
-          console.error('Error adding discount', error);
+    Swal.fire({
+      title: 'Bạn có muốn sửa giảm giá không?',
+      icon: 'success',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Sửa'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        const arrayProduct = this.discount.spap === '0' ? this.rowData : this.gridApi.getSelectedRows();
+        this.disableCheckPriceProduct = false;
+        // tslint:disable-next-line:prefer-for-of
+        for (let i = 0; i < arrayProduct.length; i++) {
+          // tslint:disable-next-line:triple-equals
+          if (this.discount.reducedValue > arrayProduct[i].price && this.discount.discountType == 1) {
+            this.disableCheckPriceProduct = true;
+            this.toastr.success('Giá trị giảm lớn hơn giá sản phẩm');
+            return;
+          }
+          this.iđStaff = localStorage.getItem('idStaff');
+          // tslint:disable-next-line:triple-equals
+          if (this.discount.maxReduced > arrayProduct[i].price && this.discount.discountType == 0) {
+            this.disableCheckPriceProduct = true;
+            this.toastr.success('Giá trị giảm lớn hơn giá sản phẩm');
+            return;
+          }
         }
-      );
-    }
+        if (this.disableCheckPriceProduct === false) {
+          const obj = {
+            ...this.discount,
+            productDTOList: arrayProduct,
+          };
+          this.discountService.updateDiscount(this.discount.discountAdminDTO.id, obj).subscribe(
+            (response) => {
+              // Handle the response if needed, e.g., show a success message
+              console.log('Discount added successfully', response);
+              this.router.navigateByUrl('/admin/discount');
+            },
+            (error) => {
+              // Handle errors if the discount creation fails
+              this.toastr.error('Sửa giảm giá thất bại');
+              console.error('Error adding discount', error);
+            }
+          );
+        }
+        Swal.fire({
+          title: 'Sửa giảm giá thành công!',
+          icon: 'success'
+        });
+      }
+    });
   }
-}
+  revoveInvalid(result) {
+    result.done = true;
+  }
+  validateName() {
+    this.validName = CommonFunction.validateInput(this.discount.discountAdminDTO.name, 50, null );
+  }
+  validateDescription() {this.validDescription = CommonFunction.validateInput(this.discount.discountAdminDTO.description, 50, null );
+  }
+  validateReducedValue() {
+    this.validReducedValue = CommonFunction.validateInput(this.discount.reducedValue, 250, /^\d+(\.\d+)?$/);
+  }
+  validateMaxReducedValue() {
+    this.validMaxReduced = CommonFunction.validateInput(this.discount.maxReduced, 250, /^\d+(\.\d+)?$/);
+  }
+  formatDate(date: Date): string {
+    return this.datePipe.transform(date, 'yyyy-MM-ddTHH:mm') || '';
+  }}

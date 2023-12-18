@@ -6,6 +6,7 @@ import { VoucherService } from 'src/app/service/voucher.service';
 import { DetailVoucherComponent } from '../detail-voucher/detail-voucher.component';
 import {ICellRendererAngularComp} from "ag-grid-angular";
 import {ToastrService} from "ngx-toastr";
+import Swal from "sweetalert2";
 
 @Component({
   selector: 'app-action-voucher',
@@ -42,16 +43,27 @@ export class ActionVoucherComponent implements OnInit, ICellRendererAngularComp 
     this.router.navigate(['/admin/voucher', this.data.id]);
   }
   delete(): void {
-    if (confirm('Bạn có muốn xóa không?')) {
-      this.voucherService.deleteVoucher(this.data.id).subscribe((response) => {
-        // Xử lý phản hồi nếu cần, ví dụ: hiển thị thông báo thành công
-        this.toastr.success('Xóa voucher thành công');
-        this.router.navigateByUrl('/admin/voucher');
-      },
-        error => {
-          this.toastr.error('Xóa voucher thất bại');
-        });
-    }
-    this.cdr.detectChanges();
+    Swal.fire({
+      title: 'Bạn có muốn xóa voucher không?',
+      icon: 'error',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Xóa'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.voucherService.deleteVoucher(this.data.id).subscribe((response) => {
+            this.router.navigateByUrl('/admin/voucher');
+          },
+          error => {
+            this.toastr.error('Xóa voucher thất bại');
+          });
+        location.reload();
+      }
+      Swal.fire({
+        title: 'Xóa voucher thành công!',
+        icon: 'success'
+      });
+    });
   }
 }

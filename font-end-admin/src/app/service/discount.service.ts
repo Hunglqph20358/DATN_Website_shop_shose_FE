@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import {HttpClient, HttpParams} from '@angular/common/http';
 import {Observable, of} from 'rxjs';
+import {apiURL} from "../config/apiUrl";
 
 @Injectable({
   providedIn: 'root',
@@ -23,6 +24,9 @@ export class DiscountService {
   }
   getDiscountKKH() {
     return this.http.get<any[]>('http://localhost:6868/api/admin/discount/KKH');
+  }
+  exportExcel(): Observable<Blob> {
+    return this.http.get<any[]>('http://localhost:6868/api/admin/discount/discount/export-data',{responseType: 'blob' });
   }
 
   updateDiscount(id: number, discount: any) {

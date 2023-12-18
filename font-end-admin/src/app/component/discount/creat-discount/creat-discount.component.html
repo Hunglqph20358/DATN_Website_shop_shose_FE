@@ -21,10 +21,11 @@
                   name="name"
                   required
                   minlength="5"
+                  (keydown)="revoveInvalid(validName)" (blur)="validateName()"
                 />
-                <div *ngIf="!discount.discountAdminDTO.name || (discount.discountAdminDTO.name && discount.discountAdminDTO.name.length < 5)" class="alert alert-danger">
-                  <div *ngIf="!discount.discountAdminDTO.name">Vui lòng nhập tên.</div>
-                  <div *ngIf="discount.discountAdminDTO.name && discount.discountAdminDTO.name.length < 5">Tên phải có ít nhất 5 kí tự.</div>
+                <div class="validate-input" *ngIf="!validName.done" class="alert alert-danger">
+                  <p class="validate-input-label" *ngIf="validName.empty">Tên không để trống</p>
+                  <p class="validate-input-label" *ngIf="validName.maxLength">Tên tối đa 250 kí tự</p>
                 </div>
               </div>
 
@@ -39,9 +40,11 @@
                   placeholder="Nội dung"
                   name="description"
                   required
+                  (keydown)="revoveInvalid(validDescription)" (blur)="validateDescription()"
                 />
-                <div *ngIf="!discount.discountAdminDTO.description || (discount.discountAdminDTO.description && discount.discountAdminDTO.description.trim() === '')" class="alert alert-danger">
-                  <div *ngIf="!discount.discountAdminDTO.description">Vui lòng nhập nội dung.</div>
+                <div class="validate-input" *ngIf="!validDescription.done" class="alert alert-danger">
+                  <p class="validate-input-label" *ngIf="validDescription.empty">Nội dung không để trống</p>
+                  <p class="validate-input-label" *ngIf="validDescription.maxLength">Nội dung tối đa 250 kí tự</p>
                 </div>
               </div>
 
@@ -53,14 +56,14 @@
                   [ngModelOptions]="{ standalone: true }"
                   id="startDate"
                   [(ngModel)]="discount.discountAdminDTO.startDate"
-                  name="startDate"
+                  name="startDate" (blur)="isStartDateValid()"
                   required
                 />
-                <div *ngIf="!discount.discountAdminDTO.startDate || discount.discountAdminDTO.startDate < currentDate" class="alert alert-danger">
+                <div class="alert alert-danger">
                   <div *ngIf="!discount.discountAdminDTO.startDate">
                     Vui lòng chọn ngày bắt đầu.
                   </div>
-                  <div *ngIf="discount.discountAdminDTO.startDate && !isStartDateValid()">
+                  <div *ngIf="checkStartDate">
                     Ngày bắt đầu phải lớn hơn hoặc bằng ngày hiện tại.
                   </div>
                 </div>
@@ -95,12 +98,9 @@
                   required
                 >
                   <option >Chọn loại giảm giá</option>
-                  <option value="0">Theo %</option>
+                  <option value="0" selected >Theo %</option>
                   <option value="1">Theo tiền mặt</option>
                 </select>
-                <div *ngIf="!discount.discountType" class="alert alert-danger">
-                  <div *ngIf="!discount.discountType">Vui lòng chọn loại giảm giá.</div>
-                </div>
               </div>
 
               <div class="form-group" >
@@ -113,12 +113,14 @@
                   [(ngModel)]="discount.reducedValue"
                   placeholder="Giá trị giảm"
                   [max]="discount.discountType === '0' ? 100 : null"
+                  (keydown)="revoveInvalid(validReducedValue)" (blur)="validateReducedValue()"
                 />
                 <div *ngIf="discount.discountType === '0' && discount.reducedValue > 100 " class="text-danger">
                   Giá trị giảm không được quá 100%
                 </div>
-                <div *ngIf="!discount.reducedValue" class="alert alert-danger">
-                  <div *ngIf="!discount.reducedValue">Vui lòng nhập giá trị giảm.</div>
+                <div class="validate-input" *ngIf="!validReducedValue.done" class="alert alert-danger">
+                  <p class="validate-input-label" *ngIf="validReducedValue.empty">Giá trị giảm không để trống</p>
+                  <p class="validate-input-label" *ngIf="validReducedValue.regex">Giá trị giảm phải là số</p>
                 </div>
               </div>
 
@@ -131,9 +133,12 @@
                   [ngModelOptions]="{ standalone: true }"
                   [(ngModel)]="discount.maxReduced"
                   placeholder="Giá trị giảm tối đa"
+                  (keydown)="revoveInvalid(validMaxReduced)" (blur)="validateMaxReducedValue()"
+
                 />
-                <div *ngIf="!discount.maxReduced" class="alert alert-danger">
-                  <div *ngIf="!discount.maxReduced">Vui lòng nhập giá trị giảm tối đa</div>
+                <div class="validate-input" *ngIf="!validMaxReduced.done" class="alert alert-danger">
+                  <p class="validate-input-label" *ngIf="validMaxReduced.empty">Giá trị giảm tối đa không để trống</p>
+                  <p class="validate-input-label" *ngIf="validMaxReduced.regex">Giá trị giảm tối đa phải là số</p>
                 </div>
 
               </div>
@@ -147,7 +152,7 @@
                   name="discountType"
                   required
                 >
-                  <option value="0">Tất cả sản phẩm</option>
+                  <option value="0" selected>Tất cả sản phẩm</option>
                   <option value="1">Tùy chọn</option>
                 </select>
                 <div *ngIf="!discount.spap" class="alert alert-danger">

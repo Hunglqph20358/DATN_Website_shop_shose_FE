@@ -15,6 +15,9 @@ export class VoucherShipService {
   getCustomer() {
     return this.http.get<any[]>('http://localhost:6868/api/admin/voucherFS/customer');
   }
+  exportExcel(): Observable<Blob> {
+    return this.http.get<any[]>('http://localhost:6868/api/admin/voucherFS/export-data',{ responseType: 'blob' });
+  }
   updateVoucher(id, voucher: any) {
     const url = `${this.apiUrl}/${id}`;
     return this.http.put(url, voucher);

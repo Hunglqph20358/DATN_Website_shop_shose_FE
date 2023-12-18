@@ -7,6 +7,7 @@ import { CreatDiscountComponent } from '../creat-discount/creat-discount.compone
 import { DetailDiscountComponent } from '../detail-discount/detail-discount.component';
 import { DiscountService } from 'src/app/service/discount.service';
 import {ToastrService} from "ngx-toastr";
+import Swal from "sweetalert2";
 
 @Component({
   selector: 'app-action-discount',
@@ -53,18 +54,28 @@ export class ActionDiscountComponent
     this.router.navigate(['/admin/discount', this.data.id]);
   }
   delete(): void {
-    if (confirm('Bạn có muốn xóa không?')) {
+  Swal.fire({
+              title: 'Bạn có muốn xóa giảm giá không?',
+              icon: 'error',
+              showCancelButton: true,
+              confirmButtonColor: '#3085d6',
+              cancelButtonColor: '#d33',
+              confirmButtonText: 'Xóa'
+            }).then((result) => {
+    if (result.isConfirmed) {
       this.discountService.deleteDiscount(this.data.id).subscribe((response) => {
-        // Xử lý phản hồi nếu cần, ví dụ: hiển thị thông báo thành công
-        this.toastr.success('Xóa giảm giá thành công');
-        this.router.navigateByUrl('/admin/discount');
-      },
+          this.router.navigateByUrl('/admin/discount');
+        },
         error => {
           this.toastr.error('Xóa giảm giá thất bại');
         });
+      location.reload();
     }
-    this.cdr.detectChanges();
-  }
-
+    Swal.fire({
+      title: 'Xóa giảm giá thành công!',
+      icon: 'success'
+    });
+});
+}
 
 }

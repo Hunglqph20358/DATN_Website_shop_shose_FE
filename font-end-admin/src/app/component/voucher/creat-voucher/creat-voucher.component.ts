@@ -2,6 +2,10 @@ import {Component, OnInit} from '@angular/core';
 import {VoucherService} from 'src/app/service/voucher.service';
 import {Router} from '@angular/router';
 import {ToastrService} from "ngx-toastr";
+import Swal from 'sweetalert2';
+import {ValidateInput} from "../../model/validate-input";
+import {CommonFunction} from "../../../util/common-function";
+
 
 @Component({
   selector: 'app-creat-voucher',
@@ -20,13 +24,14 @@ export class CreatVoucherComponent implements OnInit {
     endDate: '',
     description: '',
     reducedValue: '',
-    voucherType: '',
-    conditions: 0,
+    voucherType: '0',
+    maxReduced: 0,
+    conditionApply: 0,
     quantity: 0,
-    limitCustomer: 0,
+    limitCustomer: '',
     customerAdminDTOList: '',
-    appy: '',
-    optionCustomer: '',
+    apply: '2',
+    optionCustomer: '0',
     createName: localStorage.getItem('fullname'),
     isValidDateRange: () => {
       return (
@@ -36,6 +41,11 @@ export class CreatVoucherComponent implements OnInit {
       );
     },
   };
+  validName: ValidateInput = new ValidateInput();
+  validDescription: ValidateInput = new ValidateInput();
+  validReducedValue: ValidateInput = new ValidateInput();
+  validMaxReduced: ValidateInput = new ValidateInput();
+  validconditionApply: ValidateInput = new ValidateInput();
   currentDate: Date = new Date();
   gridApi: any;
   fullname = '';
@@ -85,8 +95,6 @@ export class CreatVoucherComponent implements OnInit {
   }
 
   public rowSelection: 'single' | 'multiple' = 'multiple'; // Chọn nhiều dòng
-  pattern: '^[a-zA-Z0-9\s]+$';
-  so: '^\d+(\.\d+)?$';
 
   isStartDateValid(): boolean {
     return !this.voucher.startDate || this.voucher.startDate >= this.currentDate;
@@ -109,30 +117,63 @@ export class CreatVoucherComponent implements OnInit {
   }
 
   addVoucher() {
-    const userConfirmed = confirm('Bạn có muốn thêm voucher không?');
-    if (!userConfirmed) {
+    this.validateName();
+    this.validateReducedValue();
+    this.validateDescription();
+    this.validateMaxReducedValue();
+    this.validateConditionApply();
+    if (!this.validName.done || !this.validDescription.done || !this.validReducedValue.done
+      || !this.validconditionApply.done) {
       return;
     }
-    const arrayCustomer = this.voucher.optionCustomer === '0' ? null : this.gridApi.getSelectedRows();
-    const obj = {
-      ...this.voucher,
-      allow: this.checkAllow === true ? 1 : 0,
-      customerAdminDTOList: arrayCustomer,
-    };
-    this.voucherService.createVoucher(obj).subscribe(
-      (response) => {
-        // Handle the response if needed, e.g., show a success message
-        console.log('Discount added successfully', response);
-        this.toastr.success('Thêm voucher thành công');
-
-        this.router.navigateByUrl('/admin/voucher');
-      },
-      (error) => {
-        // Handle errors if the discount creation fails
-        this.toastr.error('Thêm voucher thất bại');
-        console.error('Error adding discount', error);
+    Swal.fire({
+      title: 'Bạn có muốn thêm Voucher không?',
+      icon: 'success',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Thêm'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        const arrayCustomer = this.voucher.optionCustomer === '0' ? null : this.gridApi.getSelectedRows();
+        const obj = {
+          ...this.voucher,
+          allow: this.checkAllow === true ? 1 : 0,
+          customerAdminDTOList: arrayCustomer,
+        };
+        this.voucherService.createVoucher(obj).subscribe(
+          (response) => {
+            this.router.navigateByUrl('/admin/voucher');
+          },
+          (error) => {
+            this.toastr.error('Thêm Voucher thất bại');
+            // Handle errors if the discount creation fails
+            console.error('Error adding discount', error);
+          }
+        );
+        Swal.fire({
+          title: 'Thêm Voucher thành công',
+          icon: 'success'
+        });
       }
-    );
+    });
+  }
+  revoveInvalid(result) {
+    result.done = true;
+  }
+  validateName() {
+    this.validName = CommonFunction.validateInput(this.voucher.name, 50, null );
+  }
+  validateDescription() {this.validDescription = CommonFunction.validateInput(this.voucher.description, 50, null );
+  }
+  validateReducedValue() {
+    this.validReducedValue = CommonFunction.validateInput(this.voucher.reducedValue, 250, /^\d+(\.\d+)?$/);
+  }
+  validateMaxReducedValue() {
+    this.validMaxReduced = CommonFunction.validateInput(this.voucher.maxReduced, 250, /^\d+(\.\d+)?$/);
+  }
+  validateConditionApply() {
+    this.validconditionApply = CommonFunction.validateInput(this.voucher.conditionApply, 250, /^\d+(\.\d+)?$/);
   }
 
 }

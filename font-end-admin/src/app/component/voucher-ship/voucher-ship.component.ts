@@ -1,11 +1,12 @@
 import {ChangeDetectorRef, Component, OnInit} from '@angular/core';
 import {MatDialog} from '@angular/material/dialog';
 import {VoucherService} from '../../service/voucher.service';
-import {formatDate, formatDateTime, formatDateYYYY_MM_dd} from '../../util/util';
+import {formatDate, formatDateTime, formatDateYYYY_MM_dd, getFormattedDateCurrent} from '../../util/util';
 import {ActionVoucherComponent} from '../voucher/action-voucher/action-voucher.component';
 import {VoucherShipService} from "../../service/voucher-ship.service";
 import {ActionVoucherShipComponent} from "./action-voucher-ship/action-voucher-ship.component";
 import {ToastrService} from "ngx-toastr";
+import * as FileSaver from 'file-saver';
 
 @Component({
   selector: 'app-voucher-ship',
@@ -40,6 +41,7 @@ export class VoucherShipComponent implements OnInit {
         field: 'code',
         sortable: true,
         filter: true,
+        maxWidth: 150,
       },
       {
         headerName: 'Tên',
@@ -67,9 +69,10 @@ export class VoucherShipComponent implements OnInit {
       },
       {
         headerName: 'Điều kiện sử dụng',
-        field: 'conditions',
+        field: 'conditionApply',
         sortable: true,
         filter: true,
+        maxWidth: 150,
       },
       {
         headerName: 'Sử dụng',
@@ -77,16 +80,21 @@ export class VoucherShipComponent implements OnInit {
           const useVoucher = params.data.useVoucher || 0;
           const quantity = params.data.quantity || 1;
           return `${useVoucher} / ${quantity}`;
-        }
+        },
+        maxWidth: 150,
       },
       {
         headerName: 'Hiển thị',
         field: '',
         cellRenderer: (params) => {
           const isChecked = params.data.idel === 1;
+          const useVoucher = params.data.useVoucher || 0;
+          const quantity = params.data.quantity || 1;
+          const editable = useVoucher !== quantity || params.data.status !== 1;
+          const  checkQuantity = useVoucher === quantity || params.data.status === 1;
           return `<div>
       <label class="switch1">
-        <input type="checkbox" ${isChecked ? 'checked' : ''}>
+        <input type="checkbox" ${isChecked ? 'checked' : ''} ${checkQuantity ? 'disabled' : ''}>
         <span class="slider round"></span>
       </label>
     </div>`;
@@ -94,14 +102,17 @@ export class VoucherShipComponent implements OnInit {
         onCellClicked: (params) => {
           const useVoucher = params.data.useVoucher || 0;
           const quantity = params.data.quantity || 1;
+
           // Bỏ kiểm tra idell nếu usecount bằng quantity
-          if (useVoucher === quantity) {
+          if (useVoucher === quantity || params.data.status === 1) {
             return;
           }
 
           // Ngược lại, kiểm tra idell bình thường
-          this.checkIsdell(params.node.data);
-        }
+          this.checkIsdell(params.node.data, params.node.index);
+        },
+        editable: false,
+        maxWidth: 150,
       },
       {
         headerName: 'Nội dung',
@@ -115,6 +126,7 @@ export class VoucherShipComponent implements OnInit {
         sortable: true,
         filter: true,
         cellRenderer: this.statusRenderer.bind(this),
+        maxWidth: 150,
       },
       {
         headerName: 'Action',
@@ -152,7 +164,8 @@ export class VoucherShipComponent implements OnInit {
       console.log(this.role + 'hahaahah');
       console.log(localStorage.getItem('role'));
     }
-  checkIsdell(data: any) {
+  checkIsdell(data: any, index: any) {
+    console.log(data, index);
     if (data.idel === 0) {
       const userConfirmed = confirm('Bạn có muốn kích hoạt voucher freeship không?');
       if (!userConfirmed) {
@@ -161,27 +174,41 @@ export class VoucherShipComponent implements OnInit {
       // Truyền dữ liệu thông qua HTTP PUT request
       this.apiService.KichHoat(data.id).subscribe(
         (res) => {
+          location.reload();
           this.toastr.success('Kích hoạt thành công');
-          this.searchResults = res;
-          this.apiService.sendEmail(res);
+          console.log(res + 'kích hoạt');
+          if (res.data.idCustomer || res.data.idCustomer !== '' || res.data.idCustomer.length > 0){
+            this.apiService.sendEmail(res.data).subscribe(result => {
+            });
+          }
         },
         error => {
           this.toastr.error('Kích hoạt thất bại');
         });
+      this.cdr.detectChanges();
     } else {
-      const userConfirmed = confirm('Bạn có muốn hủy bỏ kích hoạt voucher freeship  không?');
+      const userConfirmed = confirm('Bạn có muốn hủy bỏ kích hoạt voucher freeship không?');
       if (!userConfirmed) {
         return;
       }
       // Truyền dữ liệu thông qua HTTP PUT request
       this.apiService.KichHoat(data.id).subscribe(res => {
+          location.reload();
           this.toastr.success('Hủy bỏ kích hoạt thành công');
-          this.searchResults = res;
         },
         error => {
           this.toastr.error('Hủy bỏ kích hoạt thất bại');
         });
     }
+    this.cdr.detectChanges();
+  }
+  Excel() {
+    this.apiService.exportExcel().subscribe((data: Blob) => {
+      const currentDate = new Date();
+      const formattedDate = getFormattedDateCurrent(currentDate);
+      const fileName = `DS_VoucherFS_${formattedDate}.xlsx`;
+      FileSaver.saveAs(data, fileName);
+    });
     this.cdr.detectChanges();
   }
     searchByCustomer(event: any) {
@@ -194,6 +221,7 @@ export class VoucherShipComponent implements OnInit {
           console.error(error);
         }
       );
+      this.cdr.detectChanges();
     }
     searchByVoucher(event: any) {
       const searchTerm = event.target.value;

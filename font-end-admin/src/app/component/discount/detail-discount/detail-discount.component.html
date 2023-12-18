@@ -4,7 +4,7 @@
       <div class="col-md-12">
         <div class="card card-primary">
           <div class="card-header">
-            <h3 class="card-title">Giảm giá</h3>
+            <h3 class="card-title">Giảm Giá Chi Tiết</h3>
           </div>
           <div class="card-body">
             <table class="table">
@@ -19,11 +19,11 @@
               </tr>
               <tr>
                 <th scope="row">Ngày bắt đầu</th>
-                <td>{{ discount.startDate }}</td>
+                <td>{{ util.format(discount.startDate) }}</td>
               </tr>
               <tr>
                 <th scope="row">Ngày kết thúc</th>
-                <td>{{ discount.endDate }}</td>
+                <td>{{util.format( discount.endDate )}}</td>
               </tr>
               <tr>
                 <th scope="row">Loại giảm giá</th>
@@ -43,7 +43,7 @@
               </tr>
               <tr>
                 <th scope="row">Ngày tạo</th>
-                <td>{{ discount.createDate }}</td>
+                <td>{{ util.formatDateTime(discount.createDate) }}</td>
               </tr>
               <tr>
                 <th scope="row">Sản phẩm</th>

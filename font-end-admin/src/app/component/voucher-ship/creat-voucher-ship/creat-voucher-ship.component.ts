@@ -2,6 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import {Router} from '@angular/router';
 import {VoucherShipService} from '../../../service/voucher-ship.service';
 import {ToastrService} from "ngx-toastr";
+import Swal from "sweetalert2";
+import {ValidateInput} from "../../model/validate-input";
+import {CommonFunction} from "../../../util/common-function";
 
 @Component({
   selector: 'app-creat-voucher-ship',
@@ -19,10 +22,11 @@ export class CreatVoucherShipComponent implements OnInit {
     startDate: '',
     endDate: '',
     description: '',
-    reducedValue: '',
-    conditions: '',
-    quantity: '',
+    reducedValue: 0,
+    conditionApply: 0,
+    quantity: 0,
     customerAdminDTOList: '',
+    optionCustomer: '0',
     limitCustomer: '',
     createName: localStorage.getItem('fullname'),
     isValidDateRange: () => {
@@ -33,8 +37,10 @@ export class CreatVoucherShipComponent implements OnInit {
       );
     },
   };
-  pattern: '^[a-zA-Z0-9\s]+$';
-  so: '^\d+(\.\d+)?$';
+  validName: ValidateInput = new ValidateInput();
+  validDescription: ValidateInput = new ValidateInput();
+  validReducedValue: ValidateInput = new ValidateInput();
+  validconditionApply: ValidateInput = new ValidateInput();
   currentDate: Date = new Date();
   gridApi: any;
   constructor(private voucherService: VoucherShipService,
@@ -94,25 +100,58 @@ export class CreatVoucherShipComponent implements OnInit {
     this.gridApi = params.api;
   }
   addVoucher() {
-    const arrayCustomer = this.voucher.optionCustomer === '0' ? null : this.gridApi.getSelectedRows();
-    const userConfirmed = confirm('Bạn có muốn thêm voucher không?');
-    if (!userConfirmed) {
+    this.validateName();
+    this.validateReducedValue();
+    this.validateDescription();
+    this.validateConditionApply();
+    if (!this.validName.done || !this.validDescription.done || !this.validReducedValue.done
+      || !this.validconditionApply.done) {
       return;
     }
-    const obj = {
-      ...this.voucher,
-      customerAdminDTOList: arrayCustomer,
-    };
-    this.voucherService.createVoucher(obj).subscribe(
-      (response) => {
-        // Handle the response if needed, e.g., show a success message
-        this.toastr.success('Thêm voucher  thành công');
-        this.router.navigateByUrl('/admin/voucherFS');
-      },
-      (error) => {
-        // Handle errors if the discount creation fails
-        this.toastr.error('Thêm voucher thất bại');
+    Swal.fire({
+      title: 'Bạn có muốn thêm Voucher FreeShip không?',
+      icon: 'success',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Thêm'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        const arrayCustomer = this.voucher.optionCustomer === '0' ? null : this.gridApi.getSelectedRows();
+        const obj = {
+          ...this.voucher,
+          customerAdminDTOList: arrayCustomer,
+        };
+        this.voucherService.createVoucher(obj).subscribe(
+          (response) => {
+            // Handle the response if needed, e.g., show a success message
+            this.router.navigateByUrl('/admin/voucherFS');
+          },
+          (error) => {
+            // Handle errors if the discount creation fails
+            this.toastr.error('Thêm Voucher FreeShip thất bại');
+          }
+        );
+        Swal.fire({
+          title: 'Thêm Voucher FreeShip thành công',
+          icon: 'success'
+        });
       }
-    );
+    });
   }
+  revoveInvalid(result) {
+    result.done = true;
+  }
+  validateName() {
+    this.validName = CommonFunction.validateInput(this.voucher.name, 50, null );
+  }
+  validateDescription() {this.validDescription = CommonFunction.validateInput(this.voucher.description, 50, null);
+  }
+  validateReducedValue() {
+    this.validReducedValue = CommonFunction.validateInput(this.voucher.reducedValue, 250, /^\d+(\.\d+)?$/);
+  }
+  validateConditionApply() {
+    this.validconditionApply = CommonFunction.validateInput(this.voucher.conditionApply, 250, /^\d+(\.\d+)?$/);
+  }
+
 }

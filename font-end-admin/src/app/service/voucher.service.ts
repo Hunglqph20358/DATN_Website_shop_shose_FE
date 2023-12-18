@@ -28,6 +28,9 @@ export class VoucherService {
     const url = `${this.apiUrl}/${voucherId}`;
     return this.http.delete(url);
   }
+  exportExcel(): Observable<Blob> {
+    return this.http.get<any[]>('http://localhost:6868/api/admin/voucher/export-data', { responseType: 'blob' });
+  }
 
   createVoucher(voucher: any): Observable<any> {
     return this.http.post(this.apiUrl, voucher);

@@ -4,7 +4,7 @@
       <div class="col-md-12">
         <div class="card card-primary">
           <div class="card-header">
-            <h3 class="card-title">Voucher Details</h3>
+            <h3 class="card-title">Voucher  Chi Tiết</h3>
           </div>
           <div class="card-body">
             <table class="table">
@@ -19,15 +19,19 @@
               </tr>
               <tr>
                 <th scope="row">Ngày bắt đầu</th>
-                <td>{{ voucher.startDate }}</td>
+                <td>{{ util.format(voucher.startDate) }}</td>
               </tr>
               <tr>
                 <th scope="row">Ngày kết thúc</th>
-                <td>{{ voucher.endDate }}</td>
+                <td>{{util.format( voucher.endDate) }}</td>
               </tr>
               <tr>
                 <th scope="row">Loại voucher</th>
                 <td>{{ getVoucherTypeText() }}</td>
+              </tr>
+              <tr>
+                <th scope="row">Điều kiện áp dụng</th>
+                <td>{{ voucher.conditionApply }}</td>
               </tr>
               <tr>
                 <th scope="row">Giá trị giảm</th>
@@ -45,8 +49,8 @@
                 <th scope="row">Số lượng</th>
                 <td>{{ voucher.quantity }}</td>
               </tr>
-              <tr>
-                <th scope="row">Giới hạn số lần sử dụng của mỗi khách hàng</th>
+              <tr *ngIf="voucher.optionCustomer === 1">
+                <th scope="row" >Giới hạn số lần sử dụng của mỗi khách hàng</th>
                 <td>{{ voucher.limitCustomer }}</td>
               </tr>
               <tr>
@@ -59,7 +63,7 @@
               </tr>
               <tr>
                 <th scope="row">Ngày tạo</th>
-                <td>{{ voucher.createDate }}</td>
+                <td>{{ util.formatDateTime(voucher.createDate) }}</td>
               </tr>
               <tr>
                 <th scope="row">Khách hàng</th>
