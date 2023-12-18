@@ -46,7 +46,7 @@ export class EditDiscountComponent implements OnInit {
   rowHeight = 40;
   disableCheckPriceProduct = false;
   iđStaff = '';
-
+  checkStartDate: boolean = false;
   constructor(private discountService: DiscountService,
               private router: Router,
               private activatedRoute: ActivatedRoute,
@@ -131,6 +131,20 @@ export class EditDiscountComponent implements OnInit {
         });
     });
   }
+
+  isStartDateValid() {
+    // console.log(event);
+    const date = new Date();
+    console.log(date.getTime());
+    console.log(new Date(this.discount.discountAdminDTO.startDate).getTime());
+    if (new Date(this.discount.discountAdminDTO.startDate).getTime() < date.getTime()){
+      this.checkStartDate = true;
+    }else {
+      this.checkStartDate = false;
+    }
+    console.log(this.checkStartDate);
+  }
+
   onGridReady(params: any) {
     this.gridApi = params.api;
   }
