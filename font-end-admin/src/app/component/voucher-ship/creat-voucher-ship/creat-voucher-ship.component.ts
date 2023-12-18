@@ -1,37 +1,33 @@
-import {Component, OnInit} from '@angular/core';
-import {VoucherService} from 'src/app/service/voucher.service';
+import { Component, OnInit } from '@angular/core';
 import {Router} from '@angular/router';
+import {VoucherShipService} from '../../../service/voucher-ship.service';
 import {ToastrService} from "ngx-toastr";
-import Swal from 'sweetalert2';
+import Swal from "sweetalert2";
 import {ValidateInput} from "../../model/validate-input";
 import {CommonFunction} from "../../../util/common-function";
 
-
 @Component({
-  selector: 'app-creat-voucher',
-  templateUrl: './creat-voucher.component.html',
-  styleUrls: ['./creat-voucher.component.css'],
+  selector: 'app-creat-voucher-ship',
+  templateUrl: './creat-voucher-ship.component.html',
+  styleUrls: ['./creat-voucher-ship.component.css']
 })
-export class CreatVoucherComponent implements OnInit {
+export class CreatVoucherShipComponent implements OnInit {
+
   rowData = [];
   columnDefs;
   headerHeight = 50;
   rowHeight = 40;
-  checkAllow: boolean = false;
   voucher: any = {
     name: '',
     startDate: '',
     endDate: '',
     description: '',
-    reducedValue: '',
-    voucherType: '0',
-    maxReduced: 0,
+    reducedValue: 0,
     conditionApply: 0,
     quantity: 0,
-    limitCustomer: '',
     customerAdminDTOList: '',
-    apply: '2',
     optionCustomer: '0',
+    limitCustomer: '',
     createName: localStorage.getItem('fullname'),
     isValidDateRange: () => {
       return (
@@ -44,13 +40,10 @@ export class CreatVoucherComponent implements OnInit {
   validName: ValidateInput = new ValidateInput();
   validDescription: ValidateInput = new ValidateInput();
   validReducedValue: ValidateInput = new ValidateInput();
-  validMaxReduced: ValidateInput = new ValidateInput();
   validconditionApply: ValidateInput = new ValidateInput();
   currentDate: Date = new Date();
   gridApi: any;
-  fullname = '';
-
-  constructor(private voucherService: VoucherService,
+  constructor(private voucherService: VoucherShipService,
               private  router: Router,
               private toastr: ToastrService) {
     this.columnDefs = [
@@ -93,41 +86,30 @@ export class CreatVoucherComponent implements OnInit {
       },
     ];
   }
-
   public rowSelection: 'single' | 'multiple' = 'multiple'; // Chọn nhiều dòng
-
   isStartDateValid(): boolean {
     return !this.voucher.startDate || this.voucher.startDate >= this.currentDate;
   }
-
   ngOnInit(): void {
     this.voucherService.getCustomer().subscribe((response) => {
       this.rowData = response;
       console.log(response);
     });
   }
-
   onGridReady(params: any) {
     this.gridApi = params.api;
   }
-
-  toggleAllowDiscount(event: any) {
-    this.checkAllow = event.target.checked;
-    console.log(event);
-  }
-
   addVoucher() {
     this.validateName();
     this.validateReducedValue();
     this.validateDescription();
-    this.validateMaxReducedValue();
     this.validateConditionApply();
     if (!this.validName.done || !this.validDescription.done || !this.validReducedValue.done
       || !this.validconditionApply.done) {
       return;
     }
     Swal.fire({
-      title: 'Bạn có muốn thêm Voucher không?',
+      title: 'Bạn có muốn thêm Voucher FreeShip không?',
       icon: 'success',
       showCancelButton: true,
       confirmButtonColor: '#3085d6',
@@ -138,21 +120,20 @@ export class CreatVoucherComponent implements OnInit {
         const arrayCustomer = this.voucher.optionCustomer === '0' ? null : this.gridApi.getSelectedRows();
         const obj = {
           ...this.voucher,
-          allow: this.checkAllow === true ? 1 : 0,
           customerAdminDTOList: arrayCustomer,
         };
         this.voucherService.createVoucher(obj).subscribe(
           (response) => {
-            this.router.navigateByUrl('/admin/voucher');
+            // Handle the response if needed, e.g., show a success message
+            this.router.navigateByUrl('/admin/voucherFS');
           },
           (error) => {
-            this.toastr.error('Thêm Voucher thất bại');
             // Handle errors if the discount creation fails
-            console.error('Error adding discount', error);
+            this.toastr.error('Thêm Voucher FreeShip thất bại');
           }
         );
         Swal.fire({
-          title: 'Thêm Voucher thành công',
+          title: 'Thêm Voucher FreeShip thành công',
           icon: 'success'
         });
       }
@@ -164,13 +145,10 @@ export class CreatVoucherComponent implements OnInit {
   validateName() {
     this.validName = CommonFunction.validateInput(this.voucher.name, 50, null );
   }
-  validateDescription() {this.validDescription = CommonFunction.validateInput(this.voucher.description, 50, null );
+  validateDescription() {this.validDescription = CommonFunction.validateInput(this.voucher.description, 50, null);
   }
   validateReducedValue() {
     this.validReducedValue = CommonFunction.validateInput(this.voucher.reducedValue, 250, /^\d+(\.\d+)?$/);
-  }
-  validateMaxReducedValue() {
-    this.validMaxReduced = CommonFunction.validateInput(this.voucher.maxReduced, 250, /^\d+(\.\d+)?$/);
   }
   validateConditionApply() {
     this.validconditionApply = CommonFunction.validateInput(this.voucher.conditionApply, 250, /^\d+(\.\d+)?$/);

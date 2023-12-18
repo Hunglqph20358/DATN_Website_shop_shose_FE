@@ -7,7 +7,7 @@
             <h3 class="card-title">Giảm giá</h3>
           </div>
 
-          <form>
+          <form (submit)="addDiscount()">
             <div class="card-body">
               <div class="form-group">
                 <label for="name">Tên</label>
@@ -18,8 +18,17 @@
                   [ngModelOptions]="{ standalone: true }"
                   [(ngModel)]="discount.discountAdminDTO.name"
                   placeholder="Tên giảm giá"
+                  name="name"
+                  required
+                  minlength="5"
+                  (keydown)="revoveInvalid(validName)" (blur)="validateName()"
                 />
+                <div class="validate-input" *ngIf="!validName.done" class="alert alert-danger">
+                  <p class="validate-input-label" *ngIf="validName.empty">Tên không để trống</p>
+                  <p class="validate-input-label" *ngIf="validName.maxLength">Tên tối đa 250 kí tự</p>
+                </div>
               </div>
+
               <div class="form-group">
                 <label for="description">Nội dung</label>
                 <input
@@ -29,28 +38,55 @@
                   [ngModelOptions]="{ standalone: true }"
                   [(ngModel)]="discount.discountAdminDTO.description"
                   placeholder="Nội dung"
+                  name="description"
+                  required
+                  (keydown)="revoveInvalid(validDescription)" (blur)="validateDescription()"
                 />
+                <div class="validate-input" *ngIf="!validDescription.done" class="alert alert-danger">
+                  <p class="validate-input-label" *ngIf="validDescription.empty">Nội dung không để trống</p>
+                  <p class="validate-input-label" *ngIf="validDescription.maxLength">Nội dung tối đa 250 kí tự</p>
+                </div>
               </div>
+
               <div class="form-group">
                 <label for="startDate">Ngày bắt đầu</label>
                 <input
-                  type="date"
+                  type="datetime-local"
                   class="form-control"
                   [ngModelOptions]="{ standalone: true }"
                   id="startDate"
                   [(ngModel)]="discount.discountAdminDTO.startDate"
+                  name="startDate" (blur)="isStartDateValid()"
+                  required
                 />
+                <div class="alert alert-danger">
+                  <div *ngIf="!discount.discountAdminDTO.startDate">
+                    Vui lòng chọn ngày bắt đầu.
+                  </div>
+                  <div *ngIf="checkStartDate">
+                    Ngày bắt đầu phải lớn hơn hoặc bằng ngày hiện tại.
+                  </div>
+                </div>
+
               </div>
+
               <div class="form-group">
                 <label for="endDate">Ngày kết thúc</label>
                 <input
-                  type="date"
+                  type="datetime-local"
                   class="form-control"
                   [ngModelOptions]="{ standalone: true }"
                   id="endDate"
                   [(ngModel)]="discount.discountAdminDTO.endDate"
+                  name="endDate"
+                  required
                 />
+                <div *ngIf="!discount.discountAdminDTO.endDate || !discount.isValidDateRange()" class="alert alert-danger">
+                  <div *ngIf="!discount.discountAdminDTO.endDate">Vui lòng chọn ngày kết thúc.</div>
+                  <div *ngIf="!discount.isValidDateRange()">Ngày kết thúc phải lớn hơn ngày bắt đầu.</div>
+                </div>
               </div>
+
               <div class="form-group">
                 <label for="discountType">Loại giảm giá</label>
                 <select
@@ -58,12 +94,16 @@
                   id="discountType"
                   [ngModelOptions]="{ standalone: true }"
                   [(ngModel)]="discount.discountType"
+                  name="discountType"
+                  required
                 >
-                  <option value="1">Theo %</option>
-                  <option value="0">Theo tiền mặt</option>
+                  <option >Chọn loại giảm giá</option>
+                  <option value="0" selected >Theo %</option>
+                  <option value="1">Theo tiền mặt</option>
                 </select>
               </div>
-              <div class="form-group">
+
+              <div class="form-group" >
                 <label for="reducedValue">Giá trị giảm</label>
                 <input
                   type="text"
@@ -72,33 +112,78 @@
                   [ngModelOptions]="{ standalone: true }"
                   [(ngModel)]="discount.reducedValue"
                   placeholder="Giá trị giảm"
+                  [max]="discount.discountType === '0' ? 100 : null"
+                  (keydown)="revoveInvalid(validReducedValue)" (blur)="validateReducedValue()"
                 />
+                <div *ngIf="discount.discountType === '0' && discount.reducedValue > 100 " class="text-danger">
+                  Giá trị giảm không được quá 100%
+                </div>
+                <div class="validate-input" *ngIf="!validReducedValue.done" class="alert alert-danger">
+                  <p class="validate-input-label" *ngIf="validReducedValue.empty">Giá trị giảm không để trống</p>
+                  <p class="validate-input-label" *ngIf="validReducedValue.regex">Giá trị giảm phải là số</p>
+                </div>
+              </div>
+
+              <div class="form-group" *ngIf="discount.discountType == '0'">
+                <label for="maxReduced">Giá trị giảm tối đa</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="maxReduced"
+                  [ngModelOptions]="{ standalone: true }"
+                  [(ngModel)]="discount.maxReduced"
+                  placeholder="Giá trị giảm tối đa"
+                  (keydown)="revoveInvalid(validMaxReduced)" (blur)="validateMaxReducedValue()"
+
+                />
+                <div class="validate-input" *ngIf="!validMaxReduced.done" class="alert alert-danger">
+                  <p class="validate-input-label" *ngIf="validMaxReduced.empty">Giá trị giảm tối đa không để trống</p>
+                  <p class="validate-input-label" *ngIf="validMaxReduced.regex">Giá trị giảm tối đa phải là số</p>
+                </div>
+
               </div>
               <div class="form-group">
+                <label for="discountType">Sản phẩm áp dụng</label>
+                <select
+                  class="form-control"
+                  id="spap"
+                  [ngModelOptions]="{ standalone: true }"
+                  [(ngModel)]="discount.spap"
+                  name="discountType"
+                  required
+                >
+                  <option value="0" selected>Tất cả sản phẩm</option>
+                  <option value="1">Tùy chọn</option>
+                </select>
+                <div *ngIf="!discount.spap" class="alert alert-danger">
+                  <div *ngIf="!discount.spap">Vui lòng chọn sản phẩm áp dụng.</div>
+                </div>
+              </div>
+
+              <div class="form-group" *ngIf="discount.spap == '1'">
                 <label for="product">Sản phẩm giảm</label>
                 <div class="grid">
                   <ag-grid-angular
-                    style="width: 100%; height: 500px"
+                    style="width: 100%; height: 300px"
                     class="ag-theme-balham"
                     [rowData]="rowData"
                     [columnDefs]="columnDefs"
                     [rowSelection]="rowSelection"
                     [headerHeight]="headerHeight"
                     [rowHeight]="rowHeight"
+                    [pagination]="true"
+                    [paginationPageSize]="5"
                     [domLayout]="'autoHeight'"
                     (gridReady)="onGridReady($event)"
                   ></ag-grid-angular>
+<!--                  <div *ngIf="!(discount.productDTOList?.length > 0)" class="alert alert-danger">-->
+<!--                    Vui lòng chọn ít nhất một sản phẩm-->
+<!--                  </div>-->
                 </div>
               </div>
-              <div class="card-footer">
-                <button
-                  type="submit"
-                  class="btn btn-primary"
-                  (click)="addDiscount()"
-                >
-                  Submit
-                </button>
-              </div>
+            </div>
+            <div class="card-footer">
+              <button type="submit" class="btn btn-primary">Submit</button>
             </div>
           </form>
         </div>

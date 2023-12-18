@@ -1,6 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { DiscountService } from 'src/app/service/discount.service';
+import {ToastrService} from 'ngx-toastr';
+import Swal from 'sweetalert2';
+import {ValidateInput} from "../../model/validate-input";
+import {CommonFunction} from "../../../util/common-function";
+import {DatePipe} from "@angular/common";
 
 @Component({
   selector: 'app-edit-discount',
@@ -8,28 +13,45 @@ import { DiscountService } from 'src/app/service/discount.service';
   styleUrls: ['./edit-discount.component.css'],
 })
 export class EditDiscountComponent implements OnInit {
-   isHidden: boolean = true;
+   isHidden = true;
   discount: any = {
-    id: '',
     discountAdminDTO: {
       id: '',
       name: '',
-      startDateStr: '',
-      endDateStr: '',
+      startDate: '',
+      endDate: '',
       description: '',
+      createName: localStorage.getItem('fullname'),
     },
-    reducedValue: '',
-    discountType: '',
+    spap: '0',
+    reducedValue: '0',
+    discountType: '0',
+    maxReduced: 0,
+    isValidDateRange: () => {
+      return (
+        this.discount.discountAdminDTO.startDate &&
+        this.discount.discountAdminDTO.endDate &&
+        this.discount.discountAdminDTO.startDate < this.discount.discountAdminDTO.endDate
+      );
+    },
   };
+  validName: ValidateInput = new ValidateInput();
+  validDescription: ValidateInput = new ValidateInput();
+  validReducedValue: ValidateInput = new ValidateInput();
+  validMaxReduced: ValidateInput = new ValidateInput();
   gridApi: any;
   rowData = [];
   columnDefs;
   headerHeight = 50;
   rowHeight = 40;
+  disableCheckPriceProduct = false;
+  iđStaff = '';
 
   constructor(private discountService: DiscountService,
               private router: Router,
-              private activatedRoute: ActivatedRoute) {
+              private activatedRoute: ActivatedRoute,
+              private toastr: ToastrService,
+              private datePipe: DatePipe) {
     this.columnDefs = [
       {
         headerName: 'Mã sản phẩm',
@@ -49,27 +71,35 @@ export class EditDiscountComponent implements OnInit {
       },
       {
         headerName: 'Tên thương hiệu',
-        field: 'brandDTO.name',
+        field: 'brandAdminDTO.name',
         sortable: true,
         filter: true,
         editable: true,
       },
       {
         headerName: 'Loại',
-        field: 'categoryDTO.name',
+        field: 'categoryAdminDTO.name',
+        sortable: true,
+        filter: true,
+        editable: true,
+      },
+      {
+        headerName: 'Giá',
+        field: 'price',
         sortable: true,
         filter: true,
         editable: true,
       },
       {
         headerName: 'Số lượt bán',
-        field: 'totalSold',
+        field: 'totalQuantity',
         sortable: true,
         filter: true,
         editable: true,
       },
     ];
   }
+  currentDate: Date = new Date();
   public rowSelection: 'single' | 'multiple' = 'multiple'; // Chọn nhiều dòng
   ngOnInit(): void {
     this.discountService.getProduct().subscribe((response) => {
@@ -79,23 +109,23 @@ export class EditDiscountComponent implements OnInit {
     this.isHidden = true;
     // Lấy thông tin khuyến mãi dựa trên id từ tham số URL
     this.activatedRoute.params.subscribe((params) => {
-      const id = params['id'];
+      const id = params.id;
       this.discountService
         .getDetailDiscount(id)
         .subscribe((response: any[]) => {
-          const firstDiscount = response[0];
-          this.discount.id = firstDiscount.id;
-          this.discount.discountAdminDTO.id = firstDiscount.discountAdminDTO.id;
+          const firstDiscount = Array.isArray(response) ? response[0] : response;
+          this.discount.discountAdminDTO.id = firstDiscount.id;
           this.discount.discountAdminDTO.name =
-            firstDiscount.discountAdminDTO.name;
+            firstDiscount.name;
           this.discount.discountAdminDTO.startDate =
-            firstDiscount.discountAdminDTO.startDate;
+            this.formatDate(firstDiscount.startDate);
           this.discount.discountAdminDTO.endDate =
-            firstDiscount.discountAdminDTO.endDate;
+            this.formatDate(firstDiscount.endDate);
           this.discount.discountAdminDTO.description =
-            firstDiscount.discountAdminDTO.description;
+            firstDiscount.description;
           this.discount.reducedValue = firstDiscount.reducedValue;
           this.discount.discountType = firstDiscount.discountType;
+          this.discount.maxReduced = firstDiscount.maxReduced;
 
           console.log(this.discount);
         });
@@ -106,19 +136,81 @@ export class EditDiscountComponent implements OnInit {
   }
   // Phương thức cập nhật thông tin khuyến mãi
   editDiscount() {
-    this.activatedRoute.params.subscribe((params) => {
-      const id = params['id'];
-      console.log(this.gridApi.getSelectedRows());
-      const obj = {
-        ...this.discount,
-        productDTOList: this.gridApi.getSelectedRows(),
-      };
-      this.discountService
-        .updateDiscount(id, obj)
-        .subscribe(() => {
-          this.router.navigateByUrl('/admin/discount');
+    this.validateName();
+    this.validateReducedValue();
+    this.validateDescription();
+    this.validateMaxReducedValue();
+    if (!this.validName.done || !this.validDescription.done || !this.validReducedValue.done
+      || !this.validMaxReduced.done
+    ) {
+      return;
+    }
+    Swal.fire({
+      title: 'Bạn có muốn sửa giảm giá không?',
+      icon: 'success',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Sửa'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        const arrayProduct = this.discount.spap === '0' ? this.rowData : this.gridApi.getSelectedRows();
+        this.disableCheckPriceProduct = false;
+        // tslint:disable-next-line:prefer-for-of
+        for (let i = 0; i < arrayProduct.length; i++) {
+          // tslint:disable-next-line:triple-equals
+          if (this.discount.reducedValue > arrayProduct[i].price && this.discount.discountType == 1) {
+            this.disableCheckPriceProduct = true;
+            this.toastr.success('Giá trị giảm lớn hơn giá sản phẩm');
+            return;
+          }
+          this.iđStaff = localStorage.getItem('idStaff');
+          // tslint:disable-next-line:triple-equals
+          if (this.discount.maxReduced > arrayProduct[i].price && this.discount.discountType == 0) {
+            this.disableCheckPriceProduct = true;
+            this.toastr.success('Giá trị giảm lớn hơn giá sản phẩm');
+            return;
+          }
+        }
+        if (this.disableCheckPriceProduct === false) {
+          const obj = {
+            ...this.discount,
+            productDTOList: arrayProduct,
+          };
+          this.discountService.updateDiscount(this.discount.discountAdminDTO.id, obj).subscribe(
+            (response) => {
+              // Handle the response if needed, e.g., show a success message
+              console.log('Discount added successfully', response);
+              this.router.navigateByUrl('/admin/discount');
+            },
+            (error) => {
+              // Handle errors if the discount creation fails
+              this.toastr.error('Sửa giảm giá thất bại');
+              console.error('Error adding discount', error);
+            }
+          );
+        }
+        Swal.fire({
+          title: 'Sửa giảm giá thành công!',
+          icon: 'success'
         });
-      console.log(obj);
+      }
     });
   }
-}
+  revoveInvalid(result) {
+    result.done = true;
+  }
+  validateName() {
+    this.validName = CommonFunction.validateInput(this.discount.discountAdminDTO.name, 50, null );
+  }
+  validateDescription() {this.validDescription = CommonFunction.validateInput(this.discount.discountAdminDTO.description, 50, null );
+  }
+  validateReducedValue() {
+    this.validReducedValue = CommonFunction.validateInput(this.discount.reducedValue, 250, /^\d+(\.\d+)?$/);
+  }
+  validateMaxReducedValue() {
+    this.validMaxReduced = CommonFunction.validateInput(this.discount.maxReduced, 250, /^\d+(\.\d+)?$/);
+  }
+  formatDate(date: Date): string {
+    return this.datePipe.transform(date, 'yyyy-MM-ddTHH:mm') || '';
+  }}

@@ -34,6 +34,9 @@ export class LoginComponent implements OnInit {
         localStorage.setItem('fullname', data.usersDTO.fullname);
         localStorage.setItem('id', data.usersDTO.id.toString());
         this.router.navigate(['']);
+        localStorage.setItem('user', JSON.stringify(data.usersDTO));
+        localStorage.setItem('fullname', data.usersDTO.fullname);
+        localStorage.setItem('idStaff', data.usersDTO.id.toString());
       }
     }, error => {
         this.toas.error('thông tin tài khoản hoặc mật khẩu không chính xác', 'Lỗi');
