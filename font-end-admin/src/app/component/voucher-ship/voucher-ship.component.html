@@ -1,5 +1,5 @@
 <div class="example-button-row" >
-  <button mat-raised-button color="primary" style="margin-bottom: 20px; margin-left: 20px" routerLink="/admin/creat-voucher" >Thêm Voucher</button>
+  <button mat-raised-button color="primary" style="margin-bottom: 20px; margin-left: 20px" routerLink="/admin/creat-voucherFS" >Thêm Voucher FreeShip</button>
 </div>
 <mat-tab-group>
   <mat-tab>
@@ -7,27 +7,27 @@
       Tất Cả
     </ng-template>
     <div class="search-from" style="display: flex; margin-top: 10px">
-    <div class="form-group">
-      <select
-        class="form-control"
-        id="discountType"
-        name="discountType"
-        required
-        [(ngModel)]="loc"
-      >
-        <option value="0" selected>Điều kiện lọc</option>
-        <option value="1">Theo voucher</option>
-        <option value="2">Theo khách hàng</option>
-        <option value="3">Theo khoảng thời gian</option>
-      </select>
-    </div>
+      <div class="form-group">
+        <select
+          class="form-control"
+          id="discountType"
+          name="discountType"
+          required
+          [(ngModel)]="loc"
+        >
+          <option value="0" selected>Điều kiện lọc</option>
+          <option value="1">Theo voucher</option>
+          <option value="2">Theo khách hàng</option>
+          <option value="3">Theo khoảng thời gian</option>
+        </select>
+      </div>
 
-    <div class="search-box" *ngIf="loc === '1' ">
-      <input type="text" id="searchByVoucher" style="width: 400px; height: 30px" placeholder="Tên hoặc mã voucher" (input)="searchByVoucher($event)">
-    </div>
-    <div class="search-box" *ngIf="loc === '2' ">
-      <input type="text" id="searchByCustomer" style="width: 400px; height: 30px" placeholder="Tên hoặc mã hoặc sdt khách hàng" (input)="searchByCustomer($event)">
-    </div>
+      <div class="search-box" *ngIf="loc === '1' ">
+        <input type="text" id="searchByVoucher" style="width: 400px; height: 30px" placeholder="Tên hoặc mã voucher" (input)="searchByVoucher($event)">
+      </div>
+      <div class="search-box" *ngIf="loc === '2' ">
+        <input type="text" id="searchByCustomer" style="width: 400px; height: 30px" placeholder="Tên hoặc mã hoặc sdt khách hàng" (input)="searchByCustomer($event)">
+      </div>
       <div class="search-box" *ngIf="loc === '3' " style="display: flex">
         <div style="display: flex; justify-content: flex-end; margin-top: 10px">
           <ejs-daterangepicker id='daterangepicker' placeholder='Chọn thời gian' [startDate]='dateFromCurrent' [endDate]='dateToCurrent' (change)="getDater($event)"></ejs-daterangepicker>
@@ -38,22 +38,22 @@
         <button type="button" class="btn btn-light" (click)="Excel()">Xuất file excel</button>
         <!--          <button type="button" (click)="Excel()">In</button>-->
       </div>
-      </div>
+    </div>
     <div>
     </div>
-      <div class="grid" style="margin-top: 10px">
-        <ag-grid-angular
-          style="width: 100%; height: 500px;"
-          class="ag-theme-balham"
-          [rowData]="searchResults"
-          [columnDefs]="columnDefs"
-          [headerHeight]="headerHeight"
-          [rowHeight]="rowHeight"
-          [pagination]="true"
-          [paginationPageSize]="10"
-          [domLayout]="'autoHeight'"
-        ></ag-grid-angular>
-      </div>
+    <div class="grid" style="margin-top: 10px">
+      <ag-grid-angular
+        style="width: 100%; height: 500px;"
+        class="ag-theme-balham"
+        [rowData]="searchResults"
+        [columnDefs]="columnDefs"
+        [headerHeight]="headerHeight"
+        [rowHeight]="rowHeight"
+        [pagination]="true"
+        [paginationPageSize]="10"
+        [domLayout]="'autoHeight'"
+      ></ag-grid-angular>
+    </div>
   </mat-tab>
 
   <mat-tab>

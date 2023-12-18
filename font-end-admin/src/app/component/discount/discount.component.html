@@ -1,23 +1,114 @@
-
-<div>
-  <div class="example-button-row" >
-    <button mat-raised-button color="primary" style="margin-bottom: 20px; margin-left: 20px" routerLink="/admin/creat-discount">Thêm giảm giá</button>
-  </div>
-  <div class="grid">
-    <ag-grid-angular
-      style="width: 100%; height: 500px;"
-      class="ag-theme-balham"
-      [rowData]="rowData"
-      [columnDefs]="columnDefs"
-      [rowSelection]="rowSelection"
-      [headerHeight]="headerHeight"
-      [rowHeight]="rowHeight"
-      [pagination]="true"
-      [paginationPageSize]="10"
-      [domLayout]="'autoHeight'"
-    ></ag-grid-angular>
-  </div>
+<div class="example-button-row" >
+  <button mat-raised-button color="primary" style="margin-bottom: 20px; margin-left: 20px" routerLink="/admin/creat-discount" >Thêm giảm giá</button>
 </div>
+<mat-tab-group>
+  <mat-tab>
+    <ng-template mat-tab-label>
+      Tất Cả
+    </ng-template>
+      <div class="search-from" style="display: flex; margin-top: 10px">
+        <div class="form-group ">
+          <select
+            class="form-control"
+            id="loc"
+            name="loc"
+            required
+            [(ngModel)]="loc"
+          >
+            <option  value="5" selected>Điều kiện lọc</option>
+            <option value="0">Theo loại sản phẩm</option>
+            <option value="1">Theo sản phẩm</option>
+            <option value="2">Theo thương hiệu</option>
+            <option value="3">Theo giảm giá</option>
+            <option value="4">Theo khoảng thời gian</option>
+          </select>
+        </div>
+
+        <div class="search-box" *ngIf="loc === '3' ">
+          <input type="text" id="search" style="width: 400px; height: 30px" placeholder="Mã hoặc tên" (input)="searchByDiscount($event)">
+        </div>
+        <div class="search-box" *ngIf="loc === '0' ">
+          <input type="text" id="searchByCategory" style="width: 400px; height: 30px" placeholder="Loại giày" (input)="searchByCategory($event)">
+        </div>
+        <div class="search-box" *ngIf="loc === '1' ">
+          <input type="text" id="searchByProduct" style="width: 400px; height: 30px" placeholder="Tên hoặc mã giày" (input)="searchByProduct($event)">
+        </div>
+        <div class="search-box" *ngIf="loc === '2' ">
+          <input type="text" id="searchByBrand" style="width: 400px; height: 30px" placeholder="Tên thương hiệu" (input)="searchByBrand($event)">
+        </div>
+
+        <div class="search-box" *ngIf="loc === '4' " style="display: flex">
+          <div style="display: flex; justify-content: flex-end; margin-top: 10px">
+            <ejs-daterangepicker id='daterangepicker' placeholder='Chọn thời gian' [startDate]='dateFromCurrent' [endDate]='dateToCurrent' (change)="getDater($event)"></ejs-daterangepicker>
+            <!--      <span *ngIf="checkDateRanges === false">Date range is valid</span>-->
+          </div>
+        </div>
+
+        <div style="justify-content: flex-end">
+          <button type="button" class="btn btn-light" (click)="Excel()">Xuất file excel</button>
+<!--          <button type="button" (click)="Excel()">In</button>-->
+        </div>
+      </div>
+    <div>
+    </div>
+
+        <div class="grid" style="margin-top: 10px">
+        <ag-grid-angular
+          style="width: 100%; height: 500px;"
+          class="ag-theme-balham"
+          [rowData]="searchResults"
+          [columnDefs]="columnDefs"
+          [headerHeight]="headerHeight"
+          [rowHeight]="rowHeight"
+          [pagination]="true"
+          [paginationPageSize]="10"
+          [domLayout]="'autoHeight'"
+        ></ag-grid-angular>
+      </div>
+  </mat-tab>
+  <mat-tab>
+    <ng-template mat-tab-label>
+      Đang kích hoạt
+    </ng-template>
+    <div>
+      <div class="grid">
+        <ag-grid-angular
+          style="width: 100%; height: 500px;"
+          class="ag-theme-balham"
+          [rowData]="rowData1"
+          [columnDefs]="columnDefs"
+          [headerHeight]="headerHeight"
+          [rowHeight]="rowHeight"
+          [pagination]="true"
+          [paginationPageSize]="10"
+          [domLayout]="'autoHeight'"
+        ></ag-grid-angular>
+      </div>
+    </div>
+  </mat-tab>
+
+  <mat-tab>
+    <ng-template mat-tab-label>
+      Chưa kích hoạt
+    </ng-template>
+    <div>
+      <div class="grid">
+        <ag-grid-angular
+          style="width: 100%; height: 500px;"
+          class="ag-theme-balham"
+          [rowData]="rowData2"
+          [columnDefs]="columnDefs"
+          [headerHeight]="headerHeight"
+          [rowHeight]="rowHeight"
+          [pagination]="true"
+          [paginationPageSize]="10"
+          [domLayout]="'autoHeight'"
+        ></ag-grid-angular>
+      </div>
+    </div>
+  </mat-tab>
+
+</mat-tab-group>
 
 
 
