@@ -136,7 +136,7 @@ export class ThemSanPhamComponent implements OnInit {
     this.validateImage();
     if (!this.validName.done || !this.validDescription.done || !this.validPrice.done || !this.validBrand
       || !this.validCategory.done || !this.validSole.done || !this.validMaterial.done
-      // || !this.validImage.done
+      || !this.validImage.done
     ) {
       return;
     }

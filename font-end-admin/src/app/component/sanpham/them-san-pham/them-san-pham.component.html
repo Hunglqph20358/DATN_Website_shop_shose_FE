@@ -100,9 +100,9 @@
 <!--      <input [(ngModel)]="IdMaterial" name="IdMaterial" matInput placeholder="IdMaterial">-->
 <!--    </mat-form-field>-->
     <div>
-      <input type="file" [(ngModel)]="imgLst" (change)="OnChangeFile($event)" multiple>
-<!--             (keydown)="revoveInvalid(validImage)" (blur)="validateImage()"-->
-<!--      <p class="validate-input-label" *ngIf="validImage.empty">Ảnh không được để trống</p>-->
+      <input type="file" [(ngModel)]="imgLst" (change)="OnChangeFile($event)" multiple (keydown)="revoveInvalid(validImage)" (blur)="validateImage()">
+
+      <p class="validate-input-label" *ngIf="validImage.empty">Ảnh không được để trống</p>
     </div>
     <div id="preview"></div>
   </div>

@@ -80,12 +80,6 @@ import { ThemChiTietSanPhamComponent } from './component/chitietsanpham/them-chi
 import { SuaChiTietSanPhamComponent } from './component/chitietsanpham/sua-chi-tiet-san-pham/sua-chi-tiet-san-pham.component';
 import { ChiTietSanPhamActionComponent } from './component/chitietsanpham/chi-tiet-san-pham-action/chi-tiet-san-pham-action.component';
 import {ThongKeComponent} from './component/thong-ke/thong-ke.component';
-import {NgSelectModule} from '@ng-select/ng-select';
-import {SalesCounterComponent} from './component/sales-counter/sales-counter.component';
-import {MatListModule} from '@angular/material/list';
-import {MatTable, MatTableModule} from '@angular/material/table';
-import {MatTabsModule} from '@angular/material/tabs';
-import {ToastrModule, ToastrService} from 'ngx-toastr';
 import { VoucherShipComponent } from './component/voucher-ship/voucher-ship.component';
 import { ActionVoucherShipComponent } from './component/voucher-ship/action-voucher-ship/action-voucher-ship.component';
 import { CreatVoucherShipComponent } from './component/voucher-ship/creat-voucher-ship/creat-voucher-ship.component';
@@ -93,12 +87,8 @@ import { EditVoucherShipComponent } from './component/voucher-ship/edit-voucher-
 import { DetailVoucherShipComponent } from './component/voucher-ship/detail-voucher-ship/detail-voucher-ship.component';
 import {MatNativeDateModule} from '@angular/material/core';
 import {MatDatepickerModule} from '@angular/material/datepicker';
-import { CustomerComponent } from './component/customer/customer.component';
-import { ImportFileComponent } from './component/sanpham/import-file/import-file.component';
-import { ThongKeComponent } from './component/thong-ke/thong-ke.component';
 import {ChartsModule} from '@progress/kendo-angular-charts';
 import 'hammerjs';
-
 import { DateRangePickerModule } from '@syncfusion/ej2-angular-calendars';
 import { NoteOrderComponent } from './component/order/note-order/note-order.component';
 import { AddStaffComponent } from './component/staff/add-staff/add-staff.component';
@@ -106,7 +96,7 @@ import { OrderSalesCounterComponent } from './component/order-sales-counter/orde
 import { UpdateStaffComponent } from './component/staff/update-staff/update-staff.component';
 import { DetailStaffComponent } from './component/staff/detail-staff/detail-staff.component';
 import { OrderSalesDetailComponent } from './component/order-sales-counter/order-sales-detail/order-sales-detail.component';
-import {DatePipe} from "@angular/common";
+import {DatePipe} from '@angular/common';
 
 @NgModule({
   declarations: [
