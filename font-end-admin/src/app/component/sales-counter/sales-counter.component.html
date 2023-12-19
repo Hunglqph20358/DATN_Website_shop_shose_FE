@@ -9,6 +9,9 @@
         <div class="col-md-4">
           <input type="text" name="search-product" class="form-control search-input" [(ngModel)]="searchTerm"
                  placeholder="Tìm kiếm sản phẩm" (input)="search()">
+          <zxing-scanner class="camera-container" [torch]="torchEnabled" [(device)]="currentDevice" (scanSuccess)="onCodeResult($event)"
+                         [tryHarder]="tryHarder"
+                         (camerasFound)="onCamerasFound($event)"></zxing-scanner>
           <div class="search-results" *ngIf="showResults">
             <mat-table [dataSource]="searchResults" *ngIf="isProductListVisible">
               <ng-container matColumnDef="code">
@@ -21,7 +24,6 @@
 
               <mat-row *matRowDef="let row; columns: ['code', 'name']" (click)="addProductInOrder(row)"></mat-row>
             </mat-table>
-
           </div>
         </div>
 
@@ -77,13 +79,13 @@
               <td>{{product.code}}</td>
               <td>{{product.name}}</td>
               <td>
-                <select class="select-size" *ngFor="let s of listSizePR" [(ngModel)]="product.size">
-                  <option class="select-size" selected>{{ s.sizeNumber }}</option>
+                <select class="select-size"  [(ngModel)]="product.size">
+                  <option *ngFor="let s of listSizePR" class="select-size" selected>{{ s.sizeNumber }}</option>
                 </select>
               </td>
               <td>
-                <select class="select-size" *ngFor="let c of listColor" [(ngModel)]="product.color">
-                  <option class="select-size" selected>{{ c.name }}</option>
+                <select class="select-size"  [(ngModel)]="product.color">
+                  <option class="select-size" *ngFor="let c of listColor" selected>{{ c.name }}</option>
                 </select>
               </td>
               <td><input type="number" min="0" class="quantity" [(ngModel)]="product.quantity"
@@ -144,7 +146,7 @@
             <div class="row mb-1">
               <label class="col-sm-6 col-form-label">Giảm giá:</label>
               <div class="col-sm-6 position-relative">
-                <input type="text" class="form-control custom-input">
+                <input type="text" min="0" class="form-control custom-input" name="priceVoucher" (change)="priceVouchers() "  [(ngModel)]="priceVoucher" >
                 <a class="btn icon-add position-absolute top-0 end-0">
                   <i class="bi bi-plus-lg"></i>
                 </a>
@@ -154,7 +156,7 @@
               <label class="col-sm-6 col-form-label">Khách cần trả:</label>
               <div class="col-sm-6">
                 <input type="text" class="form-control custom-input" readonly name="priceCustomer"
-                       [(ngModel)]="totalAllProducts">
+                       [(ngModel)]="priceCustomer">
               </div>
             </div>
             <div class="row mb-4">
@@ -179,12 +181,12 @@
                 <img class="col-sm-6 img" src="assets/image/frame.png">
               </div>
             </div>
-            <div class="row mb-4" *ngIf="selectedOption === '0'">
-              <label class="col-sm-6 col-form-label">Tiền thừa trả khách:</label>
-              <div class="col-sm-6 ">
-                <input type="text" class="form-control custom-input" readonly>
-              </div>
-            </div>
+<!--            <div class="row mb-4" *ngIf="selectedOption === '0'">-->
+<!--              <label class="col-sm-6 col-form-label">Tiền thừa trả khách:</label>-->
+<!--              <div class="col-sm-6 ">-->
+<!--                <input type="text" class="form-control custom-input" readonly>-->
+<!--              </div>-->
+<!--            </div>-->
             <button type="submit" class="btn btn-primary mb-4 col-sm-12 tt-custom" (click)="placeOrderSales()">Thanh
               Toán
             </button>

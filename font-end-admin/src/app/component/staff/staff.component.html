@@ -11,65 +11,39 @@
         <div class="oder-body-menu">
           <div class="order-sreach">
             <form class="row g-3 align-items-center">
-              <div class="row mb-3 col-md-4" style="margin-top: 15px">
-                <label for="inputEmail3" class="col-sm-2 col-form-label">Email</label>
-                <div class="col-sm-10">
-                  <input type="email" class="form-control" id="inputEmail3">
+              <div class="row mb-3 col-md-5" style="margin-top: 15px">
+                <label for="inputEmail3" class="col-sm-3 col-form-label">Tìm kiếm</label>
+                <div class="col-sm-9">
+                  <input type="text" class="form-control" placeholder="Mã nv hoặc số điện thoại" name="search" id="inputEmail3" [(ngModel)]="searchStaff" (input)="finbyStaffLike()">
                 </div>
               </div>
               <div class="col-md-5">
 
               </div>
-              <div class="col-md-3">
+              <div class="col-md-2">
                 <a href="/add-staff" class="btn btn-primary">Thêm Nhân Viên</a>
               </div>
             </form>
           </div>
         </div>
         <div class="order-table">
-          <div>
-            <table class="table">
-              <thead>
-              <tr>
-                <th scope="col">STT</th>
-                <th scope="col">Mã Khách Hàng</th>
-                <th scope="col">Họ và tên</th>
-                <th scope="col">Giới tính</th>
-                <th scope="col">SDT</th>
-                <th scope="col">Địa Chỉ</th>
-                <th scope="col">Tên đăng nhập</th>
-                <th scope="col">Ngày tạo</th>
-                <th scope="col">trạng thái</th>
-                <th scope="col">Thao tác</th>
-              </tr>
-              </thead>
-              <tbody>
-              <tr *ngFor="let cus of listStaff; let i = index">
-                <td>{{ i + 1}}</td>
-                <td>{{cus.code}}</td>
-                <td>{{cus.fullname}}</td>
-                <td>{{cus.gender}}</td>
-                <td>{{cus.phone}}</td>
-                <td>{{cus.description}}</td>
-                <td>{{cus.username}}</td>
-                <td>{{cus.createDate}}</td>
-                <td>{{cus.idel === 0 ? 'Đang hoạt động' : 'Ngừng hoạt động'}}</td>
-                <td>
-                  <a [routerLink]="'/update-staff/' + cus.id" class="btn"><i class="bi bi-pencil-square"></i></a>
-                  <a class="btn" (click)="openDialog(cus)"><i class="bi bi-eye-fill"></i></a>
-                </td>
-              </tr>
-              </tbody>
-            </table>
+          <div class="order-table">
+            <div class="grid">
+              <ag-grid-angular
+                style="width: 100%; height: 600px;"
+                class="ag-theme-alpine"
+                [rowData]="rowData"
+                [columnDefs]="columnDefs"
+                [headerHeight]="70"
+                [rowHeight]="50"
+                [pagination]="true"
+                [paginationPageSize]="10"
+                (gridReady)="onGridReady($event)">
+              </ag-grid-angular>
+            </div>
           </div>
         </div>
       </div>
-    </mat-tab>
-    <mat-tab>
-      <ng-template mat-tab-label>
-        Ngừng hoạt động
-      </ng-template>
-      <p>aaa</p>
     </mat-tab>
   </mat-tab-group>
 </div>

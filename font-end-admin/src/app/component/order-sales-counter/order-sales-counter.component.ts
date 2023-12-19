@@ -7,7 +7,7 @@ import {OrderDetailComponent} from '../order/order-detail/order-detail.component
 @Component({
   selector: 'app-order-sales-counter',
   templateUrl: './order-sales-counter.component.html',
-  styleUrls: ['./order-sales-counter.component.css']
+  styleUrls: ['./order-sales-counter.component.scss']
 })
 export class OrderSalesCounterComponent implements OnInit {
 
@@ -235,10 +235,9 @@ export class OrderSalesCounterComponent implements OnInit {
       dateTo: this.modelSearch.dateTo !== null ? formatDate(this.modelSearch.dateTo) : null,
       status: this.status,
     };
-    this.orderService.getAllOrderAdmin(obj).subscribe(res => {
+    this.orderService.getAllOrderSalesAdmin(obj).subscribe(res => {
       this.allOrder = res;
-      this.sCOrder = this.allOrder.filter(sc => sc.type === 1);
-      this.rowData = this.sCOrder;
+      this.rowData = this.allOrder;
       console.log(this.rowData);
     });
     this.cdr.detectChanges();

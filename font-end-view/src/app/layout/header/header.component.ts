@@ -2,6 +2,7 @@ import {Component, OnInit} from '@angular/core';
 import {apiURL} from '../../config/apiURL';
 import {UsersDTO} from '../../component/model/UsersDTO';
 import {BehaviorSubject} from 'rxjs';
+import {Router} from '@angular/router';
 
 @Component({
   selector: 'app-header',
@@ -11,7 +12,7 @@ import {BehaviorSubject} from 'rxjs';
 export class HeaderComponent implements OnInit {
   infoCustomer: UsersDTO;
   size: number;
-  constructor() {
+  constructor(private router: Router) {
   }
 
   api = apiURL;

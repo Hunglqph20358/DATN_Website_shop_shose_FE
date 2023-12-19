@@ -11,5 +11,6 @@ export class UsersDTO{
   createDate?: string;
   description?: string;
   idel?: string;
+  isdn?: string;
   role?: string;
 }
