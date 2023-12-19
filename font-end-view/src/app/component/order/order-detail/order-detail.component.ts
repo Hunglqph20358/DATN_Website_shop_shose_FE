@@ -21,7 +21,8 @@ export class OrderDetailComponent implements OnInit {
   gridColumnApi;
   status: any;
   totalQuantity: number = 0;
-  listOrderHistory: any = [];
+  listOrderHistoryAdmin: any = [];
+  listOrderHistoryView: any = [];
   constructor(private orderDetailService: OrderDetailService,
               public matRef: MatDialogRef<OrderDetailComponent>,
               @Inject(MAT_DIALOG_DATA) public data: any, private orderService: OrderService, private cdr: ChangeDetectorRef,
@@ -91,7 +92,8 @@ export class OrderDetailComponent implements OnInit {
     console.log(this.data.data);
     this.orderDetailService.getAllOrderDetailByOrder(this.data.data.id).subscribe(res => {
       this.rowData = res.orderDetail;
-      this.listOrderHistory = res.orderHistory;
+      this.listOrderHistoryAdmin = res.orderHistoryAdmin;
+      this.listOrderHistoryView = res.orderHistoryView;
       this.totalQuantity = this.rowData.reduce((total, orderDetail) => total + (orderDetail.quantity || 0), 0);
     });
   }
