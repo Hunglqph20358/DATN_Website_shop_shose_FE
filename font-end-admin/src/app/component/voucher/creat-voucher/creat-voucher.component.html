@@ -118,7 +118,7 @@
                   [max]="voucher.voucherType === '1' ? 100 : null"
                   (keydown)="revoveInvalid(validReducedValue)" (blur)="validateReducedValue()"
                 />
-                <div *ngIf="voucher.voucherType === '1' && voucher.voucherType > 100 " class="text-danger">
+                <div *ngIf="voucher.voucherType === '1' && voucher.reducedValue > 100 " class="text-danger">
                   Giá trị giảm không được quá 100%
                 </div>
                 <div class="validate-input" *ngIf="!validReducedValue.done" class="alert alert-danger">
