@@ -6,7 +6,7 @@ import {OrderService} from '../../service/order.service';
 import {OrderDetailService} from '../../service/order-detail.service';
 import {Order} from '../model/Order';
 import {OrderDetail} from '../model/OrderDetail';
-import {forkJoin} from 'rxjs';
+import {BehaviorSubject, forkJoin} from 'rxjs';
 import {Router} from '@angular/router';
 import {MatTabChangeEvent} from '@angular/material/tabs';
 import {SizeService} from '../../service/size.service';
@@ -41,6 +41,7 @@ export class SalesCounterComponent implements OnInit {
   listProductPush: any[] = [];
   totalPrice: number = 0;
   totalAllProducts: number = 0;
+  priceCustomer: number = 0;
   priceVoucher: number = 0;
   userDTO: string;
   fullname: string;
@@ -55,6 +56,17 @@ export class SalesCounterComponent implements OnInit {
   selectedCustomer: any;
   idCustomer: number;
   user: UsersDTO = {};
+  availableDevices: MediaDeviceInfo[];
+  currentDevice: MediaDeviceInfo = null;
+  hasDevices: boolean;
+  hasPermission: boolean;
+
+  qrResultString: string;
+
+  torchEnabled = false;
+  torchAvailable$ = new BehaviorSubject<boolean>(false);
+  tryHarder = false;
+  isdn: string;
   constructor(private productService: ProductService, private cookieService: CookieService,
               private orderService: OrderService, private orderDetailService: OrderDetailService,
               private router: Router, private sizeService: SizeService, private colorService: MausacService,
@@ -83,9 +95,6 @@ export class SalesCounterComponent implements OnInit {
       this.customerService.findCustomerByPhone(this.searcherCustomer).subscribe(
         customer => {
           this.searchCustomerResults = customer;
-          console.log(customer);
-          this.idCustomer = customer[0].id;
-          console.log(this.idCustomer);
         }
       );
       this.showCustomer = this.searcherCustomer.length > 0;
@@ -117,7 +126,14 @@ export class SalesCounterComponent implements OnInit {
     if (!row.quantity) {
       row.quantity = 1;
     }
-    this.listProductPush.push(row);
+    // Kiểm tra xem sản phẩm đã tồn tại trong danh sách hay chưa
+    const existingProduct = this.listProductPush.find(product => product.id === row.id);
+    if (existingProduct) {
+      existingProduct.quantity += 1;
+    } else {
+      this.listProductPush.push(row);
+    }
+
     this.cookieService.set("listProductPush", JSON.stringify(this.listProductPush));
     const currentOrderProducts = this.listProductPush.map(product => ({ ...product }));
     localStorage.setItem(`orderProducts_${this.currentOrderId}`, JSON.stringify(currentOrderProducts));
@@ -125,7 +141,9 @@ export class SalesCounterComponent implements OnInit {
     this.calculateTotalPrice();
     this.calculateTotalAllProducts();
     this.clearSearchTerm();
+    this.priceVouchers();
   }
+
   addCustomer(row: any){
     if (!row.quantity) {
       row.quantity = 1;
@@ -133,6 +151,7 @@ export class SalesCounterComponent implements OnInit {
     this.searcherCustomer = `${row.fullname} - ${row.phone}`;
     this.selectedCustomer = row;
     this.isCustomerNull = false;
+    this.idCustomer = this.selectedCustomer.id;
     console.log(this.selectedCustomer);
   }
   clearSearchTerm(): void {
@@ -150,18 +169,22 @@ export class SalesCounterComponent implements OnInit {
     if (index >= 0 && index < this.listProductPush.length) {
       this.listProductPush.splice(index, 1);
       this.calculateTotalPrice();
+      this.priceVoucher = 0;
+      this.priceVouchers();
       this.cookieService.set("listProductPush", JSON.stringify(this.listProductPush));
       const currentOrderProducts = this.listProductPush.map(product => ({ ...product }));
       localStorage.setItem(`orderProducts_${this.currentOrderId}`, JSON.stringify(currentOrderProducts));
     }
   }
   calculateTotalPrice() {
+
     this.totalPrice = this.listProductPush.reduce((total, product) => {
       const productTotal = product.price * product.quantity;
       product.total = productTotal;
       return total + productTotal;
     }, 0);
     this.calculateTotalAllProducts();
+    this.priceVouchers();
   }
   calculateTotalAllProducts() {
     this.totalAllProducts = this.listProductPush.reduce((total, product) => {
@@ -169,19 +192,37 @@ export class SalesCounterComponent implements OnInit {
       return total + productTotal;
     }, 0);
   }
+  priceVouchers(){
+    if (this.priceVoucher === 0){
+      this.priceCustomer = this.totalAllProducts;
+    } else {
+      this.priceCustomer = this.totalAllProducts - this.priceVoucher;
+    }
 
+  }
   placeOrderSales(){
+    debugger
     console.log(this.idCustomer);
     console.log(this.selectedCustomer);
+    if (this.listProductPush.length === 0){
+      this.toastr.error('Không có sản phẩm nào để thanh toán', 'Lỗi');
+      return;
+    }
     this.user = JSON.parse(localStorage.getItem('users'));
+    this.isdn = this.user.isdn;
+    console.log(this.isdn);
+    if (this.user === null){
+      this.toastr.error('đã hết hạn đăng nhập');
+    }
     const order: Order = {
       paymentType: 1,
-      totalPrice: this.totalAllProducts,
-      totalPayment: this.totalAllProducts,
+      totalPrice: this.priceCustomer,
+      totalPayment: this.priceCustomer,
       customerDTO: this.selectedCustomer,
       idCustomer: this.idCustomer,
       idStaff: this.user.id,
       statusPayment: this.selectedOption,
+      email: 'customer123@gmail.com'
     };
     this.orderService.createOrderSales(order).subscribe(
       (response) => {
@@ -204,6 +245,9 @@ export class SalesCounterComponent implements OnInit {
             localStorage.removeItem('listProductPush');
             this.selectedCustomer = '';
             this.searcherCustomer = '';
+            this.idCustomer = null;
+            this.priceCustomer = 0;
+            this.priceVoucher = 0;
             this.listProductPush = [];
             this.removeOrder(order);
             this.calculateTotalAllProducts();
@@ -229,14 +273,38 @@ export class SalesCounterComponent implements OnInit {
     orderHTML += `<p>Tên khách hàng: ${this.selectedCustomer?.fullname}</p>`;
     orderHTML += `<p>Số điện thoại: ${this.selectedCustomer?.phone}</p>`;
     orderHTML += `<h3>Chi tiết đơn hàng</h3>`;
-    orderHTML += `<ul>`;
+    orderHTML += `<table border="1" cellpadding="10">`;
+    orderHTML += `<thead>`;
+    orderHTML += `<tr>`;
+    orderHTML += `<th>Mã</th>`;
+    orderHTML += `<th>Size</th>`;
+    orderHTML += `<th>Màu Sắc</th>`;
+    orderHTML += `<th>Tên</th>`;
+    orderHTML += `<th>Số lượng</th>`;
+    orderHTML += `<th>Đơn giá</th>`;
+    orderHTML += `<th>Thành tiền</th>`;
+    orderHTML += `</tr>`;
+    orderHTML += `</thead>`;
+    orderHTML += `<tbody>`;
     this.listProductPush.forEach(product => {
-      orderHTML += `<li>Mã: ${product.code}- Size: ${product.size}- Màu Sắc: ${product.color}-Tên: ${product.name} - ${product.quantity} x ${product.price} = ${product.total}</li>`;
+      orderHTML += `<tr>`;
+      orderHTML += `<td>${product.code}</td>`;
+      orderHTML += `<td>${product.size}</td>`;
+      orderHTML += `<td>${product.color}</td>`;
+      orderHTML += `<td>${product.name}</td>`;
+      orderHTML += `<td>${product.quantity}</td>`;
+      orderHTML += `<td>${product.price}</td>`;
+      orderHTML += `<td>${product.total}</td>`;
+      orderHTML += `</tr>`;
     });
-    orderHTML += `</ul>`;
+    orderHTML += `</tbody>`;
+    orderHTML += `</table>`;
+    orderHTML += `<p>Giảm giá: ${this.priceVoucher}</p>`;
+    orderHTML += `<p>Tổng thanh toán: ${this.priceCustomer}</p>`;
     orderHTML += `</div>`;
     return orderHTML;
   }
+
   printInvoice() {
     const invoiceHTML = this.generateOrderHTML();
     const frame = document.createElement('iframe');
@@ -320,6 +388,58 @@ export class SalesCounterComponent implements OnInit {
     });
     this.selectedOption = '0';
 
+  }
+  validateNullListProduct(): boolean {
+      if (this.listProductPush === null ){
+        return false;
+      }
+      return true;
+  }
+  clearResult(): void {
+    this.qrResultString = null;
+  }
+
+  onCamerasFound(devices: MediaDeviceInfo[]): void {
+    this.availableDevices = devices;
+    this.hasDevices = Boolean(devices && devices.length);
+  }
+
+  onCodeResult(resultString: string) {
+    this.searchTerm = resultString;
+    if (this.searchTerm.trim() === '') {
+      console.log('Mời nhập tên hoặc mã sản phẩm');
+    } else {
+      this.productService.searchProduct(this.searchTerm).subscribe(
+        data => {
+          this.searchResults = data;
+          const existingProduct = this.listProductPush.find(product => product.id === this.searchResults[0].id);
+
+          if (existingProduct) {
+            existingProduct.quantity += 1;
+          } else {
+            const newProduct = { ...this.searchResults[0], quantity: 1 };
+            this.listProductPush.push(newProduct);
+          }
+
+          this.cookieService.set("listProductPush", JSON.stringify(this.listProductPush));
+          const currentOrderProducts = this.listProductPush.map(product => ({ ...product }));
+          localStorage.setItem(`orderProducts_${this.currentOrderId}`, JSON.stringify(currentOrderProducts));
+          this.isProductListVisible = false;
+          this.calculateTotalPrice();
+          this.calculateTotalAllProducts();
+          this.clearSearchTerm();
+          this.priceVouchers();
+        }, error => {
+          this.toastr.error('Sản phẩm không tồn tại', 'Lỗi');
+        }
+      );
+    }
+  }
+
+
+  onDeviceSelectChange(selected: string) {
+    const device = this.availableDevices.find(x => x.deviceId === selected);
+    this.currentDevice = device || null;
   }
 
 }

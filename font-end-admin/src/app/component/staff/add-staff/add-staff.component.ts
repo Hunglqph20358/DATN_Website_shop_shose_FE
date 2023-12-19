@@ -85,6 +85,7 @@ export class AddStaffComponent implements OnInit {
   }
   onAddImageClick() {
     document.getElementById('profilePicture').click();
+    console.log(this.selectedImage);
   }
 
   onResetImageClick() {

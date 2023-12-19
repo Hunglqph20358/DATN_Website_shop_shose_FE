@@ -21,6 +21,8 @@ export class StaffService {
   updateStaff(id: string, staff: UsersDTO): Observable<any>{
     return this.http.put('http://localhost:6868/api/admin/staff-update/' + id , staff);
   }
-
+  findByCodeOrPhoneLike(param: string): Observable<any>{
+    return this.http.get('http://localhost:6868/api/admin/staff-search/' + param);
+  }
 }
 

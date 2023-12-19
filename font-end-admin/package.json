@@ -65,6 +65,7 @@
     "@progress/kendo-theme-material": "^3.4.0",
     "@syncfusion/ej2-angular-calendars": "19.4.56",
     "@syncfusion/ej2-buttons": "^19.2.60",
+    "@zxing/ngx-scanner": "^3.0.1",
     "ag-grid-angular": "^25.3.0",
     "ag-grid-community": "^25.3.0",
     "file-saver": "^2.0.5",

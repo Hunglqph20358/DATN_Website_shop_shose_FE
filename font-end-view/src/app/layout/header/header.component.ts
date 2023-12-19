@@ -3,6 +3,7 @@ import {apiURL} from '../../config/apiURL';
 import {UsersDTO} from '../../component/model/UsersDTO';
 import {BehaviorSubject} from 'rxjs';
 import {CartService} from '../../service/cart.service';
+import {Router} from '@angular/router';
 
 @Component({
   selector: 'app-header',
@@ -13,7 +14,7 @@ export class HeaderComponent implements OnInit {
   infoCustomer: UsersDTO;
   size: number;
   totalProducts: number = 0;
-  constructor(private cartService: CartService) {
+  constructor(private cartService: CartService, private router: Router) {
     this.cartService.totalProducts$.subscribe((totalProducts) => {
       this.totalProducts = totalProducts;
     });

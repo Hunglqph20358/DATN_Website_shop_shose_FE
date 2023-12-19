@@ -23,6 +23,7 @@ export class SignUpComponent implements OnInit {
     gender: 'Nam',
     role: ''
   };
+  showPassword: boolean = false;
   signUpForm: SignUpRepquest;
   validReceiver: ValidateInput = new ValidateInput();
   validEmail: ValidateInput = new ValidateInput();
@@ -79,7 +80,9 @@ export class SignUpComponent implements OnInit {
       }
     );
   }
-
+  togglePasswordVisibility(): void {
+    this.showPassword = !this.showPassword;
+  }
   revoveInvalid(result) {
       result.done = true;
   }
