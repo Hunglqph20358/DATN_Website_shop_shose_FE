@@ -169,6 +169,8 @@ export class SalesCounterComponent implements OnInit {
     if (index >= 0 && index < this.listProductPush.length) {
       this.listProductPush.splice(index, 1);
       this.calculateTotalPrice();
+      this.priceVoucher = 0;
+      this.priceVouchers();
       this.cookieService.set("listProductPush", JSON.stringify(this.listProductPush));
       const currentOrderProducts = this.listProductPush.map(product => ({ ...product }));
       localStorage.setItem(`orderProducts_${this.currentOrderId}`, JSON.stringify(currentOrderProducts));
@@ -182,6 +184,7 @@ export class SalesCounterComponent implements OnInit {
       return total + productTotal;
     }, 0);
     this.calculateTotalAllProducts();
+    this.priceVouchers();
   }
   calculateTotalAllProducts() {
     this.totalAllProducts = this.listProductPush.reduce((total, product) => {
@@ -409,8 +412,6 @@ export class SalesCounterComponent implements OnInit {
       this.productService.searchProduct(this.searchTerm).subscribe(
         data => {
           this.searchResults = data;
-
-          // Kiểm tra xem sản phẩm đã tồn tại trong danh sách hay chưa
           const existingProduct = this.listProductPush.find(product => product.id === this.searchResults[0].id);
 
           if (existingProduct) {
@@ -427,6 +428,7 @@ export class SalesCounterComponent implements OnInit {
           this.calculateTotalPrice();
           this.calculateTotalAllProducts();
           this.clearSearchTerm();
+          this.priceVouchers();
         }, error => {
           this.toastr.error('Sản phẩm không tồn tại', 'Lỗi');
         }
