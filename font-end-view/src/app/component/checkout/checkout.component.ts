@@ -307,9 +307,11 @@ export class CheckoutComponent implements OnInit {
                   order: res.data,
                   listCart: this.listCart,
                 };
-                sessionStorage.setItem('order', JSON.stringify(objCheckOut));
+
                 this.paymentService.createPayment(this.totalMoneyPay).subscribe(resPay => {
                   if (resPay.status === 'OK') {
+                    sessionStorage.setItem('order', JSON.stringify(objCheckOut));
+                    // setTimeout()
                     window.location.href = resPay.url;
                   }
                 });

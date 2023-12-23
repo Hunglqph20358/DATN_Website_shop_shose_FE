@@ -76,11 +76,23 @@ const routes: Routes = [
     data: {
       expectedRole: ['ADMIN']
     } },
-  {path: 'admin/edit-discount/:id', component: EditDiscountComponent},
-  {path: 'admin/edit-voucher/:id', component: EditVoucherComponent},
-  {path: 'admin/edit-voucherFS/:id', component: EditVoucherShipComponent},
-  {path: 'degiay', component: DegiayComponent},
-  {path: 'chatlieu', component: ChatlieuComponent},
+  {path: 'admin/edit-discount/:id', component: EditDiscountComponent, canActivate: [RoleGuardService],
+    data: {
+      expectedRole: ['ADMIN']
+    }},
+  {path: 'admin/edit-voucher/:id', component: EditVoucherComponent, canActivate: [RoleGuardService],
+    data: {
+      expectedRole: ['ADMIN']
+    }},
+  {path: 'admin/edit-voucherFS/:id', component: EditVoucherShipComponent, canActivate: [RoleGuardService],
+    data: {
+      expectedRole: ['ADMIN']
+    }},
+  {path: 'degiay', component: DegiayComponent, canActivate: [RoleGuardService],
+    data: {
+      expectedRole: ['ADMIN']
+    }},
+  {path: 'chatlieu', component: ChatlieuComponent, canActivate: [RoleGuardService]},
   {path: 'mausac', component: MausacComponent},
   {path: 'kichco', component: KichcoComponent},
   {path: 'thuonghieu', component: ThuonghieuComponent},

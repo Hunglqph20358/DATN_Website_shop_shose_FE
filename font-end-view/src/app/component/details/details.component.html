@@ -81,15 +81,15 @@
   <div class="row">
     <div class="product-details my-2">
       <p class="details-title text-color mb-1">Mô Tả</p>
-      <p class="description">{{product.description}}</p>
+      <p class="description">{{product?.description}}</p>
     </div>
     <div class="product-details my-2">
       <p class="details-title text-color mb-2">Thông Tin Chi Tiết</p>
       <ul>
         <li style="margin-top: 10px"><strong>Hãng:</strong>  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {{product.brandDTO.name}}</li>
-        <li style="margin-top: 10px"><strong>Chất Liệu:</strong> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;    {{product.materialDTO.name}} </li>
-        <li style="margin-top: 10px"><strong>Độ cao của đế:</strong> &nbsp;&nbsp;&nbsp;&nbsp;  {{product.soleDTO.soleHeight}} cm (Chất liệu: {{product.soleDTO.soleMaterial}})</li>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {{product.brandDTO?.name}}</li>
+        <li style="margin-top: 10px"><strong>Chất Liệu:</strong> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;    {{product.materialDTO?.name}} </li>
+<!--        <li style="margin-top: 10px"><strong>Độ cao của đế:</strong> &nbsp;&nbsp;&nbsp;&nbsp;  {{product.soleDTO.soleHeight}} cm (Chất liệu: {{product.soleDTO.soleMaterial}})</li>-->
 <!--        <li><strong>Cổ giày:</strong>  &nbsp;&nbsp;&nbsp;&nbsp;       {{product.brandDTO.name}}</li>-->
       </ul>
     </div>
@@ -109,27 +109,27 @@
   <hr>
   <p class="display-5">Sản Phẩm Tương Tự</p>
 
-  <div class="row">
-    <div class="col-3" style="display: flex; gap: 10px" *ngFor="let p of listProductTuongTu">
-      <div class="card" style="width: 18rem;">
-        <a [routerLink]="['/product-details',p.id]">
-          <img style="width: 250px; height: 330px"
-            (mouseenter)="onMouseEnter(p)"
-            (mouseleave)="onMouseLeave(p)"
-            [src]="isMouseOver[p.id] ? p.imagesDTOList[1].imageName : p.imagesDTOList[0].imageName"
-            class="card-img-top"
-            alt="..."
-          >
-          <span *ngIf="p.reducePrice != null && p.percentageReduce != null" class="percentage-badge">{{ p.percentageReduce }}%</span>
-        </a>
+<!--  <div class="row">-->
+<!--    <div class="col-3" style="display: flex; gap: 10px" *ngFor="let p of listProductTuongTu">-->
+<!--      <div class="card" style="width: 18rem;">-->
+<!--        <a [routerLink]="['/product-details',p.id]">-->
+<!--          <img style="width: 250px; height: 330px"-->
+<!--            (mouseenter)="onMouseEnter(p)"-->
+<!--            (mouseleave)="onMouseLeave(p)"-->
+<!--            [src]="isMouseOver[p.id] ? p.imagesDTOList[1].imageName : p.imagesDTOList[0].imageName"-->
+<!--            class="card-img-top"-->
+<!--            alt="..."-->
+<!--          >-->
+<!--          <span *ngIf="p.reducePrice != null && p.percentageReduce != null" class="percentage-badge">{{ p.percentageReduce }}%</span>-->
+<!--        </a>-->
 
-        <div class="card-body">
-          <h5 class="card-title">{{p.name}}</h5>
-          <div *ngIf="p.reducePrice == null && p.percentageReduce == null"><span>{{p.price}}</span> đ</div>
-          <div *ngIf="p.reducePrice != null && p.percentageReduce != null"> <del>{{utilService.formatMoney(p.price)}}</del>  <span style="margin-left: 5px">{{utilService.formatMoney(p.price - p.reducePrice)}}</span></div>
-        </div>
-      </div>
-    </div>
-  </div>
+<!--        <div class="card-body">-->
+<!--          <h5 class="card-title">{{p.name}}</h5>-->
+<!--          <div *ngIf="p.reducePrice == null && p.percentageReduce == null"><span>{{p.price}}</span> đ</div>-->
+<!--          <div *ngIf="p.reducePrice != null && p.percentageReduce != null"> <del>{{utilService.formatMoney(p.price)}}</del>  <span style="margin-left: 5px">{{utilService.formatMoney(p.price - p.reducePrice)}}</span></div>-->
+<!--        </div>-->
+<!--      </div>-->
+<!--    </div>-->
+<!--  </div>-->
 </div>
 
