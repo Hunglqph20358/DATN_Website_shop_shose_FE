@@ -3,6 +3,7 @@ import {VoucherService} from '../../../service/voucher.service';
 import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
 import {ToastrService} from 'ngx-toastr';
 import {VoucherShipService} from '../../../service/voucher-ship.service';
+import {UtilService} from '../../../util/util.service';
 
 @Component({
   selector: 'app-popup-voucher',
@@ -26,7 +27,7 @@ export class PopupVoucherComponent implements OnInit {
 
   constructor(private voucherService: VoucherService, public matDialogRef: MatDialogRef<PopupVoucherComponent>,
               private toastr: ToastrService, @Inject(MAT_DIALOG_DATA) public data: any, private cdr: ChangeDetectorRef,
-              private voucherShipService: VoucherShipService) {
+              private voucherShipService: VoucherShipService, public utilService: UtilService) {
     const storedUserString = localStorage.getItem('customer');
 
     if (storedUserString) {

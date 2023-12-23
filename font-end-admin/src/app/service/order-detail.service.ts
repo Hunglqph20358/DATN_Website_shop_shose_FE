@@ -16,4 +16,7 @@ export class OrderDetailService {
   createDetailSales(orderDetail: OrderDetail): Observable<any>{
     return this.http.post('http://localhost:6868/sales-counter/api/create-order-detail', orderDetail);
   }
+  sendEmailFromCustomer(obj): Observable<any> {
+    return this.http.post(`http://localhost:6868/view/api/send-email-from-customer`, obj);
+  }
 }

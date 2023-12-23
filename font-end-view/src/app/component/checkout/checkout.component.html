@@ -154,13 +154,13 @@
         </div>
         <br>
         <div>
-            <label class="form-check-label">Phí ship: </label> <input style="margin-left: 180px" type="text" value="{{shipFee | number:'1.0-0'}} đ" disabled>
+            <label class="form-check-label">Phí ship: </label> <input style="margin-left: 180px" type="text" value="{{utilService.formatMoney(shipFee)}}" disabled><span *ngIf="voucherShip">- {{utilService.formatMoney(shipFeeReduce)}}</span>
           </div>
           <div style="margin-top: 10px;">
-            <label class="form-check-label">Voucher giảm: </label> <input style="margin-left: 135px" type="text" value="{{voucher?.reducedValue | number:'1.0-0'}} đ" disabled>
+            <label class="form-check-label">Voucher giảm: </label> <input style="margin-left: 135px" type="text" value="{{utilService.formatMoney(voucher?.reducedValue)}}" disabled>
           </div>
         <div style="margin-top: 10px">
-            <label class="form-check-label">Tổng tiền phải thanh toán: </label> <input style="margin-left: 50px" type="text" value="{{totalMoneyPay | number:'1.0-0'}} đ" disabled>
+            <label class="form-check-label">Tổng tiền phải thanh toán: </label> <input style="margin-left: 50px" type="text" value="{{utilService.formatMoney(totalMoneyPay)}}" disabled>
           </div>
 
         <hr class="my-4">
@@ -168,10 +168,10 @@
         <h4 class="mb-3">Phương thức thanh toán</h4>
 
         <div class="my-3">
-            <input id="a" name="paymentMethod" type="radio" class="form-check-input" [value]="0" [(ngModel)]="checkChoicePay" checked required value="">
-            <label class="form-check-label" for="a">Thanh Toán khi nhận hàng</label>
+            <input id="a" style="margin-left: 3px" name="paymentMethod" type="radio" class="form-check-input" [value]="0" [(ngModel)]="checkChoicePay" checked required value="">
+            <label class="form-check-label" for="a" style="margin-left: 25px;">Thanh Toán khi nhận hàng</label>
             <input style="margin-left: 30px" id="b" name="paymentMethod" type="radio" [value]="1" [(ngModel)]="checkChoicePay" class="form-check-input" required>
-            <label class="form-check-label" for="b">Thanh toán online</label>
+            <label class="form-check-label" for="b" style="margin-left: 55px;">Thanh toán online</label>
         </div>
 
         <div class="my-3" *ngIf="checkChoicePay == 1">

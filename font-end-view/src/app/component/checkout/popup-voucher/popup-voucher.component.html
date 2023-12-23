@@ -42,7 +42,7 @@
           </div>
         </div>
         <div style="margin-top: 23px">
-          <input type="radio" style="transform: scale(1.5);" [value]="v.code" [(ngModel)]="voucherChoice.voucherShip" name="voucher" [disabled]="checkValidateVoucher(v)">
+          <input type="radio" style="transform: scale(1.5);" [value]="v.code" [(ngModel)]="voucherChoice.voucherShip" name="voucherShip" [disabled]="checkValidateVoucher(v)">
         </div>
       </div>
       <span style="color: red" *ngIf="checkConditionApply"><strong>Đơn hàng không đủ điều kiện</strong></span>
@@ -76,7 +76,7 @@
               <label>Đơn tối thiểu: {{v.conditionApply | number:'1.0-0'}} đ</label>
             </div>
             <div class="row">
-              <label>HSD: {{v.endDate}}</label>
+              <label>HSD: {{utilService.formatDateTime(v.endDate)}}</label>
             </div>
           </div>
         </div>

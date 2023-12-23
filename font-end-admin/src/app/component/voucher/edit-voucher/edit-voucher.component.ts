@@ -131,6 +131,7 @@ export class EditVoucherComponent implements OnInit {
         this.voucher.limitCustomer = firstElement.limitCustomer;
         this.voucher.startDate = this.formatDate(firstElement.startDate);
         this.voucher.allow = firstElement.allow;
+        this.voucher.maxReduced = firstElement.maxReduced;
         console.log(this.voucher);
       });
     });

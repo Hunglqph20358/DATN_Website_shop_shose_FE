@@ -13,9 +13,13 @@ export class ProductService {
   getProductNoiBatByBrand(idBrand?: number): Observable<any>{
     return this.http.get(`${apiURL}get-product-noi-bat?idBrand=${idBrand}`);
   }
+  getProductTuongTu(idProduct?: number, idCategory?: number): Observable<any>{
+    return this.http.get(`${apiURL}get-product-tuong-tu?idProduct=${idProduct}&idCategory=${idCategory}`);
+  }
 
   getDetailProduct(idProduct: number): Observable<any>{
     return this.http.get(`${apiURL}get-detail-product/${idProduct}`);
   }
+
 
 }

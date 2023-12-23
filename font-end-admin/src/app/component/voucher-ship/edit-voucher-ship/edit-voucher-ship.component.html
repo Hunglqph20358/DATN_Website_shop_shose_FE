@@ -115,12 +115,8 @@
                   [ngModelOptions]="{ standalone: true }"
                   [(ngModel)]="voucher.reducedValue"
                   placeholder="Giá trị giảm"
-                  [max]="voucher.voucherType === '0' ? 100 : null"
                   (keydown)="revoveInvalid(validReducedValue)" (blur)="validateReducedValue()"
                 />
-                <div *ngIf="voucher.voucherType === '0' && voucher.voucherType > 100 " class="text-danger">
-                  Giá trị giảm không được quá 100%
-                </div>
                 <div class="validate-input" *ngIf="!validReducedValue.done" class="alert alert-danger">
                   <p class="validate-input-label" *ngIf="validReducedValue.empty">Giá trị giảm không để trống</p>
                   <p class="validate-input-label" *ngIf="validReducedValue.regex">Giá trị giảm phải là số</p>

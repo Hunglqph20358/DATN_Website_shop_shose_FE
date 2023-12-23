@@ -98,8 +98,8 @@
                   required
                 >
                   <option >Chọn loại giảm giá</option>
-                  <option value="0" selected >Theo %</option>
-                  <option value="1">Theo tiền mặt</option>
+                  <option value="1" selected >Theo %</option>
+                  <option value="0">Theo tiền mặt</option>
                 </select>
               </div>
 
@@ -112,10 +112,10 @@
                   [ngModelOptions]="{ standalone: true }"
                   [(ngModel)]="discount.reducedValue"
                   placeholder="Giá trị giảm"
-                  [max]="discount.discountType === '0' ? 100 : null"
+                  [max]="discount.discountType === '1' ? 100 : null"
                   (keydown)="revoveInvalid(validReducedValue)" (blur)="validateReducedValue()"
                 />
-                <div *ngIf="discount.discountType === '0' && discount.reducedValue > 100 " class="text-danger">
+                <div *ngIf="discount.discountType === '1' && discount.reducedValue > 100 " class="text-danger">
                   Giá trị giảm không được quá 100%
                 </div>
                 <div class="validate-input" *ngIf="!validReducedValue.done" class="alert alert-danger">
@@ -124,7 +124,7 @@
                 </div>
               </div>
 
-              <div class="form-group" *ngIf="discount.discountType == '0'">
+              <div class="form-group" *ngIf="discount.discountType == '1'">
                 <label for="maxReduced">Giá trị giảm tối đa</label>
                 <input
                   type="text"
