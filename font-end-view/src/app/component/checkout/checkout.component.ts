@@ -241,6 +241,7 @@ export class CheckoutComponent implements OnInit {
             const obj = {
               ...this.order,
               totalPrice: this.totalMoney,
+              totalPayment: this.totalMoneyPay,
               shipPrice: this.voucherShip ? this.shipFeeReduce : this.shipFee,
               codeVoucher: this.voucher ? this.voucher?.code : null,
               codeVoucherShip: this.voucherShip ? this.voucherShip?.code : null,
@@ -324,6 +325,7 @@ export class CheckoutComponent implements OnInit {
                 code: this.user.code,
               },
               totalPrice: this.totalMoney,
+              totalPayment: this.totalMoneyPay,
               shipPrice: this.voucherShip ? this.shipFeeReduce : this.shipFee,
               codeVoucher: this.voucher ? this.voucher?.code : null,
               codeVoucherShip: this.voucherShip ? this.voucherShip?.code : null,

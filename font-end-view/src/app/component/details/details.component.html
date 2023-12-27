@@ -34,9 +34,12 @@
       <div class="product-details my-2">
         <p class="details-title text-color mb-1">Size</p>
         <div class="d-flex">
-          <div class="selection" *ngFor="let s of listSize">
-            <button type="button" style="border-radius: 5px;width: 40px;" (click)="selectSize(s)" [disabled]="s.disabled" [class.red-selected-size]="s.isSelected">{{s.sizeNumber}}</button>
-          </div>
+<!--          <div class="selection" *ngFor="let s of listSize">-->
+<!--            <button type="button" style="border-radius: 5px;width: 40px;" (click)="selectSize(s)" [disabled]="s.disabled" [class.red-selected-size]="s.isSelected">{{s.sizeNumber}}</button>-->
+<!--          </div>-->
+          <ng-select [items]="listSize" bindLabel="sizeNumber" bindValue="id" placeholder="--Lựa chọn--"
+                     [(ngModel)]="sizeId" [ngModelOptions]="{standalone: true}"  [searchable]="false" (change)="onSizeChange($event)">
+          </ng-select>
         </div>
       </div>
 
@@ -45,16 +48,20 @@
       <div class="product-details my-2">
         <p class="details-title text-color mb-1">Màu Sắc</p>
         <div class="d-flex">
-          <div class="selection" *ngFor="let c of listColor">
-            <button type="button" style="border-radius: 5px;width: 92px;" (click)="selectColor(c)" [disabled]="c.disabled" [class.red-selected-color]="c.isSelected">{{c.name}}</button>
-          </div>
+<!--          <div class="selection" *ngFor="let c of listColor">-->
+<!--            <button type="button" style="border-radius: 5px;width: 92px;" (click)="selectColor(c)" [disabled]="c.disabled" [class.red-selected-color]="c.isSelected">{{c.name}}</button>-->
+<!--          </div>-->
+          <ng-select [items]="listColor" bindLabel="name" bindValue="id" placeholder="--Lựa chọn--"
+                     [(ngModel)]="colorId" [ngModelOptions]="{standalone: true}"  [searchable]="false" (change)="onColorChange($event)">
+          </ng-select>
         </div>
       </div>
 
 <!--      Số lượng-->
 <!--      <br>-->
       <div class="product-details my-2">
-        <p class="details-title text-color mb-1">Số lượng :{{(getProductDetailQuantity() == 0 || getProductDetailQuantity()== null) ? product.totalQuantity : getProductDetailQuantity()}}</p>
+        <p class="details-title text-color mb-1">Số lượng :{{(getProductDetailQuantity() == -1 || getProductDetailQuantity()== null) ? product.totalQuantity : getProductDetailQuantity()}}</p>
+        <div class="details-title text-color mb-1" style="color: red" *ngIf="getProductDetailQuantity() === 0">Hết hàng</div>
       </div>
       <div class="wrap-num-product flex-w m-r-20 m-tb-10 flex-w flex-r-m p-b-10" *ngIf="bothSizeAndColorSelected == true">
         <button type="button"
@@ -87,10 +94,10 @@
       <p class="details-title text-color mb-2">Thông Tin Chi Tiết</p>
       <ul>
         <li style="margin-top: 10px"><strong>Hãng:</strong>  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {{product.brandDTO?.name}}</li>
-        <li style="margin-top: 10px"><strong>Chất Liệu:</strong> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;    {{product.materialDTO?.name}} </li>
-<!--        <li style="margin-top: 10px"><strong>Độ cao của đế:</strong> &nbsp;&nbsp;&nbsp;&nbsp;  {{product.soleDTO.soleHeight}} cm (Chất liệu: {{product.soleDTO.soleMaterial}})</li>-->
-<!--        <li><strong>Cổ giày:</strong>  &nbsp;&nbsp;&nbsp;&nbsp;       {{product.brandDTO.name}}</li>-->
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {{product?.brandDTO?.name}}</li>
+        <li style="margin-top: 10px"><strong>Chất Liệu:</strong> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;    {{product?.materialDTO?.name}} </li>
+        <li style="margin-top: 10px"><strong>Độ cao của đế:</strong> &nbsp;&nbsp;&nbsp;&nbsp;  {{product?.soleDTO?.soleHeight}} cm (Chất liệu: {{product?.soleDTO?.soleMaterial}})</li>
+        <li><strong>Cổ giày:</strong>  &nbsp;&nbsp;&nbsp;&nbsp;       {{product?.brandDTO?.name}}</li>
       </ul>
     </div>
 <!--    <div class="product-details my-2">-->
@@ -109,27 +116,27 @@
   <hr>
   <p class="display-5">Sản Phẩm Tương Tự</p>
 
-<!--  <div class="row">-->
-<!--    <div class="col-3" style="display: flex; gap: 10px" *ngFor="let p of listProductTuongTu">-->
-<!--      <div class="card" style="width: 18rem;">-->
-<!--        <a [routerLink]="['/product-details',p.id]">-->
-<!--          <img style="width: 250px; height: 330px"-->
-<!--            (mouseenter)="onMouseEnter(p)"-->
-<!--            (mouseleave)="onMouseLeave(p)"-->
-<!--            [src]="isMouseOver[p.id] ? p.imagesDTOList[1].imageName : p.imagesDTOList[0].imageName"-->
-<!--            class="card-img-top"-->
-<!--            alt="..."-->
-<!--          >-->
-<!--          <span *ngIf="p.reducePrice != null && p.percentageReduce != null" class="percentage-badge">{{ p.percentageReduce }}%</span>-->
-<!--        </a>-->
+  <div class="row">
+    <div class="col-3" style="display: flex; gap: 10px" *ngFor="let p of listProductTuongTu">
+      <div class="card" style="width: 18rem;">
+        <a [routerLink]="['/product-details',p?.id]">
+          <img style="width: 250px; height: 330px"
+            (mouseenter)="onMouseEnter(p)"
+            (mouseleave)="onMouseLeave(p)"
+            [src]="isMouseOver[p?.id] ? p?.imagesDTOList[1]?.imageName : p?.imagesDTOList[0]?.imageName"
+            class="card-img-top"
+            alt="..."
+          >
+          <span *ngIf="p?.reducePrice != null && p?.percentageReduce != null" class="percentage-badge">{{ p?.percentageReduce }}%</span>
+        </a>
 
-<!--        <div class="card-body">-->
-<!--          <h5 class="card-title">{{p.name}}</h5>-->
-<!--          <div *ngIf="p.reducePrice == null && p.percentageReduce == null"><span>{{p.price}}</span> đ</div>-->
-<!--          <div *ngIf="p.reducePrice != null && p.percentageReduce != null"> <del>{{utilService.formatMoney(p.price)}}</del>  <span style="margin-left: 5px">{{utilService.formatMoney(p.price - p.reducePrice)}}</span></div>-->
-<!--        </div>-->
-<!--      </div>-->
-<!--    </div>-->
-<!--  </div>-->
+        <div class="card-body">
+          <h5 class="card-title">{{p?.name}}</h5>
+          <div *ngIf="p?.reducePrice == null && p?.percentageReduce == null"><span>{{utilService.formatMoney(p?.price)}}</span></div>
+          <div *ngIf="p?.reducePrice != null && p?.percentageReduce != null"> <del>{{utilService.formatMoney(p?.price)}}</del>  <span style="margin-left: 5px">{{utilService.formatMoney(p.price - p.reducePrice)}}</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
 
