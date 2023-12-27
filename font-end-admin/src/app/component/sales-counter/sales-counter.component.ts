@@ -54,7 +54,7 @@ export class SalesCounterComponent implements OnInit {
   selectedOption: string = '1';
   customerDTO: CustomerSalesDTO;
   selectedCustomer: any;
-  idCustomer: number;
+  idCustomer: number = 1;
   user: UsersDTO = {};
   availableDevices: MediaDeviceInfo[];
   currentDevice: MediaDeviceInfo = null;
@@ -218,7 +218,6 @@ export class SalesCounterComponent implements OnInit {
       paymentType: 1,
       totalPrice: this.priceCustomer,
       totalPayment: this.priceCustomer,
-      customerDTO: this.selectedCustomer,
       idCustomer: this.idCustomer,
       idStaff: this.user.id,
       statusPayment: this.selectedOption,
@@ -245,7 +244,7 @@ export class SalesCounterComponent implements OnInit {
             localStorage.removeItem('listProductPush');
             this.selectedCustomer = '';
             this.searcherCustomer = '';
-            this.idCustomer = null;
+            this.idCustomer = 1;
             this.priceCustomer = 0;
             this.priceVoucher = 0;
             this.listProductPush = [];
