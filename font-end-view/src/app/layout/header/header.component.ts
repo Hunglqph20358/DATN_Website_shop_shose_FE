@@ -2,6 +2,7 @@ import {Component, OnInit} from '@angular/core';
 import {apiURL} from '../../config/apiURL';
 import {UsersDTO} from '../../component/model/UsersDTO';
 import {BehaviorSubject} from 'rxjs';
+import {CartService} from '../../service/cart.service';
 import {Router} from '@angular/router';
 
 @Component({
@@ -12,7 +13,11 @@ import {Router} from '@angular/router';
 export class HeaderComponent implements OnInit {
   infoCustomer: UsersDTO;
   size: number;
-  constructor(private router: Router) {
+  totalProducts: number = 0;
+  constructor(private cartService: CartService, private router: Router) {
+    this.cartService.totalProducts$.subscribe((totalProducts) => {
+      this.totalProducts = totalProducts;
+    });
   }
 
   api = apiURL;

@@ -4,6 +4,7 @@ import {OrderDetailService} from '../../../service/order-detail.service';
 import {CookieService} from 'ngx-cookie-service';
 import {EmailService} from '../../../service/email.service';
 import {UtilService} from '../../../util/util.service';
+import {CartService} from '../../../service/cart.service';
 
 @Component({
   selector: 'app-detail-checkout',
@@ -23,7 +24,7 @@ export class DetailCheckoutComponent implements OnInit {
   email: any;
 
   constructor(private route: ActivatedRoute, private orderDetailService: OrderDetailService,
-              private cookieService: CookieService, private emailService: EmailService, public utilService: UtilService) {
+              private cookieService: CookieService, private emailService: EmailService, public utilService: UtilService, private cartService: CartService) {
     const session = JSON.parse(sessionStorage.getItem('order'));
     this.order = session.order;
     this.listCart = session.listCart;
@@ -32,6 +33,7 @@ export class DetailCheckoutComponent implements OnInit {
     sessionStorage.removeItem('order');
     this.cookieService.delete('cart', '/');
     this.cookieService.delete('checkout', '/');
+    this.cartService.updateTotalProducts(0);
   }
 
   ngOnInit(): void {
@@ -44,7 +46,8 @@ export class DetailCheckoutComponent implements OnInit {
           idOrder: this.order.id,
           idProductDetail: item.productDetailDTO.id,
           quantity: item.quantity,
-          price: item.productDTO.price
+          price: item.productDTO?.reducePrice != null || item.productDTO?.percentageReduce != null ? (item.productDTO.price - item.productDTO.reducePrice) : item.productDTO.price,
+          codeDiscount: item.productDTO?.reducePrice != null || item.productDTO?.percentageReduce != null ? item.productDTO.codeDiscount : null,
         };
         return this.orderDetailService.createOrderDetail(obj).toPromise();
       });
@@ -74,23 +77,15 @@ export class DetailCheckoutComponent implements OnInit {
           idOrder: this.order.id,
           idProductDetail: item.productDetailDTO.id,
           quantity: item.quantity,
-          price: item.productDTO.price
+          price: item.productDTO?.reducePrice != null || item.productDTO?.percentageReduce != null ? (item.productDTO.price - item.productDTO.reducePrice) : item.productDTO.price,
+          codeDiscount: item.productDTO?.reducePrice != null || item.productDTO?.percentageReduce != null ? item.productDTO.codeDiscount : null,
         };
         return this.orderDetailService.createOrderDetail(obj).toPromise();
       });
       Promise.all(orderDetailPromises)
         .then(() => {
-          if (this.email === null || this.email === undefined) {
             this.emailService.sendEmail(this.order).subscribe(res => {
             });
-          } else {
-            const obj = {
-              ...this.order,
-              email: this.email
-            };
-            this.emailService.sendEmailNotLogin(obj).subscribe(res => {
-            });
-          }
         })
         .catch(error => {
           console.error('Error creating order details:', error);
@@ -111,6 +106,10 @@ export class DetailCheckoutComponent implements OnInit {
   }
 
   openHome() {
+  }
+  checkPrice(value){
+    if(value.productDTO.reducePrice != null || value.productDTO.percentageReduce != null){
 
+    }
   }
 }

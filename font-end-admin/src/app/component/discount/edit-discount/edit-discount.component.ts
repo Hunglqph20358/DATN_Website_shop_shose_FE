@@ -39,7 +39,6 @@ export class EditDiscountComponent implements OnInit {
   validDescription: ValidateInput = new ValidateInput();
   validReducedValue: ValidateInput = new ValidateInput();
   validMaxReduced: ValidateInput = new ValidateInput();
-  checkStartDate: boolean = false;
   gridApi: any;
   rowData = [];
   columnDefs;
@@ -47,7 +46,7 @@ export class EditDiscountComponent implements OnInit {
   rowHeight = 40;
   disableCheckPriceProduct = false;
   iđStaff = '';
-
+  checkStartDate: boolean = false;
   constructor(private discountService: DiscountService,
               private router: Router,
               private activatedRoute: ActivatedRoute,
@@ -132,6 +131,7 @@ export class EditDiscountComponent implements OnInit {
         });
     });
   }
+
   isStartDateValid() {
     // console.log(event);
     const date = new Date();
@@ -144,6 +144,7 @@ export class EditDiscountComponent implements OnInit {
     }
     console.log(this.checkStartDate);
   }
+
   onGridReady(params: any) {
     this.gridApi = params.api;
   }

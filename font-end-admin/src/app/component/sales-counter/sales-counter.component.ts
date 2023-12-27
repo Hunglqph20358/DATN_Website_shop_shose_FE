@@ -228,11 +228,12 @@ export class SalesCounterComponent implements OnInit {
         console.log('done', response);
         const saveIdOrder = response.data.id;
         const observables = this.listProductPush.map((product) => {
+          // @ts-ignore
           const orderDetail: OrderDetail = {
             idOrder: saveIdOrder,
             idProductDetail: product.id,
             quantity: product.quantity,
-            price: product.total,
+            price: this.priceCustomer,
           };
           return this.orderDetailService.createDetailSales(orderDetail);
         });

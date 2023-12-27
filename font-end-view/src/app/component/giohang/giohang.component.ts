@@ -31,6 +31,7 @@ export class GiohangComponent implements OnInit {
       const cartData = this.cookieService.get('cart');
       const entries = JSON.parse(cartData);
       this.cartData = new Map(entries);
+      this.cartService.updateTotalProducts(this.cartData.size);
     }
   }
 
@@ -53,15 +54,27 @@ export class GiohangComponent implements OnInit {
   }
 
   checkOut() {
-    const expirationDate = new Date();
-    expirationDate.setTime(expirationDate.getTime() + 30 * 60 * 1000);
-    this.cookieService.set('checkout', JSON.stringify(Array.from(this.selectedProducts)), expirationDate);
-    for (const c of this.selectedProducts) {
-      const key = c.productId + '-' + c.productDetailDTO.idColor + '-' + c.productDetailDTO.idSize;
-      this.checkOutData.set(key, c.quantity);
-    }
-    this.cookieService.set('checkout', JSON.stringify(Array.from(this.checkOutData.entries())), expirationDate);
-    this.route.navigate(['/cart/checkout']);
+    Swal.fire({
+      title: 'Bạn có chắc thanh toán ?',
+      text: '',
+      icon: 'info',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Đồng ý'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        const expirationDate = new Date();
+        expirationDate.setTime(expirationDate.getTime() + 30 * 60 * 1000);
+        this.cookieService.set('checkout', JSON.stringify(Array.from(this.selectedProducts)), expirationDate);
+        for (const c of this.selectedProducts) {
+          const key = c.productId + '-' + c.productDetailDTO.idColor + '-' + c.productDetailDTO.idSize;
+          this.checkOutData.set(key, c.quantity);
+        }
+        this.cookieService.set('checkout', JSON.stringify(Array.from(this.checkOutData.entries())), expirationDate);
+        this.route.navigate(['/cart/checkout']);
+      }
+    });
   }
 
 
@@ -83,6 +96,7 @@ export class GiohangComponent implements OnInit {
             });
             this.cartData.delete(cartKey);
             this.cookieService.set('cart', JSON.stringify([...this.cartData]));
+            this.cartService.updateTotalProducts(this.cartData.size);
             window.location.reload();
           }
         });
@@ -128,6 +142,7 @@ export class GiohangComponent implements OnInit {
         if (result.isConfirmed) {
           this.cartData.delete(cartKey);
           this.cookieService.set('cart', JSON.stringify([...this.cartData]));
+          this.cartService.updateTotalProducts(this.cartData.size);
           window.location.reload();
           this.toastr.success('Xoa Thanh Cong!', 'Remove', {
             positionClass: 'toast-top-right'
