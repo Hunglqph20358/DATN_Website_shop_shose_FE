@@ -302,22 +302,27 @@ export class CheckoutComponent implements OnInit {
               paymentType: 1,
               email: this.user.email
             };
-            this.orderService.createOrder(obj).subscribe(res => {
-              if (res.status === 'OK') {
-                const objCheckOut = {
-                  order: res.data,
-                  listCart: this.listCart,
-                };
-
-                this.paymentService.createPayment(this.totalMoneyPay).subscribe(resPay => {
-                  if (resPay.status === 'OK') {
-                    sessionStorage.setItem('order', JSON.stringify(objCheckOut));
-                    // setTimeout()
-                    window.location.href = resPay.url;
-                  }
-                });
-              }
-            });
+            const objOrderBill = {
+              order: obj,
+              listCart: this.listCart
+            };
+            console.log('Order: ', objOrderBill);
+            // localStorage.setItem()
+            // this.orderService.createOrder(obj).subscribe(res => {
+            //   if (res.status === 'OK') {
+            //     const objCheckOut = {
+            //       order: res.data,
+            //       listCart: this.listCart,
+            //     };
+            //     this.paymentService.createPayment(this.totalMoneyPay).subscribe(resPay => {
+            //       if (resPay.status === 'OK') {
+            //         sessionStorage.setItem('order', JSON.stringify(objCheckOut));
+            //         // setTimeout()
+            //         window.location.href = resPay.url;
+            //       }
+            //     });
+            //   }
+            // });
           } else {
             const obj = {
               ...this.order,
