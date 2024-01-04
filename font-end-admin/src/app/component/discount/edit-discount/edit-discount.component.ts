@@ -24,9 +24,9 @@ export class EditDiscountComponent implements OnInit {
       createName: localStorage.getItem('fullname'),
     },
     spap: '0',
-    reducedValue: '0',
-    discountType: '0',
-    maxReduced: 0,
+    reducedValue: '',
+    discountType: '',
+    maxReduced: '',
     isValidDateRange: () => {
       return (
         this.discount.discountAdminDTO.startDate &&
@@ -35,6 +35,10 @@ export class EditDiscountComponent implements OnInit {
       );
     },
   };
+  startDateTouched = false;
+  checkEndDate: boolean = false;
+  endDateTouched = false;
+  checkStartDate: boolean = false;
   validName: ValidateInput = new ValidateInput();
   validDescription: ValidateInput = new ValidateInput();
   validReducedValue: ValidateInput = new ValidateInput();
@@ -46,7 +50,7 @@ export class EditDiscountComponent implements OnInit {
   rowHeight = 40;
   disableCheckPriceProduct = false;
   iđStaff = '';
-  checkStartDate: boolean = false;
+
   constructor(private discountService: DiscountService,
               private router: Router,
               private activatedRoute: ActivatedRoute,
@@ -131,7 +135,24 @@ export class EditDiscountComponent implements OnInit {
         });
     });
   }
-
+  isValidDateRange(): void {
+    if (
+      this.discount.discountAdminDTO.startDate &&
+      this.discount.discountAdminDTO.endDate &&
+      this.discount.discountAdminDTO.startDate > this.discount.discountAdminDTO.endDate
+    ) {
+      this.checkEndDate = true;
+      console.log('Date range is valid.');
+    } else {
+      this.checkEndDate = false;
+      // Cũng có thể thực hiện công việc khác nếu cần.
+      console.log('Date range is not valid.');
+    }
+  }
+  isEndDateValid() {
+    this.endDateTouched = true;
+    this.isValidDateRange();
+  }
   isStartDateValid() {
     // console.log(event);
     const date = new Date();
@@ -144,7 +165,6 @@ export class EditDiscountComponent implements OnInit {
     }
     console.log(this.checkStartDate);
   }
-
   onGridReady(params: any) {
     this.gridApi = params.api;
   }

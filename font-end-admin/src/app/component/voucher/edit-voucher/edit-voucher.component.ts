@@ -59,7 +59,11 @@ export class EditVoucherComponent implements OnInit {
       },
     ];
   }
+  startDateTouched = false;
+  checkStartDate: boolean = false;
   checkAllow: boolean = false;
+  checkEndDate: boolean = false;
+  endDateTouched = false;
   isHidden = true;
   gridApi: any;
   rowData = [];
@@ -83,15 +87,9 @@ export class EditVoucherComponent implements OnInit {
     apply: '2',
     optionCustomer: '0',
     createName: localStorage.getItem('fullname'),
-    isValidDateRange: () => {
-      return (
-        this.voucher.startDate &&
-        this.voucher.endDate &&
-        this.voucher.startDate < this.voucher.endDate
-      );
-    },
   };
   currentDate: Date = new Date();
+  validQuantity: ValidateInput = new ValidateInput();
   validName: ValidateInput = new ValidateInput();
   validDescription: ValidateInput = new ValidateInput();
   validReducedValue: ValidateInput = new ValidateInput();
@@ -99,9 +97,35 @@ export class EditVoucherComponent implements OnInit {
   validconditionApply: ValidateInput = new ValidateInput();
 
   public rowSelection: 'single' | 'multiple' = 'multiple'; // Chọn nhiều dòng
-
-  isStartDateValid(): boolean {
-    return !this.voucher.startDate || this.voucher.startDate >= this.currentDate;
+  isValidDateRange(): void {
+    if (
+      this.voucher.startDate &&
+      this.voucher.endDate &&
+      this.voucher.startDate > this.voucher.endDate
+    ) {
+      this.checkEndDate = true;
+      console.log('Date range is valid.');
+    } else {
+      this.checkEndDate = false;
+      // Cũng có thể thực hiện công việc khác nếu cần.
+      console.log('Date range is not valid.');
+    }
+  }
+  isEndDateValid() {
+    this.endDateTouched = true;
+    this.isValidDateRange();
+  }
+  isStartDateValid() {
+    // console.log(event);
+    const date = new Date();
+    console.log(date.getTime());
+    console.log(new Date(this.voucher.startDate).getTime());
+    if (new Date(this.voucher.startDate).getTime() < date.getTime()){
+      this.checkStartDate = true;
+    }else {
+      this.checkStartDate = false;
+    }
+    console.log(this.checkStartDate);
   }
   onGridReady(params: any) {
     this.gridApi = params.api;
@@ -129,6 +153,7 @@ export class EditVoucherComponent implements OnInit {
         this.voucher.reducedValue = firstElement.reducedValue;
         this.voucher.apply = firstElement.apply;
         this.voucher.limitCustomer = firstElement.limitCustomer;
+        this.voucher.maxReduced = firstElement.maxReduced;
         this.voucher.startDate = this.formatDate(firstElement.startDate);
         this.voucher.allow = firstElement.allow;
         this.voucher.maxReduced = firstElement.maxReduced;
@@ -138,6 +163,9 @@ export class EditVoucherComponent implements OnInit {
     console.log(this.voucher);
   }
   editVoucher(){
+    this.validateQuantity();
+    this.isEndDateValid();
+    this.isStartDateValid();
     this.validateName();
     this.validateReducedValue();
     this.validateDescription();
@@ -188,6 +216,9 @@ export class EditVoucherComponent implements OnInit {
   }
   validateName() {
     this.validName = CommonFunction.validateInput(this.voucher.name, 50, null );
+  }
+  validateQuantity() {
+    this.validQuantity = CommonFunction.validateInput(this.voucher.quantity, 50, null );
   }
   validateDescription() {this.validDescription = CommonFunction.validateInput(this.voucher.description, 50, null );
   }
