@@ -31,7 +31,7 @@ const routes: Routes = [
   // {path: 'order/not-login/:codeOrder', component: OrderNotLoginComponent},
   { path: 'forgot-pass', component: ForgotPasswordComponent},
   { path: 'reset-pass', component: ResetPasswordComponent},
-  { path: 'user-profile', component: InfoUserComponent},
+  { path: 'user-profile', component: InfoUserComponent, canActivate: [AuthService]},
 ];
 
 @NgModule({
