@@ -2,9 +2,9 @@ export class OrderDetail{
   idOrder: string;
   idProductDetail: string;
   quantity: string;
-  price: string;
+  price: number;
 
-  constructor(idOrder: string, idProductDetail: string, quantity: string, price: string) {
+  constructor(idOrder: string, idProductDetail: string, quantity: string, price: number) {
     this.idOrder = idOrder;
     this.idProductDetail = idProductDetail;
     this.quantity = quantity;

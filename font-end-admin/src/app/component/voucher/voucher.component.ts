@@ -161,9 +161,9 @@ export class VoucherComponent implements OnInit {
     }
   }
     statusType(params) {
-      if (params.value === 0) {
+      if (params.value === 1) {
         return 'Theo %';
-      } else if (params.value === 1) {
+      } else if (params.value === 0) {
         return 'Theo tiền';
       } else {
         return 'Không rõ';

@@ -1,10 +1,12 @@
-import {Component, OnInit} from '@angular/core';
+import {ChangeDetectorRef, Component, OnInit} from '@angular/core';
 import {ProductService} from '../../service/product.service';
 import {ActivatedRoute, Router} from '@angular/router';
 import {ColorService} from '../../service/color.service';
 import {SizeService} from '../../service/size.service';
 import {CookieService} from 'ngx-cookie-service';
 import {UtilService} from '../../util/util.service';
+import {CartService} from '../../service/cart.service';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-details',
@@ -15,16 +17,21 @@ export class DetailsComponent implements OnInit {
 
   cartData = new Map();
   productData = new Map();
+  listProductTuongTu = [];
+  isMouseOver: { [key: number]: boolean } = {};
+  quantityBuy: number = 1;
 
   constructor(private productService: ProductService, private activeRoute: ActivatedRoute,
               private colorService: ColorService, private sizeService: SizeService,
-              private cookieService: CookieService, private router: Router, public utilService: UtilService) {
+              private cookieService: CookieService, private router: Router, public utilService: UtilService,
+              private cartService: CartService, private cdr: ChangeDetectorRef) {
     // @ts-ignore
     window.scrollTo(top, 0, 0);
     if (this.cookieService.check('cart')) {
       const cartData = this.cookieService.get('cart');
       const entries = JSON.parse(cartData);
       this.cartData = new Map(entries);
+      this.cartService.updateTotalProducts(this.cartData.size);
     }
 
   }
@@ -32,6 +39,8 @@ export class DetailsComponent implements OnInit {
   product: any;
   listColor = [];
   listSize = [];
+  originalListColor = [];
+  originalListSize = [];
   sizeBefore: number;
   colorId: number | null = null;
   sizeId: number | null = null;
@@ -43,16 +52,42 @@ export class DetailsComponent implements OnInit {
       const id = params.idProduct;
       this.productService.getDetailProduct(id).subscribe(res => {
         this.product = res.data;
+        this.productService.getProductTuongTu(res.data.id, res.data.categoryDTO.id).subscribe(res2 => {
+          this.listProductTuongTu = res2;
+          console.log(this.listProductTuongTu);
+          this.cdr.detectChanges();
+        });
         console.log(this.product);
+        this.loadData();
       });
     });
-    this.colorService.getAllColor().subscribe(res => {
-      this.listColor = res;
-    });
-    this.sizeService.getAllSize().subscribe(res => {
-      this.listSize = res;
-    });
   }
+
+  private loadData(): void {
+    if (this.product && this.product.productDetailDTOList) {
+      this.colorService.getAllColor().subscribe(res => {
+        this.listColor = res;
+
+        const colorIDsInProduct = this.product.productDetailDTOList
+          .filter(detail => detail.idColor)
+          .map(detail => detail.idColor);
+
+        this.listColor = this.listColor.filter(color => colorIDsInProduct.includes(color.id));
+        this.originalListColor = [...this.listColor];
+      });
+
+      this.sizeService.getAllSize().subscribe(res => {
+        this.listSize = res;
+        const sizeIDsInProduct = this.product.productDetailDTOList
+          .filter(detail => detail.idSize)
+          .map(detail => detail.idSize);
+
+        this.listSize = this.listSize.filter(size => sizeIDsInProduct.includes(size.id));
+        this.originalListSize = [...this.listSize];
+      });
+    }
+  }
+
 
 
   selectSize(s) {
@@ -142,8 +177,7 @@ export class DetailsComponent implements OnInit {
   }
 
   checkIfBothSizeAndColorSelected() {
-    // Kiểm tra xem đã chọn cả size và color chưa
-    this.bothSizeAndColorSelected = this.colorId !== null && this.sizeId !== null;
+    this.bothSizeAndColorSelected = this.colorId !== null && this.sizeId !== null && this.getProductDetailQuantity() > 0;
   }
 
   getProductDetailQuantity(): number {
@@ -155,7 +189,7 @@ export class DetailsComponent implements OnInit {
         return selectedProductDetail.quantity;
       }
     }
-    return 0; // Trả về 0 nếu không tìm thấy hoặc chưa chọn cả size và color
+    return -1;
   }
 
 
@@ -165,21 +199,102 @@ export class DetailsComponent implements OnInit {
     expirationDate.setTime(expirationDate.getTime() + 30 * 60 * 1000);
     if (this.cartData.has(productKey)) {
       const slHienTai = this.cartData.get(productKey);
-      this.cartData.set(productKey, slHienTai + 1);
+      this.cartData.set(productKey, slHienTai + this.quantityBuy);
       this.cookieService.set('cart', JSON.stringify(Array.from(this.cartData.entries())), expirationDate);
+      Swal.fire({
+        icon: 'success',
+        title: 'Thêm vào giỏ thành công',
+        showConfirmButton: false,
+        timer: 1500
+      });
+      this.quantityBuy = 1;
     } else {
-      this.cartData.set(productKey, 1);
+      this.cartData.set(productKey, this.quantityBuy);
       this.cookieService.set('cart', JSON.stringify(Array.from(this.cartData.entries())), expirationDate);
+      Swal.fire({
+        icon: 'success',
+        title: 'Thêm vào giỏ thành công',
+        showConfirmButton: false,
+        timer: 1500
+      });
+      this.quantityBuy = 1;
     }
-    console.log(this.cartData);
+    this.cartService.updateTotalProducts(this.cartData.size);
   }
 
   buyNow(productId: any) {
-    const productKey = productId + '-' + this.colorId + '-' + this.sizeId;
-    const expirationDate = new Date();
-    expirationDate.setTime(expirationDate.getTime() + 30 * 60 * 1000);
-    this.productData.set(productKey, 1);
-    this.cookieService.set('checkout', JSON.stringify(Array.from(this.productData.entries())), expirationDate);
-    this.router.navigate(['cart/checkout']);
+    Swal.fire({
+      title: 'Bạn có chắc mua ngay?',
+      text: '',
+      icon: 'success',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Đồng ý'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        const productKey = productId + '-' + this.colorId + '-' + this.sizeId;
+        const expirationDate = new Date();
+        expirationDate.setTime(expirationDate.getTime() + 30 * 60 * 1000);
+        this.productData.set(productKey, this.quantityBuy);
+        this.cookieService.set('checkout', JSON.stringify(Array.from(this.productData.entries())), expirationDate);
+        this.router.navigate(['cart/checkout']);
+      }
+    });
+  }
+
+  onMouseEnter(product: any) {
+    // Khi chuột di vào, cập nhật isMouseOver của sản phẩm này thành true
+    this.isMouseOver[product.id] = true;
+  }
+
+  onMouseLeave(product: any) {
+    // Khi chuột rời khỏi, cập nhật isMouseOver của sản phẩm này thành false
+    this.isMouseOver[product.id] = false;
+  }
+
+  giamSoLuong() {
+    this.quantityBuy = this.quantityBuy - 1;
+  }
+
+  tangSoLuong() {
+    this.quantityBuy = this.quantityBuy + 1;
+  }
+
+  onSizeChange(event: any): void {
+    const selectedSizeId = this.sizeId;
+
+    if (this.product && this.product.productDetailDTOList) {
+      if (selectedSizeId === null) {
+        this.listColor = [...this.originalListColor];
+      }else {
+        const detailsForSelectedSize = this.product.productDetailDTOList
+          .filter(detail => detail.idSize === selectedSizeId && detail.idColor);
+        const colorIDsForSelectedSize = detailsForSelectedSize.map(detail => detail.idColor);
+        this.listColor = this.listColor.filter(color => colorIDsForSelectedSize.includes(color.id));
+      }
+    }
+    this.checkIfBothSizeAndColorSelected();
+    this.cdr.detectChanges();
+  }
+
+  onColorChange(event: any): void {
+    console.log(this.colorId);
+    const selectedColorId = this.colorId;
+    if (this.product && this.product.productDetailDTOList) {
+      if (selectedColorId === null) {
+        this.listSize = [...this.originalListSize];
+      }else {
+        const detailsForSelectedColor = this.product.productDetailDTOList
+          .filter(detail => detail.idColor === selectedColorId && detail.idSize);
+
+        const sizeIDsForSelectedColor = detailsForSelectedColor.map(detail => detail.idSize);
+
+        this.listSize = this.listSize.filter(size => sizeIDsForSelectedColor.includes(size.id));
+      }
+
+    }
+    this.checkIfBothSizeAndColorSelected();
+    this.cdr.detectChanges();
   }
 }

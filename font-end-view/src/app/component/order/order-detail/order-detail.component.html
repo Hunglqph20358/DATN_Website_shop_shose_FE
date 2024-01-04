@@ -71,6 +71,57 @@
       </tr>
       </tbody>
     </table>
+    <br>
+    <div class="row" *ngIf="listOrderHistoryAdmin.length > 0">
+      <h4><strong>Lịch sử</strong></h4>
+      <div>
+        <table class="table">
+          <thead>
+          <tr>
+            <th scope="col">STT</th>
+            <th scope="col">Cửa hàng</th>
+            <th scope="col">Trạng thái</th>
+            <th scope="col">Ngày sửa</th>
+            <th scope="col">Ghi chú</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr *ngFor="let oh of listOrderHistoryAdmin; let i = index">
+            <th scope="row">{{i + 1}}</th>
+            <td>Admin</td>
+            <td>{{oh.status}}</td>
+            <td>{{utilService.formatDateTime(oh.createDate)}}</td>
+            <td>{{oh.note}}</td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div class="row" *ngIf="listOrderHistoryView.length > 0">
+      <h4><strong>Lịch sử bạn sửa đổi</strong></h4>
+      <div>
+        <table class="table">
+          <thead>
+          <tr>
+            <th scope="col">STT</th>
+            <th scope="col">Cửa hàng</th>
+            <th scope="col">Trạng thái</th>
+            <th scope="col">Ngày sửa</th>
+            <th scope="col">Ghi chú</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr *ngFor="let oh of listOrderHistoryView; let i = index">
+            <th scope="row">{{i + 1}}</th>
+            <td>{{oh.customerDTO.fullname}}</td>
+            <td>{{oh.status}}</td>
+            <td>{{utilService.formatDateTime(oh.createDate)}}</td>
+            <td>{{oh.note}}</td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
   </div>
   <div style="text-align: center; margin-top: 10px">
     <button type="submit" class="btn btn-light" (click)="matRef.close()">Close</button>

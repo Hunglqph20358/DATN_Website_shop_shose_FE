@@ -1,12 +1,15 @@
 import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
-import {Observable} from 'rxjs';
+import {BehaviorSubject, Observable} from 'rxjs';
 import {apiURL} from '../config/apiURL';
 
 @Injectable({
   providedIn: 'root'
 })
 export class CartService {
+
+  private totalProductsSubject: BehaviorSubject<number> = new BehaviorSubject<number>(0);
+  totalProducts$: Observable<number> = this.totalProductsSubject.asObservable();
 
   constructor(private http: HttpClient) {
   }
@@ -25,5 +28,9 @@ export class CartService {
       'quantity': quantity
     };
     return this.http.post(`${apiURL}cart`, cart);
+  }
+
+  updateTotalProducts(totalProducts: number) {
+    this.totalProductsSubject.next(totalProducts);
   }
 }
