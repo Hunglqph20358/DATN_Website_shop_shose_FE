@@ -72,7 +72,7 @@ export class DiscountComponent implements OnInit {
         sortable: true,
         filter: true,
         cellRenderer: this.statusRenderer.bind(this),
-        maxWidth: 150,
+        maxWidth: 100,
       },
       {
         headerName: 'Số lượng sản phẩm đã áp dụng',
@@ -80,23 +80,29 @@ export class DiscountComponent implements OnInit {
           const useDiscount = params.data.used_count || 0;
           return `${useDiscount}`;
         },
-        maxWidth: 150,
+        maxWidth: 200,
       },
       {
         headerName: 'Hiển thị',
         field: '',
         cellRenderer: (params) => {
           const isChecked = params.data.idel === 1;
+          const  checkStatus = params.data.status === 1;
           return `<div>
       <label class="switch1">
-        <input type="checkbox" ${isChecked ? 'checked' : ''}>
+        <input type="checkbox" ${isChecked ? 'checked' : ''} ${checkStatus ? 'disabled' : ''}>
         <span class="slider round"></span>
       </label>
     </div>`;
         },
         onCellClicked: (params) => {
+          if (params.data.status === 1) {
+            return;
+          }
+          // Ngược lại, kiểm tra idell bình thường
           this.checkIsdell(params.node.data, params.node.index);
         },
+        editable: false,
         maxWidth: 150,
       },
       {
@@ -138,18 +144,14 @@ export class DiscountComponent implements OnInit {
   }
 
   checkIsdell(data: any, index: any) {
-    // console.log("data: ", data);
-    // console.log("index: ", index);
     if (data.idel === 0) {
-      // const userConfirmed = confirm('Bạn có muốn kích hoạt giảm giá không?');
-      // if (!userConfirmed) {
-      //   return;
-      // }
-      // Truyền dữ liệu thông qua HTTP PUT request
+      const userConfirmed = confirm('Bạn có muốn kích hoạt giảm giá không?');
+      if (!userConfirmed) {
+        return;
+      }
       this.apiService.KichHoat(data.id).subscribe(
         (res) => {
           this.toastr.success('Kích hoạt thành công');
-          this.searchResults = res;
           location.reload();
         },
         error => {
@@ -165,7 +167,6 @@ export class DiscountComponent implements OnInit {
       this.apiService.KichHoat(data.id).subscribe(res => {
           location.reload();
           this.toastr.success('Hủy bỏ kích hoạt thành công');
-          this.searchResults = res;
         },
         error => {
           this.toastr.error('Hủy bỏ kích hoạt thất bại');

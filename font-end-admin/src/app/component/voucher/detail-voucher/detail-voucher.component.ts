@@ -59,9 +59,9 @@ export class DetailVoucherComponent implements OnInit {
     });
   }
   getVoucherTypeText(): string{
-    if (this.voucher.voucherType === 0) {
+    if (this.voucher.voucherType === 1) {
       return 'Theo %';
-    } else if (this.voucher.voucherType === 1) {
+    } else if (this.voucher.voucherType === 0) {
       return 'Theo tiền';
     } else {
       return 'Không rõ';
