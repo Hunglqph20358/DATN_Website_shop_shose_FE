@@ -5,6 +5,8 @@ import {CookieService} from 'ngx-cookie-service';
 import {EmailService} from '../../../service/email.service';
 import {UtilService} from '../../../util/util.service';
 import {CartService} from '../../../service/cart.service';
+import {OrderService} from '../../../service/order.service';
+import {forkJoin} from 'rxjs';
 
 @Component({
   selector: 'app-detail-checkout',
@@ -24,15 +26,15 @@ export class DetailCheckoutComponent implements OnInit {
   email: any;
 
   constructor(private route: ActivatedRoute, private orderDetailService: OrderDetailService,
-              private cookieService: CookieService, private emailService: EmailService, public utilService: UtilService, private cartService: CartService) {
-    const session = JSON.parse(sessionStorage.getItem('order'));
-    this.order = session.order;
-    this.listCart = session.listCart;
-    this.email = session.email;
+              private cookieService: CookieService, private emailService: EmailService,
+              public utilService: UtilService, private cartService: CartService, private orderService: OrderService) {
+    const local = JSON.parse(localStorage.getItem('order-bill'));
+    this.order = local.order;
+    this.listCart = local.listCart;
+    // this.email = session.email;
     this.statusPayment = this.route.snapshot.queryParamMap.get('vnp_TransactionStatus');
-    sessionStorage.removeItem('order');
-    this.cookieService.delete('cart', '/');
-    this.cookieService.delete('checkout', '/');
+    // sessionStorage.removeItem('order');
+
     this.cartService.updateTotalProducts(0);
   }
 
@@ -41,57 +43,104 @@ export class DetailCheckoutComponent implements OnInit {
     console.log(this.listCart);
 
     if (this.statusPayment === '00' && this.order.paymentType === 1) {
-      const orderDetailPromises = this.listCart.map(item => {
-        const obj = {
-          idOrder: this.order.id,
-          idProductDetail: item.productDetailDTO.id,
-          quantity: item.quantity,
-          price: item.productDTO?.reducePrice != null || item.productDTO?.percentageReduce != null ? (item.productDTO.price - item.productDTO.reducePrice) : item.productDTO.price,
-          codeDiscount: item.productDTO?.reducePrice != null || item.productDTO?.percentageReduce != null ? item.productDTO.codeDiscount : null,
-        };
-        return this.orderDetailService.createOrderDetail(obj).toPromise();
-      });
-      Promise.all(orderDetailPromises)
-        .then(() => {
-          if (this.email === null || this.email === undefined) {
-            this.emailService.sendEmail(this.order).subscribe(res => {
-            });
-          } else {
+      this.orderService.createOrder(this.order).subscribe(res => {
+        if (res.status === 'OK') {
+          this.order = res.data;
+          const orderDetailsObservables = this.listCart.map(item => {
             const obj = {
-              ...this.order,
-              email: this.email
+              idOrder: res.data.id,
+              idProductDetail: item.productDetailDTO.id,
+              quantity: item.quantity,
+              price: item.productDTO?.reducePrice != null || item.productDTO?.percentageReduce != null ? (item.productDTO.price - item.productDTO.reducePrice) : item.productDTO.price,
+              codeDiscount: this.extractCodeDiscount(item.productDTO),
             };
-            this.emailService.sendEmailNotLogin(obj).subscribe(res => {
-            });
-          }
-        })
-        .catch(error => {
-          console.error('Error creating order details:', error);
-        })
-        .finally(() => {
-        });
+            return this.orderDetailService.createOrderDetail(obj);
+          });
+          forkJoin(orderDetailsObservables).subscribe(
+            orderDetailsResponses => {
+              console.log(orderDetailsResponses);
+              this.emailService.sendEmail(this.order).subscribe(result => {
+                console.log('Send email thành công ');
+              });
+              localStorage.removeItem('order-bill');
+              this.cookieService.delete('cart', '/');
+              this.cookieService.delete('checkout', '/');
+            },
+            error => {
+            }
+          );
+        }
+      });
+      // const orderDetailPromises = this.listCart.map(item => {
+      //   const obj = {
+      //     idOrder: this.order.id,
+      //     idProductDetail: item.productDetailDTO.id,
+      //     quantity: item.quantity,
+      //     price: item.productDTO?.reducePrice != null || item.productDTO?.percentageReduce != null ? (item.productDTO.price - item.productDTO.reducePrice) : item.productDTO.price,
+      //     codeDiscount: item.productDTO?.reducePrice != null || item.productDTO?.percentageReduce != null ? item.productDTO.codeDiscount : null,
+      //   };
+      //   return this.orderDetailService.createOrderDetail(obj).toPromise();
+      // });
+
+      // Promise.all(orderDetailPromises)
+      //   .then(() => {
+      //     if (this.email === null || this.email === undefined) {
+      //       this.emailService.sendEmail(this.order).subscribe(res => {
+      //       });
+      //     } else {
+      //       const obj = {
+      //         ...this.order,
+      //         email: this.email
+      //       };
+      //       this.emailService.sendEmailNotLogin(obj).subscribe(res => {
+      //       });
+      //     }
+      //   })
+      //   .catch(error => {
+      //     console.error('Error creating order details:', error);
+      //   })
+      //   .finally(() => {
+      //   });
     }
     if (this.order.paymentType === 0) {
-      const orderDetailPromises = this.listCart.map(item => {
-        const obj = {
-          idOrder: this.order.id,
-          idProductDetail: item.productDetailDTO.id,
-          quantity: item.quantity,
-          price: item.productDTO?.reducePrice != null || item.productDTO?.percentageReduce != null ? (item.productDTO.price - item.productDTO.reducePrice) : item.productDTO.price,
-          codeDiscount: item.productDTO?.reducePrice != null || item.productDTO?.percentageReduce != null ? item.productDTO.codeDiscount : null,
-        };
-        return this.orderDetailService.createOrderDetail(obj).toPromise();
+      this.orderService.createOrder(this.order).subscribe(res => {
+        if (res.status === 'OK') {
+          this.order = res.data;
+          const orderDetailPromises = this.listCart.map(item => {
+            const obj = {
+              idOrder: res.data.id,
+              idProductDetail: item.productDetailDTO.id,
+              quantity: item.quantity,
+              price: item.productDTO?.reducePrice != null || item.productDTO?.percentageReduce != null ? (item.productDTO.price - item.productDTO.reducePrice) : item.productDTO.price,
+              codeDiscount: this.extractCodeDiscount(item.productDTO),
+            };
+            return this.orderDetailService.createOrderDetail(obj).toPromise();
+          });
+          forkJoin(orderDetailPromises).subscribe(
+            orderDetailsResponses => {
+              console.log(orderDetailsResponses);
+              this.emailService.sendEmail(this.order).subscribe(result => {
+                console.log('Send email thành công ');
+              });
+              localStorage.removeItem('order-bill');
+              this.cookieService.delete('cart', '/');
+              this.cookieService.delete('checkout', '/');
+            },
+            error => {
+            }
+          );
+        }
       });
-      Promise.all(orderDetailPromises)
-        .then(() => {
-            this.emailService.sendEmail(this.order).subscribe(res => {
-            });
-        })
-        .catch(error => {
-          console.error('Error creating order details:', error);
-        })
-        .finally(() => {
-        });
+      // Promise.all(orderDetailPromises)
+      //   .then(() => {
+      //       this.emailService.sendEmail(this.order).subscribe(res => {
+      //       });
+      //   })
+      //   .catch(error => {
+      //     console.error('Error creating order details:', error);
+      //   })
+      //   .finally(() => {
+      //   });
     }
   }
 
@@ -101,15 +150,12 @@ export class DetailCheckoutComponent implements OnInit {
     return this.utilService.formatMoney(total);
   }
 
-  openDonMua() {
-
+  extractCodeDiscount(productDTO): string | null {
+    return productDTO?.reducePrice != null || productDTO?.percentageReduce != null ?
+      productDTO.codeDiscount : null;
   }
 
   openHome() {
   }
-  checkPrice(value){
-    if(value.productDTO.reducePrice != null || value.productDTO.percentageReduce != null){
 
-    }
-  }
 }

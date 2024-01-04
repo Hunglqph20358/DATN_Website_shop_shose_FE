@@ -222,21 +222,20 @@ export class CheckoutComponent implements OnInit {
               paymentType: 1,
               email: this.email
             };
-            this.orderService.createOrderNotLogin(obj).subscribe(res => {
-              if (res.status === 'OK') {
-                const objCheckOut = {
-                  order: res.data,
-                  listCart: this.listCart,
-                  email: this.email
+            // this.orderService.createOrderNotLogin(obj).subscribe(res => {
+            //   if (res.status === 'OK') {
+            const objOrderBill = {
+                  order: obj,
+                  listCart: this.listCart
                 };
-                sessionStorage.setItem('order', JSON.stringify(objCheckOut));
-                this.paymentService.createPayment(this.totalMoneyPay).subscribe(resPay => {
+            localStorage.setItem('order-bill', JSON.stringify(objOrderBill));
+            this.paymentService.createPayment(this.totalMoneyPay).subscribe(resPay => {
                   if (resPay.status === 'OK') {
                     window.location.href = resPay.url;
                   }
                 });
-              }
-            });
+            //   }
+            // });
           } else {
             const obj = {
               ...this.order,
@@ -250,17 +249,16 @@ export class CheckoutComponent implements OnInit {
               paymentType: 0,
               email: this.email
             };
-            this.orderService.createOrderNotLogin(obj).subscribe(res => {
-              if (res.status === 'OK') {
-                const objCheckOut = {
-                  order: res.data,
-                  listCart: this.listCart,
-                  email: this.email
+            // this.orderService.createOrderNotLogin(obj).subscribe(res => {
+            //   if (res.status === 'OK') {
+            const objOrderBill = {
+                  order: obj,
+                  listCart: this.listCart
                 };
-                sessionStorage.setItem('order', JSON.stringify(objCheckOut));
-                this.route.navigate(['cart/checkout-detail']);
-              }
-            });
+            localStorage.setItem('order-bill', JSON.stringify(objOrderBill));
+            this.route.navigate(['cart/checkout-detail']);
+            //   }
+            // });
           }
         }
       });
@@ -306,21 +304,21 @@ export class CheckoutComponent implements OnInit {
               order: obj,
               listCart: this.listCart
             };
-            console.log('Order: ', objOrderBill);
-            // localStorage.setItem()
+            // console.log('Order: ', objOrderBill);
+            localStorage.setItem('order-bill', JSON.stringify(objOrderBill));
             // this.orderService.createOrder(obj).subscribe(res => {
             //   if (res.status === 'OK') {
             //     const objCheckOut = {
             //       order: res.data,
             //       listCart: this.listCart,
             //     };
-            //     this.paymentService.createPayment(this.totalMoneyPay).subscribe(resPay => {
-            //       if (resPay.status === 'OK') {
-            //         sessionStorage.setItem('order', JSON.stringify(objCheckOut));
-            //         // setTimeout()
-            //         window.location.href = resPay.url;
-            //       }
-            //     });
+            this.paymentService.createPayment(this.totalMoneyPay).subscribe(resPay => {
+                  if (resPay.status === 'OK') {
+                    // sessionStorage.setItem('order', JSON.stringify(objCheckOut));
+                    // setTimeout()
+                    window.location.href = resPay.url;
+                  }
+                });
             //   }
             // });
           } else {
@@ -339,16 +337,17 @@ export class CheckoutComponent implements OnInit {
               paymentType: 0,
               email: this.user.email
             };
-            this.orderService.createOrder(obj).subscribe(res => {
-              if (res.status === 'OK') {
-                const objCheckOut = {
-                  order: res.data,
-                  listCart: this.listCart,
-                };
-                sessionStorage.setItem('order', JSON.stringify(objCheckOut));
-                this.route.navigate(['cart/checkout-detail']);
-              }
-            });
+            // this.orderService.createOrder(obj).subscribe(res => {
+            //   if (res.status === 'OK') {
+            const objOrderBill = {
+              order: obj,
+              listCart: this.listCart
+            };
+            localStorage.setItem('order-bill', JSON.stringify(objOrderBill));
+                // sessionStorage.setItem('order', JSON.stringify(objCheckOut));
+            this.route.navigate(['cart/checkout-detail']);
+              // }
+            // });
           }
         }
       });
