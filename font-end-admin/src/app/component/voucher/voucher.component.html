@@ -6,8 +6,9 @@
     <ng-template mat-tab-label>
       Tất Cả
     </ng-template>
-    <div class="search-from" style="display: flex; margin-top: 10px">
-    <div class="form-group">
+    <div class="row">
+      <div class="search-from col-12" style="display: flex; margin-top: 10px">
+        <div class="form-group col-2 align-self-start">
       <select
         class="form-control"
         id="discountType"
@@ -21,12 +22,12 @@
         <option value="3">Theo khoảng thời gian</option>
       </select>
     </div>
-
+        <div class="col-4 align-self-center">
     <div class="search-box" *ngIf="loc === '1' ">
-      <input type="text" id="searchByVoucher" style="width: 400px; height: 30px" placeholder="Tên hoặc mã voucher" (input)="searchByVoucher($event)">
+      <input class="form-control border-end-0 border rounded-pill" type="search" id="searchByVoucher"  placeholder="Tên hoặc mã voucher" (input)="searchByVoucher($event)">
     </div>
     <div class="search-box" *ngIf="loc === '2' ">
-      <input type="text" id="searchByCustomer" style="width: 400px; height: 30px" placeholder="Tên hoặc mã hoặc sdt khách hàng" (input)="searchByCustomer($event)">
+      <input class="form-control border-end-0 border rounded-pill" type="search" id="searchByCustomer" placeholder="Tên hoặc mã hoặc sdt khách hàng" (input)="searchByCustomer($event)">
     </div>
       <div class="search-box" *ngIf="loc === '3' " style="display: flex">
         <div style="display: flex; justify-content: flex-end; margin-top: 10px">
@@ -34,12 +35,14 @@
           <!--      <span *ngIf="checkDateRanges === false">Date range is valid</span>-->
         </div>
       </div>
-      <div style="justify-content: flex-end">
+        </div>
+      <div class="col-md-4 offset-md-4">
         <button type="button" class="btn btn-light" (click)="Excel()">Xuất file excel</button>
         <!--          <button type="button" (click)="Excel()">In</button>-->
       </div>
       </div>
     <div>
+    </div>
     </div>
       <div class="grid" style="margin-top: 10px">
         <ag-grid-angular

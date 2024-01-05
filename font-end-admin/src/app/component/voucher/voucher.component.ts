@@ -106,7 +106,6 @@ export class VoucherComponent implements OnInit {
           const isChecked = params.data.idel === 1;
           const useVoucher = params.data.useVoucher || 0;
           const quantity = params.data.quantity || 1;
-          const editable = useVoucher !== quantity || params.data.status !== 1;
           const  checkQuantity = useVoucher === quantity || params.data.status === 1;
           return `<div>
       <label class="switch1">

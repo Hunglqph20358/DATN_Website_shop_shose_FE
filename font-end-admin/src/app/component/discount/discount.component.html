@@ -6,8 +6,9 @@
     <ng-template mat-tab-label>
       Tất Cả
     </ng-template>
-      <div class="search-from" style="display: flex; margin-top: 10px">
-        <div class="form-group ">
+    <div class="row">
+      <div class="search-from col-12" style="display: flex; margin-top: 10px">
+        <div class="form-group col-2 align-self-start">
           <select
             class="form-control"
             id="loc"
@@ -24,31 +25,40 @@
           </select>
         </div>
 
+        <div class="col-4 align-self-center">
         <div class="search-box" *ngIf="loc === '3' ">
-          <input type="text" id="search" style="width: 400px; height: 30px" placeholder="Mã hoặc tên" (input)="searchByDiscount($event)">
+            <div class="input-group">
+              <input class="form-control border-end-0 border rounded-pill" type="search" placeholder="search" id="example-search-input">
+            </div>
         </div>
         <div class="search-box" *ngIf="loc === '0' ">
-          <input type="text" id="searchByCategory" style="width: 400px; height: 30px" placeholder="Loại giày" (input)="searchByCategory($event)">
+            <div class="input-group">
+              <input class="form-control border-end-0 border rounded-pill" type="search" placeholder="search" id="example-search-input">
+            </div>
         </div>
         <div class="search-box" *ngIf="loc === '1' ">
-          <input type="text" id="searchByProduct" style="width: 400px; height: 30px" placeholder="Tên hoặc mã giày" (input)="searchByProduct($event)">
+            <div class="input-group">
+              <input class="form-control border-end-0 border rounded-pill" type="search" placeholder="search" id="example-search-input">
+            </div>
         </div>
         <div class="search-box" *ngIf="loc === '2' ">
-          <input type="text" id="searchByBrand" style="width: 400px; height: 30px" placeholder="Tên thương hiệu" (input)="searchByBrand($event)">
+          <div class="input-group">
+            <input class="form-control border-end-0 border rounded-pill" type="search" placeholder="search" id="example-search-input">
+          </div>
         </div>
 
         <div class="search-box" *ngIf="loc === '4' " style="display: flex">
           <div style="display: flex; justify-content: flex-end; margin-top: 10px">
             <ejs-daterangepicker id='daterangepicker' placeholder='Chọn thời gian' [startDate]='dateFromCurrent' [endDate]='dateToCurrent' (change)="getDater($event)"></ejs-daterangepicker>
-            <!--      <span *ngIf="checkDateRanges === false">Date range is valid</span>-->
           </div>
         </div>
-
-        <div style="justify-content: flex-end">
+      </div>
+        <div class="col-md-4 offset-md-4">
           <button type="button" class="btn btn-light" (click)="Excel()">Xuất file excel</button>
 <!--          <button type="button" (click)="Excel()">In</button>-->
-        </div>
+          </div>
       </div>
+    </div>
     <div>
     </div>
 
