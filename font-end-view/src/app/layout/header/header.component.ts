@@ -15,6 +15,7 @@ export class HeaderComponent implements OnInit {
   infoCustomer: UsersDTO;
   size: number;
   totalProducts: number = 0;
+  isLoggedIn: boolean = false;
   constructor(private cartService: CartService, private router: Router, private istoken: AuthJwtService) {
     this.cartService.totalProducts$.subscribe((totalProducts) => {
       this.totalProducts = totalProducts;
@@ -27,19 +28,23 @@ export class HeaderComponent implements OnInit {
 
   }
 
+  exLogin() {
+    if (this.istoken.isAuthenticated() === true){
+      this.isLoggedIn = true;
+    }else {
+      this.isLoggedIn = false;
+    }
+  }
+
   ngOnInit(): void {
     this.infoCustomer = JSON.parse(localStorage.getItem('users'));
     this.size = localStorage.getItem('users').length;
     this.istoken.isAuthenticated();
-  }
-  isHideLogin(): boolean {
-    if (this.size > 0){
-      return true;
-    }
-    return false;
+    this.exLogin();
   }
   logOut(){
     localStorage.removeItem('token');
     localStorage.removeItem('users');
+    this.isLoggedIn = false;
   }
 }
