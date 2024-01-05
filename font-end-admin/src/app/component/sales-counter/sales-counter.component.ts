@@ -270,8 +270,8 @@ export class SalesCounterComponent implements OnInit {
     let orderHTML = `<div>`;
     orderHTML += `<h2>Hóa đơn</h2>`;
     orderHTML += `<p>Tên nhân viên: ${this.fullname}</p>`;
-    orderHTML += `<p>Tên khách hàng: ${this.selectedCustomer?.fullname}</p>`;
-    orderHTML += `<p>Số điện thoại: ${this.selectedCustomer?.phone}</p>`;
+    orderHTML += `<p>Tên khách hàng: ${this.selectedCustomer ? this.selectedCustomer.fullname : 'Khách lẻ'}</p>`;
+    orderHTML += `<p>Số điện thoại: ${this.selectedCustomer ? this.selectedCustomer.phone : ''}</p>`;
     orderHTML += `<h3>Chi tiết đơn hàng</h3>`;
     orderHTML += `<table border="1" cellpadding="10">`;
     orderHTML += `<thead>`;
