@@ -40,6 +40,11 @@ export class CheckoutComponent implements OnInit {
     specificAddress: undefined
   };
 
+  voucherChoice: any = {
+    voucher: null,
+    voucherShip: null
+  };
+
   totalMoneyPay;
   voucher: any;
   voucherShip: any;
@@ -368,14 +373,16 @@ export class CheckoutComponent implements OnInit {
   }
 
   openVoucher() {
+    const originalTotalMoney = this.totalMoney;
     // this.totalMoneyPay = this.totalMoney;
     this.matDialog.open(PopupVoucherComponent, {
       width: '45%',
       height: '90vh',
-      data: this.totalMoney
+      data: {total: originalTotalMoney, voucherChoice: this.voucherChoice}
     }).afterClosed().subscribe(result => {
       if (result.event === 'saveVoucher') {
         console.log(result.data);
+        this.totalMoneyPay = originalTotalMoney;
         if (result.data.voucher !== null) {
           this.voucherService.getVoucher(result.data.voucher).subscribe(res => {
             this.voucher = res.data;
@@ -392,6 +399,7 @@ export class CheckoutComponent implements OnInit {
             } else {
               this.totalMoneyPay = this.totalMoneyPay - this.voucher.reducedValue;
             }
+            this.voucherChoice.voucher = res.data.code;
             this.cdr.detectChanges();
           });
         }
@@ -405,6 +413,7 @@ export class CheckoutComponent implements OnInit {
               this.totalMoneyPay = this.totalMoneyPay - res.data.reducedValue;
               this.shipFeeReduce = res.data.reducedValue;
             }
+            this.voucherChoice.voucherShip = res.data.code;
             this.cdr.detectChanges();
           });
         }

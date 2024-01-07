@@ -23,4 +23,7 @@ export class OrderService {
   getAllOrder(obj): Observable<any>{
     return this.http.post(`${apiURL}get-all-order`, obj);
   }
+  traCuuOrder(obj): Observable<any>{
+    return this.http.post(`${apiURL}tra-cuu-order`, obj);
+  }
 }
