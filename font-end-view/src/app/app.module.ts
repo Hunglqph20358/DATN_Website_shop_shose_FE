@@ -42,6 +42,8 @@ import {MatTableModule} from '@angular/material/table';
 import {NoteOrderComponent} from './component/order/note-order/note-order.component';
 import {DateRangePickerModule} from '@syncfusion/ej2-angular-calendars';
 import { CustomCarouselComponent } from './component/details/custom-carousel/custom-carousel.component';
+import { SearchOrderComponent } from './component/search-order/search-order.component';
+import {MatCardModule} from '@angular/material/card';
 
 @NgModule({
   declarations: [
@@ -66,30 +68,32 @@ import { CustomCarouselComponent } from './component/details/custom-carousel/cus
     ActionOrderComponent,
     OrderNotLoginComponent,
     NoteOrderComponent,
-    CustomCarouselComponent
+    CustomCarouselComponent,
+    SearchOrderComponent
   ],
-  imports: [
-    BrowserModule,
-    AppRoutingModule,
-    HttpClientModule,
-    NgSelectModule,
-    FormsModule,
-    MatCheckboxModule,
-    MatMenuModule,
-    MatDialogModule,
-    MatButtonModule,
-    BrowserAnimationsModule,
-    AgGridModule.withComponents([]),
-    ToastrModule.forRoot(),
-    MatTabsModule,
-    MatFormFieldModule,
-    MatDatepickerModule,
-    MatNativeDateModule,
-    MatInputModule,
-    ReactiveFormsModule,
-    DateRangePickerModule,
-    MatTableModule,
-  ],
+    imports: [
+        BrowserModule,
+        AppRoutingModule,
+        HttpClientModule,
+        NgSelectModule,
+        FormsModule,
+        MatCheckboxModule,
+        MatMenuModule,
+        MatDialogModule,
+        MatButtonModule,
+        BrowserAnimationsModule,
+        AgGridModule.withComponents([]),
+        ToastrModule.forRoot(),
+        MatTabsModule,
+        MatFormFieldModule,
+        MatDatepickerModule,
+        MatNativeDateModule,
+        MatInputModule,
+        ReactiveFormsModule,
+        DateRangePickerModule,
+        MatTableModule,
+        MatCardModule,
+    ],
   providers: [{provide: JWT_OPTIONS, useValue: JWT_OPTIONS},
     JwtHelperService],
   bootstrap: [AppComponent]
