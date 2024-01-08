@@ -4,6 +4,7 @@ import {UsersDTO} from '../../component/model/UsersDTO';
 import {BehaviorSubject} from 'rxjs';
 import {CartService} from '../../service/cart.service';
 import {Router} from '@angular/router';
+import {AuthJwtService} from '../../service/authentication/auth-jwt.service';
 
 @Component({
   selector: 'app-header',
@@ -14,7 +15,8 @@ export class HeaderComponent implements OnInit {
   infoCustomer: UsersDTO;
   size: number;
   totalProducts: number = 0;
-  constructor(private cartService: CartService, private router: Router) {
+  isLoggedIn: boolean = false;
+  constructor(private cartService: CartService, private router: Router, private istoken: AuthJwtService) {
     this.cartService.totalProducts$.subscribe((totalProducts) => {
       this.totalProducts = totalProducts;
     });
@@ -26,18 +28,23 @@ export class HeaderComponent implements OnInit {
 
   }
 
+  exLogin() {
+    if (this.istoken.isAuthenticated() === true){
+      this.isLoggedIn = true;
+    }else {
+      this.isLoggedIn = false;
+    }
+  }
+
   ngOnInit(): void {
     this.infoCustomer = JSON.parse(localStorage.getItem('users'));
     this.size = localStorage.getItem('users').length;
-  }
-  isHideLogin(): boolean {
-    if (this.size > 0){
-      return true;
-    }
-    return false;
+    this.istoken.isAuthenticated();
+    this.exLogin();
   }
   logOut(){
-    localStorage.removeItem('token ');
+    localStorage.removeItem('token');
     localStorage.removeItem('users');
+    this.isLoggedIn = false;
   }
 }

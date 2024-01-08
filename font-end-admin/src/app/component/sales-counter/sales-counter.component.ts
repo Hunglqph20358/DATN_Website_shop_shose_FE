@@ -54,7 +54,7 @@ export class SalesCounterComponent implements OnInit {
   selectedOption: string = '1';
   customerDTO: CustomerSalesDTO;
   selectedCustomer: any;
-  idCustomer: number;
+  idCustomer: number = 1;
   user: UsersDTO = {};
   availableDevices: MediaDeviceInfo[];
   currentDevice: MediaDeviceInfo = null;
@@ -218,7 +218,6 @@ export class SalesCounterComponent implements OnInit {
       paymentType: 1,
       totalPrice: this.priceCustomer,
       totalPayment: this.priceCustomer,
-      customerDTO: this.selectedCustomer,
       idCustomer: this.idCustomer,
       idStaff: this.user.id,
       statusPayment: this.selectedOption,
@@ -246,7 +245,7 @@ export class SalesCounterComponent implements OnInit {
             localStorage.removeItem('listProductPush');
             this.selectedCustomer = '';
             this.searcherCustomer = '';
-            this.idCustomer = null;
+            this.idCustomer = 1;
             this.priceCustomer = 0;
             this.priceVoucher = 0;
             this.listProductPush = [];
@@ -271,8 +270,8 @@ export class SalesCounterComponent implements OnInit {
     let orderHTML = `<div>`;
     orderHTML += `<h2>Hóa đơn</h2>`;
     orderHTML += `<p>Tên nhân viên: ${this.fullname}</p>`;
-    orderHTML += `<p>Tên khách hàng: ${this.selectedCustomer?.fullname}</p>`;
-    orderHTML += `<p>Số điện thoại: ${this.selectedCustomer?.phone}</p>`;
+    orderHTML += `<p>Tên khách hàng: ${this.selectedCustomer ? this.selectedCustomer.fullname : 'Khách lẻ'}</p>`;
+    orderHTML += `<p>Số điện thoại: ${this.selectedCustomer ? this.selectedCustomer.phone : ''}</p>`;
     orderHTML += `<h3>Chi tiết đơn hàng</h3>`;
     orderHTML += `<table border="1" cellpadding="10">`;
     orderHTML += `<thead>`;
