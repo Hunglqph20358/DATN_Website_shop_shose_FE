@@ -16,6 +16,7 @@ import {ForgotPasswordComponent} from './component/forgot-password/forgot-passwo
 import {ResetPasswordComponent} from './component/reset-password/reset-password.component';
 import {InfoUserComponent} from './component/info-user/info-user.component';
 import {OrderNotLoginComponent} from './component/order-not-login/order-not-login.component';
+import {SearchOrderComponent} from './component/search-order/search-order.component';
 
 const routes: Routes = [
   { path: '', redirectTo: 'home', pathMatch: 'full' },
@@ -32,6 +33,7 @@ const routes: Routes = [
   { path: 'forgot-pass', component: ForgotPasswordComponent},
   { path: 'reset-pass', component: ResetPasswordComponent},
   { path: 'user-profile', component: InfoUserComponent, canActivate: [AuthService]},
+  { path: 'tra-cuu-don-hang', component: SearchOrderComponent},
 ];
 
 @NgModule({

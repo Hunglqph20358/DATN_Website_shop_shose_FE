@@ -15,7 +15,7 @@
     <div class="block">
       <h3 class="title">Hàng bán được tháng này</h3>
       <div class="block-item">
-        <div class="left">{{totalQuantityProduct}} Sản phẩm</div>
+        <div class="left">{{utilService.padZero(totalQuantityProduct)}} Sản phẩm</div>
       </div>
     </div>
 
@@ -33,7 +33,8 @@
             <ng-template kendoChartSharedTooltipTemplate let-category="category" let-points="points" let-indx="i">
               <div><strong>Ngày:</strong>  {{ category }} </div>
               <div *ngFor="let point of points; let i = index">
-                <strong>Đơn hàng:</strong> {{ point.value }} / {{getRevenue(category)}}
+                <strong>Đơn hàng:</strong> <span style="margin-left: 5px">{{ point.value }} / {{getRevenue(category)}}</span><br>
+                <strong>Số lượng bán:</strong><span style="margin-left: 10px">{{getQuantityProduct(category)}}</span>
               </div>
             </ng-template>
           </kendo-chart-tooltip>
@@ -69,12 +70,12 @@
         <tbody>
         <tr *ngFor="let p of listProductBestSeller, let i = index">
           <th scope="row">{{i + 1}}</th>
-          <td>{{p.code}}</td>
-          <td><img width="60px" height="60px" src="{{p.imagesDTOList[0].imageName}}" alt=""></td>
-          <td>{{p.name}}
-          <td>{{p.brandName}}</td>
-          <td>{{utilService.formatMoney(p.price)}}</td>
-          <td>{{p.totalBestSeller}}</td>
+          <td>{{p?.code}}</td>
+          <td><img width="60px" height="60px" src="{{p?.imagesDTOList[0]?.imageName}}" alt=""></td>
+          <td>{{p?.name}}
+          <td>{{p?.brandName}}</td>
+          <td>{{utilService.formatMoney(p?.price)}}</td>
+          <td>{{utilService.padZero(p?.totalBestSeller)}}</td>
         </tr>
         </tbody>
       </table>

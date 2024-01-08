@@ -19,6 +19,7 @@ export class ThongKeComponent implements OnInit {
     seriesDataOrder: number[] = [];
     seriesDateStr: string[] = [];
     categoriesRevenue = [];
+    categoriesQuantityProduct = [];
     categoriesOrder: string[] = [];
     listProductBestSeller: any = [];
     dateFromCurrent;
@@ -70,6 +71,7 @@ export class ThongKeComponent implements OnInit {
             this.seriesDateStr = res.statisticalAdminDTOList.map((item: any) => item.dateStr);
             this.categoriesOrder = res.statisticalAdminDTOList.map((item: any) => item.quantityOrder);
             this.categoriesRevenue = res.statisticalAdminDTOList.map((item: any) => item.revenue);
+            this.categoriesQuantityProduct = res.statisticalAdminDTOList.map((item: any) => item.quantityProduct);
             console.log(this.seriesDateStr);
             console.log(this.categoriesOrder);
             console.log(this.categoriesRevenue);
@@ -99,6 +101,14 @@ export class ThongKeComponent implements OnInit {
             return this.utilService.formatMoney(this.categoriesRevenue[index]);
         }else {
             return this.utilService.formatMoney(0.00);
+        }
+    }
+    getQuantityProduct(category: any) {
+        const index = this.seriesDateStr.indexOf(category);
+        if (index !== -1) {
+            return this.utilService.padZero(this.categoriesQuantityProduct[index]);
+        }else {
+            return 0;
         }
     }
 }

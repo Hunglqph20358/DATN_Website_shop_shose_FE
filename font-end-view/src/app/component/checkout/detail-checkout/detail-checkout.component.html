@@ -117,8 +117,8 @@
           <p>Tên: {{order?.receiver}}</p>
           <p>Địa chỉ: {{order?.addressReceived}}</p>
           <p>Số điện thoại: {{order?.receiverPhone}}</p>
-          <p>Email: hunglqph20358@fpt.edu.vn</p>
-          <p>Hình thức thanh toán: Thanh toán khi nhận hàng</p>
+          <p>Email: {{order?.email}}</p>
+          <p>Hình thức thanh toán: {{order?.paymentType === 1? 'Thanh toán online': 'Thanh toán COD'}}</p>
         </div>
       </div>
     </div>
@@ -145,8 +145,8 @@
                 {{i + 1}}
               </th>
               <td><img width="80px" height="80px" src="{{c.imageName}}" alt=""> <span class="productName" title="{{c.productName}}">{{c.productName}}</span></td>
-              <td><div><span style="font-weight: bold">Color:</span> {{c.productDetailDTO.colorDTO.name}}</div>
-                <div><span style="font-weight: bold">Size: </span> {{c.productDetailDTO.sizeDTO.sizeNumber}}</div>
+              <td><div><span style="font-weight: bold">Color:</span> {{c.productDetailDTO?.colorDTO.name}}</div>
+                <div><span style="font-weight: bold">Size: </span> {{c.productDetailDTO?.sizeDTO.sizeNumber}}</div>
               </td>
               <td>
                 <div *ngIf="c.productDTO.reducePrice != null && c.productDTO.percentageReduce != null">
@@ -169,8 +169,8 @@
             </tr>
             </tbody>
           </table>
-          <p>Tổng cộng: {{utilService.formatMoney(order.totalPrice)}}</p>
-          <p>Tổng cộng thanh toán: {{utilService.formatMoney(order.totalPayment)}}</p>
+          <p>Tổng cộng: {{utilService.formatMoney(order?.totalPrice)}}</p>
+          <p>Tổng cộng thanh toán: {{utilService.formatMoney(order?.totalPayment)}}</p>
         </div>
       </div>
     </div>

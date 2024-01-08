@@ -40,6 +40,11 @@ export class CheckoutComponent implements OnInit {
     specificAddress: undefined
   };
 
+  voucherChoice: any = {
+    voucher: null,
+    voucherShip: null
+  };
+
   totalMoneyPay;
   voucher: any;
   voucherShip: any;
@@ -222,21 +227,20 @@ export class CheckoutComponent implements OnInit {
               paymentType: 1,
               email: this.email
             };
-            this.orderService.createOrderNotLogin(obj).subscribe(res => {
-              if (res.status === 'OK') {
-                const objCheckOut = {
-                  order: res.data,
-                  listCart: this.listCart,
-                  email: this.email
+            // this.orderService.createOrderNotLogin(obj).subscribe(res => {
+            //   if (res.status === 'OK') {
+            const objOrderBill = {
+                  order: obj,
+                  listCart: this.listCart
                 };
-                sessionStorage.setItem('order', JSON.stringify(objCheckOut));
-                this.paymentService.createPayment(this.totalMoneyPay).subscribe(resPay => {
+            localStorage.setItem('order-bill', JSON.stringify(objOrderBill));
+            this.paymentService.createPayment(this.totalMoneyPay).subscribe(resPay => {
                   if (resPay.status === 'OK') {
                     window.location.href = resPay.url;
                   }
                 });
-              }
-            });
+            //   }
+            // });
           } else {
             const obj = {
               ...this.order,
@@ -250,17 +254,16 @@ export class CheckoutComponent implements OnInit {
               paymentType: 0,
               email: this.email
             };
-            this.orderService.createOrderNotLogin(obj).subscribe(res => {
-              if (res.status === 'OK') {
-                const objCheckOut = {
-                  order: res.data,
-                  listCart: this.listCart,
-                  email: this.email
+            // this.orderService.createOrderNotLogin(obj).subscribe(res => {
+            //   if (res.status === 'OK') {
+            const objOrderBill = {
+                  order: obj,
+                  listCart: this.listCart
                 };
-                sessionStorage.setItem('order', JSON.stringify(objCheckOut));
-                this.route.navigate(['cart/checkout-detail']);
-              }
-            });
+            localStorage.setItem('order-bill', JSON.stringify(objOrderBill));
+            this.route.navigate(['cart/checkout-detail']);
+            //   }
+            // });
           }
         }
       });
@@ -302,22 +305,27 @@ export class CheckoutComponent implements OnInit {
               paymentType: 1,
               email: this.user.email
             };
-            this.orderService.createOrder(obj).subscribe(res => {
-              if (res.status === 'OK') {
-                const objCheckOut = {
-                  order: res.data,
-                  listCart: this.listCart,
-                };
-
-                this.paymentService.createPayment(this.totalMoneyPay).subscribe(resPay => {
+            const objOrderBill = {
+              order: obj,
+              listCart: this.listCart
+            };
+            // console.log('Order: ', objOrderBill);
+            localStorage.setItem('order-bill', JSON.stringify(objOrderBill));
+            // this.orderService.createOrder(obj).subscribe(res => {
+            //   if (res.status === 'OK') {
+            //     const objCheckOut = {
+            //       order: res.data,
+            //       listCart: this.listCart,
+            //     };
+            this.paymentService.createPayment(this.totalMoneyPay).subscribe(resPay => {
                   if (resPay.status === 'OK') {
-                    sessionStorage.setItem('order', JSON.stringify(objCheckOut));
+                    // sessionStorage.setItem('order', JSON.stringify(objCheckOut));
                     // setTimeout()
                     window.location.href = resPay.url;
                   }
                 });
-              }
-            });
+            //   }
+            // });
           } else {
             const obj = {
               ...this.order,
@@ -334,16 +342,17 @@ export class CheckoutComponent implements OnInit {
               paymentType: 0,
               email: this.user.email
             };
-            this.orderService.createOrder(obj).subscribe(res => {
-              if (res.status === 'OK') {
-                const objCheckOut = {
-                  order: res.data,
-                  listCart: this.listCart,
-                };
-                sessionStorage.setItem('order', JSON.stringify(objCheckOut));
-                this.route.navigate(['cart/checkout-detail']);
-              }
-            });
+            // this.orderService.createOrder(obj).subscribe(res => {
+            //   if (res.status === 'OK') {
+            const objOrderBill = {
+              order: obj,
+              listCart: this.listCart
+            };
+            localStorage.setItem('order-bill', JSON.stringify(objOrderBill));
+                // sessionStorage.setItem('order', JSON.stringify(objCheckOut));
+            this.route.navigate(['cart/checkout-detail']);
+              // }
+            // });
           }
         }
       });
@@ -364,14 +373,16 @@ export class CheckoutComponent implements OnInit {
   }
 
   openVoucher() {
+    const originalTotalMoney = this.totalMoney;
     // this.totalMoneyPay = this.totalMoney;
     this.matDialog.open(PopupVoucherComponent, {
       width: '45%',
       height: '90vh',
-      data: this.totalMoney
+      data: {total: originalTotalMoney, voucherChoice: this.voucherChoice}
     }).afterClosed().subscribe(result => {
       if (result.event === 'saveVoucher') {
         console.log(result.data);
+        this.totalMoneyPay = originalTotalMoney;
         if (result.data.voucher !== null) {
           this.voucherService.getVoucher(result.data.voucher).subscribe(res => {
             this.voucher = res.data;
@@ -388,6 +399,7 @@ export class CheckoutComponent implements OnInit {
             } else {
               this.totalMoneyPay = this.totalMoneyPay - this.voucher.reducedValue;
             }
+            this.voucherChoice.voucher = res.data.code;
             this.cdr.detectChanges();
           });
         }
@@ -401,6 +413,7 @@ export class CheckoutComponent implements OnInit {
               this.totalMoneyPay = this.totalMoneyPay - res.data.reducedValue;
               this.shipFeeReduce = res.data.reducedValue;
             }
+            this.voucherChoice.voucherShip = res.data.code;
             this.cdr.detectChanges();
           });
         }
