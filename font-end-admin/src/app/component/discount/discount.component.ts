@@ -72,7 +72,7 @@ export class DiscountComponent implements OnInit {
         sortable: true,
         filter: true,
         cellRenderer: this.statusRenderer.bind(this),
-        maxWidth: 150,
+        maxWidth: 100,
       },
       {
         headerName: 'Số lượng sản phẩm đã áp dụng',
@@ -80,7 +80,7 @@ export class DiscountComponent implements OnInit {
           const useDiscount = params.data.used_count || 0;
           return `${useDiscount}`;
         },
-        maxWidth: 150,
+        maxWidth: 200,
       },
       {
         headerName: 'Hiển thị',

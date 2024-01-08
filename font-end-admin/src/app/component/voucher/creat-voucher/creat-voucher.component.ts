@@ -17,7 +17,11 @@ export class CreatVoucherComponent implements OnInit {
   columnDefs;
   headerHeight = 50;
   rowHeight = 40;
+  checkEndDate: boolean = false;
+  endDateTouched = false;
   checkAllow: boolean = false;
+  checkStartDate: boolean = false;
+  startDateTouched = false;
   voucher: any = {
     name: '',
     startDate: '',
@@ -46,6 +50,7 @@ export class CreatVoucherComponent implements OnInit {
   validReducedValue: ValidateInput = new ValidateInput();
   validMaxReduced: ValidateInput = new ValidateInput();
   validconditionApply: ValidateInput = new ValidateInput();
+  validQuantity: ValidateInput = new ValidateInput();
   currentDate: Date = new Date();
   gridApi: any;
   fullname = '';
@@ -95,9 +100,35 @@ export class CreatVoucherComponent implements OnInit {
   }
 
   public rowSelection: 'single' | 'multiple' = 'multiple'; // Chọn nhiều dòng
-
-  isStartDateValid(): boolean {
-    return !this.voucher.startDate || this.voucher.startDate >= this.currentDate;
+  isValidDateRange(): void {
+    if (
+      this.voucher.startDate &&
+      this.voucher.endDate &&
+      this.voucher.startDate > this.voucher.endDate
+    ) {
+      this.checkEndDate = true;
+      console.log('Date range is valid.');
+    } else {
+      this.checkEndDate = false;
+      // Cũng có thể thực hiện công việc khác nếu cần.
+      console.log('Date range is not valid.');
+    }
+  }
+  isEndDateValid() {
+    this.endDateTouched = true;
+    this.isValidDateRange();
+  }
+  isStartDateValid() {
+    // console.log(event);
+    const date = new Date();
+    console.log(date.getTime());
+    console.log(new Date(this.voucher.startDate).getTime());
+    if (new Date(this.voucher.startDate).getTime() < date.getTime()){
+      this.checkStartDate = true;
+    }else {
+      this.checkStartDate = false;
+    }
+    console.log(this.checkStartDate);
   }
 
   ngOnInit(): void {
@@ -117,11 +148,14 @@ export class CreatVoucherComponent implements OnInit {
   }
 
   addVoucher() {
+    this.isEndDateValid();
+    this.isStartDateValid();
     this.validateName();
     this.validateReducedValue();
     this.validateDescription();
     this.validateMaxReducedValue();
     this.validateConditionApply();
+    this.validateQuantity();
     if (!this.validName.done || !this.validDescription.done || !this.validReducedValue.done
       || !this.validconditionApply.done) {
       return;
@@ -163,6 +197,9 @@ export class CreatVoucherComponent implements OnInit {
   }
   validateName() {
     this.validName = CommonFunction.validateInput(this.voucher.name, 50, null );
+  }
+  validateQuantity() {
+    this.validQuantity = CommonFunction.validateInput(this.voucher.quantity, 50, null );
   }
   validateDescription() {this.validDescription = CommonFunction.validateInput(this.voucher.description, 50, null );
   }
