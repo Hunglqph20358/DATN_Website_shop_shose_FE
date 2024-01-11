@@ -128,6 +128,11 @@ export class DiscountComponent implements OnInit {
   ngOnInit(): void {
     this.apiService.getSomeData().subscribe((response) => {
       this.rowData = response;
+      for(let i = 0; i < this.rowData.length; i++) {
+        if (new Date(this.rowData[i].endDate) < new Date()){
+          this.apiService.KichHoat(this.rowData[i].id);
+        }
+      }
       this.searchResults = response;
       console.log(response);
     });

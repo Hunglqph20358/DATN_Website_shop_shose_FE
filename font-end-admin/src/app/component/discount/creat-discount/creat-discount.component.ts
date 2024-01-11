@@ -123,8 +123,6 @@ export class CreatDiscountComponent implements OnInit {
   }
   isStartDateValid() {
     const date = new Date();
-    console.log(date.getTime());
-    console.log(new Date(this.discount.discountAdminDTO.startDate).getTime());
     this.startDateTouched = true;
     if (new Date(this.discount.discountAdminDTO.startDate).getTime() < date.getTime()){
       this.checkStartDate = true;
@@ -210,10 +208,11 @@ export class CreatDiscountComponent implements OnInit {
   validateDescription() {this.validDescription = CommonFunction.validateInput(this.discount.discountAdminDTO.description, 50, null );
   }
   validateReducedValue() {
-    this.validReducedValue = CommonFunction.validateInput(this.discount.reducedValue, 250, /^\d+(\.\d+)?$/);
+    this.validReducedValue = CommonFunction.validateInput(this.discount.reducedValue, 250, /^[1-9]\d*(\.\d+)?$/);
   }
   validateMaxReducedValue() {
-    this.validMaxReduced = CommonFunction.validateInput(this.discount.maxReduced, 250, /^\d+(\.\d+)?$/);
-  }
+      this.validMaxReduced = CommonFunction.validateInput(this.discount.maxReduced, 250, /^[1-9]\d*(\.\d+)?$/);
+    }
 
-}
+
+  }

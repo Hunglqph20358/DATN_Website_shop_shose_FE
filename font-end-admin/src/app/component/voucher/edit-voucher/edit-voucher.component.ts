@@ -85,6 +85,7 @@ export class EditVoucherComponent implements OnInit {
     limitCustomer: '',
     customerAdminDTOList: '',
     apply: '2',
+    allow: '',
     optionCustomer: '0',
     createName: localStorage.getItem('fullname'),
   };
@@ -118,8 +119,7 @@ export class EditVoucherComponent implements OnInit {
   isStartDateValid() {
     // console.log(event);
     const date = new Date();
-    console.log(date.getTime());
-    console.log(new Date(this.voucher.startDate).getTime());
+    this.startDateTouched = true;
     if (new Date(this.voucher.startDate).getTime() < date.getTime()){
       this.checkStartDate = true;
     }else {
@@ -218,18 +218,18 @@ export class EditVoucherComponent implements OnInit {
     this.validName = CommonFunction.validateInput(this.voucher.name, 50, null );
   }
   validateQuantity() {
-    this.validQuantity = CommonFunction.validateInput(this.voucher.quantity, 50, null );
+    this.validQuantity = CommonFunction.validateInput(this.voucher.quantity, 50, /^[1-9]\d*(\.\d+)?$/ );
   }
   validateDescription() {this.validDescription = CommonFunction.validateInput(this.voucher.description, 50, null );
   }
   validateReducedValue() {
-    this.validReducedValue = CommonFunction.validateInput(this.voucher.reducedValue, 250, /^\d+(\.\d+)?$/);
+    this.validReducedValue = CommonFunction.validateInput(this.voucher.reducedValue, 250, /^[1-9]\d*(\.\d+)?$/);
   }
   validateMaxReducedValue() {
-    this.validMaxReduced = CommonFunction.validateInput(this.voucher.maxReduced, 250, /^\d+(\.\d+)?$/);
+    this.validMaxReduced = CommonFunction.validateInput(this.voucher.maxReduced, 250, /^[1-9]\d*(\.\d+)?$/);
   }
   validateConditionApply() {
-    this.validconditionApply = CommonFunction.validateInput(this.voucher.conditionApply, 250, /^\d+(\.\d+)?$/);
+    this.validconditionApply = CommonFunction.validateInput(this.voucher.conditionApply, 250, /^[1-9]\d*(\.\d+)?$/);
   }
   formatDate(date: Date): string {
     return this.datePipe.transform(date, 'yyyy-MM-ddTHH:mm') || '';

@@ -41,6 +41,7 @@ export class CreatVoucherShipComponent implements OnInit {
     },
   };
   validName: ValidateInput = new ValidateInput();
+  validQuantity: ValidateInput = new ValidateInput();
   validDescription: ValidateInput = new ValidateInput();
   validReducedValue: ValidateInput = new ValidateInput();
   validconditionApply: ValidateInput = new ValidateInput();
@@ -109,7 +110,7 @@ export class CreatVoucherShipComponent implements OnInit {
     this.isValidDateRange();
   }
   isStartDateValid() {
-    // console.log(event);
+    this.startDateTouched = true;
     const date = new Date();
     console.log(date.getTime());
     console.log(new Date(this.voucher.startDate).getTime());
@@ -130,8 +131,9 @@ export class CreatVoucherShipComponent implements OnInit {
     this.gridApi = params.api;
   }
   addVoucher() {
-    this.isEndDateValid();
+    this.validateQuantity();
     this.isStartDateValid();
+    this.isEndDateValid();
     this.validateName();
     this.validateReducedValue();
     this.validateDescription();
@@ -180,10 +182,13 @@ export class CreatVoucherShipComponent implements OnInit {
   validateDescription() {this.validDescription = CommonFunction.validateInput(this.voucher.description, 50, null);
   }
   validateReducedValue() {
-    this.validReducedValue = CommonFunction.validateInput(this.voucher.reducedValue, 250, /^\d+(\.\d+)?$/);
+    this.validReducedValue = CommonFunction.validateInput(this.voucher.reducedValue, 250, /^[1-9]\d*(\.\d+)?$/);
   }
   validateConditionApply() {
-    this.validconditionApply = CommonFunction.validateInput(this.voucher.conditionApply, 250, /^\d+(\.\d+)?$/);
+    this.validconditionApply = CommonFunction.validateInput(this.voucher.conditionApply, 250, /^[1-9]\d*(\.\d+)?$/);
+  }
+  validateQuantity() {
+    this.validQuantity = CommonFunction.validateInput(this.voucher.quantity, 50, /^[1-9]\d*(\.\d+)?$/ );
   }
 
 }

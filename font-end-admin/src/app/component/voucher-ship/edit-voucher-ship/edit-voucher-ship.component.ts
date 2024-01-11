@@ -32,6 +32,7 @@ export class EditVoucherShipComponent implements OnInit {
     customerAdminDTOList: '',
     limitCustomer: '',
   };
+  validQuantity: ValidateInput = new ValidateInput();
   validName: ValidateInput = new ValidateInput();
   validDescription: ValidateInput = new ValidateInput();
   validReducedValue: ValidateInput = new ValidateInput();
@@ -109,8 +110,7 @@ export class EditVoucherShipComponent implements OnInit {
   }
   isStartDateValid() {
     const date = new Date();
-    console.log(date.getTime());
-    console.log(new Date(this.voucher.startDate).getTime());
+    this.startDateTouched = true;
     if (new Date(this.voucher.startDate).getTime() < date.getTime()){
       this.checkStartDate = true;
     }else {
@@ -204,6 +204,9 @@ export class EditVoucherShipComponent implements OnInit {
   }
   validateConditionApply() {
     this.validconditionApply = CommonFunction.validateInput(this.voucher.conditionApply, 250, /^\d+(\.\d+)?$/);
+  }
+  validateQuantity() {
+    this.validQuantity = CommonFunction.validateInput(this.voucher.quantity, 50, /^[1-9]\d*(\.\d+)?$/ );
   }
 
   checkDate(event: any) {

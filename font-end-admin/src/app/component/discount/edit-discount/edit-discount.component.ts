@@ -156,8 +156,7 @@ export class EditDiscountComponent implements OnInit {
   isStartDateValid() {
     // console.log(event);
     const date = new Date();
-    console.log(date.getTime());
-    console.log(new Date(this.discount.discountAdminDTO.startDate).getTime());
+    this.startDateTouched = true;
     if (new Date(this.discount.discountAdminDTO.startDate).getTime() < date.getTime()){
       this.checkStartDate = true;
     }else {
@@ -240,10 +239,10 @@ export class EditDiscountComponent implements OnInit {
   validateDescription() {this.validDescription = CommonFunction.validateInput(this.discount.discountAdminDTO.description, 50, null );
   }
   validateReducedValue() {
-    this.validReducedValue = CommonFunction.validateInput(this.discount.reducedValue, 250, /^\d+(\.\d+)?$/);
+    this.validReducedValue = CommonFunction.validateInput(this.discount.reducedValue, 250, /^[1-9]\d*(\.\d+)?$/);
   }
   validateMaxReducedValue() {
-    this.validMaxReduced = CommonFunction.validateInput(this.discount.maxReduced, 250, /^\d+(\.\d+)?$/);
+    this.validMaxReduced = CommonFunction.validateInput(this.discount.maxReduced, 250, /^[1-9]\d*(\.\d+)?$/);
   }
   formatDate(date: Date): string {
     return this.datePipe.transform(date, 'yyyy-MM-ddTHH:mm') || '';
