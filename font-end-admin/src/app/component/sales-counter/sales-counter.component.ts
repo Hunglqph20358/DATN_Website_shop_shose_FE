@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import {ChangeDetectorRef, Component, OnInit} from '@angular/core';
 import {ProductService} from '../../service/product.service';
 import {CookieService} from 'ngx-cookie-service';
 import {UsersDTO} from '../model/UsersDTO';
@@ -19,6 +19,8 @@ import {CustomerSalesDTO} from '../model/CustomerSalesDTO';
 import {OrderSalesCounterComponent} from '../order-sales-counter/order-sales-counter.component';
 import * as printJS from 'print-js';
 import {ToastrService} from 'ngx-toastr';
+import {ProductdetailService} from '../../service/productdetail.service';
+
 @Component({
   selector: 'app-sales-counter',
   templateUrl: './sales-counter.component.html',
@@ -33,11 +35,10 @@ export class SalesCounterComponent implements OnInit {
   showResults: boolean = false;
   listOder: any[] = [];
   searchResults: any[] = [];
-
+  productDetailid: number | null = null;
   searcherCustomer: string = '';
   showCustomer: boolean = false;
   searchCustomerResults: any[] = [];
-
   listProductPush: any[] = [];
   totalPrice: number = 0;
   totalAllProducts: number = 0;
@@ -49,10 +50,11 @@ export class SalesCounterComponent implements OnInit {
   currentOrderId: number | null = null;
   listSizePR: any[];
   listColor: any[];
+  listSizeFind: any[];
+  lisColorFind: any[];
   name: string;
   animal: string;
   selectedOption: string = '1';
-  customerDTO: CustomerSalesDTO;
   selectedCustomer: any;
   idCustomer: number = 1;
   user: UsersDTO = {};
@@ -60,23 +62,31 @@ export class SalesCounterComponent implements OnInit {
   currentDevice: MediaDeviceInfo = null;
   hasDevices: boolean;
   hasPermission: boolean;
-
+  product: any;
   qrResultString: string;
-
+  colorId: number | null = null;
+  sizeId: number | null = null;
   torchEnabled = false;
-  torchAvailable$ = new BehaviorSubject<boolean>(false);
   tryHarder = false;
   isdn: string;
+  checkStatus: number = 0;
+  listCart = [];
+  observable: any = [];
+  listProductDetail: any = [];
+
   constructor(private productService: ProductService, private cookieService: CookieService,
               private orderService: OrderService, private orderDetailService: OrderDetailService,
               private router: Router, private sizeService: SizeService, private colorService: MausacService,
-              private dialog: MatDialog, private customerService: CustomerServiceService, private toastr: ToastrService
-              ) { }
+              private dialog: MatDialog, private customerService: CustomerServiceService, private toastr: ToastrService, private cdr: ChangeDetectorRef,
+              private productDetailService: ProductdetailService
+  ) {
+  }
+
   search() {
     this.isProductListVisible = true;
-    if (this.searchTerm.trim() === ''){
+    if (this.searchTerm.trim() === '') {
       console.log('mời nhập tên hoặc mã sản phẩm');
-    }else {
+    } else {
       this.productService.searchProduct(this.searchTerm).subscribe(
         data => {
           this.searchResults = data;
@@ -85,13 +95,15 @@ export class SalesCounterComponent implements OnInit {
     }
     this.showResults = this.searchTerm.length > 0;
   }
-  searchCustomer(){
+
+  searchCustomer() {
     this.idCustomer = null;
     this.isCustomerNull = true;
-    if (this.searcherCustomer.trim() === '' ){
+    if (this.searcherCustomer.trim() === '') {
       console.log('Mời nhập sdt khách hàng');
       this.isCustomerNull = false;
-    }else {
+      this.idCustomer = 1;
+    } else {
       this.customerService.findCustomerByPhone(this.searcherCustomer).subscribe(
         customer => {
           this.searchCustomerResults = customer;
@@ -100,7 +112,8 @@ export class SalesCounterComponent implements OnInit {
       this.showCustomer = this.searcherCustomer.length > 0;
     }
   }
-  addOrder(){
+
+  addOrder() {
     this.count++;
     let order = {
       id: this.count,
@@ -108,43 +121,51 @@ export class SalesCounterComponent implements OnInit {
       productList: []
     };
     this.listOder.push(order);
-    this.cookieService.set('countOrder', this.count.toString());
-    this.cookieService.set('listOrder', JSON.stringify(this.listOder));
+    localStorage.setItem('coutOrder', this.count.toString());
+    localStorage.setItem('listOrder', JSON.stringify(this.listOder));
+    console.log(order);
   }
+
   removeOrder(order: any) {
     const index = this.listOder.indexOf(order);
-    if (this.count > 1){
+    console.log(order);
+    if (this.count > 1) {
       if (index !== -1) {
         this.listOder.splice(index, 1);
         this.count--;
       }
     }
-    this.cookieService.set('countOrder', this.count.toString());
-    this.cookieService.set('listOrder', JSON.stringify(this.listOder));
+    localStorage.setItem('coutOrder', this.count.toString());
+    localStorage.setItem('listOrder', JSON.stringify(this.listOder));
   }
   addProductInOrder(row: any) {
     if (!row.quantity) {
       row.quantity = 1;
     }
-    // Kiểm tra xem sản phẩm đã tồn tại trong danh sách hay chưa
-    const existingProduct = this.listProductPush.find(product => product.id === row.id);
-    if (existingProduct) {
-      existingProduct.quantity += 1;
-    } else {
-      this.listProductPush.push(row);
-    }
-
-    this.cookieService.set("listProductPush", JSON.stringify(this.listProductPush));
-    const currentOrderProducts = this.listProductPush.map(product => ({ ...product }));
+    this.listProductPush.push(row);
+    this.listCart.push(
+      {
+        productId: row.id,
+        productDetailId: null,
+        sizeId: null,
+        colorId: null,
+        quantity: 1,
+        price: row.price
+      }
+    );
+    // this.listProductPush.push(row);
+    this.cookieService.set('listProductPush', JSON.stringify(this.listProductPush));
+    const currentOrderProducts = this.listProductPush.map(product => ({...product}));
     localStorage.setItem(`orderProducts_${this.currentOrderId}`, JSON.stringify(currentOrderProducts));
     this.isProductListVisible = false;
-    this.calculateTotalPrice();
+    // this.calculateTotalPrice();
     this.calculateTotalAllProducts();
     this.clearSearchTerm();
     this.priceVouchers();
+    this.loadData();
   }
 
-  addCustomer(row: any){
+  addCustomer(row: any) {
     if (!row.quantity) {
       row.quantity = 1;
     }
@@ -154,64 +175,127 @@ export class SalesCounterComponent implements OnInit {
     this.idCustomer = this.selectedCustomer.id;
     console.log(this.selectedCustomer);
   }
+
   clearSearchTerm(): void {
     this.searchTerm = '';
   }
+
   getProductListForCurrentOrder() {
     const currentOrder = this.listOder.find(order => order.id === this.currentOrderId);
     if (currentOrder) {
       this.listProductPush = currentOrder.productList;
-      this.calculateTotalPrice();
+      // this.calculateTotalPrice();
       this.calculateTotalAllProducts();
     }
   }
+
   removeProduct(index: number): void {
-    if (index >= 0 && index < this.listProductPush.length) {
-      this.listProductPush.splice(index, 1);
-      this.calculateTotalPrice();
-      this.priceVoucher = 0;
-      this.priceVouchers();
-      this.cookieService.set("listProductPush", JSON.stringify(this.listProductPush));
-      const currentOrderProducts = this.listProductPush.map(product => ({ ...product }));
-      localStorage.setItem(`orderProducts_${this.currentOrderId}`, JSON.stringify(currentOrderProducts));
+    //thêm confirm
+    this.listCart.splice(index, 1);
+    this.listCart = [...this.listCart];
+
+    console.log('Xóa: ', this.listCart);
+    this.listProductPush.splice(index, 1);
+    this.cdr.detectChanges();
+    this.calculateTotalAllProducts();
+  }
+
+  // calculateTotalPrice() {
+  //   this.totalPrice = this.listProductPush.reduce((total, product) => {
+  //     const productTotal = product.price * product.quantity;
+  //     product.total = productTotal;
+  //     return total + productTotal;
+  //   }, 0);
+  //   this.calculateTotalAllProducts();
+  //   this.priceVouchers();
+  // }
+
+  calculateTotalAllProducts() {
+    this.totalAllProducts = 0;
+    for (let i = 0; i < this.listCart.length; i++) {
+      const totalPrice = this.listCart[i].quantity * this.listCart[i].price;
+      this.totalAllProducts += totalPrice;
     }
   }
-  calculateTotalPrice() {
 
-    this.totalPrice = this.listProductPush.reduce((total, product) => {
-      const productTotal = product.price * product.quantity;
-      product.total = productTotal;
-      return total + productTotal;
-    }, 0);
-    this.calculateTotalAllProducts();
-    this.priceVouchers();
-  }
-  calculateTotalAllProducts() {
-    this.totalAllProducts = this.listProductPush.reduce((total, product) => {
-      const productTotal = product.price * product.quantity;
-      return total + productTotal;
-    }, 0);
-  }
-  priceVouchers(){
-    if (this.priceVoucher === 0){
+  priceVouchers() {
+    if (this.priceVoucher === 0) {
       this.priceCustomer = this.totalAllProducts;
     } else {
       this.priceCustomer = this.totalAllProducts - this.priceVoucher;
     }
 
   }
-  placeOrderSales(){
-    debugger
-    console.log(this.idCustomer);
-    console.log(this.selectedCustomer);
-    if (this.listProductPush.length === 0){
+
+  onSizeChange(event: any, i): void {
+    console.log(event);
+    console.log(i);
+
+    if (event === undefined) {
+      this.listColor = [...this.lisColorFind];
+    } else {
+      const selectedSizeId = event.id;
+      const detailsForSelectedSize = this.listProductPush[i].productDetailDTOList
+        .filter(detail => detail.idSize === selectedSizeId && detail.idColor);
+      const colorIDsForSelectedSize = detailsForSelectedSize.map(detail => detail.idColor);
+      this.listColor = this.listColor.filter(color => colorIDsForSelectedSize.includes(color.id));
+      this.listCart[i] = {
+        ...this.listCart[i],
+        sizeId: selectedSizeId
+      };
+      this.getProductDetail(i);
+      console.log(this.listCart);
+    }
+  }
+
+  getProductDetail(index: any) {
+    if (this.listCart[index].sizeId !== null && this.listCart[index].colorId !== null) {
+      this.listProductPush[index].productDetailDTOList.filter(d => d.idSize === this.listCart[index].sizeId && d.idColor === this.listCart[index].colorId).map(pd => {
+        console.log(pd.id);
+        return this.listCart[index] = {
+          ...this.listCart[index],
+          productDetailId: pd.id
+        };
+      });
+      console.log('ProductDetail: ', this.listCart);
+    } else {
+      return;
+    }
+  }
+
+  onColorChange(event: any, i: any): void {
+
+    if (event === undefined) {
+      this.listSizePR = [...this.listSizeFind];
+    } else {
+      const selectedColorId = event.id;
+      const detailsForSelectedColor = this.listProductPush[i].productDetailDTOList
+        .filter(detail => detail.idColor === selectedColorId && detail.idSize);
+
+      const sizeIDsForSelectedColor = detailsForSelectedColor.map(detail => detail.idSize);
+
+      this.listSizePR = this.listSizePR.filter(size => sizeIDsForSelectedColor.includes(size.id));
+      this.listCart[i] = {
+        ...this.listCart[i],
+        colorId: selectedColorId
+      };
+      this.getProductDetail(i);
+    }
+  }
+
+  placeOrderSales() {
+    if (this.listCart.some(c => c.sizeId === null || c.colorId === null)) {
+      this.toastr.error('chưa chọn size và màu sắc của sản phẩm');
+      return;
+    }
+    if (this.listProductPush.length === 0) {
       this.toastr.error('Không có sản phẩm nào để thanh toán', 'Lỗi');
       return;
     }
     this.user = JSON.parse(localStorage.getItem('users'));
     this.isdn = this.user.isdn;
     console.log(this.isdn);
-    if (this.user === null){
+    if (this.user === null) {
       this.toastr.error('đã hết hạn đăng nhập');
     }
     const order: Order = {
@@ -227,45 +311,85 @@ export class SalesCounterComponent implements OnInit {
       (response) => {
         console.log('done', response);
         const saveIdOrder = response.data.id;
-        const observables = this.listProductPush.map((product) => {
-          // @ts-ignore
+        console.log(this.listProductPush);
+
+        for (let i = 0; i < this.listCart.length; i++) {
           const orderDetail: OrderDetail = {
             idOrder: saveIdOrder,
-            idProductDetail: product.id,
-            quantity: product.quantity,
+            idProductDetail: this.listCart[i].productDetailId,
+            quantity: this.listCart[i].quantity,
             price: this.priceCustomer,
           };
-          return this.orderDetailService.createDetailSales(orderDetail);
-        });
-
-        forkJoin(observables).subscribe(
-          (orderDetailResponses) => {
-            this.printInvoice();
-            this.toastr.success('Thanh toán thành công', 'Success');
-            localStorage.removeItem('listProductPush');
-            this.selectedCustomer = '';
-            this.searcherCustomer = '';
-            this.idCustomer = 1;
-            this.priceCustomer = 0;
-            this.priceVoucher = 0;
-            this.listProductPush = [];
-            this.removeOrder(order);
-            this.calculateTotalAllProducts();
-            this.cookieService.set('listOrder', JSON.stringify(this.listOder));
-            console.log('done detail');
-            const index = this.listOder.findIndex( order => order.id === this.currentOrderId);
-            if (index !== -1) {
-              this.listOder.splice(index, 1);
+          console.log(orderDetail);
+          this.orderDetailService.createDetailSales(orderDetail).subscribe(res => {
+            if (res.status === 'OK') {
+              console.log('thanh toán thành công');
+            } else {
+              this.checkStatus = 1;
+              console.log('Lỗi');
+              return;
             }
-          },
-          (orderDetailError) => {
-            console.log(observables);
-            console.error('Lỗi khi lưu chi tiết đơn hàng:', orderDetailError);
-          }
-        );
+          });
+        }
+        console.log(this.observable);
+        this.toastr.success('Thanh toán thành công');
+        this.printInvoice();
+        localStorage.removeItem('listProductPush');
+        this.selectedCustomer = '';
+        this.searcherCustomer = '';
+        this.idCustomer = 1;
+        this.priceCustomer = 0;
+        this.priceVoucher = 0;
+        this.listCart = [];
+        this.totalAllProducts = 0;
+        this.listProductPush = [];
+        this.removeOrder(order);
+        this.calculateTotalAllProducts();
+        localStorage.setItem('coutOrder', this.count.toString());
+        localStorage.setItem('listOrder', JSON.stringify(this.listOder));
+        // const observables = this.listProductPush.map((product) => {
+        //   if (product.id === product.productID) {
+        //     const productDetailDTO = product.productDetailDTOList.find(productDetail => productDetail.idSize === this.sizeId && productDetail.idColor === this.colorId);
+        //     this.productDetailid = productDetailDTO?.id;
+        //   }
+        //   const orderDetail: OrderDetail = {
+        //     idOrder: saveIdOrder,
+        //     idProductDetail: this.productDetailid,
+        //     quantity: product.quantity,
+        //     price: this.priceCustomer,
+        //   };
+        //   return this.orderDetailService.createDetailSales(orderDetail);
+        // });
+        // forkJoin(observables).subscribe(
+        //   (orderDetailResponses) => {
+        //     this.printInvoice();
+        //     this.toastr.success('Thanh toán thành công', 'Success');
+        //     localStorage.removeItem('listProductPush');
+        //     this.selectedCustomer = '';
+        //     this.searcherCustomer = '';
+        //     this.idCustomer = 1;
+        //     this.priceCustomer = 0;
+        //     this.priceVoucher = 0;
+        //     this.listProductPush = [];
+        //     this.removeOrder(order);
+        //     this.calculateTotalAllProducts();
+        //     this.cookieService.set('listOrder', JSON.stringify(this.listOder));
+        //     console.log('done detail');
+        //     const index = this.listOder.findIndex(order => order.id === this.currentOrderId);
+        //     if (index !== -1) {
+        //       this.listOder.splice(index, 1);
+        //     }
+        //
+        //   },
+        //   (orderDetailError) => {
+        //     console.log(observables);
+        //     console.error('Lỗi khi lưu chi tiết đơn hàng:', orderDetailError);
+        //   }
+        // );
       }
     );
   }
+
   generateOrderHTML(): string {
     let orderHTML = `<div>`;
     orderHTML += `<h2>Hóa đơn</h2>`;
@@ -324,6 +448,7 @@ export class SalesCounterComponent implements OnInit {
 
     document.body.removeChild(frame);
   }
+
   onTabChange(event: MatTabChangeEvent): void {
     const selectedTabIndex = event.index;
     this.currentOrderId = this.listOder[selectedTabIndex].id;
@@ -355,18 +480,19 @@ export class SalesCounterComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    const listOrderCookie = this.cookieService.get('listOrder');
-    const countOrderCookie = this.cookieService.get('countOrder');
+    const listOrderCookie = localStorage.getItem('listOrder');
+    const countOrderCookie = localStorage.getItem('coutOrder');
     if (countOrderCookie && listOrderCookie) {
       this.count = parseInt(countOrderCookie, 10);
       this.listOder = JSON.parse(listOrderCookie);
     } else {
       this.listOder.push({
         id: this.count,
-        name: 'Hóa Đơn' + 1,
+        name: 'Hóa Đơn' + this.count,
         productList: []
       });
-      this.cookieService.set('listOrder', JSON.stringify(this.listOder));
+      localStorage.setItem('coutOrder', this.count.toString());
+      localStorage.setItem('listOrder', JSON.stringify(this.listOder));
     }
     this.getProductListForCurrentOrder();
     this.userDTO = localStorage.getItem('users');
@@ -379,22 +505,32 @@ export class SalesCounterComponent implements OnInit {
         order.productList = JSON.parse(storedOrderProducts);
       }
     });
-    this.sizeService.getAllSize().subscribe(data =>{
-      this.listSizePR = data;
-      console.log(this.listSizePR);
-    });
-    this.colorService.getAllMauSac().subscribe(data =>{
-      this.listColor = data;
-    });
     this.selectedOption = '0';
+    this.loadData();
+  }
 
+  loadData() {
+    this.sizeService.getAllSize().subscribe(data => {
+      this.listSizePR = data;
+      this.listSizeFind = data;
+    });
+    this.colorService.getAllMauSac().subscribe(datams => {
+      this.listColor = datams;
+      this.lisColorFind = datams;
+    });
+    this.productDetailService.getAllProductDetail().subscribe(dataDT => {
+      this.listProductDetail = dataDT;
+      console.log(this.listProductDetail);
+    });
   }
+
   validateNullListProduct(): boolean {
-      if (this.listProductPush === null ){
-        return false;
-      }
-      return true;
+    if (this.listProductPush === null) {
+      return false;
+    }
+    return true;
   }
+
   clearResult(): void {
     this.qrResultString = null;
   }
@@ -417,15 +553,15 @@ export class SalesCounterComponent implements OnInit {
           if (existingProduct) {
             existingProduct.quantity += 1;
           } else {
-            const newProduct = { ...this.searchResults[0], quantity: 1 };
+            const newProduct = {...this.searchResults[0], quantity: 1};
             this.listProductPush.push(newProduct);
           }
 
-          this.cookieService.set("listProductPush", JSON.stringify(this.listProductPush));
-          const currentOrderProducts = this.listProductPush.map(product => ({ ...product }));
+          this.cookieService.set('listProductPush', JSON.stringify(this.listProductPush));
+          const currentOrderProducts = this.listProductPush.map(product => ({...product}));
           localStorage.setItem(`orderProducts_${this.currentOrderId}`, JSON.stringify(currentOrderProducts));
           this.isProductListVisible = false;
-          this.calculateTotalPrice();
+          // this.calculateTotalPrice();
           this.calculateTotalAllProducts();
           this.clearSearchTerm();
           this.priceVouchers();

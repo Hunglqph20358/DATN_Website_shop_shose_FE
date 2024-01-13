@@ -3,6 +3,7 @@ import {MatDialog} from '@angular/material/dialog';
 import {OrderService} from '../../service/order.service';
 import {formatDate, formatDateTime, formatMoney} from '../../util/util';
 import {OrderDetailComponent} from '../order/order-detail/order-detail.component';
+import {OrderSalesDetailComponent} from './order-sales-detail/order-sales-detail.component';
 
 @Component({
   selector: 'app-order-sales-counter',
@@ -251,7 +252,7 @@ export class OrderSalesCounterComponent implements OnInit {
   }
 
   openXemChiTiet(dataOrder) {
-    this.matDialog.open(OrderDetailComponent, {
+    this.matDialog.open(OrderSalesDetailComponent, {
       width: '150vh',
       height: '90vh',
       data: {
