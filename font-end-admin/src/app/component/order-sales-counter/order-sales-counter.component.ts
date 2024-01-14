@@ -132,9 +132,9 @@ export class OrderSalesCounterComponent implements OnInit {
       },
       {
         headerName: 'Thanh Toán',
-        field: 'statusPayment',
+        field: 'paymentType',
         valueFormatter: params => {
-          return params.data.statusPayment === 0 ? 'Tiền Mặt' : 'Chuyển Khoản';
+          return params.data.paymentType === 0 ? 'Tiền Mặt' : 'Chuyển Khoản';
         },
         cellStyle: {
           'font-weight': '500',

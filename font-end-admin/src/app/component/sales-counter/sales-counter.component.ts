@@ -20,6 +20,10 @@ import {OrderSalesCounterComponent} from '../order-sales-counter/order-sales-cou
 import * as printJS from 'print-js';
 import {ToastrService} from 'ngx-toastr';
 import {ProductdetailService} from '../../service/productdetail.service';
+import {GiaoHangServiceService} from '../../service/giao-hang-service.service';
+import Swal from 'sweetalert2';
+import {PaymentSalesService} from '../../service/payment-sales.service';
+import {UtilService} from '../../util/util.service';
 
 @Component({
   selector: 'app-sales-counter',
@@ -30,17 +34,15 @@ import {ProductdetailService} from '../../service/productdetail.service';
 export class SalesCounterComponent implements OnInit {
   public isProductListVisible: boolean = true;
   public isCustomerNull: boolean = true;
+  isChecked: boolean = false;
   count = 1;
   searchTerm: string = '';
   showResults: boolean = false;
   listOder: any[] = [];
-  searchResults: any[] = [];
-  productDetailid: number | null = null;
-  searcherCustomer: string = '';
+  searchResults: any[] = [];searcherCustomer: string = '';
   showCustomer: boolean = false;
   searchCustomerResults: any[] = [];
   listProductPush: any[] = [];
-  totalPrice: number = 0;
   totalAllProducts: number = 0;
   priceCustomer: number = 0;
   priceVoucher: number = 0;
@@ -73,12 +75,28 @@ export class SalesCounterComponent implements OnInit {
   listCart = [];
   observable: any = [];
   listProductDetail: any = [];
-
+  listProvince = [];
+  listDistrict = [];
+  listWard = [];
+  addressNotLogin: any = {
+    provinceId: undefined,
+    districtId: undefined,
+    wardCode: undefined,
+    specificAddress: undefined
+  };
+  shipFee = 0;
+  shipFeeReduce = null;
+  totalMoneyPay;
+  typeOrder: number | null = null;
+  statusOrder: number | null = null;
+  receiver: string ;
+  receiver_phone: string;
   constructor(private productService: ProductService, private cookieService: CookieService,
               private orderService: OrderService, private orderDetailService: OrderDetailService,
               private router: Router, private sizeService: SizeService, private colorService: MausacService,
               private dialog: MatDialog, private customerService: CustomerServiceService, private toastr: ToastrService, private cdr: ChangeDetectorRef,
-              private productDetailService: ProductdetailService
+              private productDetailService: ProductdetailService, private giaoHangService: GiaoHangServiceService, private paymentService: PaymentSalesService,
+              public utilService: UtilService
   ) {
   }
 
@@ -148,7 +166,9 @@ export class SalesCounterComponent implements OnInit {
         productId: row.id,
         productDetailId: null,
         sizeId: null,
+        size_number: null,
         colorId: null,
+        nameColor: null,
         quantity: 1,
         price: row.price
       }
@@ -216,13 +236,14 @@ export class SalesCounterComponent implements OnInit {
       const totalPrice = this.listCart[i].quantity * this.listCart[i].price;
       this.totalAllProducts += totalPrice;
     }
+    this.priceVouchers();
   }
 
   priceVouchers() {
     if (this.priceVoucher === 0) {
-      this.priceCustomer = this.totalAllProducts;
+      this.priceCustomer = this.totalAllProducts ;
     } else {
-      this.priceCustomer = this.totalAllProducts - this.priceVoucher;
+      this.priceCustomer = this.totalAllProducts  - this.priceVoucher;
     }
 
   }
@@ -235,13 +256,15 @@ export class SalesCounterComponent implements OnInit {
       this.listColor = [...this.lisColorFind];
     } else {
       const selectedSizeId = event.id;
+      const number_size = event.sizeNumber;
       const detailsForSelectedSize = this.listProductPush[i].productDetailDTOList
         .filter(detail => detail.idSize === selectedSizeId && detail.idColor);
       const colorIDsForSelectedSize = detailsForSelectedSize.map(detail => detail.idColor);
       this.listColor = this.listColor.filter(color => colorIDsForSelectedSize.includes(color.id));
       this.listCart[i] = {
         ...this.listCart[i],
-        sizeId: selectedSizeId
+        sizeId: selectedSizeId,
+        size_number: number_size
       };
       this.getProductDetail(i);
       console.log(this.listCart);
@@ -269,6 +292,7 @@ export class SalesCounterComponent implements OnInit {
       this.listSizePR = [...this.listSizeFind];
     } else {
       const selectedColorId = event.id;
+      const colorName = event.name;
       const detailsForSelectedColor = this.listProductPush[i].productDetailDTOList
         .filter(detail => detail.idColor === selectedColorId && detail.idSize);
 
@@ -277,7 +301,8 @@ export class SalesCounterComponent implements OnInit {
       this.listSizePR = this.listSizePR.filter(size => sizeIDsForSelectedColor.includes(size.id));
       this.listCart[i] = {
         ...this.listCart[i],
-        colorId: selectedColorId
+        colorId: selectedColorId,
+        nameColor: colorName
       };
       this.getProductDetail(i);
     }
@@ -288,106 +313,149 @@ export class SalesCounterComponent implements OnInit {
       this.toastr.error('chưa chọn size và màu sắc của sản phẩm');
       return;
     }
-    if (this.listProductPush.length === 0) {
-      this.toastr.error('Không có sản phẩm nào để thanh toán', 'Lỗi');
-      return;
-    }
     this.user = JSON.parse(localStorage.getItem('users'));
     this.isdn = this.user.isdn;
     console.log(this.isdn);
     if (this.user === null) {
       this.toastr.error('đã hết hạn đăng nhập');
     }
-    const order: Order = {
-      paymentType: 1,
-      totalPrice: this.priceCustomer,
-      totalPayment: this.priceCustomer,
-      idCustomer: this.idCustomer,
-      idStaff: this.user.id,
-      statusPayment: this.selectedOption,
-      email: 'customer123@gmail.com'
-    };
-    this.orderService.createOrderSales(order).subscribe(
-      (response) => {
-        console.log('done', response);
-        const saveIdOrder = response.data.id;
-        console.log(this.listProductPush);
+    if (this.isChecked === true){
+       this.typeOrder = 0;
+       this.statusOrder = 1;
 
-        for (let i = 0; i < this.listCart.length; i++) {
-          const orderDetail: OrderDetail = {
-            idOrder: saveIdOrder,
-            idProductDetail: this.listCart[i].productDetailId,
-            quantity: this.listCart[i].quantity,
-            price: this.priceCustomer,
+    }else {
+       this.typeOrder = 1;
+       this.statusOrder = 3;
+    }
+    Swal.fire({
+      title: 'Bạn có xác nhận thanh toán đơn hàng ?',
+      text: '',
+      icon: 'info',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Đồng ý'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        let province = this.listProvince.find(c => c.ProvinceID === this.addressNotLogin.provinceId);
+        // console.log(province);
+        let district = this.listDistrict.find(d => d.DistrictID === this.addressNotLogin.districtId);
+        let ward = this.listWard.find(w => w.WardCode === this.addressNotLogin.wardCode);
+        if (this.selectedOption === '1') {
+          const order: Order = {
+            paymentType: 1,
+            totalPrice: this.priceCustomer,
+            totalPayment: this.priceCustomer,
+            idCustomer: this.idCustomer,
+            idStaff: this.user.id,
+            addressReceived: this.addressNotLogin?.specificAddress + ', ' + ward?.WardName + ', '
+              + district?.DistrictName + ', ' + province?.ProvinceName,
+            statusPayment: 0,
+            shipPrice: this.shipFee,
+            email: 'customer123@gmail.com',
+            type: this.typeOrder,
+            status: this.statusOrder,
+            receiver: this.receiver,
+            receiverPhone: this.receiver_phone
           };
-          console.log(orderDetail);
-          this.orderDetailService.createDetailSales(orderDetail).subscribe(res => {
-            if (res.status === 'OK') {
-              console.log('thanh toán thành công');
-            } else {
-              this.checkStatus = 1;
-              console.log('Lỗi');
-              return;
+          this.orderService.createOrderSales(order).subscribe(
+            (response) => {
+              console.log('done', response);
+              const saveIdOrder = response.data.id;
+              console.log(this.listProductPush);
+
+              for (let i = 0; i < this.listCart.length; i++) {
+                const orderDetail: OrderDetail = {
+                  idOrder: saveIdOrder,
+                  idProductDetail: this.listCart[i].productDetailId,
+                  quantity: this.listCart[i].quantity,
+                  price: this.listCart[i].price,
+                };
+                console.log(orderDetail);
+                this.orderDetailService.createDetailSales(orderDetail).subscribe(res => {
+                  if (res.status === 'OK') {
+                    console.log('thanh toán thành công');
+                  } else {
+                    this.checkStatus = 1;
+                    console.log('Lỗi');
+                    return;
+                  }
+                });
+              }
+            }
+          );
+          this.paymentService.createPayment(this.priceCustomer).subscribe(resPay => {
+            if (resPay.status === 'OK') {
+              // sessionStorage.setItem('order', JSON.stringify(objCheckOut));
+              // setTimeout()
+              this.toastr.success('thanh toán thành công');
+              window.location.href = resPay.url;
             }
           });
+          //   }
+          // });
+        } else {
+          const order: Order = {
+            paymentType: 0,
+            totalPrice: this.priceCustomer,
+            totalPayment: this.priceCustomer,
+            idCustomer: this.idCustomer,
+            shipPrice: this.shipFee,
+            idStaff: this.user.id,
+            addressReceived: this.addressNotLogin?.specificAddress + ', ' + ward?.WardName + ', '
+              + district?.DistrictName + ', ' + province?.ProvinceName,
+            statusPayment: 0,
+            email: 'customer123@gmail.com',
+            type: this.typeOrder,
+            status: this.statusOrder,
+            receiver: this.receiver,
+            receiverPhone: this.receiver_phone
+          };
+          this.orderService.createOrderSales(order).subscribe(
+            (response) => {
+              console.log('done', response);
+              const saveIdOrder = response.data.id;
+              console.log(this.listProductPush);
+
+              for (let i = 0; i < this.listCart.length; i++) {
+                const orderDetail: OrderDetail = {
+                  idOrder: saveIdOrder,
+                  idProductDetail: this.listCart[i].productDetailId,
+                  quantity: this.listCart[i].quantity,
+                  price: this.listCart[i].price,
+                };
+                console.log(orderDetail);
+                this.orderDetailService.createDetailSales(orderDetail).subscribe(res => {
+                  if (res.status === 'OK') {
+                    console.log('thanh toán thành công');
+                  } else {
+                    this.checkStatus = 1;
+                    console.log('Lỗi');
+                    return;
+                  }
+                });
+              }
+              console.log(this.observable);
+              this.toastr.success('Thanh toán thành công');
+              this.printInvoice();
+              localStorage.removeItem('listProductPush');
+              this.selectedCustomer = '';
+              this.searcherCustomer = '';
+              this.idCustomer = 1;
+              this.priceCustomer = 0;
+              this.priceVoucher = 0;
+              this.listCart = [];
+              this.totalAllProducts = 0;
+              this.listProductPush = [];
+              this.removeOrder(order);
+              this.calculateTotalAllProducts();
+              localStorage.setItem('coutOrder', this.count.toString());
+              localStorage.setItem('listOrder', JSON.stringify(this.listOder));
+            }
+          );
         }
-        console.log(this.observable);
-        this.toastr.success('Thanh toán thành công');
-        this.printInvoice();
-        localStorage.removeItem('listProductPush');
-        this.selectedCustomer = '';
-        this.searcherCustomer = '';
-        this.idCustomer = 1;
-        this.priceCustomer = 0;
-        this.priceVoucher = 0;
-        this.listCart = [];
-        this.totalAllProducts = 0;
-        this.listProductPush = [];
-        this.removeOrder(order);
-        this.calculateTotalAllProducts();
-        localStorage.setItem('coutOrder', this.count.toString());
-        localStorage.setItem('listOrder', JSON.stringify(this.listOder));
-        // const observables = this.listProductPush.map((product) => {
-        //   if (product.id === product.productID) {
-        //     const productDetailDTO = product.productDetailDTOList.find(productDetail => productDetail.idSize === this.sizeId && productDetail.idColor === this.colorId);
-        //     this.productDetailid = productDetailDTO?.id;
-        //   }
-        //   const orderDetail: OrderDetail = {
-        //     idOrder: saveIdOrder,
-        //     idProductDetail: this.productDetailid,
-        //     quantity: product.quantity,
-        //     price: this.priceCustomer,
-        //   };
-        //   return this.orderDetailService.createDetailSales(orderDetail);
-        // });
-        // forkJoin(observables).subscribe(
-        //   (orderDetailResponses) => {
-        //     this.printInvoice();
-        //     this.toastr.success('Thanh toán thành công', 'Success');
-        //     localStorage.removeItem('listProductPush');
-        //     this.selectedCustomer = '';
-        //     this.searcherCustomer = '';
-        //     this.idCustomer = 1;
-        //     this.priceCustomer = 0;
-        //     this.priceVoucher = 0;
-        //     this.listProductPush = [];
-        //     this.removeOrder(order);
-        //     this.calculateTotalAllProducts();
-        //     this.cookieService.set('listOrder', JSON.stringify(this.listOder));
-        //     console.log('done detail');
-        //     const index = this.listOder.findIndex(order => order.id === this.currentOrderId);
-        //     if (index !== -1) {
-        //       this.listOder.splice(index, 1);
-        //     }
-        //
-        //   },
-        //   (orderDetailError) => {
-        //     console.log(observables);
-        //     console.error('Lỗi khi lưu chi tiết đơn hàng:', orderDetailError);
-        //   }
-        // );
       }
-    );
+    });
   }
 
   generateOrderHTML(): string {
@@ -401,9 +469,9 @@ export class SalesCounterComponent implements OnInit {
     orderHTML += `<thead>`;
     orderHTML += `<tr>`;
     orderHTML += `<th>Mã</th>`;
+    orderHTML += `<th>Tên</th>`;
     orderHTML += `<th>Size</th>`;
     orderHTML += `<th>Màu Sắc</th>`;
-    orderHTML += `<th>Tên</th>`;
     orderHTML += `<th>Số lượng</th>`;
     orderHTML += `<th>Đơn giá</th>`;
     orderHTML += `<th>Thành tiền</th>`;
@@ -413,12 +481,16 @@ export class SalesCounterComponent implements OnInit {
     this.listProductPush.forEach(product => {
       orderHTML += `<tr>`;
       orderHTML += `<td>${product.code}</td>`;
-      orderHTML += `<td>${product.size}</td>`;
-      orderHTML += `<td>${product.color}</td>`;
       orderHTML += `<td>${product.name}</td>`;
-      orderHTML += `<td>${product.quantity}</td>`;
-      orderHTML += `<td>${product.price}</td>`;
-      orderHTML += `<td>${product.total}</td>`;
+      this.listCart.forEach(details => {
+        if (product.id === details.productId){
+          orderHTML += `<td>${details.size_number}</td>`;
+          orderHTML += `<td>${details.nameColor}</td>`;
+          orderHTML += `<td>${details.quantity}</td>`;
+          orderHTML += `<td>${details.price}</td>`;
+          orderHTML += `<td>${details.quantity * details.price}</td>`;
+        }
+      });
       orderHTML += `</tr>`;
     });
     orderHTML += `</tbody>`;
@@ -507,6 +579,9 @@ export class SalesCounterComponent implements OnInit {
     });
     this.selectedOption = '0';
     this.loadData();
+    this.giaoHangService.getAllProvince().subscribe(res => {
+      this.listProvince = res.data;
+    });
   }
 
   loadData() {
@@ -556,7 +631,6 @@ export class SalesCounterComponent implements OnInit {
             const newProduct = {...this.searchResults[0], quantity: 1};
             this.listProductPush.push(newProduct);
           }
-
           this.cookieService.set('listProductPush', JSON.stringify(this.listProductPush));
           const currentOrderProducts = this.listProductPush.map(product => ({...product}));
           localStorage.setItem(`orderProducts_${this.currentOrderId}`, JSON.stringify(currentOrderProducts));
@@ -578,4 +652,62 @@ export class SalesCounterComponent implements OnInit {
     this.currentDevice = device || null;
   }
 
+  getDistrict(event) {
+    this.giaoHangService.getAllDistrictByProvince(event.ProvinceID).subscribe(res => {
+      this.listDistrict = res.data;
+    });
+  }
+  getWard(event) {
+    this.giaoHangService.getAllWardByDistrict(event.DistrictID).subscribe(res => {
+      this.listWard = res.data;
+    });
+  }
+  // getAddress(id: number) {
+  //   const obj = {
+  //     idCustomer: id
+  //   };
+  //   this.addressService.getAddress(obj).subscribe(res => {
+  //     this.address = res.data;
+  //     const addressInfo = {
+  //       service_type_id: 2,
+  //       from_district_id: 3440,
+  //       to_district_id: parseInt(res.data.districtId, 10),
+  //       to_ward_code: res.data.wardCode,
+  //       height: 20,
+  //       length: 30,
+  //       weight: 200,
+  //       width: 40,
+  //       insurance_value: 0,
+  //     };
+  //     this.giaoHangService.getTinhPhiShip(addressInfo).subscribe(res2 => {
+  //       this.shipFee = res2.data.service_fee;
+  //       this.totalMoneyPay = this.shipFee + this.totalMoneyPay;
+  //     });
+  //   });
+  // }
+
+  getPhiShip() {
+    const addressInfo = {
+      service_type_id: 2,
+      from_district_id: 3440,
+      to_district_id: this.addressNotLogin.districtId,
+      to_ward_code: this.addressNotLogin.wardCode,
+      height: 20,
+      length: 30,
+      weight: 200,
+      width: 40,
+      insurance_value: 0,
+    };
+    this.giaoHangService.getTinhPhiShip(addressInfo).subscribe(res2 => {
+      this.shipFee = res2.data.service_fee;
+      this.priceCustomer = this.shipFee + this.priceCustomer;
+    });
+  }
+  selectedOpsiontGH(){
+    if (this.isChecked === false){
+      this.isChecked = true;
+    }else {
+      this.isChecked = false;
+    }
+  }
 }

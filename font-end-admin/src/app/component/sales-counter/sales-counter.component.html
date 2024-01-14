@@ -9,20 +9,28 @@
         <div class="col-md-4">
           <input type="text" name="search-product" class="form-control search-input" [(ngModel)]="searchTerm"
                  placeholder="Tìm kiếm sản phẩm" (input)="search()">
-          <zxing-scanner class="camera-container" [torch]="torchEnabled" [(device)]="currentDevice" (scanSuccess)="onCodeResult($event)"
+          <zxing-scanner class="camera-container" [torch]="torchEnabled" [(device)]="currentDevice"
+                         (scanSuccess)="onCodeResult($event)"
                          [tryHarder]="tryHarder"
                          (camerasFound)="onCamerasFound($event)"></zxing-scanner>
           <div class="search-results" *ngIf="showResults">
             <mat-table [dataSource]="searchResults" *ngIf="isProductListVisible">
+              <ng-container matColumnDef="image">
+                <mat-cell *matCellDef="let product"><img width="60px" height="60px" src="{{ product?.imagesDTOList[0].imageName }}" alt="" srcset=""> </mat-cell>
+              </ng-container>
               <ng-container matColumnDef="code">
-                <mat-cell *matCellDef="let product"> {{ product.code }} </mat-cell>
+                <mat-cell *matCellDef="let product"> {{ product?.code }} </mat-cell>
               </ng-container>
 
               <ng-container matColumnDef="name">
-                <mat-cell *matCellDef="let product"> {{ product.name }} </mat-cell>
+                <mat-cell *matCellDef="let product"> {{ product?.name }} </mat-cell>
               </ng-container>
 
-              <mat-row *matRowDef="let row; columns: ['code', 'name']" (click)="addProductInOrder(row)"></mat-row>
+              <ng-container matColumnDef="price">
+                <mat-cell *matCellDef="let product"> {{ utilService.formatMoney( product?.price ) }} </mat-cell>
+              </ng-container>
+
+              <mat-row *matRowDef="let row; columns: ['image','code', 'name', 'price']" (click)="addProductInOrder(row)"></mat-row>
             </mat-table>
           </div>
         </div>
@@ -59,13 +67,13 @@
             <tr>
               <th scope="row">STT</th>
               <th></th>
+              <th>Ảnh</th>
               <th>Mã sản phẩm</th>
               <th>Tên sản phẩm</th>
               <th>Size</th>
               <th>Màu sắc</th>
               <th>Số lượng</th>
               <th>Đơn giá</th>
-              <th>Thành tiền</th>
               <th>Chi tiết</th>
             </tr>
             </thead>
@@ -76,22 +84,27 @@
                 <button type="button" (click)="removeProduct(i)" class="remove-btn-order"><i
                   class="bi bi-trash3-fill"></i></button>
               </td>
-              <td>{{product.code}}</td>
-              <td>{{product.name}}</td>
+              <td><img width="60px" height="60px" src="{{ product?.imagesDTOList[0].imageName }}" alt="" srcset=""></td>
+              <td>{{product?.code}}</td>
+              <td>{{product?.name}}</td>
               <td>
-                <ng-select style="width: 100px;"  [items]="listSizePR" bindLabel="sizeNumber" bindValue="id" placeholder="--Lựa chọn--"
-                           [(ngModel)]="listCart[i].sizeId" [ngModelOptions]="{standalone: true}" [searchable]="false" (change)="onSizeChange($event, i)" >
+                <ng-select style="width: 100px;" [items]="listSizePR" bindLabel="sizeNumber" bindValue="id"
+                           placeholder="--Lựa chọn--"
+                           [(ngModel)]="listCart[i].sizeId" [ngModelOptions]="{standalone: true}" [searchable]="false"
+                           (change)="onSizeChange($event, i)">
                 </ng-select>
               </td>
               <td>
-                <ng-select style="width: 100px; " [items]="listColor" bindLabel="name" bindValue="id" placeholder="--Lựa chọn--"
-                           [(ngModel)]="listCart[i].colorId" [ngModelOptions]="{standalone: true}" [searchable]="false" (change)="onColorChange($event, i)" >
+                <ng-select style="width: 100px; " [items]="listColor" bindLabel="name" bindValue="id"
+                           placeholder="--Lựa chọn--"
+                           [(ngModel)]="listCart[i].colorId" [ngModelOptions]="{standalone: true}" [searchable]="false"
+                           (change)="onColorChange($event, i)">
                 </ng-select>
               </td>
-              <td><input type="number" min="0" class="quantity" [(ngModel)]="listCart[i].quantity"
-                         (ngModelChange)="calculateTotalAllProducts()"></td>
-              <td>{{listCart[i].price}}</td>
-              <td>{{product.total}}</td>
+              <td><input type="number" min="0" class="quantity" name="quantity" [(ngModel)]="listCart[i].quantity"
+                         (ngModelChange)="calculateTotalAllProducts()" [ngModelOptions]="{standalone: true}" ></td>
+              <td>{{utilService.formatMoney(product?.price)}}</td>
+              <td>{{product?.total}}</td>
               <td>
                 <button mat-button [matMenuTriggerFor]="menu"><i class="bi bi-three-dots-vertical"></i></button>
                 <mat-menu #menu="matMenu">
@@ -107,7 +120,8 @@
             <div class="row mb-1">
               <input class="col-sm-6 col-form-label name-nv custom-input" readonly name="fullname"
                      [(ngModel)]="fullname">
-              <label class="col-6 col-form-label time-order">17/11/2023 00:00</label>
+              <mat-slide-toggle class="col-sm-6 col-form-label" [(ngModel)]="isChecked" (change)="selectedOpsiontGH()">Giao Hàng</mat-slide-toggle>
+
             </div>
 
             <div class="row mb-1">
@@ -140,41 +154,30 @@
               <label class="col-sm-6 col-form-label">Tổng Tiền:</label>
               <div class="col-sm-6">
                 <input type="text" class="form-control custom-input" name="sumPrice" readonly
-                       [(ngModel)]="totalAllProducts">
+                       [(ngModel)]="totalAllProducts" [ngModelOptions]="{standalone: true}">
               </div>
             </div>
-            <div class="row mb-1">
+            <div class="row mb-2">
               <label class="col-sm-6 col-form-label">Giảm giá:</label>
               <div class="col-sm-6 position-relative">
-                <input type="text" min="0" class="form-control custom-input" name="priceVoucher" (change)="priceVouchers() "  [(ngModel)]="priceVoucher" >
+                <input type="text" min="0" class="form-control custom-input" name="priceVoucher"
+                       (change)="priceVouchers() " [(ngModel)]="priceVoucher" [ngModelOptions]="{standalone: true}">
                 <a class="btn icon-add position-absolute top-0 end-0">
                   <i class="bi bi-plus-lg"></i>
                 </a>
               </div>
             </div>
-            <div class="row mb-1">
-              <label class="col-sm-6 col-form-label">Khách cần trả:</label>
-              <div class="col-sm-6">
-                <input type="text" class="form-control custom-input" readonly name="priceCustomer"
-                       [(ngModel)]="priceCustomer">
-              </div>
-            </div>
             <div class="row mb-4">
               <div class="col-sm-12 d-flex">
-                <div class="form-check form-check-inline col-md-4">
-                  <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio1" value="0"
-                         checked [(ngModel)]="selectedOption">
+                <div class="form-check form-check-inline col-md-6">
+                  <input class="form-check-input" type="radio" name="inlineRadioOptions1" id="inlineRadio1" value="0"
+                         checked [(ngModel)]="selectedOption" [ngModelOptions]="{standalone: true}">
                   <label class="form-check-label" for="inlineRadio1">Tiền Mặt</label>
                 </div>
-                <div class="form-check form-check-inline col-md-4">
-                  <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio2" value="1"
-                         [(ngModel)]="selectedOption">
+                <div class="form-check form-check-inline col-md-6">
+                  <input class="form-check-input" type="radio" name="inlineRadioOptions2" id="inlineRadio2" value="1"
+                         [(ngModel)]="selectedOption" [ngModelOptions]="{standalone: true}">
                   <label class="form-check-label" for="inlineRadio2">Chuyển Khoản</label>
-                </div>
-                <div class="form-check form-check-inline col-md-4">
-                  <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio2" value="2"
-                         [(ngModel)]="selectedOption">
-                  <label class="form-check-label" for="inlineRadio2">Giao Hàng</label>
                 </div>
               </div>
             </div>
@@ -185,57 +188,86 @@
               <div class="col-sm-6 center" *ngIf="selectedOption === '1'">
                 <img class="col-sm-6 img" src="assets/image/frame.png">
               </div>
-            <!--Địa chỉ-->
-              <div class="row mb-1" *ngIf="selectedOption === '2' ">
+              <!--Tên người nhận-->
+              <div class="row mb-1" *ngIf="isChecked">
                 <label class="col-sm-6 col-form-label">Tên Người nhận:</label>
                 <div class="col-sm-6">
-                  <input type="text" class="form-control custom-input" name="sumPrice">
+                  <input type="text" class="form-control custom-input" name="receiver" [(ngModel)]="receiver" [ngModelOptions]="{standalone: true}">
+                </div>
+              </div>
+              <!--Sdt-->
+              <div class="row mb-1" *ngIf="isChecked">
+                <label class="col-sm-6 col-form-label">SĐT:</label>
+                <div class="col-sm-6">
+                  <input type="text" class="form-control custom-input" name="receiver_phone" [(ngModel)]="receiver_phone" [ngModelOptions]="{standalone: true}">
                 </div>
               </div>
 
               <!--Địa chỉ-->
-              <div class="row mb-1" *ngIf="selectedOption === '2' ">
+              <div class="row mb-1" *ngIf="isChecked">
                 <label class="col-sm-6 col-form-label">Địa Chỉ:</label>
                 <div class="col-sm-6">
-                  <input type="text" class="form-control custom-input" name="address" >
-                </div>
-              </div>
-
-              <!--Xã-->
-              <div class="row mb-1" *ngIf="selectedOption === '2' ">
-                <label class="col-sm-6 col-form-label">Phường / Xã:</label>
-                <div class="col-sm-6">
-                  <input type="text" class="form-control custom-input" name="ward" >
-                </div>
-              </div>
-
-              <!--Huyện-->
-              <div class="row mb-1" *ngIf="selectedOption === '2' ">
-                <label class="col-sm-6 col-form-label">Quận / Huyện:</label>
-                <div class="col-sm-6">
-                  <input type="text" class="form-control custom-input" name="district" >
+                  <input type="text" class="form-control custom-input" name="address" [(ngModel)]="addressNotLogin.specificAddress" [ngModelOptions]="{standalone: true}">
                 </div>
               </div>
 
               <!--Tỉnh-->
-              <div class="row mb-1" *ngIf="selectedOption === '2' ">
+              <div class="row mb-1" *ngIf="isChecked">
                 <label class="col-sm-6 col-form-label">Tỉnh / Thành phố:</label>
                 <div class="col-sm-6">
-                  <input type="text" class="form-control custom-input" name="city" >
+                  <ng-select [items]="listProvince" bindLabel="ProvinceName" bindValue="ProvinceID" placeholder="--Lựa chọn--" (change)="getDistrict($event)"
+                             [(ngModel)]="addressNotLogin.provinceId" [ngModelOptions]="{standalone: true}" [searchable]="false" >
+                  </ng-select>
                 </div>
               </div>
 
+              <!--Huyện-->
+              <div class="row mb-1" *ngIf="isChecked">
+                <label class="col-sm-6 col-form-label">Quận / Huyện:</label>
+                <div class="col-sm-6">
+                  <ng-select [items]="listDistrict"  bindLabel="DistrictName" bindValue="DistrictID" placeholder="--Lựa chọn--"
+                             [(ngModel)]="addressNotLogin.districtId" [ngModelOptions]="{standalone: true}" [searchable]="false" (change)="getWard($event)" >
+                  </ng-select>
+                </div>
+              </div>
+
+              <!--Xã-->
+              <div class="row mb-1" *ngIf="isChecked">
+                <label class="col-sm-6 col-form-label">Phường / Xã:</label>
+                <div class="col-sm-6">
+                  <ng-select [items]="listWard" bindLabel="WardName" bindValue="WardCode" placeholder="--Lựa chọn--"
+                             [searchable]="false" [(ngModel)]="addressNotLogin.wardCode" [ngModelOptions]="{standalone: true}" (change)="getPhiShip();" >
+                  </ng-select>
+                </div>
+              </div>
+
+              <!--Phí ship-->
+              <div class="row mb-1" *ngIf="isChecked">
+                <label class="col-sm-6 col-form-label">Phí Ship:</label>
+                <div class="col-sm-6">
+                  <input type="text" class="form-control custom-input" readonly name="priceShip"
+                         value="{{shipFee}}">
+                </div>
+              </div>
+
+              <div class="row mb-2">
+                <label class="col-sm-6 col-form-label">Khách cần trả:</label>
+                <div class="col-sm-6">
+                  <input type="text" class="form-control custom-input" readonly name="priceCustomer"
+                         [(ngModel)]="priceCustomer" [ngModelOptions]="{standalone: true}">
+                </div>
+              </div>
             </div>
-<!--            <div class="row mb-4" *ngIf="selectedOption === '0'">-->
-<!--              <label class="col-sm-6 col-form-label">Tiền thừa trả khách:</label>-->
-<!--              <div class="col-sm-6 ">-->
-<!--                <input type="text" class="form-control custom-input" readonly>-->
-<!--              </div>-->
-<!--            </div>-->
+            <!--            <div class="row mb-4" *ngIf="selectedOption === '0'">-->
+            <!--              <label class="col-sm-6 col-form-label">Tiền thừa trả khách:</label>-->
+            <!--              <div class="col-sm-6 ">-->
+            <!--                <input type="text" class="form-control custom-input" readonly>-->
+            <!--              </div>-->
+            <!--            </div>-->
+
             <button type="submit" class="btn btn-primary mb-4 col-sm-12 tt-custom" (click)="placeOrderSales()">Thanh
               Toán
             </button>
-
           </form>
         </div>
       </div>
