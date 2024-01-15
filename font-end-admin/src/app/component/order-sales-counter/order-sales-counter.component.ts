@@ -3,6 +3,7 @@ import {MatDialog} from '@angular/material/dialog';
 import {OrderService} from '../../service/order.service';
 import {formatDate, formatDateTime, formatMoney} from '../../util/util';
 import {OrderDetailComponent} from '../order/order-detail/order-detail.component';
+import {OrderSalesDetailComponent} from './order-sales-detail/order-sales-detail.component';
 
 @Component({
   selector: 'app-order-sales-counter',
@@ -131,9 +132,9 @@ export class OrderSalesCounterComponent implements OnInit {
       },
       {
         headerName: 'Thanh Toán',
-        field: 'statusPayment',
+        field: 'paymentType',
         valueFormatter: params => {
-          return params.data.statusPayment === 0 ? 'Tiền Mặt' : 'Chuyển Khoản';
+          return params.data.paymentType === 0 ? 'Tiền Mặt' : 'Chuyển Khoản';
         },
         cellStyle: {
           'font-weight': '500',
@@ -251,7 +252,7 @@ export class OrderSalesCounterComponent implements OnInit {
   }
 
   openXemChiTiet(dataOrder) {
-    this.matDialog.open(OrderDetailComponent, {
+    this.matDialog.open(OrderSalesDetailComponent, {
       width: '150vh',
       height: '90vh',
       data: {
