@@ -1,4 +1,4 @@
-import {Component, Inject, OnInit} from '@angular/core';
+import {ChangeDetectorRef, Component, Inject, OnInit} from '@angular/core';
 import {ProductService} from '../../../service/product.service';
 import {BrandService} from '../../../service/brand.service';
 import {CategoryInterface} from '../../../interface/category-interface';
@@ -14,6 +14,13 @@ import {ValidateInput} from '../../model/validate-input';
 import {ImageService} from '../../../service/image.service';
 import {HttpClient} from '@angular/common/http';
 import Swal from 'sweetalert2';
+import {ProductdetailService} from '../../../service/productdetail.service';
+import {MausacService} from '../../../service/mausac.service';
+import {SizeService} from '../../../service/size.service';
+import {SizeInterface} from '../../../interface/size-interface';
+import {ColorInterface} from '../../../interface/color-interface';
+import {FormControl} from '@angular/forms';
+import {ToastrService} from 'ngx-toastr';
 
 @Component({
   selector: 'app-them-san-pham',
@@ -43,13 +50,31 @@ export class ThemSanPhamComponent implements OnInit {
   Status: number = 0;
   categories: CategoryInterface[] = [];
   brand: BrandInterface[] = [];
+  size: SizeInterface[] = [];
+  color: ColorInterface[] = [];
   sole: SoleInterface[] = [];
   material: MaterialInterface[] = [];
   idnv: string;
   imgLst;
   image1;
-  imagediv;
-  newimg;
+  lstPrdt;
+  idColor: number[];
+  idSize: number[];
+  shoeCollar: number;
+  quantity: number;
+  productDetail = [];
+  keyword: string;
+  listSizeChoice = [];
+  listColorChoice = [];
+  listShoeCollar = [
+    {
+      id: 0,
+      name: 'Cổ thấp',
+    },
+    {
+      id: 1, name: 'Cổ cao'
+    }
+  ];
 
   constructor(private prdsv: ProductService,
               private brsv: BrandService,
@@ -58,7 +83,13 @@ export class ThemSanPhamComponent implements OnInit {
               private mtsv: MaterialpostService,
               private router: Router,
               private imageService: ImageService,
-              private http: HttpClient) {
+              private http: HttpClient,
+              private prddtsv: ProductdetailService,
+              private clsv: MausacService,
+              private toaS: ToastrService,
+              private szsv: SizeService,
+              private cdr: ChangeDetectorRef
+  ) {
   }
 
   ngOnInit(): void {
@@ -66,6 +97,20 @@ export class ThemSanPhamComponent implements OnInit {
     this.getAllCategory();
     this.getAllMaterial();
     this.getAllSole();
+    this.getALLColor();
+    this.getALLSize();
+  }
+
+  getALLSize() {
+    this.szsv.getAllSize().subscribe(res => {
+      this.size = res;
+    });
+  }
+
+  getALLColor() {
+    this.clsv.getAllMauSac().subscribe(res => {
+      this.color = res;
+    });
   }
 
   getALLBrand() {
@@ -94,35 +139,16 @@ export class ThemSanPhamComponent implements OnInit {
 
   OnChangeFile(event: any) {
     console.log(event);
-    // this.image1 = URL.createObjectURL(event.target.file.length[0]);
-    // this.imagediv = document.getElementById('preview');
-    // this.newimg = document.createElement('img');
-    // this.newimg.src = this.image1;
-    // this.imagediv.appendChild(this.newimg);
     this.imgLst = new FormData();
-    // for (let i = 0; i < event.target.files.length; i++){
-    //   this.imgLst.append('file' + i, event.target.files[i]);
-    //   console.log(this.imgLst);
-    // }
-
-    if (event.target.files.length > 0) {
-      // const file = ;
-      // const  formData = new FormData();
+    if (event.target.files.length > 0 && event.target.files.length === 3) {
       for (let i = 0; i < event.target.files.length; i++) {
         this.imgLst.append('file', event.target.files[i]);
       }
-      // console.log(formData);
-      // for (const entry of this.imgLst.entries()) {
-      //   const [key, value] = entry;
-      //   // tslint:disable-next-line:no-shadowed-variable
-      //   const file: File = value as File;
-      //   console.log(`Key: ${key}, FileName: ${file.name}, FileSize: ${file.size} bytes`);
-      // }
     }
-
+    return;
   }
-
   clickaddProduct() {
+    console.log('Chi tieest: ', this.productDetail);
     this.Name = CommonFunction.trimText(this.Name);
     this.Description = CommonFunction.trimText(this.Description);
     this.Price = CommonFunction.trimText(this.Price);
@@ -140,13 +166,17 @@ export class ThemSanPhamComponent implements OnInit {
     ) {
       return;
     }
+    if (this.productDetail.some(c => c.quantity === null || c.quantity === '')) {
+      this.toaS.error('Vui long nhap day du so luong');
+      return;
+    }
     Swal.fire({
       title: 'Bạn muốn thêm?',
       text: 'Thao tác này sẽ không hoàn tác!',
       icon: 'warning',
       showCancelButton: true,
       confirmButtonColor: '#3085d6',
-      cancelButtonColor: '#d33',
+      cancelButtonColor: '#dd3333',
       confirmButtonText: 'Thêm!'
     }).then((result1) => {
       if (result1.isConfirmed) {
@@ -163,7 +193,9 @@ export class ThemSanPhamComponent implements OnInit {
           status: this.Status,
           price: this.Price,
           idnv: this.idnv,
+          productDetailAdminDTOList: this.productDetail
         };
+        console.log(this.productDetail);
         this.prdsv.CreateProduct(products).subscribe(
           result => {
             this.prdsv.uploadImgProduct(this.imgLst, result.data.id).subscribe(res => {
@@ -184,9 +216,15 @@ export class ThemSanPhamComponent implements OnInit {
       }
     });
   }
-
+  // search() {
+  //   this.prdsv.searchProduct(this.keyword)
+  //     .subscribe(products => this.products = products);
+  // }
   revoveInvalid(result) {
     result.done = true;
+  }
+  validateImageCount(files: FileList): boolean {
+    return files.length === 3;
   }
 
   validateName() {
@@ -221,4 +259,42 @@ export class ThemSanPhamComponent implements OnInit {
     this.validImage = CommonFunction.validateInput(this.imgLst, 250, null);
   }
 
+  OnChangSize(event: any[]) {
+    this.listSizeChoice = [];
+    this.listSizeChoice = event;
+    this.zenProductDetail();
+  }
+
+  OnChangColor(event: any[]) {
+    this.listColorChoice = [];
+    this.listColorChoice = event;
+    this.zenProductDetail();
+  }
+
+  zenProductDetail() {
+    this.productDetail = [];
+    if (this.listColorChoice.length > 0 && this.listSizeChoice.length > 0) {
+      for (let i = 0; i < this.listSizeChoice.length; i++) {
+        for (let j = 0; j < this.listColorChoice.length; j++) {
+          const obj = {
+            name: this.Name,
+            sizeDTO: this.listSizeChoice[i],
+            colorDTO: this.listColorChoice[j],
+            quantity: 1,
+            shoeCollar: 0
+          };
+          this.productDetail.push(obj);
+          console.log(obj);
+        }
+      }
+    } else {
+      return;
+    }
+  }
+
+  deleteProductDetail(i: number) {
+    //xoas phan tu this.productDetail
+    this.productDetail.splice(i, 1);
+    this.cdr.detectChanges();
+  }
 }

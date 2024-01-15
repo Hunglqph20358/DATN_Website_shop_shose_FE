@@ -201,7 +201,7 @@ import {ZXingScannerModule} from '@zxing/ngx-scanner';
     DateRangePickerModule,
     MatInputModule,
     DateRangePickerModule,
-    ZXingScannerModule
+    ZXingScannerModule,
   ],
   bootstrap: [AppComponent],
   providers: [{provide: JWT_OPTIONS, useValue: JWT_OPTIONS},
