@@ -12,6 +12,7 @@ import {ToastrService} from 'ngx-toastr';
   styleUrls: ['./login.component.css']
 })
 export class LoginComponent implements OnInit {
+  hide = true;
   status = 'Dang nhap that bai';
   form: any = {
     username: '',
