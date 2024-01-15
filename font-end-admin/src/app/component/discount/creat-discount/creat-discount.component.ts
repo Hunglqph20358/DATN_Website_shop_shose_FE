@@ -27,14 +27,10 @@ export class CreatDiscountComponent implements OnInit {
     reducedValue: '',
     discountType: '0',
     maxReduced: 0,
-    isValidDateRange: () => {
-      return (
-        this.discount.discountAdminDTO.startDate &&
-        this.discount.discountAdminDTO.endDate &&
-        this.discount.discountAdminDTO.startDate < this.discount.discountAdminDTO.endDate
-      );
-    },
   };
+  startDateTouched = false;
+  checkEndDate: boolean = false;
+  endDateTouched = false;
   currentDate: Date = new Date();
   fullname = '';
   gridApi: any;
@@ -107,14 +103,32 @@ export class CreatDiscountComponent implements OnInit {
     });
     console.log(this.currentDate);
   }
+  isValidDateRange(): void {
+    if (
+      this.discount.discountAdminDTO.startDate &&
+      this.discount.discountAdminDTO.endDate &&
+      this.discount.discountAdminDTO.startDate > this.discount.discountAdminDTO.endDate
+    ) {
+      this.checkEndDate = true;
+      console.log('Date range is valid.');
+    } else {
+      this.checkEndDate = false;
+      // Cũng có thể thực hiện công việc khác nếu cần.
+      console.log('Date range is not valid.');
+    }
+  }
+  isEndDateValid() {
+    this.endDateTouched = true;
+    this.isValidDateRange();
+  }
   isStartDateValid() {
-    // console.log(event);
     const date = new Date();
     console.log(date.getTime());
     console.log(new Date(this.discount.discountAdminDTO.startDate).getTime());
+    this.startDateTouched = true;
     if (new Date(this.discount.discountAdminDTO.startDate).getTime() < date.getTime()){
       this.checkStartDate = true;
-    }else {
+    }else if (new Date(this.discount.discountAdminDTO.startDate).getTime() >= date.getTime()){
       this.checkStartDate = false;
     }
     console.log(this.checkStartDate);
@@ -123,17 +137,9 @@ export class CreatDiscountComponent implements OnInit {
     this.gridApi = params.api;
   }
 
-  // isValidDateRange: () => {
-  //   // Your logic to check the validity of the date range
-  //   // For example:
-  //   return (
-  //     this.discount.discountAdminDTO.startDate &&
-  //   this.discount.discountAdminDTO.endDate &&
-  //   this.discount.discountAdminDTO.startDate < this.discount.discountAdminDTO.endDate
-  //   );
-  // }
-
   addDiscount() {
+    this.isEndDateValid();
+    this.isStartDateValid();
     this.validateName();
     this.validateReducedValue();
     this.validateDescription();

@@ -12,7 +12,10 @@ import {CommonFunction} from "../../../util/common-function";
   styleUrls: ['./creat-voucher-ship.component.css']
 })
 export class CreatVoucherShipComponent implements OnInit {
-
+  startDateTouched = false;
+  checkStartDate: boolean = false;
+  checkEndDate: boolean = false;
+  endDateTouched = false;
   rowData = [];
   columnDefs;
   headerHeight = 50;
@@ -87,8 +90,35 @@ export class CreatVoucherShipComponent implements OnInit {
     ];
   }
   public rowSelection: 'single' | 'multiple' = 'multiple'; // Chọn nhiều dòng
-  isStartDateValid(): boolean {
-    return !this.voucher.startDate || this.voucher.startDate >= this.currentDate;
+  isValidDateRange(): void {
+    if (
+      this.voucher.startDate &&
+      this.voucher.endDate &&
+      this.voucher.startDate > this.voucher.endDate
+    ) {
+      this.checkEndDate = true;
+      console.log('Date range is valid.');
+    } else {
+      this.checkEndDate = false;
+      // Cũng có thể thực hiện công việc khác nếu cần.
+      console.log('Date range is not valid.');
+    }
+  }
+  isEndDateValid() {
+    this.endDateTouched = true;
+    this.isValidDateRange();
+  }
+  isStartDateValid() {
+    // console.log(event);
+    const date = new Date();
+    console.log(date.getTime());
+    console.log(new Date(this.voucher.startDate).getTime());
+    if (new Date(this.voucher.startDate).getTime() < date.getTime()){
+      this.checkStartDate = true;
+    }else {
+      this.checkStartDate = false;
+    }
+    console.log(this.checkStartDate);
   }
   ngOnInit(): void {
     this.voucherService.getCustomer().subscribe((response) => {
@@ -100,6 +130,8 @@ export class CreatVoucherShipComponent implements OnInit {
     this.gridApi = params.api;
   }
   addVoucher() {
+    this.isEndDateValid();
+    this.isStartDateValid();
     this.validateName();
     this.validateReducedValue();
     this.validateDescription();

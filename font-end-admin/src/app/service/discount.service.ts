@@ -26,7 +26,7 @@ export class DiscountService {
     return this.http.get<any[]>('http://localhost:6868/api/admin/discount/KKH');
   }
   exportExcel(): Observable<Blob> {
-    return this.http.get('http://localhost:6868/api/admin/discount/discount/export-data', { responseType: 'blob' });
+    return this.http.get('http://localhost:6868/api/admin/discount/discount/export-data',{responseType: 'blob' });
   }
 
   updateDiscount(id: number, discount: any) {

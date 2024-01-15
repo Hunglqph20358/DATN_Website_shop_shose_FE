@@ -21,7 +21,7 @@ export class Order{
   description?: string;
   statusPayment?: string;
   status?: number;
-  customerDTO: CustomerSalesDTO;
+  customerDTO?: CustomerSalesDTO;
   email?: string;
   constructor(id: number, code: string, idCustomer: number, idStaff: number, codeVoucher: string, createDate: string, paymentDate: string, deliveryDate: string, receivedDate: string, addressReceived: string, shipperPhone: string, receiverPhone: string, receiver: string, shipPrice: string, totalPrice: number, totalPayment: number, paymentType: number, description: string, status: number, customerDTO: CustomerSalesDTO, email: string) {
     this.id = id;

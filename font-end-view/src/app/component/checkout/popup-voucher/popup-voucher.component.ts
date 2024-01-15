@@ -34,6 +34,7 @@ export class PopupVoucherComponent implements OnInit {
       const storedUser = JSON.parse(storedUserString);
       this.idCustomer = storedUser.id;
     }
+    this.voucherChoice = this.data.voucherChoice;
   }
 
   ngOnInit(): void {
@@ -85,7 +86,7 @@ export class PopupVoucherComponent implements OnInit {
     if (new Date(v.startDate) > new Date()) {
       this.checkStartDate = true;
       return true;
-    }else if (v.conditionApply > this.data) {
+    }else if (v.conditionApply > this.data.total) {
       this.checkConditionApply = true;
       return true;
     } else {

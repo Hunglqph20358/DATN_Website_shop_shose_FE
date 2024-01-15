@@ -8,8 +8,10 @@
           </div>
 
           <form (submit)="addDiscount()">
-            <div class="card-body">
-              <div class="form-group">
+            <div class="card-body col-12">
+            <div class="row">
+              <div class="col-6 ">
+              <div class="form-group w-100">
                 <label for="name">Tên</label>
                 <input
                   type="text"
@@ -23,71 +25,81 @@
                   minlength="5"
                   (keydown)="revoveInvalid(validName)" (blur)="validateName()"
                 />
-                <div class="validate-input" *ngIf="!validName.done" class="alert alert-danger">
+                <div class="validate-input" *ngIf="!validName.done">
                   <p class="validate-input-label" *ngIf="validName.empty">Tên không để trống</p>
                   <p class="validate-input-label" *ngIf="validName.maxLength">Tên tối đa 250 kí tự</p>
                 </div>
               </div>
 
-              <div class="form-group">
-                <label for="description">Nội dung</label>
-                <input
-                  type="text"
-                  class="form-control"
-                  id="description"
-                  [ngModelOptions]="{ standalone: true }"
-                  [(ngModel)]="discount.discountAdminDTO.description"
-                  placeholder="Nội dung"
-                  name="description"
-                  required
-                  (keydown)="revoveInvalid(validDescription)" (blur)="validateDescription()"
-                />
-                <div class="validate-input" *ngIf="!validDescription.done" class="alert alert-danger">
-                  <p class="validate-input-label" *ngIf="validDescription.empty">Nội dung không để trống</p>
-                  <p class="validate-input-label" *ngIf="validDescription.maxLength">Nội dung tối đa 250 kí tự</p>
-                </div>
-              </div>
-
-              <div class="form-group">
-                <label for="startDate">Ngày bắt đầu</label>
-                <input
-                  type="datetime-local"
-                  class="form-control"
-                  [ngModelOptions]="{ standalone: true }"
-                  id="startDate"
-                  [(ngModel)]="discount.discountAdminDTO.startDate"
-                  name="startDate" (blur)="isStartDateValid()"
-                  required
-                />
-                <div class="alert alert-danger">
-                  <div *ngIf="!discount.discountAdminDTO.startDate">
-                    Vui lòng chọn ngày bắt đầu.
-                  </div>
-                  <div *ngIf="checkStartDate">
-                    Ngày bắt đầu phải lớn hơn hoặc bằng ngày hiện tại.
+                <div class="form-group">
+                  <label for="startDate">Ngày bắt đầu</label>
+                  <input
+                    type="datetime-local"
+                    class="form-control"
+                    [ngModelOptions]="{ standalone: true }"
+                    id="startDate"
+                    [(ngModel)]="discount.discountAdminDTO.startDate"
+                    name="startDate"
+                    (change)="isStartDateValid()"
+                    required
+                  />
+                  <div>
+                    <div *ngIf="startDateTouched && !discount.discountAdminDTO.startDate">
+                      Vui lòng chọn ngày bắt đầu.
+                    </div>
+                    <div *ngIf="checkStartDate">
+                      Ngày bắt đầu phải lớn hơn hoặc bằng ngày hiện tại.
+                    </div>
                   </div>
                 </div>
 
-              </div>
 
-              <div class="form-group">
-                <label for="endDate">Ngày kết thúc</label>
-                <input
-                  type="datetime-local"
-                  class="form-control"
-                  [ngModelOptions]="{ standalone: true }"
-                  id="endDate"
-                  [(ngModel)]="discount.discountAdminDTO.endDate"
-                  name="endDate"
-                  required
-                />
-                <div *ngIf="!discount.discountAdminDTO.endDate || !discount.isValidDateRange()" class="alert alert-danger">
-                  <div *ngIf="!discount.discountAdminDTO.endDate">Vui lòng chọn ngày kết thúc.</div>
-                  <div *ngIf="!discount.isValidDateRange()">Ngày kết thúc phải lớn hơn ngày bắt đầu.</div>
+                <div class="form-group">
+                  <label for="endDate">Ngày kết thúc</label>
+                  <input
+                    type="datetime-local"
+                    class="form-control"
+                    [ngModelOptions]="{ standalone: true }"
+                    id="endDate"
+                    [(ngModel)]="discount.discountAdminDTO.endDate"
+                    name="endDate"
+                    required
+                    (change)="isEndDateValid()"
+                  />
+                  <div>
+                    <div *ngIf="endDateTouched && !discount.discountAdminDTO.endDate">
+                      Vui lòng chọn ngày kết thúc.
+                    </div>
+                    <div *ngIf="checkEndDate">
+                      Ngày kết thúc phải lớn hơn ngày bắt đầu và phải lớn hơn ngày hiện tại.
+                    </div>
+                  </div>
                 </div>
-              </div>
+                <div class="form-group">
+                  <label for="description">Nội dung</label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="description"
+                    [ngModelOptions]="{ standalone: true }"
+                    [(ngModel)]="discount.discountAdminDTO.description"
+                    placeholder="Nội dung"
+                    name="description"
+                    required
+                    (keydown)="revoveInvalid(validDescription)" (blur)="validateDescription()"
+                  />
+                  <div class="validate-input" *ngIf="!validDescription.done" >
+                    <p class="validate-input-label" *ngIf="validDescription.empty">Nội dung không để trống</p>
+                    <p class="validate-input-label" *ngIf="validDescription.maxLength">Nội dung tối đa 250 kí tự</p>
+                  </div>
+                </div>
 
-              <div class="form-group">
+              </div>
+         <div class="col-6">
+
+
+
+           <div class="form-group">
                 <label for="discountType">Loại giảm giá</label>
                 <select
                   class="form-control"
@@ -97,9 +109,8 @@
                   name="discountType"
                   required
                 >
-                  <option >Chọn loại giảm giá</option>
-                  <option value="1" selected >Theo %</option>
-                  <option value="0">Theo tiền mặt</option>
+                  <option value="0" selected >Theo %</option>
+                  <option value="1">Theo tiền mặt</option>
                 </select>
               </div>
 
@@ -112,19 +123,19 @@
                   [ngModelOptions]="{ standalone: true }"
                   [(ngModel)]="discount.reducedValue"
                   placeholder="Giá trị giảm"
-                  [max]="discount.discountType === '1' ? 100 : null"
+                  [max]="discount.discountType === '0' ? 100 : null"
                   (keydown)="revoveInvalid(validReducedValue)" (blur)="validateReducedValue()"
                 />
-                <div *ngIf="discount.discountType === '1' && discount.reducedValue > 100 " class="text-danger">
+                <div *ngIf="discount.discountType === '0' && discount.reducedValue > 100 " class="text-danger">
                   Giá trị giảm không được quá 100%
                 </div>
-                <div class="validate-input" *ngIf="!validReducedValue.done" class="alert alert-danger">
+                <div class="validate-input" *ngIf="!validReducedValue.done">
                   <p class="validate-input-label" *ngIf="validReducedValue.empty">Giá trị giảm không để trống</p>
                   <p class="validate-input-label" *ngIf="validReducedValue.regex">Giá trị giảm phải là số</p>
                 </div>
               </div>
 
-              <div class="form-group" *ngIf="discount.discountType == '1'">
+              <div class="form-group" *ngIf="discount.discountType == '0'">
                 <label for="maxReduced">Giá trị giảm tối đa</label>
                 <input
                   type="text"
@@ -136,29 +147,28 @@
                   (keydown)="revoveInvalid(validMaxReduced)" (blur)="validateMaxReducedValue()"
 
                 />
-                <div class="validate-input" *ngIf="!validMaxReduced.done" class="alert alert-danger">
+                <div class="validate-input" *ngIf="!validMaxReduced.done" >
                   <p class="validate-input-label" *ngIf="validMaxReduced.empty">Giá trị giảm tối đa không để trống</p>
                   <p class="validate-input-label" *ngIf="validMaxReduced.regex">Giá trị giảm tối đa phải là số</p>
                 </div>
+              </div>
+           <div class="form-group">
+             <label>Sản phẩm áp dụng</label>
+             <div class="radio-buttons">
+               <label class="radio-container">Tất cả sản phẩm
+                 <input type="radio" [(ngModel)]="discount.spap" name="spap" value="0" required>
+                 <span class="radio-checkmark"></span>
+               </label>
+               <label class="radio-container">Tùy chọn
+                 <input type="radio" [(ngModel)]="discount.spap" name="spap" value="1" required>
+                 <span class="radio-checkmark"></span>
+               </label>
+             </div>
+           </div>
 
-              </div>
-              <div class="form-group">
-                <label for="discountType">Sản phẩm áp dụng</label>
-                <select
-                  class="form-control"
-                  id="spap"
-                  [ngModelOptions]="{ standalone: true }"
-                  [(ngModel)]="discount.spap"
-                  name="discountType"
-                  required
-                >
-                  <option value="0" selected>Tất cả sản phẩm</option>
-                  <option value="1">Tùy chọn</option>
-                </select>
-                <div *ngIf="!discount.spap" class="alert alert-danger">
-                  <div *ngIf="!discount.spap">Vui lòng chọn sản phẩm áp dụng.</div>
-                </div>
-              </div>
+            </div>
+         </div>
+
 
               <div class="form-group" *ngIf="discount.spap == '1'">
                 <label for="product">Sản phẩm giảm</label>
