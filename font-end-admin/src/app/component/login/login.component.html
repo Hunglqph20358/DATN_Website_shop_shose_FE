@@ -35,8 +35,10 @@
             <h2 class="mb-5 text-center">Sign in</h2>
             <form (ngSubmit)="login()">
               <div class="form-outline mb-4">
-                <label class="form-label" for="typeEmailX-2">Tên Đăng Nhập</label>
-                <input  id="typeEmailX-2" class="form-control form-control-lg" name="user" [(ngModel)]="form.username" [ngModelOptions]="{standalone: true}" />
+                <mat-form-field appearance="fill" style=" width: 428px !important; background-color: white !important;">
+                  <mat-label>Tên đăng nhập</mat-label>
+                  <input class="form-control form-control-lg" matInput [type]="'text'" [(ngModel)]="form.username" [ngModelOptions]="{standalone: true}">
+                </mat-form-field>
               </div>
 
               <div class="form-outline mb-4">

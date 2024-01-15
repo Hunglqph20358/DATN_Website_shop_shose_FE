@@ -95,6 +95,7 @@ export class SalesCounterComponent implements OnInit {
   shipFee = 0;
   shipFeeReduce = null;
   totalMoneyPay;
+  reducePriceProduct = 0;
   typeOrder: number | null = null;
   statusOrder: number | null = null;
   receiver: string;
@@ -183,6 +184,11 @@ export class SalesCounterComponent implements OnInit {
     if (!row.quantity) {
       row.quantity = 1;
     }
+    if (row.reducePrice != null && row.percentageReduce != null){
+       this.reducePriceProduct = row.price - row.reducePrice;
+    }else {
+      this.reducePriceProduct = row.price;
+    }
     this.listProductPush.push(row);
     this.listCart.push(
       {
@@ -193,7 +199,7 @@ export class SalesCounterComponent implements OnInit {
         colorId: null,
         nameColor: null,
         quantity: 1,
-        price: row.price
+        price: this.reducePriceProduct
       }
     );
     // this.listProductPush.push(row);

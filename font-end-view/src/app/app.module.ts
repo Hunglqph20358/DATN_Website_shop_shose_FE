@@ -44,6 +44,7 @@ import {DateRangePickerModule} from '@syncfusion/ej2-angular-calendars';
 import { CustomCarouselComponent } from './component/details/custom-carousel/custom-carousel.component';
 import { SearchOrderComponent } from './component/search-order/search-order.component';
 import {MatCardModule} from '@angular/material/card';
+import {MatIcon, MatIconModule} from '@angular/material/icon';
 
 @NgModule({
   declarations: [
@@ -93,6 +94,7 @@ import {MatCardModule} from '@angular/material/card';
         DateRangePickerModule,
         MatTableModule,
         MatCardModule,
+        MatIconModule
     ],
   providers: [{provide: JWT_OPTIONS, useValue: JWT_OPTIONS},
     JwtHelperService],

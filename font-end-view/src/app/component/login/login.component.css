@@ -74,7 +74,14 @@
   left: 15px;
   color: #c72092;
 }
-
+.login_form .right .password a i{
+  display: block;
+  top: 5px;
+  left: 2px;
+}
+.login_form .right .password a{
+  display: block;
+}
 .login_form .right .password input{
   position: relative;
   left: 9%;
