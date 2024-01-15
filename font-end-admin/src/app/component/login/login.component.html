@@ -37,20 +37,23 @@
               <div class="form-outline mb-4">
                 <label class="form-label" for="typeEmailX-2">Tên Đăng Nhập</label>
                 <input  id="typeEmailX-2" class="form-control form-control-lg" name="user" [(ngModel)]="form.username" [ngModelOptions]="{standalone: true}" />
-
               </div>
 
               <div class="form-outline mb-4">
-                <label class="form-label" for="typePasswordX-2">Mật Khẩu</label>
-                <input type="password" id="typePasswordX-2" class="form-control form-control-lg" name="password" [(ngModel)]="form.password" [ngModelOptions]="{standalone: true}" />
-
+                <mat-form-field appearance="fill" style="width: 428px !important;">
+                  <mat-label>Mật Khẩu</mat-label>
+                  <input class="form-control form-control-lg" matInput [type]="hide ? 'password' : 'text'" [(ngModel)]="form.password" [ngModelOptions]="{standalone: true}">
+                  <a mat-icon-button matSuffix (click)="hide = !hide" [attr.aria-label]="'Hide password'" [attr.aria-pressed]="hide">
+                    <mat-icon>{{hide ? 'visibility_off' : 'visibility'}}</mat-icon>
+                  </a>
+                </mat-form-field>
               </div>
 
               <!-- Checkbox -->
-              <div class="form-check d-flex justify-content-start mb-4">
-                <input class="form-check-input" type="checkbox" value="" id="form1Example3" />
-                <label class="form-check-label" for="form1Example3"> Nhớ mật khẩu </label>
-              </div>
+<!--              <div class="form-check d-flex justify-content-start mb-4">-->
+<!--                <input class="form-check-input" type="checkbox" value="" id="form1Example3" />-->
+<!--                <label class="form-check-label" for="form1Example3"> Nhớ mật khẩu </label>-->
+<!--              </div>-->
 
               <div>
                 <button class="btn btn-primary btn-lg btn-block  " style="margin-left: 120px; width: 200px" type="submit">

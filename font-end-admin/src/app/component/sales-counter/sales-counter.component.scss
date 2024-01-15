@@ -80,7 +80,7 @@ tr.shadowed-row {
   position: absolute;
   top: 100%;
   left: 0;
-  width: 34%;
+  width: 40%;
   z-index: 100;
   display: block;
   background-color: #fff;
@@ -133,6 +133,15 @@ tr.shadowed-row {
 }
 .camera-container {
   display: none;
+}
+.validate-input{
+  .validate-input-label{
+    margin: 5px 0 0 !important;
+    color: red;
+    font-size: 12px;
+    line-height: 10px;
+    font-weight: 500;
+  }
 }
 
 
