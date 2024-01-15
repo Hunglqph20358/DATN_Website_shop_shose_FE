@@ -45,6 +45,7 @@ export class HeaderComponent implements OnInit {
   logOut(){
     localStorage.removeItem('token');
     localStorage.removeItem('users');
+    localStorage.removeItem('customer');
     this.isLoggedIn = false;
   }
 }
