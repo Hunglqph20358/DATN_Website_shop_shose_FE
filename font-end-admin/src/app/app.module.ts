@@ -204,7 +204,6 @@ import {MatSlideToggleModule} from '@angular/material/slide-toggle';
     DateRangePickerModule,
     ZXingScannerModule,
     MatSlideToggleModule
-    ZXingScannerModule,
   ],
   bootstrap: [AppComponent],
   providers: [{provide: JWT_OPTIONS, useValue: JWT_OPTIONS},

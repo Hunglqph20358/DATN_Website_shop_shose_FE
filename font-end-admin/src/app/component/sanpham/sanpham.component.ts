@@ -25,7 +25,8 @@ export class SanphamComponent implements OnInit {
   productDetails: any[];
   public rowSelection: 'single' | 'multiple' = 'multiple'; // Chọn nhiều dòng
   rowExpansion: boolean = false;
-
+  searchProduct: string;
+  ListProduct: any[];
 
   data = [
     {
@@ -226,6 +227,23 @@ export class SanphamComponent implements OnInit {
       });
       console.log('Product: ', this.products);
     });
+  }
+  finbyProductLike(){
+    if (this.searchProduct === ''){
+      this.spsv.getAllProductAll().subscribe(
+        data => {
+          this.products = data;
+          this.rowData = this.ListProduct;
+        }
+      );
+    }else {
+      this.spsv.searchProduct(this.searchProduct).subscribe(
+        data => {
+          this.products = data;
+        }
+      );
+    }
+
   }
 
   exportData() {
