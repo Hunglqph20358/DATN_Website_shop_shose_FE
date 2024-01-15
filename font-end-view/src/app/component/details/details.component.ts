@@ -262,14 +262,15 @@ export class DetailsComponent implements OnInit {
   }
 
   onSizeChange(event: any): void {
-    const selectedSizeId = this.sizeId;
-
+    // console.log("Size: ", event);
+    // const selectedSizeId = this.sizeId;
     if (this.product && this.product.productDetailDTOList) {
-      if (selectedSizeId === null) {
+      if (this.sizeId === null) {
         this.listColor = [...this.originalListColor];
       }else {
+        this.listColor = [...this.originalListColor];
         const detailsForSelectedSize = this.product.productDetailDTOList
-          .filter(detail => detail.idSize === selectedSizeId && detail.idColor);
+          .filter(detail => detail.idSize === this.sizeId && detail.idColor);
         const colorIDsForSelectedSize = detailsForSelectedSize.map(detail => detail.idColor);
         this.listColor = this.listColor.filter(color => colorIDsForSelectedSize.includes(color.id));
       }
@@ -279,14 +280,15 @@ export class DetailsComponent implements OnInit {
   }
 
   onColorChange(event: any): void {
-    console.log(this.colorId);
-    const selectedColorId = this.colorId;
+    console.log(event);
+    // const selectedColorId = this.colorId;
     if (this.product && this.product.productDetailDTOList) {
-      if (selectedColorId === null) {
+      if (this.colorId === null) {
         this.listSize = [...this.originalListSize];
       }else {
+        this.listSize = [...this.originalListSize];
         const detailsForSelectedColor = this.product.productDetailDTOList
-          .filter(detail => detail.idColor === selectedColorId && detail.idSize);
+          .filter(detail => detail.idColor === this.colorId && detail.idSize);
 
         const sizeIDsForSelectedColor = detailsForSelectedColor.map(detail => detail.idSize);
 
