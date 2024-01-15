@@ -20,144 +20,230 @@ export class SanphamComponent implements OnInit {
   columnDefs;
   headerHeight = 50;
   rowHeight = 40;
+  products: any[];
+  selectedProductId: number;
+  productDetails: any[];
   public rowSelection: 'single' | 'multiple' = 'multiple'; // Chọn nhiều dòng
+  rowExpansion: boolean = false;
+  searchProduct: string;
+  ListProduct: any[];
+
+  data = [
+    {
+      id: 1,
+      name: 'Abc',
+      email: 'abc@mail.com',
+      isExpand: false,
+      address: [
+        {
+          add1: 'Delhi',
+          add2: 'Bangalore',
+        }
+      ]
+    },
+    {
+      id: 2,
+      name: 'Xyz',
+      email: 'xyz@mail.com',
+      isExpand: false,
+      address: [
+        {
+          add1: 'Mumbai',
+          add2: 'Pune',
+        }
+      ]
+    },
+    {
+      id: 3,
+      name: 'ijk',
+      email: 'ijk@mail.com',
+      isExpand: false,
+      address: [
+        {
+          add1: 'Chennai',
+          add2: 'Bangalore',
+        }
+      ]
+    },
+    {
+      id: 4,
+      name: 'def',
+      email: 'def@mail.com',
+      isExpand: false,
+      address: [
+        {
+          add1: 'Kolkata',
+          add2: 'Hyderabad',
+        }
+      ]
+    }
+  ];
+
+
   constructor(private matdialog: MatDialog,
               private spsv: ProductService, private changeDetectorRef: ChangeDetectorRef,
               private cdr: ChangeDetectorRef) {
-    this.columnDefs = [
-      {
-        headerName: 'Ảnh sản phẩm',
-        field: 'image',
-        sortable: true,
-        filter: true,
-        width: 150,
-        // cellRenderer: (params) => {
-        //   return `<div>
-        // <img width="40px" height="40px" src="${params.data?.imagesDTOList[0].imageName}">
-        // </div>`;
-        // }
-      },
-      {
-        headerName: 'Mã',
-        field: 'code',
-        sortable: true,
-        filter: true,
-        width: 110
-      },
-      {
-        headerName: 'Tên sản phẩm',
-        field: 'name',
-        sortable: true,
-        filter: true,
-        width: 150},
-      {
-        headerName: 'Ngày tạo',
-        field: 'createDate',
-        sortable: true,
-        filter: true,
-        width: 150,
-        valueGetter: (params) => {
-          return `${formatDateTime(params.data?.createDate)}`;
-        }
-      },
-      {
-        headerName: 'Ngày cập nhật ',
-        field: 'updateDate',
-        sortable: true, filter: true,
-        width: 150,
-        valueGetter: (params) => {
-          return `${formatDateTime(params.data?.updateDate)}`;
-        }
-      },
-      {
-        headerName: 'Tên người tạo',
-        field: 'createName',
-        sortable: true,
-        filter: true,
-        width: 150},
-      {
-        headerName: 'Tên người cập nhật',
-       field: 'updateName',
-       sortable: true,
-       filter: true,
-       width: 150
-      },
-      {
-        headerName: 'Gía',
-        field: '',
-        sortable: true,
-        filter: true,
-        width: 150,
-        valueGetter: (params) => {
-          return `${formatMoney(params.data?.price)}`;
-        }
-      },
-      {
-        headerName: 'Tên thương hiệu',
-        field: '',
-        sortable: true,
-        filter: true,
-        width: 150,
-        valueGetter: (params) => {
-          return params.data?.brandAdminDTO?.name;
-        }
-      },
-      {
-        headerName: 'Tên danh mục',
-        field: '',
-        sortable: true,
-        filter: true,
-        width: 150,
-        valueGetter: (params) => {
-          return params.data?.categoryAdminDTO.name;
-        }
-      },
-      {
-        headerName: 'Tên chất liệu',
-        field: '',
-        sortable: true,
-        filter: true,
-        width: 150,
-        valueGetter: (params) => {
-          return params.data?.materialAdminDTO.name;
-        }
-      },
-      {headerName: 'Mô tả',
-       field: 'description',
-       sortable: true,
-       filter: true
-      },
-      {
-        headerName: 'Trạng thái',
-        field: 'status',
-        sortable: true,
-        filter: true,
-        width: 150,
-        valueGetter: (params) => {
-          return params.data?.status === 0 ? 'Hoạt động' : 'Ngưng hoạt động';
-        }
-      },
-      {
-        headerName: 'Chất liệu đế',
-        field: 'idSole',
-        sortable: true,
-        filter: true,
-        width: 110,
-        valueGetter: (params) => {
-          return params.data?.soleAdminDTO.soleMaterial;
-        }
-      },
-      {headerName: 'Chức năng',
-       field: '',
-       cellRendererFramework: SanPhamActionComponent,
-       width: 110},
-    ];
+    // this.columnDefs = [
+    //   {
+    //     headerName: 'Ảnh sản phẩm',
+    //     field: 'image',
+    //     sortable: true,
+    //     filter: true,
+    //     width: 150,
+    //     cellRenderer: (params) => {
+    //       return `<div>
+    //     <img width="40px" height="40px" src="${params.data?.imagesDTOList[0].imageName}">
+    //     </div>`;
+    //     }
+    //   },
+    //   {
+    //     headerName: 'Mã',
+    //     field: 'code',
+    //     sortable: true,
+    //     filter: true,
+    //     width: 110
+    //   },
+    //   {
+    //     headerName: 'Tên sản phẩm',
+    //     field: 'name',
+    //     sortable: true,
+    //     filter: true,
+    //     width: 150
+    //   },
+    //   // {
+    //   //   headerName: 'Ngày tạo',
+    //   //   field: 'createDate',
+    //   //   sortable: true,
+    //   //   filter: true,
+    //   //   width: 150,
+    //   //   valueGetter: (params) => {
+    //   //     return `${formatDateTime(params.data.createDate)}`;
+    //   //   }
+    //   // },
+    //   // {
+    //   //   headerName: 'Ngày cập nhật ',
+    //   //   field: 'updateDate',
+    //   //   sortable: true, filter: true,
+    //   //   width: 150,
+    //   //   valueGetter: (params) => {
+    //   //     return `${formatDateTime(params.data.updateDate)}`;
+    //   //   }
+    //   // },
+    //   // {
+    //   //   headerName: 'Tên người tạo',
+    //   //   field: 'createName',
+    //   //   sortable: true,
+    //   //   filter: true,
+    //   //   width: 150},
+    //   // {
+    //   //   headerName: 'Tên người cập nhật',
+    //   //  field: 'updateName',
+    //   //  sortable: true,
+    //   //  filter: true,
+    //   //  width: 150
+    //   // },
+    //   {
+    //     headerName: 'Gía',
+    //     field: '',
+    //     sortable: true,
+    //     filter: true,
+    //     width: 150,
+    //     valueGetter: (params) => {
+    //       return `${formatMoney(params.data.price)}`;
+    //     }
+    //   },
+    //   {
+    //     headerName: 'Tên thương hiệu',
+    //     field: '',
+    //     sortable: true,
+    //     filter: true,
+    //     width: 150,
+    //     valueGetter: (params) => {
+    //       return params.data?.brandAdminDTO.name;
+    //     }
+    //   },
+    //   {
+    //     headerName: 'Tên danh mục',
+    //     field: '',
+    //     sortable: true,
+    //     filter: true,
+    //     width: 150,
+    //     valueGetter: (params) => {
+    //       return params.data?.categoryAdminDTO.name;
+    //     }
+    //   },
+    //   {
+    //     headerName: 'Tên chất liệu',
+    //     field: '',
+    //     sortable: true,
+    //     filter: true,
+    //     width: 150,
+    //     valueGetter: (params) => {
+    //       return params.data?.materialAdminDTO.name;
+    //     }
+    //   },
+    //   {
+    //     headerName: 'Mô tả',
+    //     field: 'description',
+    //     sortable: true,
+    //     filter: true
+    //   },
+    //   {
+    //     headerName: 'Trạng thái',
+    //     field: 'status',
+    //     sortable: true,
+    //     filter: true,
+    //     width: 150,
+    //     valueGetter: (params) => {
+    //       return params.data?.status === 0 ? 'Hoạt động' : 'Ngưng hoạt động';
+    //     }
+    //   },
+    //   {
+    //     headerName: 'Chất liệu đế',
+    //     field: 'idSole',
+    //     sortable: true,
+    //     filter: true,
+    //     width: 110,
+    //     valueGetter: (params) => {
+    //       return params.data.soleAdminDTO.soleMaterial;
+    //     }
+    //   },
+    //   {
+    //     headerName: 'Chức năng',
+    //     field: '',
+    //     cellRendererFramework: SanPhamActionComponent,
+    //     width: 110
+    //   },
+    // ];
   }
 
   ngOnInit(): void {
-    this.spsv.getAllProduct().subscribe(res => {
-      this.rowData = res;
+    this.spsv.getAllProductAll().subscribe(products => {
+      this.products = products.map(p => {
+        return {
+          ...p,
+          isExpand: false
+        };
+      });
+      console.log('Product: ', this.products);
     });
+  }
+  finbyProductLike(){
+    if (this.searchProduct === ''){
+      this.spsv.getAllProductAll().subscribe(
+        data => {
+          this.products = data;
+          this.rowData = this.ListProduct;
+        }
+      );
+    }else {
+      this.spsv.searchProduct(this.searchProduct).subscribe(
+        data => {
+          this.products = data;
+        }
+      );
+    }
+
   }
 
   exportData() {
@@ -182,6 +268,17 @@ export class SanphamComponent implements OnInit {
         this.changeDetectorRef.detectChanges();
       }
     });
+  }
+
+  productExpand(i: any) {
+    this.rowExpansion = !this.rowExpansion;
+    if (this.rowExpansion) {
+      //call api lấy productDetai thuộc product
+    }
+  }
+
+  ChangeStatus() {
+    return null;
   }
 }
 

@@ -15,8 +15,11 @@ export class ProductService {
   getAllProduct(): Observable<any> {
     return this.http.get(`${apiURL}product/hien-thi`);
   }
+  getAllProductAll(): Observable<any> {
+    return this.http.get(`${apiURL}product/hien-thii`);
+  }
 
-  CreateProduct(product: any): Observable<any> {
+  CreateProduct(product: any ): Observable<any> {
     return this.http.post(`${apiURL}product/add`, product);
   }
 
@@ -30,6 +33,9 @@ export class ProductService {
 
   GetProduct(id: number): Observable<any> {
     return this.http.get(`${apiURL}product/detail/${id}`);
+  }
+  getProductDetails(productId: number) {
+    return this.http.get<any[]>(`${apiURL}product-details/${productId}`);
   }
 
   // AddProduct(): Observable<any>{
@@ -59,4 +65,5 @@ export class ProductService {
   uploadImgProduct(formData: FormData, idProduct) {
     return this.http.post(`${apiURL}upload-img-file?idProduct=${idProduct}`, formData);
   }
+
 }

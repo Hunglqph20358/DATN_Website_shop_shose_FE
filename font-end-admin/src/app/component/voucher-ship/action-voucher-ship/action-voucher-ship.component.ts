@@ -9,7 +9,7 @@ import Swal from "sweetalert2";
 
 @Component({
   selector: 'app-action-voucher-ship',
-  templateUrl: './action-voucher-ship.component.html',
+  templateUrl:  './action-voucher-ship.component.html',
   styleUrls: ['./action-voucher-ship.component.css']
 })
 export class ActionVoucherShipComponent implements OnInit, ICellRendererAngularComp {
