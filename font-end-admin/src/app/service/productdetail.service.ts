@@ -13,6 +13,9 @@ export class ProductdetailService {
   getAllProductDetail(): Observable<any>{
     return  this.http.get(`${apiURL}PrdDetail/hien-thi`);
   }
+  getProductDetails(idColor: number, idSize: number) {
+    return this.http.get(`${apiURL}PrdDetail/details/${idColor}/${idSize}`);
+  }
   CreateProductDetail(product: any): Observable<any>{
     return this.http.post(`${apiURL}PrdDetail/add`, product);
   }

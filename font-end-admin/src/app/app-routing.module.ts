@@ -72,10 +72,7 @@ const routes: Routes = [
     data: {
       expectedRole: ['ADMIN']
     }},
-  {path: 'degiay', component: DegiayComponent, canActivate: [RoleGuardService],
-    data: {
-      expectedRole: ['ADMIN']
-    } },
+  {path: 'degiay', component: DegiayComponent},
   {path: 'admin/edit-discount/:id', component: EditDiscountComponent, canActivate: [RoleGuardService],
     data: {
       expectedRole: ['ADMIN']
