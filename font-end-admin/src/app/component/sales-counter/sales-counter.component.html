@@ -36,7 +36,7 @@
         </div>
 
         <div class="col-md-6 row align-items-start">
-          <div class="col-md-7">
+          <div class="col-md-10">
             <mat-tab-group *ngIf="count > 0" (selectedTabChange)="onTabChange($event)">
               <mat-tab *ngFor="let o of listOder">
                 <ng-template mat-tab-label>
@@ -48,7 +48,7 @@
               </mat-tab>
             </mat-tab-group>
           </div>
-          <div class="col-md-4">
+          <div class="col-md-2">
             <button (click)="addOrder()" type="button" class="add-btn-order">
               | <i class="bi bi-plus-circle"></i>
             </button>
@@ -154,13 +154,13 @@
               <label class="col-sm-6 col-form-label">Tổng Tiền:</label>
               <div class="col-sm-6">
                 <input type="text" class="form-control custom-input" name="sumPrice" readonly
-                       [(ngModel)]="totalAllProducts" [ngModelOptions]="{standalone: true}">
+                       value="{{utilService.formatMoney(totalAllProducts)}}">
               </div>
             </div>
             <div class="row mb-2">
               <label class="col-sm-6 col-form-label">Giảm giá:</label>
               <div class="col-sm-6 position-relative">
-                <input type="text" min="0" class="form-control custom-input" name="priceVoucher"
+                <input type="text" min="0" class="form-control custom-input" name="priceVoucher" placeholder="{{utilService.formatMoney(priceVoucher)}}"
                        (change)="priceVouchers() " [(ngModel)]="priceVoucher" [ngModelOptions]="{standalone: true}">
                 <a class="btn icon-add position-absolute top-0 end-0">
                   <i class="bi bi-plus-lg"></i>
@@ -192,22 +192,44 @@
               <div class="row mb-1" *ngIf="isChecked">
                 <label class="col-sm-6 col-form-label">Tên Người nhận:</label>
                 <div class="col-sm-6">
-                  <input type="text" class="form-control custom-input" name="receiver" [(ngModel)]="receiver" [ngModelOptions]="{standalone: true}">
+                  <input type="text" class="form-control custom-input" name="receiver" (keydown)="revoveInvalid(validReceiver)" (blur)="validateReceiver()" [(ngModel)]="receiver" [ngModelOptions]="{standalone: true}">
+                  <div class="validate-input" *ngIf="!validReceiver.done">
+                    <p class="validate-input-label" *ngIf="validReceiver.empty">Tên người nhận không để trống</p>
+                    <p class="validate-input-label" *ngIf="validReceiver.maxLength">Tên người nhận tối đa 250 kí tự</p>
+                  </div>
                 </div>
               </div>
               <!--Sdt-->
               <div class="row mb-1" *ngIf="isChecked">
                 <label class="col-sm-6 col-form-label">SĐT:</label>
                 <div class="col-sm-6">
-                  <input type="text" class="form-control custom-input" name="receiver_phone" [(ngModel)]="receiver_phone" [ngModelOptions]="{standalone: true}">
+                  <input type="text" class="form-control custom-input" name="receiver_phone" (keydown)="revoveInvalid(validReceiverPhone)"
+                         (blur)="validateReceiverPhone()" [(ngModel)]="receiver_phone" [ngModelOptions]="{standalone: true}">
+                  <div class="validate-input" *ngIf="!validReceiverPhone.done">
+                    <p class="validate-input-label" *ngIf="validReceiverPhone.empty">Số điện thoại không để trống</p>
+                    <p class="validate-input-label" *ngIf="validReceiverPhone.regex">Số điện thoại không đúng định dạng</p>
+                  </div>
                 </div>
               </div>
-
+              <div class="row mb-1" *ngIf="isChecked">
+                <label class="col-sm-6 col-form-label">Email:</label>
+                <div class="col-sm-6">
+                  <input type="text" class="form-control custom-input" name="receiver_mail" (keydown)="revoveInvalid(validEmail)" (blur)="validateEmail()" [(ngModel)]="receiver_mail" [ngModelOptions]="{standalone: true}">
+                  <div class="validate-input" *ngIf="!validEmail.done">
+                    <p class="validate-input-label" *ngIf="validEmail.empty">Email không để trống</p>
+                    <p class="validate-input-label" *ngIf="validEmail.maxLength">Email tối đa 250 kí tự</p>
+                    <p class="validate-input-label" *ngIf="validEmail.regex">Email không đúng định dạng</p>
+                  </div>
+                </div>
+              </div>
               <!--Địa chỉ-->
               <div class="row mb-1" *ngIf="isChecked">
                 <label class="col-sm-6 col-form-label">Địa Chỉ:</label>
                 <div class="col-sm-6">
-                  <input type="text" class="form-control custom-input" name="address" [(ngModel)]="addressNotLogin.specificAddress" [ngModelOptions]="{standalone: true}">
+                  <input type="text" class="form-control custom-input" name="address" (keydown)="revoveInvalid(specificAddress)" (blur)="validateSpecificAddress()" [(ngModel)]="addressNotLogin.specificAddress" [ngModelOptions]="{standalone: true}">
+                  <div class="validate-input" *ngIf="!validProvince.done">
+                    <p class="validate-input-label" *ngIf="validProvince.empty">Vui lòng không để trống</p>
+                  </div>
                 </div>
               </div>
 
@@ -215,9 +237,12 @@
               <div class="row mb-1" *ngIf="isChecked">
                 <label class="col-sm-6 col-form-label">Tỉnh / Thành phố:</label>
                 <div class="col-sm-6">
-                  <ng-select [items]="listProvince" bindLabel="ProvinceName" bindValue="ProvinceID" placeholder="--Lựa chọn--" (change)="getDistrict($event)"
+                  <ng-select [items]="listProvince" bindLabel="ProvinceName" bindValue="ProvinceID" placeholder="--Lựa chọn--" (keydown)="revoveInvalid(validProvince)" (blur)="validateProvince()" (change)="getDistrict($event)"
                              [(ngModel)]="addressNotLogin.provinceId" [ngModelOptions]="{standalone: true}" [searchable]="false" >
                   </ng-select>
+                  <div class="validate-input" *ngIf="!validProvince.done">
+                    <p class="validate-input-label" *ngIf="validProvince.empty">Vui lòng không để trống</p>
+                  </div>
                 </div>
               </div>
 
@@ -226,8 +251,11 @@
                 <label class="col-sm-6 col-form-label">Quận / Huyện:</label>
                 <div class="col-sm-6">
                   <ng-select [items]="listDistrict"  bindLabel="DistrictName" bindValue="DistrictID" placeholder="--Lựa chọn--"
-                             [(ngModel)]="addressNotLogin.districtId" [ngModelOptions]="{standalone: true}" [searchable]="false" (change)="getWard($event)" >
+                             [(ngModel)]="addressNotLogin.districtId" [ngModelOptions]="{standalone: true}" [searchable]="false" (keydown)="revoveInvalid(validDistrict)" (blur)="validateDistrict()"  (change)="getWard($event)" >
                   </ng-select>
+                  <div class="validate-input" *ngIf="!validProvince.done">
+                    <p class="validate-input-label" *ngIf="validProvince.empty">Vui lòng không để trống</p>
+                  </div>
                 </div>
               </div>
 
@@ -235,9 +263,12 @@
               <div class="row mb-1" *ngIf="isChecked">
                 <label class="col-sm-6 col-form-label">Phường / Xã:</label>
                 <div class="col-sm-6">
-                  <ng-select [items]="listWard" bindLabel="WardName" bindValue="WardCode" placeholder="--Lựa chọn--"
+                  <ng-select [items]="listWard" bindLabel="WardName" bindValue="WardCode" placeholder="--Lựa chọn--" (keydown)="revoveInvalid(validWard)" (blur)="validateWard()"
                              [searchable]="false" [(ngModel)]="addressNotLogin.wardCode" [ngModelOptions]="{standalone: true}" (change)="getPhiShip();" >
                   </ng-select>
+                  <div class="validate-input" *ngIf="!validProvince.done">
+                    <p class="validate-input-label" *ngIf="validProvince.empty">Vui lòng không để trống</p>
+                  </div>
                 </div>
               </div>
 
@@ -246,7 +277,7 @@
                 <label class="col-sm-6 col-form-label">Phí Ship:</label>
                 <div class="col-sm-6">
                   <input type="text" class="form-control custom-input" readonly name="priceShip"
-                         value="{{shipFee}}">
+                         value="{{utilService.formatMoney(shipFee)}}">
                 </div>
               </div>
 
@@ -254,7 +285,7 @@
                 <label class="col-sm-6 col-form-label">Khách cần trả:</label>
                 <div class="col-sm-6">
                   <input type="text" class="form-control custom-input" readonly name="priceCustomer"
-                         [(ngModel)]="priceCustomer" [ngModelOptions]="{standalone: true}">
+                         value="{{utilService.formatMoney(priceCustomer)}}">
                 </div>
               </div>
             </div>

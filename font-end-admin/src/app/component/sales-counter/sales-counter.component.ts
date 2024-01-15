@@ -24,32 +24,35 @@ import {GiaoHangServiceService} from '../../service/giao-hang-service.service';
 import Swal from 'sweetalert2';
 import {PaymentSalesService} from '../../service/payment-sales.service';
 import {UtilService} from '../../util/util.service';
+import {CommonFunction} from '../../util/common-function';
+import {ValidateInput} from '../model/validate-input';
 
 @Component({
   selector: 'app-sales-counter',
   templateUrl: './sales-counter.component.html',
-  styleUrls: ['./sales-counter.component.css'],
+  styleUrls: ['./sales-counter.component.scss'],
 })
 
 export class SalesCounterComponent implements OnInit {
   public isProductListVisible: boolean = true;
   public isCustomerNull: boolean = true;
   isChecked: boolean = false;
-  count = 1;
+  count = 0;
   searchTerm: string = '';
   showResults: boolean = false;
   listOder: any[] = [];
-  searchResults: any[] = [];searcherCustomer: string = '';
+  searchResults: any[] = [];
+  searcherCustomer: string = '';
   showCustomer: boolean = false;
   searchCustomerResults: any[] = [];
-  listProductPush: any[] = [];
+  listProductPush: any[] ;
   totalAllProducts: number = 0;
   priceCustomer: number = 0;
   priceVoucher: number = 0;
   userDTO: string;
   fullname: string;
   idStaff: string;
-  currentOrderId: number | null = null;
+  currentOrderId = 1;
   listSizePR: any[];
   listColor: any[];
   listSizeFind: any[];
@@ -84,13 +87,27 @@ export class SalesCounterComponent implements OnInit {
     wardCode: undefined,
     specificAddress: undefined
   };
+  Order: {
+  id: number;
+  name: string;
+  productList: any[];
+};
   shipFee = 0;
   shipFeeReduce = null;
   totalMoneyPay;
   typeOrder: number | null = null;
   statusOrder: number | null = null;
-  receiver: string ;
+  receiver: string;
   receiver_phone: string;
+  receiver_mail: string;
+  validReceiver: ValidateInput = new ValidateInput();
+  validEmail: ValidateInput = new ValidateInput();
+  validReceiverPhone: ValidateInput = new ValidateInput();
+  validProvince: ValidateInput = new ValidateInput();
+  validDistrict: ValidateInput = new ValidateInput();
+  validWard: ValidateInput = new ValidateInput();
+  specificAddress: ValidateInput = new ValidateInput();
+
   constructor(private productService: ProductService, private cookieService: CookieService,
               private orderService: OrderService, private orderDetailService: OrderDetailService,
               private router: Router, private sizeService: SizeService, private colorService: MausacService,
@@ -132,10 +149,14 @@ export class SalesCounterComponent implements OnInit {
   }
 
   addOrder() {
+    if (this.count > 4) {
+      this.toastr.error('Hóa đơn đã được tạo tối đa');
+      return;
+    }
     this.count++;
     let order = {
       id: this.count,
-      name: 'Hóa Đơn' + this.count,
+      name: 'Hóa Đơn ' + this.count,
       productList: []
     };
     this.listOder.push(order);
@@ -151,11 +172,13 @@ export class SalesCounterComponent implements OnInit {
       if (index !== -1) {
         this.listOder.splice(index, 1);
         this.count--;
+        console.log(this.count);
       }
     }
     localStorage.setItem('coutOrder', this.count.toString());
     localStorage.setItem('listOrder', JSON.stringify(this.listOder));
   }
+
   addProductInOrder(row: any) {
     if (!row.quantity) {
       row.quantity = 1;
@@ -178,7 +201,6 @@ export class SalesCounterComponent implements OnInit {
     const currentOrderProducts = this.listProductPush.map(product => ({...product}));
     localStorage.setItem(`orderProducts_${this.currentOrderId}`, JSON.stringify(currentOrderProducts));
     this.isProductListVisible = false;
-    // this.calculateTotalPrice();
     this.calculateTotalAllProducts();
     this.clearSearchTerm();
     this.priceVouchers();
@@ -210,14 +232,25 @@ export class SalesCounterComponent implements OnInit {
   }
 
   removeProduct(index: number): void {
-    //thêm confirm
-    this.listCart.splice(index, 1);
-    this.listCart = [...this.listCart];
+    Swal.fire({
+      title: 'Bạn có xác nhận xóa sản phẩm ?',
+      text: '',
+      icon: 'info',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Đồng ý'
+    }).then(result => {
+      if (result.isConfirmed) {
+        this.listCart.splice(index, 1);
+        this.listCart = [...this.listCart];
 
-    console.log('Xóa: ', this.listCart);
-    this.listProductPush.splice(index, 1);
-    this.cdr.detectChanges();
-    this.calculateTotalAllProducts();
+        console.log('Xóa: ', this.listCart);
+        this.listProductPush.splice(index, 1);
+        this.cdr.detectChanges();
+        this.calculateTotalAllProducts();
+      }
+    });
   }
 
   // calculateTotalPrice() {
@@ -241,9 +274,9 @@ export class SalesCounterComponent implements OnInit {
 
   priceVouchers() {
     if (this.priceVoucher === 0) {
-      this.priceCustomer = this.totalAllProducts ;
+      this.priceCustomer = this.totalAllProducts;
     } else {
-      this.priceCustomer = this.totalAllProducts  - this.priceVoucher;
+      this.priceCustomer = this.totalAllProducts - this.priceVoucher;
     }
 
   }
@@ -309,6 +342,15 @@ export class SalesCounterComponent implements OnInit {
   }
 
   placeOrderSales() {
+    this.receiver = CommonFunction.trimText(this.receiver);
+    this.receiver_mail = CommonFunction.trimText(this.receiver_mail);
+    this.receiver_phone = CommonFunction.trimText(this.receiver_phone);
+    this.validateReceiver();
+    this.validateReceiverPhone();
+    this.validateEmail();
+    this.validateProvince();
+    this.validateDistrict();
+    this.validateWard();
     if (this.listCart.some(c => c.sizeId === null || c.colorId === null)) {
       this.toastr.error('chưa chọn size và màu sắc của sản phẩm');
       return;
@@ -319,13 +361,16 @@ export class SalesCounterComponent implements OnInit {
     if (this.user === null) {
       this.toastr.error('đã hết hạn đăng nhập');
     }
-    if (this.isChecked === true){
-       this.typeOrder = 0;
-       this.statusOrder = 1;
-
-    }else {
-       this.typeOrder = 1;
-       this.statusOrder = 3;
+    if (this.isChecked === true) {
+      this.typeOrder = 0;
+      this.statusOrder = 1;
+      if (!this.validReceiver.done || !this.validEmail.done || !this.validReceiverPhone.done || !this.validProvince.done
+        || !this.validDistrict.done || !this.validWard.done) {
+        return;
+      }
+    } else {
+      this.typeOrder = 1;
+      this.statusOrder = 3;
     }
     Swal.fire({
       title: 'Bạn có xác nhận thanh toán đơn hàng ?',
@@ -344,7 +389,7 @@ export class SalesCounterComponent implements OnInit {
         if (this.selectedOption === '1') {
           const order: Order = {
             paymentType: 1,
-            totalPrice: this.priceCustomer,
+            totalPrice: this.totalAllProducts,
             totalPayment: this.priceCustomer,
             idCustomer: this.idCustomer,
             idStaff: this.user.id,
@@ -397,7 +442,7 @@ export class SalesCounterComponent implements OnInit {
         } else {
           const order: Order = {
             paymentType: 0,
-            totalPrice: this.priceCustomer,
+            totalPrice: this.totalAllProducts,
             totalPayment: this.priceCustomer,
             idCustomer: this.idCustomer,
             shipPrice: this.shipFee,
@@ -439,14 +484,7 @@ export class SalesCounterComponent implements OnInit {
               this.toastr.success('Thanh toán thành công');
               this.printInvoice();
               localStorage.removeItem('listProductPush');
-              this.selectedCustomer = '';
-              this.searcherCustomer = '';
-              this.idCustomer = 1;
-              this.priceCustomer = 0;
-              this.priceVoucher = 0;
-              this.listCart = [];
-              this.totalAllProducts = 0;
-              this.listProductPush = [];
+              this.refreshData();
               this.removeOrder(order);
               this.calculateTotalAllProducts();
               localStorage.setItem('coutOrder', this.count.toString());
@@ -456,6 +494,25 @@ export class SalesCounterComponent implements OnInit {
         }
       }
     });
+  }
+
+  refreshData() {
+    this.selectedCustomer = '';
+    this.searcherCustomer = '';
+    this.idCustomer = 1;
+    this.priceCustomer = 0;
+    this.priceVoucher = 0;
+    this.listCart = [];
+    this.totalAllProducts = 0;
+    this.listProductPush = [];
+    this.addressNotLogin.specificAddress = null;
+    this.receiver = null;
+    this.receiver_phone = null;
+    this.receiver_mail = null;
+    this.addressNotLogin.wardCode = null;
+    this.addressNotLogin.districtId = null;
+    this.addressNotLogin.provinceId = null;
+    this.shipFee = 0;
   }
 
   generateOrderHTML(): string {
@@ -483,7 +540,7 @@ export class SalesCounterComponent implements OnInit {
       orderHTML += `<td>${product.code}</td>`;
       orderHTML += `<td>${product.name}</td>`;
       this.listCart.forEach(details => {
-        if (product.id === details.productId){
+        if (product.id === details.productId) {
           orderHTML += `<td>${details.size_number}</td>`;
           orderHTML += `<td>${details.nameColor}</td>`;
           orderHTML += `<td>${details.quantity}</td>`;
@@ -558,9 +615,10 @@ export class SalesCounterComponent implements OnInit {
       this.count = parseInt(countOrderCookie, 10);
       this.listOder = JSON.parse(listOrderCookie);
     } else {
+      this.count = 1;
       this.listOder.push({
-        id: this.count,
-        name: 'Hóa Đơn' + this.count,
+        id: 1,
+        name: 'Hóa Đơn ' + 1,
         productList: []
       });
       localStorage.setItem('coutOrder', this.count.toString());
@@ -582,6 +640,7 @@ export class SalesCounterComponent implements OnInit {
     this.giaoHangService.getAllProvince().subscribe(res => {
       this.listProvince = res.data;
     });
+
   }
 
   loadData() {
@@ -657,34 +716,12 @@ export class SalesCounterComponent implements OnInit {
       this.listDistrict = res.data;
     });
   }
+
   getWard(event) {
     this.giaoHangService.getAllWardByDistrict(event.DistrictID).subscribe(res => {
       this.listWard = res.data;
     });
   }
-  // getAddress(id: number) {
-  //   const obj = {
-  //     idCustomer: id
-  //   };
-  //   this.addressService.getAddress(obj).subscribe(res => {
-  //     this.address = res.data;
-  //     const addressInfo = {
-  //       service_type_id: 2,
-  //       from_district_id: 3440,
-  //       to_district_id: parseInt(res.data.districtId, 10),
-  //       to_ward_code: res.data.wardCode,
-  //       height: 20,
-  //       length: 30,
-  //       weight: 200,
-  //       width: 40,
-  //       insurance_value: 0,
-  //     };
-  //     this.giaoHangService.getTinhPhiShip(addressInfo).subscribe(res2 => {
-  //       this.shipFee = res2.data.service_fee;
-  //       this.totalMoneyPay = this.shipFee + this.totalMoneyPay;
-  //     });
-  //   });
-  // }
 
   getPhiShip() {
     const addressInfo = {
@@ -703,11 +740,45 @@ export class SalesCounterComponent implements OnInit {
       this.priceCustomer = this.shipFee + this.priceCustomer;
     });
   }
-  selectedOpsiontGH(){
-    if (this.isChecked === false){
+
+  selectedOpsiontGH() {
+    if (this.isChecked === false) {
       this.isChecked = true;
-    }else {
+    } else {
       this.isChecked = false;
     }
+  }
+
+// validate
+  revoveInvalid(result) {
+    result.done = true;
+  }
+
+  validateReceiver() {
+    this.validReceiver = CommonFunction.validateInput(this.receiver, 250, null);
+  }
+
+  validateEmail() {
+    this.validEmail = CommonFunction.validateInput(this.receiver_mail, 250, /^[^\s@]+@[^\s@]+\.[^\s@]+$/);
+  }
+
+  validateReceiverPhone() {
+    this.validReceiverPhone = CommonFunction.validateInput(this.receiver_phone, null, /^(0[2-9]|1[2-9]|2[2-9]|3[2-9]|4[2-9]|5[2-9]|6[2-9]|7[2-9]|8[2-9]|9[2-9])\d{8}$/);
+  }
+
+  validateSpecificAddress() {
+    this.specificAddress = CommonFunction.validateInput(this.addressNotLogin.specificAddress, null, null);
+  }
+
+  validateProvince() {
+    this.validProvince = CommonFunction.validateInput(this.addressNotLogin.provinceId, null, null);
+  }
+
+  validateDistrict() {
+    this.validDistrict = CommonFunction.validateInput(this.addressNotLogin.districtId, null, null);
+  }
+
+  validateWard() {
+    this.validWard = CommonFunction.validateInput(this.addressNotLogin.wardCode, null, null);
   }
 }
