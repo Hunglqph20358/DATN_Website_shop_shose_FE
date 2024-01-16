@@ -1,29 +1,1 @@
-<div class="container mt-3">
-  <div class="example-button-row" >
-    <button mat-raised-button color="primary" style="margin-bottom: 20px; margin-left: 20px" routerLink="/them-san-pham">Thêm Product</button>
-  </div>
-<div style="margin-left: 20px">
-  <div>
-    <button type="button" (click)="exportData()">Export</button>
-    <button type="button" (click)="openPopupImport()">Import</button>
-  </div>
-</div>
-<div class="row my-5" style="margin-left: 12px">
-  <div class="col">
-<!--    <a  class="btn btn-primary" style="width: 100px" (click)="openAdd()">Add</a>-->
-    <div class="grid">
-      <ag-grid-angular
-        style="width: 100%; height: 550px;"
-        class="ag-theme-balham"
-        [rowData]="rowData"
-        [columnDefs]="columnDefs"
-        [headerHeight]="headerHeight"
-        [rowHeight]="rowHeight"
-        [pagination]="true"
-        [paginationPageSize]="10"
-      ></ag-grid-angular>
-
-    </div>
-  </div>
-</div>
-</div>
+<div class="container mt-3">  <div class="example-button-row" >    <button mat-raised-button color="primary" style="margin-bottom: 20px; margin-left: 20px" routerLink="/them-san-pham">Thêm Product</button>  </div><div style="margin-left: 20px">  <div>    <button type="button" (click)="exportData()">Export</button>    <button type="button" (click)="openPopupImport()">Import</button>  </div></div><!--  <table>--><!--    <thead>--><!--    <tr>--><!--      <th>Name</th>--><!--      <th>Arrow</th>--><!--    </tr>--><!--    </thead>--><!--    <tbody>--><!--    <tr *ngFor="let product of products">--><!--      <td>{{ product.name }}</td>--><!--      <td>{{ product.price }}</td>--><!--      <td>{{ product.image }}</td>--><!--      <td>{{ product.name }}</td>--><!--      <td>--><!--        <button (click)="loadProductDetails(product.id)">Show Details</button>--><!--      </td>--><!--    </tr>--><!--    </tbody>--><!--  </table>--><!--  <h3>Product Details</h3>--><!--  <div *ngIf="selectedProductId">--><!--    <ul>--><!--      <li *ngFor="let detail of productDetails">--><!--        {{ detail.details }}--><!--      </li>--><!--    </ul>--><!--  </div>--><div class="row my-5" style="margin-left: 12px"><!--  <a  class="btn btn-primary" style="width: 100px" (click)="openAdd()">Add</a>&ndash;&gt;-->  <!--    <div class="grid">-->  <!--      <ag-grid-angular-->  <!--        style="width: 100%; height: 550px;"-->  <!--        class="ag-theme-balham"-->  <!--        [rowData]="products"-->  <!--        [columnDefs]="columnDefs"-->  <!--        [headerHeight]="headerHeight"-->  <!--        [rowHeight]="rowHeight"-->  <!--        [pagination]="true"-->  <!--        [paginationPageSize]="10"-->  <!--      ></ag-grid-angular>-->  <!--    </div>-->  <div class="col">    <div>      <input type="text" class="form-control" placeholder="Mã nv hoặc số điện thoại" name="search" id="inputEmail3" [(ngModel)]="searchProduct" (input)="finbyProductLike()">    </div>    <table class="table table-bordered">      <thead>      <tr>        <th></th>        <th>Ảnh</th>        <th>Mã</th>        <th>Tên Sản phẩm</th>        <th>Tên Hãng</th>        <th>Tên Chất liệu</th>        <th>Loại</th>        <th>Giá</th>        <th>Chức Năng</th>      </tr>      </thead>      <tbody>      <ng-container *ngFor="let row of products">        <tr>          <td (click)="row.isExpand = !row.isExpand">            <i *ngIf="!row.isExpand" class="bi-chevron-right"></i>            <i *ngIf="row.isExpand" class="bi-chevron-up"></i>          </td>          <td><img width="60px" height="60px" src="{{ row.imagesDTOList[0].imageName}}"></td>          <td>{{ row.code }}</td>          <td>{{ row.name}}</td>          <td>{{ row.brandAdminDTO.name }}</td>          <td>{{ row.materialAdminDTO.name }}</td>          <td>{{row.categoryAdminDTO.name}}</td>          <td>{{row.price}}</td>          <td><button mat-icon-button color="primary" (click)="ChangeStatus()"><mat-icon>edit</mat-icon></button></td>        </tr>        <tr *ngIf="row.isExpand">          <td colspan="8">            <table class="table table-sm">              <thead>              <th>Size</th>              <th>Màu sắc</th>              <th>Số lượng</th>              <th>Cổ giày</th>              </thead>              <tbody>              <tr *ngFor="let row2 of row.productDetailDTOList">                <td>{{ row2.sizeDTO.sizeNumber }}</td>                <td>{{ row2.colorDTO.name }}</td>                <td>{{ row2.quantity }}</td>                <td>{{ row2.shoeCollar === 0 ? 'Cố thấp' : 'Cổ cao'}}</td>              </tr>              </tbody>            </table>          </td>        </tr>      </ng-container>      </tbody>    </table>  </div></div></div>

@@ -38,8 +38,8 @@ export class ChitietsanphamComponent implements OnInit {
           return params.data.sizeDTO.sizeNumber;
         }},
       {headerName: 'Số lượng', field: 'quantity', sortable: true, filter: true, width: 150},
-      {headerName: 'Ngày tạo ', field: 'createDate', sortable: true, filter: true, width: 150},
-      {headerName: 'Ngày cập nhật', field: 'updateDate', sortable: true, filter: true, width: 150},
+      // {headerName: 'Ngày tạo ', field: 'createDate', sortable: true, filter: true, width: 150},
+      // {headerName: 'Ngày cập nhật', field: 'updateDate', sortable: true, filter: true, width: 150},
       {headerName: 'Cổ giày ', field: 'shoeCollar', sortable: true, filter: true, width: 150, valueGetter: (params) => {
           return params.data.shoeCollar === 0 ? 'Cổ thấp' : 'Cổ cao';
         }},
