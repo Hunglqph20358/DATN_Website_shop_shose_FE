@@ -87,11 +87,6 @@ export class SalesCounterComponent implements OnInit {
     wardCode: undefined,
     specificAddress: undefined
   };
-  Order: {
-  id: number;
-  name: string;
-  productList: any[];
-};
   shipFee = 0;
   shipFeeReduce = null;
   totalMoneyPay;
@@ -199,7 +194,8 @@ export class SalesCounterComponent implements OnInit {
         colorId: null,
         nameColor: null,
         quantity: 1,
-        price: this.reducePriceProduct
+        price: this.reducePriceProduct,
+        quantityInstock: null
       }
     );
     // this.listProductPush.push(row);
@@ -272,6 +268,10 @@ export class SalesCounterComponent implements OnInit {
   calculateTotalAllProducts() {
     this.totalAllProducts = 0;
     for (let i = 0; i < this.listCart.length; i++) {
+      if (this.listCart[i].quantity <= 0){
+        this.toastr.error('số lượng sản phẩm phải lớn hơn 0');
+        return;
+      }
       const totalPrice = this.listCart[i].quantity * this.listCart[i].price;
       this.totalAllProducts += totalPrice;
     }
@@ -294,6 +294,7 @@ export class SalesCounterComponent implements OnInit {
     if (event === undefined) {
       this.listColor = [...this.lisColorFind];
     } else {
+      this.listColor = [...this.lisColorFind];
       const selectedSizeId = event.id;
       const number_size = event.sizeNumber;
       const detailsForSelectedSize = this.listProductPush[i].productDetailDTOList
@@ -314,9 +315,13 @@ export class SalesCounterComponent implements OnInit {
     if (this.listCart[index].sizeId !== null && this.listCart[index].colorId !== null) {
       this.listProductPush[index].productDetailDTOList.filter(d => d.idSize === this.listCart[index].sizeId && d.idColor === this.listCart[index].colorId).map(pd => {
         console.log(pd.id);
+        if (pd.quantity <= 0){
+          this.toastr.error('sản phẩm đã hết hàng');
+        }
         return this.listCart[index] = {
           ...this.listCart[index],
-          productDetailId: pd.id
+          productDetailId: pd.id,
+          quantityInstock: pd.quantity
         };
       });
       console.log('ProductDetail: ', this.listCart);
@@ -330,6 +335,7 @@ export class SalesCounterComponent implements OnInit {
     if (event === undefined) {
       this.listSizePR = [...this.listSizeFind];
     } else {
+      this.listSizePR = [...this.listSizeFind];
       const selectedColorId = event.id;
       const colorName = event.name;
       const detailsForSelectedColor = this.listProductPush[i].productDetailDTOList
@@ -377,6 +383,21 @@ export class SalesCounterComponent implements OnInit {
     } else {
       this.typeOrder = 1;
       this.statusOrder = 3;
+    }
+    for (let i = 0; i < this.listCart.length; i++) {
+      const idProductDetail = this.listCart[i].quantityInstock;
+      if (this.listCart[i].quantity <= 0 ){
+        this.toastr.error('Số lượng sản phẩm phải lớn hơn 0');
+        return;
+      }
+      if (idProductDetail === 0){
+        this.toastr.error('sản phẩm đã hết hàng');
+        return;
+      }
+      if (this.listCart[i].quantity > this.listCart[i].quantityInstock){
+        this.toastr.error('Không đủ số lượng sản phẩm');
+        return;
+      }
     }
     Swal.fire({
       title: 'Bạn có xác nhận thanh toán đơn hàng ?',
@@ -486,15 +507,24 @@ export class SalesCounterComponent implements OnInit {
                   }
                 });
               }
-              console.log(this.observable);
-              this.toastr.success('Thanh toán thành công');
-              this.printInvoice();
-              localStorage.removeItem('listProductPush');
-              this.refreshData();
-              this.removeOrder(order);
-              this.calculateTotalAllProducts();
-              localStorage.setItem('coutOrder', this.count.toString());
-              localStorage.setItem('listOrder', JSON.stringify(this.listOder));
+              Swal.fire({
+                title: 'Thanh toán thành công !',
+                text: '',
+                icon: 'success',
+                showCancelButton: false,
+                confirmButtonColor: '#3085d6',
+                confirmButtonText: 'OK'
+              }).then(results => {
+                if (results.isConfirmed){
+                  this.printInvoice();
+                  localStorage.removeItem('listProductPush');
+                  this.refreshData();
+                  this.removeOrder(order);
+                  this.calculateTotalAllProducts();
+                  localStorage.setItem('coutOrder', this.count.toString());
+                  localStorage.setItem('listOrder', JSON.stringify(this.listOder));
+                }
+              });
             }
           );
         }

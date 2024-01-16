@@ -114,7 +114,7 @@
                            (change)="onColorChange($event, i)">
                 </ng-select>
               </td>
-              <td><input type="number" min="0" class="quantity" name="quantity" [(ngModel)]="listCart[i].quantity"
+              <td><input type="number" min="1" class="quantity" name="quantity" [(ngModel)]="listCart[i].quantity"
                          (ngModelChange)="calculateTotalAllProducts()" [ngModelOptions]="{standalone: true}"></td>
               <td>
                 <div>

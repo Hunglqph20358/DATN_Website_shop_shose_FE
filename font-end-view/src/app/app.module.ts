@@ -45,6 +45,8 @@ import { CustomCarouselComponent } from './component/details/custom-carousel/cus
 import { SearchOrderComponent } from './component/search-order/search-order.component';
 import {MatCardModule} from '@angular/material/card';
 import {MatIcon, MatIconModule} from '@angular/material/icon';
+import {SanphamComponent} from './component/sanpham/sanpham.component';
+import {MatTreeModule} from '@angular/material/tree';
 
 @NgModule({
   declarations: [
@@ -70,7 +72,8 @@ import {MatIcon, MatIconModule} from '@angular/material/icon';
     OrderNotLoginComponent,
     NoteOrderComponent,
     CustomCarouselComponent,
-    SearchOrderComponent
+    SearchOrderComponent,
+    SanphamComponent
   ],
     imports: [
         BrowserModule,
@@ -94,7 +97,8 @@ import {MatIcon, MatIconModule} from '@angular/material/icon';
         DateRangePickerModule,
         MatTableModule,
         MatCardModule,
-        MatIconModule
+        MatIconModule,
+        MatTreeModule,
     ],
   providers: [{provide: JWT_OPTIONS, useValue: JWT_OPTIONS},
     JwtHelperService],
