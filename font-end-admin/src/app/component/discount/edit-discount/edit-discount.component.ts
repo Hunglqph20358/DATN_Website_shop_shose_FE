@@ -27,18 +27,11 @@ export class EditDiscountComponent implements OnInit {
     reducedValue: '',
     discountType: '',
     maxReduced: '',
-    isValidDateRange: () => {
-      return (
-        this.discount.discountAdminDTO.startDate &&
-        this.discount.discountAdminDTO.endDate &&
-        this.discount.discountAdminDTO.startDate < this.discount.discountAdminDTO.endDate
-      );
-    },
   };
-  startDateTouched = false;
-  checkEndDate: boolean = false;
-  endDateTouched = false;
   checkStartDate: boolean = false;
+  checkStartDateNull = false;
+  checkEndDate: boolean = false;
+  checkEndDateNull = false;
   validName: ValidateInput = new ValidateInput();
   validDescription: ValidateInput = new ValidateInput();
   validReducedValue: ValidateInput = new ValidateInput();
@@ -135,49 +128,86 @@ export class EditDiscountComponent implements OnInit {
         });
     });
   }
-  isValidDateRange(): void {
+  isEndDateValid() {
+    this.checkEndDateNull = false;
+    if (this.discount.discountAdminDTO.endDate === '' || this.discount.discountAdminDTO.endDate === null
+      || this.discount.discountAdminDTO.endDate === undefined){
+      this.checkEndDateNull = true;
+      this.checkEndDate = false;
+      return;
+    }
     if (
       this.discount.discountAdminDTO.startDate &&
       this.discount.discountAdminDTO.endDate &&
-      this.discount.discountAdminDTO.startDate > this.discount.discountAdminDTO.endDate
+      this.discount.discountAdminDTO.startDate >= this.discount.discountAdminDTO.endDate
     ) {
+      this.checkEndDateNull = false;
       this.checkEndDate = true;
-      console.log('Date range is valid.');
-    } else {
-      this.checkEndDate = false;
-      // Cũng có thể thực hiện công việc khác nếu cần.
-      console.log('Date range is not valid.');
+      return;
     }
-  }
-  isEndDateValid() {
-    this.endDateTouched = true;
-    this.isValidDateRange();
+    this.checkEndDate = false;
+    this.checkEndDateNull = false;
   }
   isStartDateValid() {
-    // console.log(event);
+    this.checkStartDateNull = false;
     const date = new Date();
-    console.log(date.getTime());
-    console.log(new Date(this.discount.discountAdminDTO.startDate).getTime());
+    if (this.discount.discountAdminDTO.startDate === '' || this.discount.discountAdminDTO.startDate === null
+      || this.discount.discountAdminDTO.startDate === undefined){
+      this.checkStartDateNull = true;
+      this.checkStartDate = false;
+      return;
+    }
     if (new Date(this.discount.discountAdminDTO.startDate).getTime() < date.getTime()){
       this.checkStartDate = true;
-    }else {
-      this.checkStartDate = false;
+      this.checkStartDateNull = false;
+      return;
     }
-    console.log(this.checkStartDate);
+    this.checkStartDateNull = false;
+    this.checkStartDate = false;
+  }
+  removeCheckStartDate(){
+    this.checkStartDateNull = false;
+    this.checkStartDate = false;
+  }
+  removeCheckEndDate(){
+    this.checkEndDateNull = false;
+    this.checkEndDate = false;
   }
   onGridReady(params: any) {
     this.gridApi = params.api;
   }
   // Phương thức cập nhật thông tin khuyến mãi
   editDiscount() {
+    this.isEndDateValid();
+    this.isStartDateValid();
     this.validateName();
     this.validateReducedValue();
     this.validateDescription();
     this.validateMaxReducedValue();
-    if (!this.validName.done || !this.validDescription.done || !this.validReducedValue.done
-      || !this.validMaxReduced.done
-    ) {
+    if (!this.validName.done || !this.validDescription.done ||
+      !this.validReducedValue.done ||
+      this.checkStartDate || this.checkStartDateNull || this.checkEndDate || this.checkEndDateNull ) {
       return;
+    }
+    if (this.discount.discountType === 1 && !this.validMaxReduced.done){
+      return;
+    }
+    const arrayProduct = this.discount.spap === '0' ? this.rowData : this.gridApi.getSelectedRows();
+    this.disableCheckPriceProduct = false;
+    if (arrayProduct.length <= 0) {
+      this.disableCheckPriceProduct = true;
+      this.toastr.error('Không có sản phẩm để giảm');
+      return;
+    }else{
+      for (let i = 0; i < arrayProduct.length; i++) {
+        if (this.discount.reducedValue > arrayProduct[i].price && this.discount.discountType === 0 ) {
+          console.log('Array Product:', arrayProduct);
+          console.log('Discount:', this.discount);
+          this.disableCheckPriceProduct = true;
+          this.toastr.error('Giá trị giảm lớn hơn giá sản phẩm');
+          return;
+        }
+      }
     }
     Swal.fire({
       title: 'Bạn có muốn sửa giảm giá không?',
@@ -188,25 +218,8 @@ export class EditDiscountComponent implements OnInit {
       confirmButtonText: 'Sửa'
     }).then((result) => {
       if (result.isConfirmed) {
-        const arrayProduct = this.discount.spap === '0' ? this.rowData : this.gridApi.getSelectedRows();
-        this.disableCheckPriceProduct = false;
-        // tslint:disable-next-line:prefer-for-of
-        for (let i = 0; i < arrayProduct.length; i++) {
-          // tslint:disable-next-line:triple-equals
-          if (this.discount.reducedValue > arrayProduct[i].price && this.discount.discountType == 1) {
-            this.disableCheckPriceProduct = true;
-            this.toastr.success('Giá trị giảm lớn hơn giá sản phẩm');
-            return;
-          }
-          this.iđStaff = localStorage.getItem('idStaff');
-          // tslint:disable-next-line:triple-equals
-          if (this.discount.maxReduced > arrayProduct[i].price && this.discount.discountType == 0) {
-            this.disableCheckPriceProduct = true;
-            this.toastr.success('Giá trị giảm lớn hơn giá sản phẩm');
-            return;
-          }
-        }
         if (this.disableCheckPriceProduct === false) {
+          this.iđStaff = localStorage.getItem('idStaff');
           const obj = {
             ...this.discount,
             productDTOList: arrayProduct,
@@ -240,10 +253,10 @@ export class EditDiscountComponent implements OnInit {
   validateDescription() {this.validDescription = CommonFunction.validateInput(this.discount.discountAdminDTO.description, 50, null );
   }
   validateReducedValue() {
-    this.validReducedValue = CommonFunction.validateInput(this.discount.reducedValue, 250, /^\d+(\.\d+)?$/);
+    this.validReducedValue = CommonFunction.validateInput(this.discount.reducedValue, 250, /^[1-9]\d*(\.\d+)?$/);
   }
   validateMaxReducedValue() {
-    this.validMaxReduced = CommonFunction.validateInput(this.discount.maxReduced, 250, /^\d+(\.\d+)?$/);
+    this.validMaxReduced = CommonFunction.validateInput(this.discount.maxReduced, 250, /^[1-9]\d*(\.\d+)?$/);
   }
   formatDate(date: Date): string {
     return this.datePipe.transform(date, 'yyyy-MM-ddTHH:mm') || '';

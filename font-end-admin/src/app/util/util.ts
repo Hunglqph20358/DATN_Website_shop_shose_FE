@@ -27,7 +27,7 @@ export function formatTime(originalDate: string): string {
 
 export function formatDateTime(originalDate: string): string {
   const date = new Date(originalDate);
-  date.setHours(date.getHours() + 5);
+  date.setHours(date.getHours() );
   const d = `${('0' + date.getDate()).slice(-2)}/${('0' + (date.getMonth() + 1)).slice(-2)}/${date.getFullYear()}`;
   const t = moment(date).format('HH:mm:ss');
   return `${t} ${d}`;
