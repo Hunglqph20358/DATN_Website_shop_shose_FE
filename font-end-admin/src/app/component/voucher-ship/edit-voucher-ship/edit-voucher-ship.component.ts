@@ -44,6 +44,7 @@ export class EditVoucherShipComponent implements OnInit {
   rowHeight = 40;
   currentDate: Date = new Date();
   gridApi: any;
+   disableCheckLimitCustomer: boolean = false;
 
   constructor(private activatedRoute: ActivatedRoute,
               private service: VoucherShipService,
@@ -177,6 +178,12 @@ export class EditVoucherShipComponent implements OnInit {
       this.checkStartDate || this.checkStartDateNull || this.checkEndDate || this.checkEndDateNull) {
       return;
     }
+    const arrayCustomer = this.voucher.optionCustomer === '0' ? null : this.gridApi.getSelectedRows();
+    if (arrayCustomer.length <= 0 && this.voucher.optionCustomer == 1){
+      this.disableCheckLimitCustomer = true;
+      this.toastr.error('Không có khách hàng ');
+      return;
+    }
     Swal.fire({
       title: 'Bạn có muốn sửa Voucher FreeShip không?',
       icon: 'success',
@@ -186,7 +193,6 @@ export class EditVoucherShipComponent implements OnInit {
       confirmButtonText: 'Sửa'
     }).then((result) => {
       if (result.isConfirmed) {
-        const arrayCustomer = this.voucher.optionCustomer === '0' ? null : this.gridApi.getSelectedRows();
         const obj = {
           ...this.voucher,
           customerAdminDTOList: arrayCustomer,

@@ -196,7 +196,7 @@ export class EditDiscountComponent implements OnInit {
     this.disableCheckPriceProduct = false;
     if (arrayProduct.length <= 0) {
       this.disableCheckPriceProduct = true;
-      this.toastr.error('Không còn sản phẩm để giảm');
+      this.toastr.error('Không có sản phẩm để giảm');
       return;
     }else{
       for (let i = 0; i < arrayProduct.length; i++) {

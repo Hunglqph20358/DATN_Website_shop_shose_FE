@@ -172,18 +172,18 @@ export class CreatDiscountComponent implements OnInit {
     this.disableCheckPriceProduct = false;
     if (arrayProduct.length <= 0) {
       this.disableCheckPriceProduct = true;
-      this.toastr.error('Không còn sản phẩm để giảm');
+      this.toastr.error('Không có sản phẩm để giảm');
       return;
     }else{
       for (let i = 0; i < arrayProduct.length; i++) {
-        if (this.discount.reducedValue > arrayProduct[i].price && this.discount.discountType === 0 ) {
+        if (this.discount.reducedValue > arrayProduct[i].price && this.discount.discountType === 0) {
           console.log('Array Product:', arrayProduct);
           console.log('Discount:', this.discount);
           this.disableCheckPriceProduct = true;
           this.toastr.error('Giá trị giảm lớn hơn giá sản phẩm');
           return;
         }
-    }
+      }
     }
     Swal.fire({
       title: 'Bạn có muốn thêm giảm giá không?',
