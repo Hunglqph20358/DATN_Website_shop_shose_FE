@@ -547,6 +547,7 @@ export class SalesCounterComponent implements OnInit {
                   localStorage.removeItem('listOrder');
                   localStorage.setItem('coutOrder', this.count.toString());
                   localStorage.setItem('listOrder', JSON.stringify(this.listOder));
+                  localStorage.removeItem(`orderProducts_${this.currentOrderId}`);
                 }
               });
             }
