@@ -45,15 +45,42 @@ const routes: Routes = [
   {path: '', redirectTo: 'thong-ke', pathMatch: 'full'},
   {path: 'admin/login', component: LoginComponent},
   {path: 'admin/don-hang', component: HomeComponent, canActivate: [AuthGuard]},
-  {path: 'admin/creat-discount', component: CreatDiscountComponent, canActivate: [AuthGuard]},
-  {path: 'admin/creat-voucherFS', component: CreatVoucherShipComponent, canActivate: [AuthGuard]},
-  {path: 'admin/creat-voucher', component: CreatVoucherComponent, canActivate: [AuthGuard] },
-  {path: 'admin/discount', component: DiscountComponent, canActivate: [AuthGuard]},
-  {path: 'admin/discount/:id', component: DetailDiscountComponent, canActivate: [AuthGuard]},
-  {path: 'admin/voucher/:id', component: DetailVoucherComponent, canActivate: [AuthGuard]},
-  {path: 'admin/voucherFS/:id', component: DetailVoucherShipComponent, canActivate: [AuthGuard]},
-  {path: 'admin/voucher', component: VoucherComponent, canActivate: [AuthGuard]},
-  {path: 'admin/sua-giam-gia', component: EditDiscountComponent, canActivate: [AuthGuard]},
+  {path: 'admin/creat-discount', component: CreatDiscountComponent, canActivate: [RoleGuardService],
+    data: {
+      expectedRole: ['ADMIN']
+    }},
+  {path: 'admin/creat-voucherFS', component: CreatVoucherShipComponent, canActivate: [RoleGuardService],
+    data: {
+      expectedRole: ['ADMIN']
+    }},
+  {path: 'admin/creat-voucher', component: CreatVoucherComponent, canActivate: [RoleGuardService],
+    data: {
+      expectedRole: ['ADMIN']
+    } },
+  {path: 'admin/discount', component: DiscountComponent, canActivate: [RoleGuardService],
+    data: {
+      expectedRole: ['ADMIN']
+    }},
+  {path: 'admin/discount/:id', component: DetailDiscountComponent, canActivate: [RoleGuardService],
+    data: {
+      expectedRole: ['ADMIN']
+    }},
+  {path: 'admin/voucher/:id', component: DetailVoucherComponent, canActivate: [RoleGuardService],
+    data: {
+      expectedRole: ['ADMIN']
+    }},
+  {path: 'admin/voucherFS/:id', component: DetailVoucherShipComponent, canActivate: [RoleGuardService],
+    data: {
+      expectedRole: ['ADMIN']
+    }},
+  {path: 'admin/voucher', component: VoucherComponent, canActivate: [RoleGuardService],
+    data: {
+      expectedRole: ['ADMIN']
+    }},
+  {path: 'admin/sua-giam-gia', component: EditDiscountComponent, canActivate: [RoleGuardService],
+    data: {
+      expectedRole: ['ADMIN']
+    }},
   {path: 'admin/sua-voucher', component: EditVoucherComponent, canActivate: [AuthGuard]},
   // {path: 'degiay', component: DegiayComponent, canActivate: [RoleGuardService],
   //   data: {
@@ -102,14 +129,30 @@ const routes: Routes = [
   {path: 'sua-san-pham/:idProduct', component: SuaSanPhamComponent, canActivate: [AuthGuard]},
   {path: 'order-list', component: OrderComponent, canActivate: [AuthGuard]},
   {path: 'order-processing', component: OderProcessingComponent, canActivate: [AuthGuard]},
-  {path: 'staff', component: StaffComponent, canActivate: [AuthGuard] },
+  {path: 'staff', component: StaffComponent, canActivate: [RoleGuardService],
+    data: {
+      expectedRole: ['ADMIN']
+    } },
   {path: 'sign-up', component: SignUpComponent},
   // {path: 'order-detail', component: OrderDetailComponent},
-  {path: 'sales-counter', component: SalesCounterComponent, canActivate: [AuthGuard]},
-  {path: 'thong-ke', component: ThongKeComponent, canActivate: [AuthGuard]},
-  {path: 'add-staff', component: AddStaffComponent, canActivate: [AuthGuard]},
-  {path: 'order-sales-counter', component: OrderSalesCounterComponent, canActivate: [AuthGuard]},
-  {path: 'update-staff/:id', component: UpdateStaffComponent, canActivate: [AuthGuard]},
+  {path: 'sales-counter', component: SalesCounterComponent, canActivate: [AuthGuard] },
+  {path: 'thong-ke', component: ThongKeComponent, canActivate: [RoleGuardService],
+    data: {
+      expectedRole: ['ADMIN']
+    } },
+  {path: 'add-staff', component: AddStaffComponent, canActivate: [RoleGuardService],
+    data: {
+      expectedRole: ['ADMIN']
+    } },
+  {path: 'order-sales-counter', component: OrderSalesCounterComponent, canActivate: [RoleGuardService],
+    data: {
+      expectedRole: ['ADMIN']
+    }},
+  {path: 'update-staff/:id', component: UpdateStaffComponent, canActivate: [RoleGuardService],
+    data: {
+      expectedRole: ['ADMIN']
+    }
+  }
 ];
 
 @NgModule({

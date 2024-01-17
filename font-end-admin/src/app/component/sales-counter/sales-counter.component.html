@@ -254,8 +254,8 @@
                   <input type="text" class="form-control custom-input" name="address"
                          (keydown)="revoveInvalid(specificAddress)" (blur)="validateSpecificAddress()"
                          [(ngModel)]="addressNotLogin.specificAddress" [ngModelOptions]="{standalone: true}">
-                  <div class="validate-input" *ngIf="!validProvince.done">
-                    <p class="validate-input-label" *ngIf="validProvince.empty">Vui lòng không để trống</p>
+                  <div class="validate-input" *ngIf="!specificAddress.done">
+                    <p class="validate-input-label" *ngIf="specificAddress.empty">Vui lòng không để trống</p>
                   </div>
                 </div>
               </div>
@@ -286,8 +286,8 @@
                              [searchable]="false" (keydown)="revoveInvalid(validDistrict)" (blur)="validateDistrict()"
                              (change)="getWard($event)">
                   </ng-select>
-                  <div class="validate-input" *ngIf="!validProvince.done">
-                    <p class="validate-input-label" *ngIf="validProvince.empty">Vui lòng không để trống</p>
+                  <div class="validate-input" *ngIf="!validDistrict.done">
+                    <p class="validate-input-label" *ngIf="validDistrict.empty">Vui lòng không để trống</p>
                   </div>
                 </div>
               </div>
@@ -301,8 +301,8 @@
                              [searchable]="false" [(ngModel)]="addressNotLogin.wardCode"
                              [ngModelOptions]="{standalone: true}" (change)="getPhiShip();">
                   </ng-select>
-                  <div class="validate-input" *ngIf="!validProvince.done">
-                    <p class="validate-input-label" *ngIf="validProvince.empty">Vui lòng không để trống</p>
+                  <div class="validate-input" *ngIf="!validWard.done">
+                    <p class="validate-input-label" *ngIf="validWard.empty">Vui lòng không để trống</p>
                   </div>
                 </div>
               </div>

@@ -10,9 +10,9 @@ export class AuthService implements CanActivate{
     if (this.auth.isAuthenticated()) {
       return true;
     } else {
-      localStorage.removeItem('token');
-      localStorage.removeItem('users');
-      this.router.navigate(['admin/login']);
+      localStorage.removeItem('tokenCustomer');
+      localStorage.removeItem('customer');
+      this.router.navigate(['/login']);
       return false;
     }
   }

@@ -27,9 +27,7 @@ export class LoginComponent implements OnInit {
     );
     console.log(this.signFrom);
     this.signIn.signIn(this.signFrom).subscribe(data => {
-        localStorage.setItem('token', data.token);
-        console.log(data.usersDTO);
-        localStorage.setItem('users', JSON.stringify(data.usersDTO));
+        localStorage.setItem('tokenCustomer', data.token);
         localStorage.setItem('customer', JSON.stringify(data.usersDTO));
         this.router.navigate(['']).then(() => {
           location.reload();
@@ -47,7 +45,7 @@ export class LoginComponent implements OnInit {
   }
   logout(){
     localStorage.removeItem('token');
-    localStorage.removeItem('users');
+    localStorage.removeItem('customer');
   }
   togglePasswordVisibility(): void {
     this.showPassword = !this.showPassword;

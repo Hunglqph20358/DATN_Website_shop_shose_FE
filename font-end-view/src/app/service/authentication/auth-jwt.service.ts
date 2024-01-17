@@ -9,11 +9,11 @@ import {Router} from '@angular/router';
 export class AuthJwtService {
   constructor(public jwtHelper: JwtHelperService, private toastr: ToastrService, private router: Router) { }
   public isAuthenticated(): boolean {
-    const token = localStorage.getItem('token');
+    const token = localStorage.getItem('tokenCustomer');
     const isExpired = this.jwtHelper.isTokenExpired(token);
     if (isExpired) {
-      localStorage.removeItem('token');
-      localStorage.removeItem('users');
+      localStorage.removeItem('tokenCustomer');
+      localStorage.removeItem('customer');
       this.router.navigate(['/login']);
       this.toastr.error('Phiên đăng nhập đã hết hạn', 'Thông báo:');
       return false;

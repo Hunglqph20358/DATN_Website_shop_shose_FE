@@ -116,6 +116,9 @@ export class OrderSalesCounterComponent implements OnInit {
         headerName: 'Khách Hàng',
         field: 'customerAdminDTO.fullname',
         suppressMovable: true,
+        valueFormatter: params => {
+          return params.data.idCustomer === null ? 'Khách lẻ' : params.data.customerAdminDTO.fullname;
+        },
         cellStyle: {
           'font-weight': '500',
           'font-size': '12px',
