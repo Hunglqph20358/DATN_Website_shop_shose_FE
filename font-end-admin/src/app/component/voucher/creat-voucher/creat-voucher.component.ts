@@ -179,7 +179,7 @@ export class CreatVoucherComponent implements OnInit {
       return;
     }
     const arrayCustomer = this.voucher.optionCustomer === 0 ? null : this.gridApi.getSelectedRows();
-    if (arrayCustomer.length <= 0 && this.voucher.optionCustomer == 1){
+    if ( arrayCustomer && arrayCustomer.length <= 0 && this.voucher.optionCustomer == 1){
       this.disableCheckLimitCustomer = true;
       this.toastr.error('Không có khách hàng ');
       return;
