@@ -372,7 +372,7 @@ export class CheckoutComponent implements OnInit {
   }
 
   openVoucher() {
-    const originalTotalMoney = this.totalMoney;
+    const originalTotalMoney = this.totalMoney + this.shipFee;
     // this.totalMoneyPay = this.totalMoney;
     this.matDialog.open(PopupVoucherComponent, {
       width: '45%',

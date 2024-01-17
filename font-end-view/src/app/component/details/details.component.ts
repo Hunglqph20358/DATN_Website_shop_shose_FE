@@ -310,7 +310,11 @@ export class DetailsComponent implements OnInit {
       return;
     } else if (!regex.test(JSON.stringify(this.quantityBuy))) {
       this.validQuantityBuy = true;
-      this.validQuantityBuyMess = 'Vui lòng nhập số lượng mua phải là số và lớn hơn 0';
+      this.validQuantityBuyMess = 'Vui lòng nhập số lượng mua phải là số';
+      return;
+    } else if (this.quantityBuy <= 0) {
+      this.validQuantityBuy = true;
+      this.validQuantityBuyMess = 'Số lượng mua phải lớn hơn 0';
       return;
     } else if (this.quantityBuy > this.getProductDetailQuantity()) {
       this.validQuantityBuy = true;
