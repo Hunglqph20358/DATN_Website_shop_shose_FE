@@ -17,6 +17,8 @@ export class ResetPasswordComponent implements OnInit {
   validReceivernewPassword: ValidateInput = new ValidateInput();
   validConfirm: boolean = true;
   rePass: string;
+  showPassword: boolean = false;
+  showPasswordConfirm: boolean = false;
   constructor(private service: CustomerInforService, private toasv: ToastrService, private router: Router) { }
   resetPass(){
     this.infoCusotmer.newPass = CommonFunction.trimText(this.infoCusotmer.newPass);
@@ -32,6 +34,12 @@ export class ResetPasswordComponent implements OnInit {
     });
   }
   ngOnInit(): void {
+  }
+  togglePasswordVisibility(): void {
+    this.showPassword = !this.showPassword;
+  }
+  togglePasswordVisibilitConfirm(): void {
+    this.showPasswordConfirm = !this.showPasswordConfirm;
   }
   revoveInvalid(result) {
     result.done = true;
