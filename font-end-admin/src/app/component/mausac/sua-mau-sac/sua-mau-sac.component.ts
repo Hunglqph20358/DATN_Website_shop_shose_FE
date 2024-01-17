@@ -12,6 +12,7 @@ import Swal from 'sweetalert2';
 })
 export class SuaMauSacComponent implements OnInit {
   validName: ValidateInput = new ValidateInput();
+  validCode: ValidateInput = new ValidateInput();
   constructor(public dialogRef: MatDialogRef<SuaMauSacComponent>,
               @Inject(MAT_DIALOG_DATA) public data: any,
               private mssv: MausacService, private toaStr: ToastrService) {
@@ -26,10 +27,15 @@ export class SuaMauSacComponent implements OnInit {
   validateName() {
     this.validName = CommonFunction.validateInput(this.data.name, 250, '[^0-9]');
   }
+  validateCode() {
+    this.validCode = CommonFunction.validateInput(this.data.code, 250, '');
+  }
   clickUpdate(id: number) {
     this.data.name = CommonFunction.trimText(this.data.name);
+    this.data.code = CommonFunction.trimText(this.data.code);
     this.validateName();
-    if ( !this.validName.done) {
+    this.validateCode();
+    if ( !this.validName.done || !this.validCode.done) {
       return;
     }
     Swal.fire({
@@ -44,6 +50,7 @@ export class SuaMauSacComponent implements OnInit {
       if (result1.isConfirmed) {
         const color = {
           name: this.data.name,
+          code: this.data.code,
         };
         this.mssv.UpdateMauSac(id, color).subscribe(
           result => {

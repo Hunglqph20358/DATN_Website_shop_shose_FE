@@ -1,5 +1,5 @@
 import {Injectable} from '@angular/core';
-import {HttpClient} from '@angular/common/http';
+import {HttpClient, HttpParams} from '@angular/common/http';
 import {Observable} from 'rxjs';
 import {apiURL} from '../config/apiUrl';
 import * as moment from 'moment';
@@ -41,8 +41,21 @@ export class ProductService {
   // AddProduct(): Observable<any>{
   //   return  this.http.post(`${apiURL}product/add`);
   // }
+  searchProductNameOrCode(search: string): Observable<any> {
+    const params = new HttpParams().set('search', search);
+    return this.http.get(`${apiURL}product/hien-thii?` + params);
+  }
   searchProduct(param: string): Observable<any> {
     return this.http.get(`${apiURL}product/search/` + param);
+  }
+  activateProduct(productId: number): Observable<any> {
+    const url = `${apiURL}product/${productId}/activate`;
+    return this.http.put(url, null);
+  }
+
+  deactivateProduct(productId: number): Observable<any> {
+    const url = `${apiURL}product/${productId}/deactivate`;
+    return this.http.put(url, null);
   }
 
 
