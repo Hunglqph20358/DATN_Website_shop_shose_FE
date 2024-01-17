@@ -16,10 +16,10 @@ import {DatePipe} from "@angular/common";
 export class EditVoucherShipComponent implements OnInit {
 
   isHidden = true;
-  startDateTouched = false;
   checkStartDate: boolean = false;
+  checkStartDateNull = false;
   checkEndDate: boolean = false;
-  endDateTouched = false;
+  checkEndDateNull = false;
   voucher: any = {
     name: '',
     startDate: '',
@@ -90,33 +90,50 @@ export class EditVoucherShipComponent implements OnInit {
     ];
   }
   public rowSelection: 'single' | 'multiple' = 'multiple'; // Chọn nhiều dòng
-  isValidDateRange(): void {
+  isEndDateValid() {
+    this.checkEndDateNull = false;
+    if (this.voucher.endDate === '' || this.voucher.endDate === null
+      || this.voucher.endDate === undefined){
+      this.checkEndDateNull = true;
+      this.checkEndDate = false;
+      return;
+    }
     if (
       this.voucher.startDate &&
       this.voucher.endDate &&
-      this.voucher.startDate > this.voucher.endDate
+      this.voucher.startDate >= this.voucher.endDate
     ) {
+      this.checkEndDateNull = false;
       this.checkEndDate = true;
-      console.log('Date range is valid.');
-    } else {
-      this.checkEndDate = false;
-      // Cũng có thể thực hiện công việc khác nếu cần.
-      console.log('Date range is not valid.');
+      return;
     }
-  }
-  isEndDateValid() {
-    this.endDateTouched = true;
-    this.isValidDateRange();
+    this.checkEndDate = false;
+    this.checkEndDateNull = false;
   }
   isStartDateValid() {
+    this.checkStartDateNull = false;
     const date = new Date();
-    this.startDateTouched = true;
+    if (this.voucher.startDate === '' || this.voucher.startDate === null
+      || this.voucher.startDate === undefined){
+      this.checkStartDateNull = true;
+      this.checkStartDate = false;
+      return;
+    }
     if (new Date(this.voucher.startDate).getTime() < date.getTime()){
       this.checkStartDate = true;
-    }else {
-      this.checkStartDate = false;
+      this.checkStartDateNull = false;
+      return;
     }
-    console.log(this.checkStartDate);
+    this.checkStartDateNull = false;
+    this.checkStartDate = false;
+  }
+  removeCheckStartDate(){
+    this.checkStartDateNull = false;
+    this.checkStartDate = false;
+  }
+  removeCheckEndDate(){
+    this.checkEndDateNull = false;
+    this.checkEndDate = false;
   }
 
 
@@ -131,10 +148,8 @@ export class EditVoucherShipComponent implements OnInit {
     this.isHidden = true;
     this.activatedRoute.params.subscribe((params) => {
       const id = params.id;
-      console.log(id);
       this.service.getDetailVoucher(id).subscribe((response: any[]) => {
         const firstElement = Array.isArray(response) ? response[0] : response;
-        console.log(firstElement);
         this.voucher.id = firstElement.id;
         this.voucher.name = firstElement.name;
         this.voucher.description = firstElement.description;
@@ -149,15 +164,17 @@ export class EditVoucherShipComponent implements OnInit {
     });
     console.log(this.voucher);
   }
-  editVoucher(){
-    this.isEndDateValid();
+  editVoucher() {
+    this.validateQuantity();
     this.isStartDateValid();
+    this.isEndDateValid();
     this.validateName();
     this.validateReducedValue();
     this.validateDescription();
     this.validateConditionApply();
     if (!this.validName.done || !this.validDescription.done || !this.validReducedValue.done
-      || !this.validconditionApply.done) {
+      || !this.validQuantity.done || !this.validconditionApply.done ||
+      this.checkStartDate || this.checkStartDateNull || this.checkEndDate || this.checkEndDateNull) {
       return;
     }
     Swal.fire({
@@ -174,7 +191,7 @@ export class EditVoucherShipComponent implements OnInit {
           ...this.voucher,
           customerAdminDTOList: arrayCustomer,
         };
-        this.service.updateVoucher(this.voucher.id, obj).subscribe(
+        this.service.createVoucher(obj).subscribe(
           (response) => {
             // Handle the response if needed, e.g., show a success message
             this.rou.navigateByUrl('/admin/voucherFS');
@@ -203,7 +220,7 @@ export class EditVoucherShipComponent implements OnInit {
     this.validReducedValue = CommonFunction.validateInput(this.voucher.reducedValue, 250, /^\d+(\.\d+)?$/);
   }
   validateConditionApply() {
-    this.validconditionApply = CommonFunction.validateInput(this.voucher.conditionApply, 250, /^\d+(\.\d+)?$/);
+    this.validconditionApply = CommonFunction.validateInput(this.voucher.conditionApply, 250, /^[0-9]\d*(\.\d+)?$/);
   }
   validateQuantity() {
     this.validQuantity = CommonFunction.validateInput(this.voucher.quantity, 50, /^[1-9]\d*(\.\d+)?$/ );

@@ -17,11 +17,12 @@ export class CreatVoucherComponent implements OnInit {
   columnDefs;
   headerHeight = 50;
   rowHeight = 40;
-  checkEndDate: boolean = false;
-  endDateTouched = false;
   checkAllow: boolean = false;
   checkStartDate: boolean = false;
-  startDateTouched = false;
+  checkStartDateNull = false;
+  checkEndDate: boolean = false;
+  checkEndDateNull = false;
+  disableCheckLimitCustomer: boolean = false;
   voucher: any = {
     name: '',
     startDate: '',
@@ -34,17 +35,10 @@ export class CreatVoucherComponent implements OnInit {
     quantity: 1,
     limitCustomer: '',
     customerAdminDTOList: '',
-    apply: '2',
+    apply: 2,
     allow: '',
-    optionCustomer: '0',
+    optionCustomer: 0,
     createName: localStorage.getItem('fullname'),
-    isValidDateRange: () => {
-      return (
-        this.voucher.startDate &&
-        this.voucher.endDate &&
-        this.voucher.startDate < this.voucher.endDate
-      );
-    },
   };
   validName: ValidateInput = new ValidateInput();
   validDescription: ValidateInput = new ValidateInput();
@@ -101,44 +95,57 @@ export class CreatVoucherComponent implements OnInit {
   }
 
   public rowSelection: 'single' | 'multiple' = 'multiple'; // Chọn nhiều dòng
-  isValidDateRange(): void {
+  isEndDateValid() {
+    this.checkEndDateNull = false;
+    if (this.voucher.endDate === '' || this.voucher.endDate === null
+      || this.voucher.endDate === undefined){
+      this.checkEndDateNull = true;
+      this.checkEndDate = false;
+      return;
+    }
     if (
       this.voucher.startDate &&
       this.voucher.endDate &&
-      this.voucher.startDate > this.voucher.endDate
+      this.voucher.startDate >= this.voucher.endDate
     ) {
+      this.checkEndDateNull = false;
       this.checkEndDate = true;
-      console.log('Date range is valid.');
-    } else {
-      this.checkEndDate = false;
-      // Cũng có thể thực hiện công việc khác nếu cần.
-      console.log('Date range is not valid.');
+      return;
     }
-  }
-  isEndDateValid() {
-    this.endDateTouched = true;
-    this.isValidDateRange();
+    this.checkEndDate = false;
+    this.checkEndDateNull = false;
   }
   isStartDateValid() {
-    this.startDateTouched = true;
+    this.checkStartDateNull = false;
     const date = new Date();
-    console.log(date.getTime());
-    console.log(new Date(this.voucher.startDate).getTime());
+    if (this.voucher.startDate === '' || this.voucher.startDate === null
+      || this.voucher.startDate === undefined){
+      this.checkStartDateNull = true;
+      this.checkStartDate = false;
+      return;
+    }
     if (new Date(this.voucher.startDate).getTime() < date.getTime()){
       this.checkStartDate = true;
-    }else {
-      this.checkStartDate = false;
+      this.checkStartDateNull = false;
+      return;
     }
-    console.log(this.checkStartDate);
+    this.checkStartDateNull = false;
+    this.checkStartDate = false;
   }
-
+  removeCheckStartDate(){
+    this.checkStartDateNull = false;
+    this.checkStartDate = false;
+  }
+  removeCheckEndDate(){
+    this.checkEndDateNull = false;
+    this.checkEndDate = false;
+  }
   ngOnInit(): void {
     this.voucherService.getCustomer().subscribe((response) => {
       this.rowData = response;
       console.log(response);
     });
   }
-
   onGridReady(params: any) {
     this.gridApi = params.api;
   }
@@ -158,7 +165,23 @@ export class CreatVoucherComponent implements OnInit {
     this.validateConditionApply();
     this.validateQuantity();
     if (!this.validName.done || !this.validDescription.done || !this.validReducedValue.done
-      || !this.validconditionApply.done) {
+      || !this.validQuantity.done || !this.validconditionApply.done ||
+      this.checkStartDate || this.checkStartDateNull || this.checkEndDate || this.checkEndDateNull) {
+      return;
+    }
+    if (this.voucher.voucherType === 1 && !this.validMaxReduced.done){
+      return;
+    }
+
+    if (this.voucher.optionCustomer == 1 && this.voucher.limitCustomer > this.voucher.quantity) {
+      this.disableCheckLimitCustomer = true;
+      this.toastr.error('Giới hạn sử dụng với mỗi khách hàng phải nhỏ hơn số lượng');
+      return;
+    }
+    const arrayCustomer = this.voucher.optionCustomer === 0 ? null : this.gridApi.getSelectedRows();
+    if (arrayCustomer.length <= 0 ){
+      this.disableCheckLimitCustomer = true;
+      this.toastr.error('Không có khách hàng ');
       return;
     }
     Swal.fire({
@@ -170,7 +193,6 @@ export class CreatVoucherComponent implements OnInit {
       confirmButtonText: 'Thêm'
     }).then((result) => {
       if (result.isConfirmed) {
-        const arrayCustomer = this.voucher.optionCustomer === '0' ? null : this.gridApi.getSelectedRows();
         const obj = {
           ...this.voucher,
           allow: this.checkAllow === true ? 1 : 0,
@@ -211,7 +233,7 @@ export class CreatVoucherComponent implements OnInit {
     this.validMaxReduced = CommonFunction.validateInput(this.voucher.maxReduced, 250, /^[1-9]\d*(\.\d+)?$/);
   }
   validateConditionApply() {
-    this.validconditionApply = CommonFunction.validateInput(this.voucher.conditionApply, 250, /^[1-9]\d*(\.\d+)?$/);
+    this.validconditionApply = CommonFunction.validateInput(this.voucher.conditionApply, 250, /^[0-9]\d*(\.\d+)?$/);
   }
 
 }

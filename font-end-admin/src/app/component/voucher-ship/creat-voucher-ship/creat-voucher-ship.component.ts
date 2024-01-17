@@ -12,10 +12,10 @@ import {CommonFunction} from "../../../util/common-function";
   styleUrls: ['./creat-voucher-ship.component.css']
 })
 export class CreatVoucherShipComponent implements OnInit {
-  startDateTouched = false;
   checkStartDate: boolean = false;
+  checkStartDateNull = false;
   checkEndDate: boolean = false;
-  endDateTouched = false;
+  checkEndDateNull = false;
   rowData = [];
   columnDefs;
   headerHeight = 50;
@@ -27,18 +27,11 @@ export class CreatVoucherShipComponent implements OnInit {
     description: '',
     reducedValue: 0,
     conditionApply: 0,
-    quantity: 0,
+    quantity: 1,
     customerAdminDTOList: '',
     optionCustomer: '0',
     limitCustomer: '',
     createName: localStorage.getItem('fullname'),
-    isValidDateRange: () => {
-      return (
-        this.voucher.startDate &&
-        this.voucher.endDate &&
-        this.voucher.startDate < this.voucher.endDate
-      );
-    },
   };
   validName: ValidateInput = new ValidateInput();
   validQuantity: ValidateInput = new ValidateInput();
@@ -106,20 +99,49 @@ export class CreatVoucherShipComponent implements OnInit {
     }
   }
   isEndDateValid() {
-    this.endDateTouched = true;
-    this.isValidDateRange();
+    this.checkEndDateNull = false;
+    if (this.voucher.endDate === '' || this.voucher.endDate === null
+      || this.voucher.endDate === undefined){
+      this.checkEndDateNull = true;
+      this.checkEndDate = false;
+      return;
+    }
+    if (
+      this.voucher.startDate &&
+      this.voucher.endDate &&
+      this.voucher.startDate >= this.voucher.endDate
+    ) {
+      this.checkEndDateNull = false;
+      this.checkEndDate = true;
+      return;
+    }
+    this.checkEndDate = false;
+    this.checkEndDateNull = false;
   }
   isStartDateValid() {
-    this.startDateTouched = true;
+    this.checkStartDateNull = false;
     const date = new Date();
-    console.log(date.getTime());
-    console.log(new Date(this.voucher.startDate).getTime());
+    if (this.voucher.startDate === '' || this.voucher.startDate === null
+      || this.voucher.startDate === undefined){
+      this.checkStartDateNull = true;
+      this.checkStartDate = false;
+      return;
+    }
     if (new Date(this.voucher.startDate).getTime() < date.getTime()){
       this.checkStartDate = true;
-    }else {
-      this.checkStartDate = false;
+      this.checkStartDateNull = false;
+      return;
     }
-    console.log(this.checkStartDate);
+    this.checkStartDateNull = false;
+    this.checkStartDate = false;
+  }
+  removeCheckStartDate(){
+    this.checkStartDateNull = false;
+    this.checkStartDate = false;
+  }
+  removeCheckEndDate(){
+    this.checkEndDateNull = false;
+    this.checkEndDate = false;
   }
   ngOnInit(): void {
     this.voucherService.getCustomer().subscribe((response) => {
@@ -139,7 +161,8 @@ export class CreatVoucherShipComponent implements OnInit {
     this.validateDescription();
     this.validateConditionApply();
     if (!this.validName.done || !this.validDescription.done || !this.validReducedValue.done
-      || !this.validconditionApply.done) {
+      || !this.validQuantity.done || !this.validconditionApply.done ||
+      this.checkStartDate || this.checkStartDateNull || this.checkEndDate || this.checkEndDateNull) {
       return;
     }
     Swal.fire({
@@ -185,7 +208,7 @@ export class CreatVoucherShipComponent implements OnInit {
     this.validReducedValue = CommonFunction.validateInput(this.voucher.reducedValue, 250, /^[1-9]\d*(\.\d+)?$/);
   }
   validateConditionApply() {
-    this.validconditionApply = CommonFunction.validateInput(this.voucher.conditionApply, 250, /^[1-9]\d*(\.\d+)?$/);
+    this.validconditionApply = CommonFunction.validateInput(this.voucher.conditionApply, 250, /^[0-9]\d*(\.\d+)?$/);
   }
   validateQuantity() {
     this.validQuantity = CommonFunction.validateInput(this.voucher.quantity, 50, /^[1-9]\d*(\.\d+)?$/ );

@@ -25,12 +25,14 @@ export class CreatDiscountComponent implements OnInit {
     },
     spap: '0',
     reducedValue: '',
-    discountType: '0',
+    discountType: 0,
     maxReduced: 0,
+    productDTOList: [],
   };
-  startDateTouched = false;
+  checkStartDate: boolean = false;
+  checkStartDateNull = false;
   checkEndDate: boolean = false;
-  endDateTouched = false;
+  checkEndDateNull = false;
   currentDate: Date = new Date();
   fullname = '';
   gridApi: any;
@@ -40,7 +42,6 @@ export class CreatDiscountComponent implements OnInit {
   rowHeight = 40;
   disableCheckPriceProduct = false;
   iđStaff = '';
-  checkStartDate: boolean = false;
   validName: ValidateInput = new ValidateInput();
   validDescription: ValidateInput = new ValidateInput();
   validReducedValue: ValidateInput = new ValidateInput();
@@ -103,33 +104,50 @@ export class CreatDiscountComponent implements OnInit {
     });
     console.log(this.currentDate);
   }
-  isValidDateRange(): void {
+  isEndDateValid() {
+    this.checkEndDateNull = false;
+    if (this.discount.discountAdminDTO.endDate === '' || this.discount.discountAdminDTO.endDate === null
+      || this.discount.discountAdminDTO.endDate === undefined){
+      this.checkEndDateNull = true;
+      this.checkEndDate = false;
+      return;
+    }
     if (
       this.discount.discountAdminDTO.startDate &&
       this.discount.discountAdminDTO.endDate &&
-      this.discount.discountAdminDTO.startDate > this.discount.discountAdminDTO.endDate
+      this.discount.discountAdminDTO.startDate >= this.discount.discountAdminDTO.endDate
     ) {
+      this.checkEndDateNull = false;
       this.checkEndDate = true;
-      console.log('Date range is valid.');
-    } else {
-      this.checkEndDate = false;
-      // Cũng có thể thực hiện công việc khác nếu cần.
-      console.log('Date range is not valid.');
+      return;
     }
-  }
-  isEndDateValid() {
-    this.endDateTouched = true;
-    this.isValidDateRange();
+    this.checkEndDate = false;
+    this.checkEndDateNull = false;
   }
   isStartDateValid() {
+    this.checkStartDateNull = false;
     const date = new Date();
-    this.startDateTouched = true;
+    if (this.discount.discountAdminDTO.startDate === '' || this.discount.discountAdminDTO.startDate === null
+      || this.discount.discountAdminDTO.startDate === undefined){
+      this.checkStartDateNull = true;
+      this.checkStartDate = false;
+      return;
+    }
     if (new Date(this.discount.discountAdminDTO.startDate).getTime() < date.getTime()){
       this.checkStartDate = true;
-    }else if (new Date(this.discount.discountAdminDTO.startDate).getTime() >= date.getTime()){
-      this.checkStartDate = false;
+      this.checkStartDateNull = false;
+      return;
     }
-    console.log(this.checkStartDate);
+    this.checkStartDateNull = false;
+    this.checkStartDate = false;
+  }
+  removeCheckStartDate(){
+    this.checkStartDateNull = false;
+    this.checkStartDate = false;
+  }
+  removeCheckEndDate(){
+    this.checkEndDateNull = false;
+    this.checkEndDate = false;
   }
   onGridReady(params: any) {
     this.gridApi = params.api;
@@ -142,10 +160,30 @@ export class CreatDiscountComponent implements OnInit {
     this.validateReducedValue();
     this.validateDescription();
     this.validateMaxReducedValue();
-    if (!this.validName.done || !this.validDescription.done || !this.validReducedValue.done
-      || !this.validMaxReduced.done
-      ) {
+    if (!this.validName.done || !this.validDescription.done ||
+        !this.validReducedValue.done ||
+        this.checkStartDate || this.checkStartDateNull || this.checkEndDate || this.checkEndDateNull ) {
       return;
+    }
+    if (this.discount.discountType === 1 && !this.validMaxReduced.done){
+      return;
+    }
+    const arrayProduct = this.discount.spap === '0' ? this.rowData : this.gridApi.getSelectedRows();
+    this.disableCheckPriceProduct = false;
+    if (arrayProduct.length <= 0) {
+      this.disableCheckPriceProduct = true;
+      this.toastr.error('Không còn sản phẩm để giảm');
+      return;
+    }else{
+      for (let i = 0; i < arrayProduct.length; i++) {
+        if (this.discount.reducedValue > arrayProduct[i].price && this.discount.discountType === 0 ) {
+          console.log('Array Product:', arrayProduct);
+          console.log('Discount:', this.discount);
+          this.disableCheckPriceProduct = true;
+          this.toastr.error('Giá trị giảm lớn hơn giá sản phẩm');
+          return;
+        }
+    }
     }
     Swal.fire({
       title: 'Bạn có muốn thêm giảm giá không?',
@@ -156,34 +194,21 @@ export class CreatDiscountComponent implements OnInit {
       confirmButtonText: 'Thêm'
     }).then((result) => {
       if (result.isConfirmed) {
-        const arrayProduct = this.discount.spap === '0' ? this.rowData : this.gridApi.getSelectedRows();
-        this.disableCheckPriceProduct = false;
-        // tslint:disable-next-line:prefer-for-of
-        for (let i = 0; i < arrayProduct.length; i++) {
-          // tslint:disable-next-line:triple-equals
-          if (this.discount.reducedValue > arrayProduct[i].price && this.discount.discountType == 1) {
-            this.disableCheckPriceProduct = true;
-            this.toastr.success('Giá trị giảm lớn hơn giá sản phẩm');
-            return;
-          }
-          this.iđStaff = localStorage.getItem('idStaff');
-          // tslint:disable-next-line:triple-equals
-          if (this.discount.maxReduced > arrayProduct[i].price && this.discount.discountType == 0) {
-            this.disableCheckPriceProduct = true;
-            this.toastr.success('Giá trị giảm lớn hơn giá sản phẩm');
-            return;
-          }
-        }
         if (this.disableCheckPriceProduct === false) {
+          this.iđStaff = localStorage.getItem('idStaff');
           const obj = {
             ...this.discount,
             productDTOList: arrayProduct,
           };
+
           this.discountService.createDiscount(obj).subscribe(
             (response) => {
-              // Handle the response if needed, e.g., show a success message
               console.log('Discount added successfully', response);
               this.router.navigateByUrl('/admin/discount');
+              Swal.fire({
+                title: 'Thêm giảm giá thành công!',
+                icon: 'success'
+              });
             },
             (error) => {
               // Handle errors if the discount creation fails
@@ -192,10 +217,6 @@ export class CreatDiscountComponent implements OnInit {
             }
           );
         }
-        Swal.fire({
-          title: 'Thêm giảm giá thành công!',
-          icon: 'success'
-        });
       }
     });
   }
