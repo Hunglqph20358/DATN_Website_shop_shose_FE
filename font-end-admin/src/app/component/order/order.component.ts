@@ -118,6 +118,9 @@ export class OrderComponent implements OnInit {
           // textAlign: 'center',
           'justify-content': 'center',
         },
+        valueFormatter: params => {
+          return params.data.idCustomer === null ? 'Khách ẩn danh' : params.data.customerAdminDTO.fullname;
+        },
       },
       {
         headerName: 'Thanh Toán',
