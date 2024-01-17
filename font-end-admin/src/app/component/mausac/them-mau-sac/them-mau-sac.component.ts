@@ -13,7 +13,8 @@ export class ThemMauSacComponent implements OnInit {
 
   Name: string;
   validName: ValidateInput = new ValidateInput();
-
+  Code: string;
+  validCode: ValidateInput = new ValidateInput();
   constructor(public dialogRef: MatDialogRef<ThemMauSacComponent>,
               @Inject(MAT_DIALOG_DATA) public data: any,
               private mssv: MausacService) {
@@ -23,8 +24,9 @@ export class ThemMauSacComponent implements OnInit {
   }
   clickadd() {
     this.Name = CommonFunction.trimText(this.Name);
+    this.Code = CommonFunction.trimText(this.Code);
     this.validateName();
-    if ( !this.validName.done ) {
+    if ( !this.validName.done || !this.validCode.done) {
       return;
     }
     Swal.fire({
@@ -39,6 +41,7 @@ export class ThemMauSacComponent implements OnInit {
       if (result.isConfirmed) {
         const category = {
           name: this.Name,
+          code: this.Code
         };
         this.mssv.AddMauSac(category).subscribe(
           result1 => {
@@ -64,5 +67,8 @@ export class ThemMauSacComponent implements OnInit {
 
   validateName() {
     this.validName = CommonFunction.validateInput(this.Name, 250, '[^0-9]');
+  }
+  validateCode() {
+    this.validCode = CommonFunction.validateInput(this.Code, 250, '');
   }
 }

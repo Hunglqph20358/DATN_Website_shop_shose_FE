@@ -83,9 +83,9 @@
     <div>
       <input type="file" [(ngModel)]="imgLst" style="color: red" (change)="OnChangeFile($event)" multiple (keydown)="revoveInvalid(validImage)" (blur)="validateImage()">
       <p class="validate-input-label" *ngIf="validImage.empty">Ảnh không được để trống</p>
-      <p class="validate-input-label" *ngIf="validateImageCount">
-        Ảnh phải tối đa là 3
-      </p>
+<!--      <p class="validate-input-label" *ngIf="validateImageCount(imgLst)">-->
+<!--        Ảnh phải tối đa là 3-->
+<!--      </p>-->
     </div>
     <br>
     <div *ngIf="Name">
@@ -108,28 +108,6 @@
                  >
       </ng-select>
       <br>
-<!--      <h1>Thêm Kích cỡ & Màu sắc</h1>-->
-<!--      <mat-form-field>-->
-<!--        <mat-label>Kích cỡ</mat-label>-->
-<!--        <mat-select [(ngModel)]="idSize" (selectionChange)="OnChangSize($event)"  multiple>-->
-<!--          <mat-option *ngFor="let sz of size"  [value]="sz.id">{{sz.sizeNumber}}</mat-option>-->
-<!--        </mat-select>-->
-<!--      </mat-form-field>-->
-<!--      <mat-form-field>-->
-<!--        <mat-label>Màu sắc</mat-label>-->
-<!--        <mat-select [(ngModel)]="idColor" (selectionChange)="OnChangColor($event)"  multiple>-->
-<!--          <mat-option *ngFor="let cl of color" [value]="cl.id">{{cl.name}}</mat-option>-->
-<!--        </mat-select>-->
-<!--      </mat-form-field>-->
-<!--      <mat-radio-group [(ngModel)]="shoeCollar" name="shoeCollar">-->
-<!--        <mat-label>Cổ giày</mat-label>-->
-<!--        <mat-radio-button [value]="0">Cổ thấp</mat-radio-button>-->
-<!--        <mat-radio-button [value]="1">Cổ cao</mat-radio-button>-->
-<!--      </mat-radio-group>-->
-<!--      <mat-form-field appearance="outline">-->
-<!--        <mat-label>Số Lượng</mat-label>-->
-<!--        <input [(ngModel)]="quantity" name="quantity" matInput placeholder="Số lượng">-->
-<!--      </mat-form-field>-->
     </div>
   </div>
 </div>
