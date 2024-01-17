@@ -79,6 +79,6 @@ export class AddressCheckoutComponent implements OnInit {
   }
 
   closePopup() {
-    this.matDialogRef.close('close-address');
+    this.matDialogRef.close('');
   }
 }

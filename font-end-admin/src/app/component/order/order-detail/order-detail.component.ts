@@ -116,10 +116,16 @@ export class OrderDetailComponent implements OnInit {
           idStaff: this.data.staff.id,
           note: res.data.note
         };
-        this.orderService.cancelOrder(obj).subscribe(res => {
-          this.toastr.success('Hủy đơn hàng Thanh Cong!', 'Thông báo', {
-            positionClass: 'toast-top-right'
-          });
+        this.orderService.cancelOrder(obj).subscribe(result => {
+          if (result.status === 'OK') {
+            this.toastr.success('Hủy đơn hàng thành công!', 'Thông báo', {
+              positionClass: 'toast-top-right'
+            });
+          } else {
+            this.toastr.error(result.message, 'Thông báo', {
+              positionClass: 'toast-top-right'
+            });
+          }
           this.cdr.detectChanges();
           this.matRef.close('update-order');
         });
@@ -139,10 +145,17 @@ export class OrderDetailComponent implements OnInit {
           idStaff: this.data.staff.id,
           note: res.data.note
         };
-        this.orderService.progressingOrder(obj).subscribe(res => {
-          this.toastr.success('Xác nhận thành công!', 'Thông báo', {
-            positionClass: 'toast-top-right'
-          });
+        this.orderService.progressingOrder(obj).subscribe(result => {
+          if (result.status === 'OK') {
+            this.toastr.success('Xác nhận thành công!', 'Thông báo', {
+              positionClass: 'toast-top-right'
+            });
+          } else {
+            this.toastr.error(result.message, 'Thông báo', {
+              positionClass: 'toast-top-right'
+            });
+          }
+
           this.cdr.detectChanges();
           this.matRef.close('update-order');
         });
@@ -162,10 +175,16 @@ export class OrderDetailComponent implements OnInit {
           idStaff: this.data.staff.id,
           note: res.data.note
         };
-        this.orderService.shipOrder(obj).subscribe(res => {
-          this.toastr.success('Đơn hàng đang được giao!', 'Thông báo', {
-            positionClass: 'toast-top-right'
-          });
+        this.orderService.shipOrder(obj).subscribe(result => {
+          if (result.status === 'OK') {
+            this.toastr.success('Đơn hàng bắt đầu được giao!', 'Thông báo', {
+              positionClass: 'toast-top-right'
+            });
+          } else {
+            this.toastr.error(result.message, 'Thông báo', {
+              positionClass: 'toast-top-right'
+            });
+          }
           this.cdr.detectChanges();
           this.matRef.close('update-order');
         });
@@ -185,10 +204,16 @@ export class OrderDetailComponent implements OnInit {
           idStaff: this.data.staff.id,
           note: res.data.note
         };
-        this.orderService.completeOrder(obj).subscribe(res => {
-          this.toastr.success('Đơn hàng đã hoàn thành!', 'Thông báo', {
-            positionClass: 'toast-top-right'
-          });
+        this.orderService.completeOrder(obj).subscribe(result => {
+          if (result.status === 'OK') {
+            this.toastr.success('Đơn hàng đã hoàn thành!', 'Thông báo', {
+              positionClass: 'toast-top-right'
+            });
+          } else {
+            this.toastr.error(result.message, 'Thông báo', {
+              positionClass: 'toast-top-right'
+            });
+          }
           this.cdr.detectChanges();
           this.matRef.close('update-order');
         });

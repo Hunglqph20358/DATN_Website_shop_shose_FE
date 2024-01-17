@@ -75,9 +75,8 @@ export class ThongKeComponent implements OnInit {
             console.log(this.seriesDateStr);
             console.log(this.categoriesOrder);
             console.log(this.categoriesRevenue);
-            this.cdr.detectChanges();
         });
-
+      this.cdr.detectChanges();
     }
 
     changeGetStatistical() {

@@ -24,6 +24,13 @@ export class DetailCheckoutComponent implements OnInit {
   // };
   statusPayment: any;
   email: any;
+  user: any = {
+    id: null,
+    code: null,
+    fullname: '',
+    phone: '',
+    email: '',
+  };
 
   constructor(private route: ActivatedRoute, private orderDetailService: OrderDetailService,
               private cookieService: CookieService, private emailService: EmailService,
@@ -36,6 +43,18 @@ export class DetailCheckoutComponent implements OnInit {
     // sessionStorage.removeItem('order');
 
     this.cartService.updateTotalProducts(0);
+    const storedUserString = localStorage.getItem('customer');
+
+    if (storedUserString) {
+      const storedUser = JSON.parse(storedUserString);
+      this.user = {
+        id: storedUser.id,
+        code: storedUser.code,
+        fullname: storedUser.fullname,
+        phone: storedUser.phone,
+        email: storedUser.email,
+      };
+    }
   }
 
   ngOnInit(): void {
@@ -43,34 +62,66 @@ export class DetailCheckoutComponent implements OnInit {
     console.log(this.listCart);
 
     if (this.statusPayment === '00' && this.order.paymentType === 1) {
-      this.orderService.createOrder(this.order).subscribe(res => {
-        if (res.status === 'OK') {
-          this.order = res.data;
-          const orderDetailsObservables = this.listCart.map(item => {
-            const obj = {
-              idOrder: res.data.id,
-              idProductDetail: item.productDetailDTO.id,
-              quantity: item.quantity,
-              price: item.productDTO?.reducePrice != null || item.productDTO?.percentageReduce != null ? (item.productDTO.price - item.productDTO.reducePrice) : item.productDTO.price,
-              codeDiscount: this.extractCodeDiscount(item.productDTO),
-            };
-            return this.orderDetailService.createOrderDetail(obj);
-          });
-          forkJoin(orderDetailsObservables).subscribe(
-            orderDetailsResponses => {
-              console.log(orderDetailsResponses);
-              this.emailService.sendEmail(this.order).subscribe(result => {
-                console.log('Send email thành công ');
-              });
-              localStorage.removeItem('order-bill');
-              this.cookieService.delete('cart', '/');
-              this.cookieService.delete('checkout', '/');
-            },
-            error => {
-            }
-          );
-        }
-      });
+      if (this.user.id === null && this.user.code === null) {
+        this.orderService.createOrderNotLogin(this.order).subscribe(res => {
+          if (res.status === 'OK') {
+            this.order = res.data;
+            const orderDetailsObservables = this.listCart.map(item => {
+              const obj = {
+                idOrder: res.data.id,
+                idProductDetail: item.productDetailDTO.id,
+                quantity: item.quantity,
+                price: item.productDTO?.reducePrice != null || item.productDTO?.percentageReduce != null ? (item.productDTO.price - item.productDTO.reducePrice) : item.productDTO.price,
+                codeDiscount: this.extractCodeDiscount(item.productDTO),
+              };
+              return this.orderDetailService.createOrderDetail(obj);
+            });
+            forkJoin(orderDetailsObservables).subscribe(
+              orderDetailsResponses => {
+                console.log(orderDetailsResponses);
+                this.emailService.sendEmail(this.order).subscribe(result => {
+                  console.log('Send email thành công ');
+                });
+                localStorage.removeItem('order-bill');
+                this.cookieService.delete('cart', '/');
+                this.cookieService.delete('checkout', '/');
+              },
+              error => {
+              }
+            );
+          }
+        });
+      }else {
+        this.orderService.createOrder(this.order).subscribe(res => {
+          if (res.status === 'OK') {
+            this.order = res.data;
+            const orderDetailsObservables = this.listCart.map(item => {
+              const obj = {
+                idOrder: res.data.id,
+                idProductDetail: item.productDetailDTO.id,
+                quantity: item.quantity,
+                price: item.productDTO?.reducePrice != null || item.productDTO?.percentageReduce != null ? (item.productDTO.price - item.productDTO.reducePrice) : item.productDTO.price,
+                codeDiscount: this.extractCodeDiscount(item.productDTO),
+              };
+              return this.orderDetailService.createOrderDetail(obj);
+            });
+            forkJoin(orderDetailsObservables).subscribe(
+              orderDetailsResponses => {
+                console.log(orderDetailsResponses);
+                this.emailService.sendEmail(this.order).subscribe(result => {
+                  console.log('Send email thành công ');
+                });
+                localStorage.removeItem('order-bill');
+                this.cookieService.delete('cart', '/');
+                this.cookieService.delete('checkout', '/');
+              },
+              error => {
+              }
+            );
+          }
+        });
+      }
+
       // const orderDetailPromises = this.listCart.map(item => {
       //   const obj = {
       //     idOrder: this.order.id,
@@ -103,44 +154,65 @@ export class DetailCheckoutComponent implements OnInit {
       //   });
     }
     if (this.order.paymentType === 0) {
-      this.orderService.createOrder(this.order).subscribe(res => {
-        if (res.status === 'OK') {
-          this.order = res.data;
-          const orderDetailPromises = this.listCart.map(item => {
-            const obj = {
-              idOrder: res.data.id,
-              idProductDetail: item.productDetailDTO.id,
-              quantity: item.quantity,
-              price: item.productDTO?.reducePrice != null || item.productDTO?.percentageReduce != null ? (item.productDTO.price - item.productDTO.reducePrice) : item.productDTO.price,
-              codeDiscount: this.extractCodeDiscount(item.productDTO),
-            };
-            return this.orderDetailService.createOrderDetail(obj).toPromise();
-          });
-          forkJoin(orderDetailPromises).subscribe(
-            orderDetailsResponses => {
-              console.log(orderDetailsResponses);
-              this.emailService.sendEmail(this.order).subscribe(result => {
-                console.log('Send email thành công ');
-              });
-              localStorage.removeItem('order-bill');
-              this.cookieService.delete('cart', '/');
-              this.cookieService.delete('checkout', '/');
-            },
-            error => {
-            }
-          );
-        }
-      });
-      // Promise.all(orderDetailPromises)
-      //   .then(() => {
-      //       this.emailService.sendEmail(this.order).subscribe(res => {
-      //       });
-      //   })
-      //   .catch(error => {
-      //     console.error('Error creating order details:', error);
-      //   })
-      //   .finally(() => {
-      //   });
+      if(this.user.id === null && this.user.code === null){
+        this.orderService.createOrderNotLogin(this.order).subscribe(res => {
+          if (res.status === 'OK') {
+            this.order = res.data;
+            const orderDetailPromises = this.listCart.map(item => {
+              const obj = {
+                idOrder: res.data.id,
+                idProductDetail: item.productDetailDTO.id,
+                quantity: item.quantity,
+                price: item.productDTO?.reducePrice != null || item.productDTO?.percentageReduce != null ? (item.productDTO.price - item.productDTO.reducePrice) : item.productDTO.price,
+                codeDiscount: this.extractCodeDiscount(item.productDTO),
+              };
+              return this.orderDetailService.createOrderDetail(obj).toPromise();
+            });
+            forkJoin(orderDetailPromises).subscribe(
+              orderDetailsResponses => {
+                console.log(orderDetailsResponses);
+                this.emailService.sendEmail(this.order).subscribe(result => {
+                  console.log('Send email thành công ');
+                });
+                localStorage.removeItem('order-bill');
+                this.cookieService.delete('cart', '/');
+                this.cookieService.delete('checkout', '/');
+              },
+              error => {
+              }
+            );
+          }
+        });
+      }else {
+        this.orderService.createOrder(this.order).subscribe(res => {
+          if (res.status === 'OK') {
+            this.order = res.data;
+            const orderDetailPromises = this.listCart.map(item => {
+              const obj = {
+                idOrder: res.data.id,
+                idProductDetail: item.productDetailDTO.id,
+                quantity: item.quantity,
+                price: item.productDTO?.reducePrice != null || item.productDTO?.percentageReduce != null ? (item.productDTO.price - item.productDTO.reducePrice) : item.productDTO.price,
+                codeDiscount: this.extractCodeDiscount(item.productDTO),
+              };
+              return this.orderDetailService.createOrderDetail(obj).toPromise();
+            });
+            forkJoin(orderDetailPromises).subscribe(
+              orderDetailsResponses => {
+                console.log(orderDetailsResponses);
+                this.emailService.sendEmail(this.order).subscribe(result => {
+                  console.log('Send email thành công ');
+                });
+                localStorage.removeItem('order-bill');
+                this.cookieService.delete('cart', '/');
+                this.cookieService.delete('checkout', '/');
+              },
+              error => {
+              }
+            );
+          }
+        });
+      }
     }
   }
 
