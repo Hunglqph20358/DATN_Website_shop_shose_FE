@@ -287,38 +287,5 @@ export class VoucherComponent implements OnInit {
       this.ngOnInit();
     }
   }
-  generateVoucherHTML(): string {
-    let orderHTML = `<div>`;
-    orderHTML += `<h2>Voucher</h2>`;
-    orderHTML += `<p>Mã voucher: ${this.voucher.code}</p>`;
-    orderHTML += `<p>Tên voucher: ${this.voucher.name}</p>`;
-    orderHTML += `<p>Giá trị giảm: ${this.voucher?.reducedValue}</p>`;
-    orderHTML += `<h3>Chi tiết khách hàng</h3>`;
-    orderHTML += `<ul>`;
-    // this.rowData.forEach(product => {
-    //   orderHTML += `<li>Mã: ${product.code}- Size: ${product.size}- Màu Sắc: ${product.color}-Tên: ${product.name} - ${product.quantity} x ${product.price} = ${product.total}</li>`;
-    // });
-    orderHTML += `</ul>`;
-    orderHTML += `</div>`;
-    return orderHTML;
-  }
-  printInvoice() {
-    const invoiceHTML = this.generateVoucherHTML();
-    const frame = document.createElement('iframe');
-    frame.style.display = 'none';
-    document.body.appendChild(frame);
-    frame.contentDocument.open();
-    frame.contentDocument.write(invoiceHTML);
-    frame.contentDocument.close();
-    printJS({
-      printable: frame.contentDocument.body,
-      type: 'html',
-      properties: ['code', 'name', 'reducedValue'],
-      header: '<h3 class="custom-h3">Voucher</h3>',
-      style: '.custom-h3 { color: red; }',
-      documentTitle: 'voucher',
-    });
 
-    document.body.removeChild(frame);
-  }
 }

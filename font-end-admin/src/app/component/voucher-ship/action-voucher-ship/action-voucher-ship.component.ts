@@ -6,6 +6,7 @@ import {VoucherService} from "../../../service/voucher.service";
 import {ICellRendererParams} from "ag-grid-community";
 import {ToastrService} from "ngx-toastr";
 import Swal from "sweetalert2";
+import {VoucherShipService} from "../../../service/voucher-ship.service";
 
 @Component({
   selector: 'app-action-voucher-ship',
@@ -18,7 +19,7 @@ export class ActionVoucherShipComponent implements OnInit, ICellRendererAngularC
   constructor(
     private matDialog: MatDialog,
     private router: Router,
-    private voucherService: VoucherService,
+    private voucherService: VoucherShipService,
     private toastr: ToastrService,
     private cdr: ChangeDetectorRef
   ) {}

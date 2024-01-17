@@ -65,6 +65,10 @@ export class DiscountService {
     const url = `${this.apiUrl}/kichHoat/${id}`;
     return this.http.put(url, null);
   }
+  setIdel(id: number ): Observable<any> {
+    const url = `${this.apiUrl}/setIdel/${id}`;
+    return this.http.put(url, null);
+  }
 
 
   getDetailDiscount(discountId: number) {
