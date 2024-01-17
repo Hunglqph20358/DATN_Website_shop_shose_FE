@@ -179,8 +179,7 @@
               <label class="col-sm-6 col-form-label">Giảm giá:</label>
               <div class="col-sm-6 position-relative">
                 <input type="text" min="0" class="form-control custom-input" name="priceVoucher"
-                       placeholder="{{utilService.formatMoney(priceVoucher)}}"
-                       (change)="priceVouchers() " [(ngModel)]="priceVoucher" [ngModelOptions]="{standalone: true}">
+                       (change)="priceVouchers() " value="{{utilService.formatMoney(priceVoucher)}}" readonly>
                 <a class="btn icon-add position-absolute top-0 end-0" (click)="openVoucherSC()">
                   <i class="bi bi-plus-lg"></i>
                 </a>
