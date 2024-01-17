@@ -201,12 +201,14 @@ export class EditVoucherComponent implements OnInit {
       this.toastr.error('Giới hạn sử dụng với mỗi khách hàng phải nhỏ hơn số lượng');
       return;
     }
-    const arrayCustomer = this.voucher.optionCustomer === 0 ? null : this.gridApi.getSelectedRows();
-    if (arrayCustomer.length <= 0 && this.voucher.optionCustomer == 1){
+    const arrayCustomer = this.voucher.optionCustomer == 0 ? null : this.gridApi?.getSelectedRows?.();
+
+    if (arrayCustomer && arrayCustomer.length <= 0 && this.voucher.optionCustomer == 1) {
       this.disableCheckLimitCustomer = true;
-      this.toastr.error('Không có khách hàng ');
+      this.toastr.error('Không có khách hàng');
       return;
     }
+
     Swal.fire({
       title: 'Bạn có muốn sửa Voucher không?',
       icon: 'success',

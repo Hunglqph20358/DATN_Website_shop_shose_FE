@@ -38,6 +38,10 @@ export class VoucherShipService {
     const url = `${this.apiUrl}/kichHoat/${id}`;
     return this.http.put(url, null);
   }
+  setIdel(id: number ): Observable<any> {
+    const url = `${this.apiUrl}/setIdel/${id}`;
+    return this.http.put(url, null);
+  }
   getVoucherKH() {
     return this.http.get<any[]>('http://localhost:6868/api/admin/voucherFS/KH');
   }
