@@ -63,7 +63,7 @@ export class SalesCounterComponent implements OnInit {
   animal: string;
   selectedOption: string = '1';
   selectedCustomer: any;
-  idCustomer: number = 1;
+  idCustomer = null;
   user: UsersDTO = {};
   availableDevices: MediaDeviceInfo[];
   currentDevice: MediaDeviceInfo = null;
@@ -145,7 +145,7 @@ export class SalesCounterComponent implements OnInit {
     if (this.searcherCustomer.trim() === '') {
       console.log('Mời nhập sdt khách hàng');
       this.isCustomerNull = false;
-      this.idCustomer = 1;
+      this.idCustomer = null;
     } else {
       this.customerService.findCustomerByPhone(this.searcherCustomer).subscribe(
         customer => {
@@ -436,8 +436,8 @@ export class SalesCounterComponent implements OnInit {
             totalPayment: this.priceCustomer,
             idCustomer: this.idCustomer,
             idStaff: this.user.id,
-            addressReceived: this.addressNotLogin?.specificAddress + ', ' + ward?.WardName + ', '
-              + district?.DistrictName + ', ' + province?.ProvinceName,
+            addressReceived: this.isChecked ? (this.addressNotLogin?.specificAddress + ', ' + ward?.WardName + ', '
+              + district?.DistrictName + ', ' + province?.ProvinceName) : null,
             statusPayment: 0,
             shipPrice: this.shipFee,
             codeVoucher: this.voucher ? this.voucher?.code : null,
@@ -496,8 +496,8 @@ export class SalesCounterComponent implements OnInit {
             idCustomer: this.idCustomer,
             shipPrice: this.shipFee,
             idStaff: this.user.id,
-            addressReceived: this.addressNotLogin?.specificAddress + ', ' + ward?.WardName + ', '
-              + district?.DistrictName + ', ' + province?.ProvinceName,
+            addressReceived: this.isChecked ? (this.addressNotLogin?.specificAddress + ', ' + ward?.WardName + ', '
+              + district?.DistrictName + ', ' + province?.ProvinceName) : null,
             statusPayment: 0,
             codeVoucher: this.voucher ? this.voucher?.code : null,
             email: 'customer123@gmail.com',
@@ -545,9 +545,9 @@ export class SalesCounterComponent implements OnInit {
                   this.removeOrder(order);
                   this.calculateTotalAllProducts();
                   localStorage.removeItem('listOrder');
-                  localStorage.setItem('coutOrder', this.count.toString());
-                  localStorage.setItem('listOrder', JSON.stringify(this.listOder));
                   localStorage.removeItem(`orderProducts_${this.currentOrderId}`);
+                  // localStorage.setItem('coutOrder', this.count.toString());
+                  // localStorage.setItem('listOrder', JSON.stringify(this.listOder));
                 }
               });
             }
@@ -560,7 +560,7 @@ export class SalesCounterComponent implements OnInit {
   refreshData() {
     this.selectedCustomer = '';
     this.searcherCustomer = '';
-    this.idCustomer = 1;
+    this.idCustomer = null;
     this.priceCustomer = 0;
     this.priceVoucher = 0;
     this.listCart = [];
@@ -613,8 +613,8 @@ export class SalesCounterComponent implements OnInit {
     });
     orderHTML += `</tbody>`;
     orderHTML += `</table>`;
-    orderHTML += `<p>Giảm giá: ${this.priceVoucher}</p>`;
-    orderHTML += `<p>Tổng thanh toán: ${this.priceCustomer}</p>`;
+    orderHTML += `<p>Giảm giá: ${this.priceVoucher} đ</p>`;
+    orderHTML += `<p>Tổng thanh toán: ${this.priceCustomer} đ</p>`;
     orderHTML += `</div>`;
     return orderHTML;
   }
