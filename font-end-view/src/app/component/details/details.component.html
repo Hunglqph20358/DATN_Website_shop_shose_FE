@@ -65,15 +65,20 @@
           class="mtext-104 cl3 txt-center num-product"
           type="number"
           name="num-product"
-          [(ngModel)]="quantityBuy" />
+          [(ngModel)]="quantityBuy"
+          (ngModelChange)="checkQuantity()"
+        />
         <button type="button"
           class="btn-num-product-up cl8 hov-btn3 trans-04 flex-c-m" [style.cursor]="quantityBuy < getProductDetailQuantity()? 'pointer':'not-allowed'" (click)="tangSoLuong();" [disabled]="quantityBuy >= getProductDetailQuantity()">
           <i class="fa-solid fa-plus"></i>
         </button>
       </div>
+      <div class="validate-input" *ngIf="validQuantityBuy">
+        <p class="validate-input-label" *ngIf="validQuantityBuy">{{validQuantityBuyMess}}</p>
+      </div>
       <div class ="btn-groups">
-        <button class = "add-cart-btn" style="border-radius: 5px" [disabled]="bothSizeAndColorSelected === false" [style.opacity]="bothSizeAndColorSelected === false ? '0.5': ''" (click)="addToCart(product.id)"><i class = "fas fa-shopping-cart"></i>Thêm giỏ hàng</button>
-        <button class = "buy-now-btn" style="border-radius: 5px" [disabled]="bothSizeAndColorSelected === false" [style.opacity]="bothSizeAndColorSelected === false ? '0.5': ''" (click)="buyNow(product.id);"><i class = "fas fa-wallet"></i>Mua ngay</button>
+        <button class = "add-cart-btn" style="border-radius: 5px" [disabled]="bothSizeAndColorSelected === false || this.validQuantityBuy" [style.opacity]="(bothSizeAndColorSelected === false || this.validQuantityBuy) ? '0.5': ''" (click)="addToCart(product.id)"><i class = "fas fa-shopping-cart"></i>Thêm giỏ hàng</button>
+        <button class = "buy-now-btn" style="border-radius: 5px" [disabled]="bothSizeAndColorSelected === false || this.validQuantityBuy" [style.opacity]="(bothSizeAndColorSelected === false || this.validQuantityBuy) ? '0.5': ''" (click)="buyNow(product.id);"><i class = "fas fa-wallet"></i>Mua ngay</button>
       </div>
     </div>
   </div>

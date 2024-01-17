@@ -15,10 +15,10 @@ export class UpdateAddressComponent implements OnInit {
 
   address: any = {
     id: null,
-    provinceId: undefined,
-    districtId: undefined,
-    wardCode: undefined,
-    specificAddress: undefined,
+    provinceId: null,
+    districtId: null,
+    wardCode: null,
+    specificAddress: null,
     config: null
   };
 
@@ -63,6 +63,7 @@ export class UpdateAddressComponent implements OnInit {
     let ward = this.listWard.find(w => w.WardCode === this.address.wardCode);
     const obj = {
       ...this.address,
+      specificAddress: (this.address.specificAddress === null || this.address.specificAddress === '') ? '...' : this.address.specificAddress,
       idCustomer: this.data.customer,
       provinceId: parseInt(this.address.provinceId, 10),
       province: province.ProvinceName,

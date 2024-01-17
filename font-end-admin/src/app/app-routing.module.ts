@@ -42,7 +42,7 @@ import {VoucherShipComponent} from "./component/voucher-ship/voucher-ship.compon
 import {EditVoucherShipComponent} from './component/voucher-ship/edit-voucher-ship/edit-voucher-ship.component';
 
 const routes: Routes = [
-  {path: '', redirectTo: 'staff', pathMatch: 'full'},
+  {path: '', redirectTo: 'thong-ke', pathMatch: 'full'},
   {path: 'admin/login', component: LoginComponent},
   {path: 'admin/don-hang', component: HomeComponent, canActivate: [AuthGuard]},
   {path: 'admin/creat-discount', component: CreatDiscountComponent, canActivate: [AuthGuard]},

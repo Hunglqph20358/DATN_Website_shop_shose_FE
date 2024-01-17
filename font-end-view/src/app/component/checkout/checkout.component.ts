@@ -102,11 +102,10 @@ export class CheckoutComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    // console.log(this.user);
-    console.log('user' + this.user.id);
     this.totalMoney = 0;
     this.totalSaveMoney = 0;
     this.totalMoneyPay = 0;
+    this.listCart = [];
     this.order.receiver = this.user.fullname;
     this.order.receiverPhone = this.user.phone;
     this.cartData.forEach((value, key) => {
