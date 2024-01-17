@@ -222,7 +222,7 @@ export class CheckoutComponent implements OnInit {
               shipPrice: this.voucherShip ? this.shipFeeReduce : this.shipFee,
               codeVoucher: this.voucher ? this.voucher?.code : null,
               codeVoucherShip: this.voucherShip ? this.voucherShip?.code : null,
-              addressReceived: this.addressNotLogin.specificAddress + ', ' + ward.WardName + ', '
+              addressReceived: (this.addressNotLogin.specificAddress === null ? '...' : this.addressNotLogin.specificAddress) + ', ' + ward.WardName + ', '
                 + district.DistrictName + ', ' + province.ProvinceName,
               paymentType: 1,
               email: this.email
@@ -300,7 +300,7 @@ export class CheckoutComponent implements OnInit {
               shipPrice: this.voucherShip ? this.shipFeeReduce : this.shipFee,
               codeVoucher: this.voucher ? this.voucher?.code : null,
               codeVoucherShip: this.voucherShip ? this.voucherShip?.code : null,
-              addressReceived: this.address.specificAddress + ', ' + this.address.wards + ', '
+              addressReceived: (this.addressNotLogin.specificAddress === null ? '...' : this.addressNotLogin.specificAddress) + ', ' + this.address.wards + ', '
                 + this.address.district + ', ' + this.address.province,
               paymentType: 1,
               email: this.user.email

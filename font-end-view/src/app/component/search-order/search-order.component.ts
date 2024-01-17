@@ -12,8 +12,8 @@ import {ToastrService} from 'ngx-toastr';
 export class SearchOrderComponent implements OnInit {
 
   codeOrderSearch: any;
-  order: any;
-  rowData: any;
+  order: any = null;
+  rowData = [];
   columnDefs: any;
   gridApi;
   gridColumnApi;
@@ -90,6 +90,9 @@ export class SearchOrderComponent implements OnInit {
   }
 
   searchOrder() {
+    this.order = null;
+    this.address = [];
+    this.rowData = [];
     if (!this.codeOrderSearch) {
       this.toaService.warning('Vui lòng nhập mã đơn hàng cần tra cứu');
       return;
@@ -98,7 +101,6 @@ export class SearchOrderComponent implements OnInit {
         if (res.status === 'OK') {
           this.order = res.data;
           this.address = res.data.addressReceived.split(',');
-          console.log(this.address);
           this.rowData = res.data.orderDetailDTOList;
           this.toaService.success('Tra cứu đơn hàng thành công');
         } else {

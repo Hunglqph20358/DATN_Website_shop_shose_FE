@@ -13,7 +13,7 @@ import {ToastrService} from 'ngx-toastr';
 })
 export class ImportFileComponent implements OnInit {
 
-  typeImport;
+  typeImport = 0;
   isShowImport = false;
   nameFile: any;
   sizeFile: any;
