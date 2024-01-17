@@ -26,6 +26,8 @@ import {PaymentSalesService} from '../../service/payment-sales.service';
 import {UtilService} from '../../util/util.service';
 import {CommonFunction} from '../../util/common-function';
 import {ValidateInput} from '../model/validate-input';
+import {PogupVoucherSCComponent} from './pogup-voucher-sc/pogup-voucher-sc.component';
+import {SalesCouterVoucherService} from '../../service/sales-couter-voucher.service';
 
 @Component({
   selector: 'app-sales-counter',
@@ -96,6 +98,14 @@ export class SalesCounterComponent implements OnInit {
   receiver: string;
   receiver_phone: string;
   receiver_mail: string;
+
+  voucherChoice: any = {
+    voucher: null,
+    voucherShip: null
+  };
+  voucher: any;
+  voucherShip: any;
+  codeVoucher: any;
   validReceiver: ValidateInput = new ValidateInput();
   validEmail: ValidateInput = new ValidateInput();
   validReceiverPhone: ValidateInput = new ValidateInput();
@@ -109,7 +119,7 @@ export class SalesCounterComponent implements OnInit {
               private router: Router, private sizeService: SizeService, private colorService: MausacService,
               private dialog: MatDialog, private customerService: CustomerServiceService, private toastr: ToastrService, private cdr: ChangeDetectorRef,
               private productDetailService: ProductdetailService, private giaoHangService: GiaoHangServiceService, private paymentService: PaymentSalesService,
-              public utilService: UtilService
+              public utilService: UtilService, private voucherService: SalesCouterVoucherService
   ) {
   }
 
@@ -424,6 +434,7 @@ export class SalesCounterComponent implements OnInit {
               + district?.DistrictName + ', ' + province?.ProvinceName,
             statusPayment: 0,
             shipPrice: this.shipFee,
+            codeVoucher: this.voucher ? this.voucher?.code : null,
             email: 'customer123@gmail.com',
             type: this.typeOrder,
             status: this.statusOrder,
@@ -446,7 +457,13 @@ export class SalesCounterComponent implements OnInit {
                 console.log(orderDetail);
                 this.orderDetailService.createDetailSales(orderDetail).subscribe(res => {
                   if (res.status === 'OK') {
-                    console.log('thanh toán thành công');
+                    localStorage.removeItem('listProductPush');
+                    this.refreshData();
+                    this.removeOrder(order);
+                    this.calculateTotalAllProducts();
+                    localStorage.removeItem(`orderProducts_${this.currentOrderId}`);
+                    localStorage.setItem('coutOrder', this.count.toString());
+                    localStorage.removeItem('listOrder');
                   } else {
                     this.checkStatus = 1;
                     console.log('Lỗi');
@@ -477,6 +494,7 @@ export class SalesCounterComponent implements OnInit {
             addressReceived: this.addressNotLogin?.specificAddress + ', ' + ward?.WardName + ', '
               + district?.DistrictName + ', ' + province?.ProvinceName,
             statusPayment: 0,
+            codeVoucher: this.voucher ? this.voucher?.code : null,
             email: 'customer123@gmail.com',
             type: this.typeOrder,
             status: this.statusOrder,
@@ -661,9 +679,10 @@ export class SalesCounterComponent implements OnInit {
       localStorage.setItem('listOrder', JSON.stringify(this.listOder));
     }
     this.getProductListForCurrentOrder();
-    this.userDTO = localStorage.getItem('users');
-    this.fullname = localStorage.getItem('fullname');
-    this.idStaff = localStorage.getItem('id');
+    const users = JSON.parse(localStorage.getItem('users'));
+    this.userDTO = users;
+    this.fullname = users.fullname;
+    this.idStaff = users.id;
     this.listOder.forEach(order => {
       const orderProductsKey = `orderProducts_${order.id}`;
       const storedOrderProducts = localStorage.getItem(orderProductsKey);
@@ -783,6 +802,57 @@ export class SalesCounterComponent implements OnInit {
     } else {
       this.isChecked = false;
     }
+  }
+
+  //voucher
+  openVoucherSC(){
+    const originalTotalMoney = this.priceCustomer;
+    const dialogRef = this.dialog.open(PogupVoucherSCComponent, {
+      width: '45%',
+      height: '90vh',
+      data: {total: originalTotalMoney, voucherChoice: this.voucherChoice}
+    }).afterClosed().subscribe(result => {
+      if (result.event === 'saveVoucher') {
+        console.log(result.data);
+        this.totalMoneyPay = originalTotalMoney;
+        if (result.data.voucher !== null) {
+          this.voucherService.getVoucherSales(result.data.voucher).subscribe(res => {
+            this.voucher = res.data;
+            if (res.data.voucherType === 1) {
+              const reducedVoucherPrice = parseFloat(((res.data.reducedValue / 100) * this.priceCustomer).toFixed(2));
+
+              console.log(reducedVoucherPrice);
+              if (reducedVoucherPrice > res.data.maxReduced) {
+                this.priceCustomer = this.priceCustomer - this.voucher.maxReduced;
+                this.voucher.reducedValue = this.voucher.maxReduced;
+              } else {
+                this.priceCustomer = this.priceCustomer - this.voucher.reducedValue;
+              }
+            } else {
+              this.priceCustomer = this.priceCustomer - this.voucher.reducedValue;
+            }
+            this.priceVoucher = this.voucher.reducedValue;
+            this.voucherChoice.voucher = res.data.codess;
+            console.log(this.voucher.code);
+            this.cdr.detectChanges();
+          });
+        }
+        // if (result.data.voucherShip !== null) {
+        //   this.voucherShipService.getVoucherShip(result.data.voucherShip).subscribe(res => {
+        //     this.voucherShip = res.data;
+        //     if (this.shipFee <= res.data.reducedValue) {
+        //       this.shipFeeReduce = this.shipFee;
+        //       this.totalMoneyPay = this.totalMoneyPay - this.shipFee;
+        //     } else {
+        //       this.totalMoneyPay = this.totalMoneyPay - res.data.reducedValue;
+        //       this.shipFeeReduce = res.data.reducedValue;
+        //     }
+        //     this.voucherChoice.voucherShip = res.data.code;
+        //     this.cdr.detectChanges();
+        //   });
+        // }
+      }
+    });
   }
 
 // validate

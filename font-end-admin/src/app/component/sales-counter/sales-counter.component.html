@@ -188,7 +188,7 @@
                 <input type="text" min="0" class="form-control custom-input" name="priceVoucher"
                        placeholder="{{utilService.formatMoney(priceVoucher)}}"
                        (change)="priceVouchers() " [(ngModel)]="priceVoucher" [ngModelOptions]="{standalone: true}">
-                <a class="btn icon-add position-absolute top-0 end-0">
+                <a class="btn icon-add position-absolute top-0 end-0" (click)="openVoucherSC()">
                   <i class="bi bi-plus-lg"></i>
                 </a>
               </div>

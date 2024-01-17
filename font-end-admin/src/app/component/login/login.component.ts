@@ -33,11 +33,8 @@ export class LoginComponent implements OnInit {
         localStorage.setItem('token', data.token);
         localStorage.setItem('users', JSON.stringify(data.usersDTO));
         localStorage.setItem('fullname', data.usersDTO.fullname);
-        localStorage.setItem('id', data.usersDTO.id.toString());
+        localStorage.setItem('id', JSON.stringify(data.usersDTO.id));
         this.router.navigate(['']);
-        localStorage.setItem('user', JSON.stringify(data.usersDTO));
-        localStorage.setItem('fullname', data.usersDTO.fullname);
-        localStorage.setItem('idStaff', data.usersDTO.id.toString());
       }
     }, error => {
         this.toas.error('thông tin tài khoản hoặc mật khẩu không chính xác', 'Lỗi');
