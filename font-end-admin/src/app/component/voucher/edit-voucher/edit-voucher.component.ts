@@ -13,6 +13,7 @@ import {DatePipe} from "@angular/common";
   styleUrls: ['./edit-voucher.component.css'],
 })
 export class EditVoucherComponent implements OnInit {
+   disableCheckLimitCustomer: boolean = false;
 
   constructor(private activatedRoute: ActivatedRoute,
               private voucherService: VoucherService,
@@ -59,11 +60,11 @@ export class EditVoucherComponent implements OnInit {
       },
     ];
   }
-  startDateTouched = false;
-  checkStartDate: boolean = false;
   checkAllow: boolean = false;
+  checkStartDate: boolean = false;
+  checkStartDateNull = false;
   checkEndDate: boolean = false;
-  endDateTouched = false;
+  checkEndDateNull = false;
   isHidden = true;
   gridApi: any;
   rowData = [];
@@ -85,6 +86,7 @@ export class EditVoucherComponent implements OnInit {
     limitCustomer: '',
     customerAdminDTOList: '',
     apply: '2',
+    allow: '',
     optionCustomer: '0',
     createName: localStorage.getItem('fullname'),
   };
@@ -97,35 +99,50 @@ export class EditVoucherComponent implements OnInit {
   validconditionApply: ValidateInput = new ValidateInput();
 
   public rowSelection: 'single' | 'multiple' = 'multiple'; // Chọn nhiều dòng
-  isValidDateRange(): void {
+  isEndDateValid() {
+    this.checkEndDateNull = false;
+    if (this.voucher.endDate === '' || this.voucher.endDate === null
+      || this.voucher.endDate === undefined){
+      this.checkEndDateNull = true;
+      this.checkEndDate = false;
+      return;
+    }
     if (
       this.voucher.startDate &&
       this.voucher.endDate &&
-      this.voucher.startDate > this.voucher.endDate
+      this.voucher.startDate >= this.voucher.endDate
     ) {
+      this.checkEndDateNull = false;
       this.checkEndDate = true;
-      console.log('Date range is valid.');
-    } else {
-      this.checkEndDate = false;
-      // Cũng có thể thực hiện công việc khác nếu cần.
-      console.log('Date range is not valid.');
+      return;
     }
-  }
-  isEndDateValid() {
-    this.endDateTouched = true;
-    this.isValidDateRange();
+    this.checkEndDate = false;
+    this.checkEndDateNull = false;
   }
   isStartDateValid() {
-    // console.log(event);
+    this.checkStartDateNull = false;
     const date = new Date();
-    console.log(date.getTime());
-    console.log(new Date(this.voucher.startDate).getTime());
+    if (this.voucher.startDate === '' || this.voucher.startDate === null
+      || this.voucher.startDate === undefined){
+      this.checkStartDateNull = true;
+      this.checkStartDate = false;
+      return;
+    }
     if (new Date(this.voucher.startDate).getTime() < date.getTime()){
       this.checkStartDate = true;
-    }else {
-      this.checkStartDate = false;
+      this.checkStartDateNull = false;
+      return;
     }
-    console.log(this.checkStartDate);
+    this.checkStartDateNull = false;
+    this.checkStartDate = false;
+  }
+  removeCheckStartDate(){
+    this.checkStartDateNull = false;
+    this.checkStartDate = false;
+  }
+  removeCheckEndDate(){
+    this.checkEndDateNull = false;
+    this.checkEndDate = false;
   }
   onGridReady(params: any) {
     this.gridApi = params.api;
@@ -172,7 +189,22 @@ export class EditVoucherComponent implements OnInit {
     this.validateMaxReducedValue();
     this.validateConditionApply();
     if (!this.validName.done || !this.validDescription.done || !this.validReducedValue.done
-      || !this.validconditionApply.done) {
+      || !this.validQuantity.done || !this.validconditionApply.done ||
+      this.checkStartDate || this.checkStartDateNull || this.checkEndDate || this.checkEndDateNull) {
+      return;
+    }
+    if (this.voucher.voucherType === 1 && !this.validMaxReduced.done){
+      return;
+    }
+    if (this.voucher.optionCustomer == 1 && this.voucher.limitCustomer > this.voucher.quantity) {
+      this.disableCheckLimitCustomer = true;
+      this.toastr.error('Giới hạn sử dụng với mỗi khách hàng phải nhỏ hơn số lượng');
+      return;
+    }
+    const arrayCustomer = this.voucher.optionCustomer === 0 ? null : this.gridApi.getSelectedRows();
+    if (arrayCustomer.length <= 0 && this.voucher.optionCustomer == 1){
+      this.disableCheckLimitCustomer = true;
+      this.toastr.error('Không có khách hàng ');
       return;
     }
     Swal.fire({
@@ -218,18 +250,18 @@ export class EditVoucherComponent implements OnInit {
     this.validName = CommonFunction.validateInput(this.voucher.name, 50, null );
   }
   validateQuantity() {
-    this.validQuantity = CommonFunction.validateInput(this.voucher.quantity, 50, null );
+    this.validQuantity = CommonFunction.validateInput(this.voucher.quantity, 50, /^[1-9]\d*(\.\d+)?$/ );
   }
   validateDescription() {this.validDescription = CommonFunction.validateInput(this.voucher.description, 50, null );
   }
   validateReducedValue() {
-    this.validReducedValue = CommonFunction.validateInput(this.voucher.reducedValue, 250, /^\d+(\.\d+)?$/);
+    this.validReducedValue = CommonFunction.validateInput(this.voucher.reducedValue, 250, /^[1-9]\d*(\.\d+)?$/);
   }
   validateMaxReducedValue() {
-    this.validMaxReduced = CommonFunction.validateInput(this.voucher.maxReduced, 250, /^\d+(\.\d+)?$/);
+    this.validMaxReduced = CommonFunction.validateInput(this.voucher.maxReduced, 250, /^[1-9]\d*(\.\d+)?$/);
   }
   validateConditionApply() {
-    this.validconditionApply = CommonFunction.validateInput(this.voucher.conditionApply, 250, /^\d+(\.\d+)?$/);
+    this.validconditionApply = CommonFunction.validateInput(this.voucher.conditionApply, 250, /^[0-9]\d*(\.\d+)?$/);
   }
   formatDate(date: Date): string {
     return this.datePipe.transform(date, 'yyyy-MM-ddTHH:mm') || '';
