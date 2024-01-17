@@ -12,7 +12,8 @@ import {ToastrService} from 'ngx-toastr';
   styleUrls: ['./login.component.css']
 })
 export class LoginComponent implements OnInit {
-
+  showPassword: boolean = false;
+  hide = true;
   form: any = {
     username: '',
     password: ''
@@ -47,6 +48,9 @@ export class LoginComponent implements OnInit {
   logout(){
     localStorage.removeItem('token');
     localStorage.removeItem('users');
+  }
+  togglePasswordVisibility(): void {
+    this.showPassword = !this.showPassword;
   }
   ngOnInit(): void {
   }

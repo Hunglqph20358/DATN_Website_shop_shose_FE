@@ -101,6 +101,7 @@ import {DatePipe} from '@angular/common';
 import { ActionStaffComponent } from './component/staff/action-staff/action-staff.component';
 import {ZXingScannerModule} from '@zxing/ngx-scanner';
 import {MatSlideToggleModule} from '@angular/material/slide-toggle';
+import { PogupVoucherSCComponent } from './component/sales-counter/pogup-voucher-sc/pogup-voucher-sc.component';
 
 @NgModule({
   declarations: [
@@ -173,7 +174,8 @@ import {MatSlideToggleModule} from '@angular/material/slide-toggle';
     EditVoucherShipComponent,
     ActionVoucherShipComponent,
     DetailVoucherShipComponent,
-    VoucherShipComponent
+    VoucherShipComponent,
+    PogupVoucherSCComponent
   ],
   imports: [
     BrowserModule,

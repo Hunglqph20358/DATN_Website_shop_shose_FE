@@ -178,8 +178,13 @@ export class EditVoucherShipComponent implements OnInit {
       this.checkStartDate || this.checkStartDateNull || this.checkEndDate || this.checkEndDateNull) {
       return;
     }
+    if (this.voucher.optionCustomer == 1 && this.voucher.limitCustomer > this.voucher.quantity) {
+      this.disableCheckLimitCustomer = true;
+      this.toastr.error('Giới hạn sử dụng với mỗi khách hàng phải nhỏ hơn số lượng');
+      return;
+    }
     const arrayCustomer = this.voucher.optionCustomer === '0' ? null : this.gridApi.getSelectedRows();
-    if (arrayCustomer.length <= 0 && this.voucher.optionCustomer == 1){
+    if (arrayCustomer && arrayCustomer.length <= 0 && this.voucher.optionCustomer == 1){
       this.disableCheckLimitCustomer = true;
       this.toastr.error('Không có khách hàng ');
       return;

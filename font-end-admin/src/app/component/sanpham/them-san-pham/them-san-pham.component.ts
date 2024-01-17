@@ -216,14 +216,10 @@ export class ThemSanPhamComponent implements OnInit {
       }
     });
   }
-  // search() {
-  //   this.prdsv.searchProduct(this.keyword)
-  //     .subscribe(products => this.products = products);
-  // }
   revoveInvalid(result) {
     result.done = true;
   }
-  validateImageCount(files: FileList): boolean {
+  validateImageCount(files: any): boolean {
     return files.length === 3;
   }
 

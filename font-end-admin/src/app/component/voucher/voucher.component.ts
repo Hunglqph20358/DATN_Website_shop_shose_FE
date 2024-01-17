@@ -173,6 +173,16 @@ export class VoucherComponent implements OnInit {
   ngOnInit(): void {
     this.apiService.getSomeData().subscribe((response) => {
       this.rowData = response;
+      for(let i = 0; i < this.rowData.length; i++) {
+        if (new Date(this.rowData[i].endDate) < new Date()) {
+          this.apiService.setIdel(this.rowData[i].id).subscribe(res => {
+            this.rowData[i] = {
+              ...this.rowData[i],
+              idel: res.data.idel
+            };
+          });
+        }
+      }
       this.searchResults = response;
       console.log(response);
     });

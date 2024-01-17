@@ -43,6 +43,10 @@ export class VoucherService {
     const url = `${this.apiUrl}/kichHoat/${id}`;
     return this.http.put(url, null);
   }
+  setIdel(id: number ): Observable<any> {
+    const url = `${this.apiUrl}/setIdel/${id}`;
+    return this.http.put(url, null);
+  }
   searchByDate(obj): Observable<any> {
     return this.http.get<any>(`http://localhost:6868/api/admin/voucher/searchByDate?fromDate=${obj.fromDate}&toDate=${obj.toDate}` );
   }

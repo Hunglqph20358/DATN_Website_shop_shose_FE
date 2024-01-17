@@ -1,7 +1,7 @@
 import {ChangeDetectorRef, Component, OnInit} from '@angular/core';
-import {MatDialog} from "@angular/material/dialog";
-import {ThemMauSacComponent} from "./them-mau-sac/them-mau-sac.component";
-import {MausacService} from "../../service/mausac.service";
+import {MatDialog} from '@angular/material/dialog';
+import {ThemMauSacComponent} from './them-mau-sac/them-mau-sac.component';
+import {MausacService} from '../../service/mausac.service';
 import {MauSacActionComponent} from './mau-sac-action/mau-sac-action.component';
 import {ActionCategoryRedererComponent} from '../danhmuc/action-category-rederer/action-category-rederer.component';
 
@@ -25,10 +25,17 @@ export class MausacComponent implements OnInit {
         field: 'name',
         sortable: true,
         filter: true,
-        width: 330
+        width: 300
+      },
+      {
+        headerName: 'Mã màu',
+        field: 'code',
+        sortable: true,
+        filter: true,
+        width: 230
       },
       {headerName: 'Ngày tạo', field: 'createDate', sortable: true, filter: true, width: 350},
-      {headerName: 'Chức năng', field: '', cellRendererFramework: MauSacActionComponent, width: 430},
+      {headerName: 'Chức năng', field: '', cellRendererFramework: MauSacActionComponent, width: 230},
     ];
   }
 

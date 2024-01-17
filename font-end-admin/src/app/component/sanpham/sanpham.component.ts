@@ -9,6 +9,8 @@ import {formatDateTime, formatMoney, getFormattedDateCurrent} from '../../util/u
 import {ImportFileComponent} from './import-file/import-file.component';
 import {SanPhamActionComponent} from './san-pham-action/san-pham-action.component';
 import {ImageRendererComponent} from './image-renderer/image-renderer.component';
+import {MaterialpostService} from '../../service/materialpost.service';
+import {Router} from '@angular/router';
 
 @Component({
   selector: 'app-sanpham',
@@ -26,8 +28,9 @@ export class SanphamComponent implements OnInit {
   public rowSelection: 'single' | 'multiple' = 'multiple'; // Chọn nhiều dòng
   rowExpansion: boolean = false;
   searchProduct: string;
-  ListProduct: any[];
-
+  productId: number;
+  status0Products: any[];
+  status1Products: any[];
   data = [
     {
       id: 1,
@@ -82,7 +85,8 @@ export class SanphamComponent implements OnInit {
 
   constructor(private matdialog: MatDialog,
               private spsv: ProductService, private changeDetectorRef: ChangeDetectorRef,
-              private cdr: ChangeDetectorRef) {
+              private cdr: ChangeDetectorRef,
+              private router: Router) {
     // this.columnDefs = [
     //   {
     //     headerName: 'Ảnh sản phẩm',
@@ -216,30 +220,85 @@ export class SanphamComponent implements OnInit {
     //   },
     // ];
   }
-
   ngOnInit(): void {
     this.spsv.getAllProductAll().subscribe(products => {
-      this.products = products.map(p => {
-        return {
-          ...p,
-          isExpand: false
-        };
-      });
+      this.products = products.map(p => ({
+        ...p,
+        isExpand: false
+      }
+      ));
+      this.status0Products = this.products.filter(p => p.status === 0);
+      this.status1Products = this.products.filter(p => p.status === 1);
+
       console.log('Product: ', this.products);
     });
+  }
+
+  // ngOnInit(): void {
+  //   this.spsv.getAllProductAll().subscribe(products => {
+  //     this.products = products.map(p => {
+  //       return {
+  //         ...p,
+  //         isExpand: false
+  //       };
+  //     });
+  //     console.log('Product: ', this.products);
+  //   });
+  // }
+  activateProduct(productId: number) {
+    this.spsv.activateProduct(productId).subscribe(
+      () => {
+        // Xử lý thành công
+        this.ngOnInit();
+        this.cdr.detectChanges();
+        console.log('Sản phẩm đã được kích hoạt.');
+      },
+      (error) => {
+        // Xử lý lỗi
+        console.error('Lỗi khi kích hoạt sản phẩm:', error);
+      }
+    );
+  }
+
+  deactivateProduct(productId: number) {
+    this.spsv.deactivateProduct(productId).subscribe(
+      () => {
+        // Xử lý thành công
+        this.ngOnInit();
+        this.cdr.detectChanges();
+        console.log('Sản phẩm đã được ngừng hoạt động.');
+      },
+      (error) => {
+        // Xử lý lỗi
+        console.error('Lỗi khi ngừng hoạt động sản phẩm:', error);
+      }
+    );
   }
   finbyProductLike(){
     if (this.searchProduct === ''){
       this.spsv.getAllProductAll().subscribe(
         data => {
-          this.products = data;
-          this.rowData = this.ListProduct;
+          this.products = data.map(p => {
+            return {
+              ...p,
+              isExpand: false
+            };
+          });
+          this.status0Products = this.products.filter(p => p.status === 0);
+          this.status1Products = this.products.filter(p => p.status === 1);
         }
       );
     }else {
-      this.spsv.searchProduct(this.searchProduct).subscribe(
+      this.spsv.searchProductNameOrCode(this.searchProduct).subscribe(
         data => {
-          this.products = data;
+          this.products = data.map(p => {
+            return {
+              ...p,
+              isExpand: false
+            };
+          });
+          this.status0Products = this.products.filter(p => p.status === 0);
+          this.status1Products = this.products.filter(p => p.status === 1);
         }
       );
     }
@@ -277,8 +336,5 @@ export class SanphamComponent implements OnInit {
     }
   }
 
-  ChangeStatus() {
-    return null;
-  }
 }
 

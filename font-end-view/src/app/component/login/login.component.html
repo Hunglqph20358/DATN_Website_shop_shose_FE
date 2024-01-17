@@ -4,19 +4,21 @@
   </div>
 
   <div class="right">
-    <h1>Chào mừng đến với ...</h1>
+    <h2>Chào mừng đến với 2T Store</h2>
 
     <form (ngSubmit)="login()">
-      <p>Tên tài khoản</p>
+      <p>Tên đăng nhập</p>
       <div class="user">
         <i class="fa-solid fa-user"></i>
-        <input type="text" name="user" placeholder="User Name" class="username" [(ngModel)]="form.username"  [ngModelOptions]="{standalone: true}" autocomplete="off">
+        <input type="text" name="user" placeholder="Tên đăng nhập" class="username" [(ngModel)]="form.username"
+               [ngModelOptions]="{standalone: true}" autocomplete="off">
       </div>
 
       <p class="passworg_tag">Mật khẩu</p>
       <div class="password">
         <i class="fa-solid fa-lock"></i>
-        <input type="password" name="password" placeholder="Password" [(ngModel)]="form.password"  [ngModelOptions]="{standalone: true}">
+        <input type="{{ showPassword ? 'text' : 'password' }}" name="password" placeholder="Mật khẩu" [(ngModel)]="form.password" [ngModelOptions]="{standalone: true}">
+        <a class="btn" (click)="togglePasswordVisibility()"><i class="fa-solid fa-eye"></i></a>
       </div>
       <div class="d-flex">
         <p class="sign-up">
@@ -28,11 +30,6 @@
       </div>
 
       <button type="submit">Login</button>
-      <div class="loging_icon">
-        <a href="#"><img src="assets/image/google.png"></a>
-        <a href="#"><img src="assets/image/facebook.png"></a>
-        <a href="#"><img src="assets/image/twitter.png"></a>
-      </div>
 
     </form>
 

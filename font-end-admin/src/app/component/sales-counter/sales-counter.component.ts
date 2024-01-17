@@ -7,7 +7,7 @@ import {OrderDetailService} from '../../service/order-detail.service';
 import {Order} from '../model/Order';
 import {OrderDetail} from '../model/OrderDetail';
 import {BehaviorSubject, forkJoin} from 'rxjs';
-import {Router} from '@angular/router';
+import {ActivatedRoute, Router} from '@angular/router';
 import {MatTabChangeEvent} from '@angular/material/tabs';
 import {SizeService} from '../../service/size.service';
 import {MausacService} from '../../service/mausac.service';
@@ -26,6 +26,8 @@ import {PaymentSalesService} from '../../service/payment-sales.service';
 import {UtilService} from '../../util/util.service';
 import {CommonFunction} from '../../util/common-function';
 import {ValidateInput} from '../model/validate-input';
+import {PogupVoucherSCComponent} from './pogup-voucher-sc/pogup-voucher-sc.component';
+import {SalesCouterVoucherService} from '../../service/sales-couter-voucher.service';
 
 @Component({
   selector: 'app-sales-counter',
@@ -45,7 +47,7 @@ export class SalesCounterComponent implements OnInit {
   searcherCustomer: string = '';
   showCustomer: boolean = false;
   searchCustomerResults: any[] = [];
-  listProductPush: any[] ;
+  listProductPush: any[];
   totalAllProducts: number = 0;
   priceCustomer: number = 0;
   priceVoucher: number = 0;
@@ -87,19 +89,24 @@ export class SalesCounterComponent implements OnInit {
     wardCode: undefined,
     specificAddress: undefined
   };
-  Order: {
-  id: number;
-  name: string;
-  productList: any[];
-};
   shipFee = 0;
   shipFeeReduce = null;
   totalMoneyPay;
+  reducePriceProduct = 0;
   typeOrder: number | null = null;
   statusOrder: number | null = null;
   receiver: string;
   receiver_phone: string;
   receiver_mail: string;
+
+  voucherChoice: any = {
+    voucher: null,
+    voucherShip: null
+  };
+  statusPayment: any;
+  voucher: any;
+  voucherShip: any;
+  codeVoucher: any;
   validReceiver: ValidateInput = new ValidateInput();
   validEmail: ValidateInput = new ValidateInput();
   validReceiverPhone: ValidateInput = new ValidateInput();
@@ -113,8 +120,9 @@ export class SalesCounterComponent implements OnInit {
               private router: Router, private sizeService: SizeService, private colorService: MausacService,
               private dialog: MatDialog, private customerService: CustomerServiceService, private toastr: ToastrService, private cdr: ChangeDetectorRef,
               private productDetailService: ProductdetailService, private giaoHangService: GiaoHangServiceService, private paymentService: PaymentSalesService,
-              public utilService: UtilService
+              public utilService: UtilService, private voucherService: SalesCouterVoucherService, private route: ActivatedRoute
   ) {
+    this.statusPayment = this.route.snapshot.queryParamMap.get('vnp_TransactionStatus');
   }
 
   search() {
@@ -177,11 +185,17 @@ export class SalesCounterComponent implements OnInit {
     }
     localStorage.setItem('coutOrder', this.count.toString());
     localStorage.setItem('listOrder', JSON.stringify(this.listOder));
+    localStorage.removeItem(`orderProducts_${this.currentOrderId}`);
   }
 
   addProductInOrder(row: any) {
     if (!row.quantity) {
       row.quantity = 1;
+    }
+    if (row.reducePrice != null && row.percentageReduce != null) {
+      this.reducePriceProduct = row.price - row.reducePrice;
+    } else {
+      this.reducePriceProduct = row.price;
     }
     this.listProductPush.push(row);
     this.listCart.push(
@@ -193,7 +207,8 @@ export class SalesCounterComponent implements OnInit {
         colorId: null,
         nameColor: null,
         quantity: 1,
-        price: row.price
+        price: this.reducePriceProduct,
+        quantityInstock: null
       }
     );
     // this.listProductPush.push(row);
@@ -266,6 +281,10 @@ export class SalesCounterComponent implements OnInit {
   calculateTotalAllProducts() {
     this.totalAllProducts = 0;
     for (let i = 0; i < this.listCart.length; i++) {
+      if (this.listCart[i].quantity <= 0) {
+        this.toastr.error('số lượng sản phẩm phải lớn hơn 0');
+        return;
+      }
       const totalPrice = this.listCart[i].quantity * this.listCart[i].price;
       this.totalAllProducts += totalPrice;
     }
@@ -288,6 +307,7 @@ export class SalesCounterComponent implements OnInit {
     if (event === undefined) {
       this.listColor = [...this.lisColorFind];
     } else {
+      this.listColor = [...this.lisColorFind];
       const selectedSizeId = event.id;
       const number_size = event.sizeNumber;
       const detailsForSelectedSize = this.listProductPush[i].productDetailDTOList
@@ -308,12 +328,15 @@ export class SalesCounterComponent implements OnInit {
     if (this.listCart[index].sizeId !== null && this.listCart[index].colorId !== null) {
       this.listProductPush[index].productDetailDTOList.filter(d => d.idSize === this.listCart[index].sizeId && d.idColor === this.listCart[index].colorId).map(pd => {
         console.log(pd.id);
+        if (pd.quantity <= 0) {
+          this.toastr.error('sản phẩm đã hết hàng');
+        }
         return this.listCart[index] = {
           ...this.listCart[index],
-          productDetailId: pd.id
+          productDetailId: pd.id,
+          quantityInstock: pd.quantity
         };
       });
-      console.log('ProductDetail: ', this.listCart);
     } else {
       return;
     }
@@ -324,6 +347,7 @@ export class SalesCounterComponent implements OnInit {
     if (event === undefined) {
       this.listSizePR = [...this.listSizeFind];
     } else {
+      this.listSizePR = [...this.listSizeFind];
       const selectedColorId = event.id;
       const colorName = event.name;
       const detailsForSelectedColor = this.listProductPush[i].productDetailDTOList
@@ -351,6 +375,10 @@ export class SalesCounterComponent implements OnInit {
     this.validateProvince();
     this.validateDistrict();
     this.validateWard();
+    if (this.listProductPush.length === 0){
+      this.toastr.error('không có sản phẩm nào để thanh toán');
+      return;
+    }
     if (this.listCart.some(c => c.sizeId === null || c.colorId === null)) {
       this.toastr.error('chưa chọn size và màu sắc của sản phẩm');
       return;
@@ -371,6 +399,21 @@ export class SalesCounterComponent implements OnInit {
     } else {
       this.typeOrder = 1;
       this.statusOrder = 3;
+    }
+    for (let i = 0; i < this.listCart.length; i++) {
+      const idProductDetail = this.listCart[i].quantityInstock;
+      if (this.listCart[i].quantity <= 0) {
+        this.toastr.error('Số lượng sản phẩm phải lớn hơn 0');
+        return;
+      }
+      if (idProductDetail <= 0) {
+        this.toastr.error('sản phẩm đã hết hàng');
+        return;
+      }
+      if (this.listCart[i].quantity > this.listCart[i].quantityInstock) {
+        this.toastr.error('Không đủ số lượng sản phẩm');
+        return;
+      }
     }
     Swal.fire({
       title: 'Bạn có xác nhận thanh toán đơn hàng ?',
@@ -397,6 +440,7 @@ export class SalesCounterComponent implements OnInit {
               + district?.DistrictName + ', ' + province?.ProvinceName,
             statusPayment: 0,
             shipPrice: this.shipFee,
+            codeVoucher: this.voucher ? this.voucher?.code : null,
             email: 'customer123@gmail.com',
             type: this.typeOrder,
             status: this.statusOrder,
@@ -419,7 +463,13 @@ export class SalesCounterComponent implements OnInit {
                 console.log(orderDetail);
                 this.orderDetailService.createDetailSales(orderDetail).subscribe(res => {
                   if (res.status === 'OK') {
-                    console.log('thanh toán thành công');
+                    localStorage.removeItem('listProductPush');
+                    this.refreshData();
+                    this.removeOrder(order);
+                    this.calculateTotalAllProducts();
+                    localStorage.removeItem(`orderProducts_${this.currentOrderId}`);
+                    localStorage.setItem('coutOrder', this.count.toString());
+                    localStorage.removeItem('listOrder');
                   } else {
                     this.checkStatus = 1;
                     console.log('Lỗi');
@@ -433,7 +483,6 @@ export class SalesCounterComponent implements OnInit {
             if (resPay.status === 'OK') {
               // sessionStorage.setItem('order', JSON.stringify(objCheckOut));
               // setTimeout()
-              this.toastr.success('thanh toán thành công');
               window.location.href = resPay.url;
             }
           });
@@ -450,6 +499,7 @@ export class SalesCounterComponent implements OnInit {
             addressReceived: this.addressNotLogin?.specificAddress + ', ' + ward?.WardName + ', '
               + district?.DistrictName + ', ' + province?.ProvinceName,
             statusPayment: 0,
+            codeVoucher: this.voucher ? this.voucher?.code : null,
             email: 'customer123@gmail.com',
             type: this.typeOrder,
             status: this.statusOrder,
@@ -480,15 +530,25 @@ export class SalesCounterComponent implements OnInit {
                   }
                 });
               }
-              console.log(this.observable);
-              this.toastr.success('Thanh toán thành công');
-              this.printInvoice();
-              localStorage.removeItem('listProductPush');
-              this.refreshData();
-              this.removeOrder(order);
-              this.calculateTotalAllProducts();
-              localStorage.setItem('coutOrder', this.count.toString());
-              localStorage.setItem('listOrder', JSON.stringify(this.listOder));
+              Swal.fire({
+                title: 'Thanh toán thành công !',
+                text: '',
+                icon: 'success',
+                showCancelButton: false,
+                confirmButtonColor: '#3085d6',
+                confirmButtonText: 'OK'
+              }).then(results => {
+                if (results.isConfirmed) {
+                  this.printInvoice();
+                  localStorage.removeItem('listProductPush');
+                  this.refreshData();
+                  this.removeOrder(order);
+                  this.calculateTotalAllProducts();
+                  localStorage.removeItem('listOrder');
+                  localStorage.setItem('coutOrder', this.count.toString());
+                  localStorage.setItem('listOrder', JSON.stringify(this.listOder));
+                }
+              });
             }
           );
         }
@@ -579,6 +639,7 @@ export class SalesCounterComponent implements OnInit {
   }
 
   onTabChange(event: MatTabChangeEvent): void {
+    console.log('Tab: ', event);
     const selectedTabIndex = event.index;
     this.currentOrderId = this.listOder[selectedTabIndex].id;
     this.getProductListForCurrentOrder();
@@ -609,6 +670,9 @@ export class SalesCounterComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    if (this.statusPayment === '00'){
+      this.toastr.success('thanh toán thành công');
+    }
     const listOrderCookie = localStorage.getItem('listOrder');
     const countOrderCookie = localStorage.getItem('coutOrder');
     if (countOrderCookie && listOrderCookie) {
@@ -625,9 +689,10 @@ export class SalesCounterComponent implements OnInit {
       localStorage.setItem('listOrder', JSON.stringify(this.listOder));
     }
     this.getProductListForCurrentOrder();
-    this.userDTO = localStorage.getItem('users');
-    this.fullname = localStorage.getItem('fullname');
-    this.idStaff = localStorage.getItem('id');
+    const users = JSON.parse(localStorage.getItem('users'));
+    this.userDTO = users;
+    this.fullname = users.fullname;
+    this.idStaff = users.id;
     this.listOder.forEach(order => {
       const orderProductsKey = `orderProducts_${order.id}`;
       const storedOrderProducts = localStorage.getItem(orderProductsKey);
@@ -747,6 +812,57 @@ export class SalesCounterComponent implements OnInit {
     } else {
       this.isChecked = false;
     }
+  }
+
+  //voucher
+  openVoucherSC() {
+    const originalTotalMoney = this.priceCustomer;
+    const dialogRef = this.dialog.open(PogupVoucherSCComponent, {
+      width: '45%',
+      height: '90vh',
+      data: {total: originalTotalMoney, voucherChoice: this.voucherChoice}
+    }).afterClosed().subscribe(result => {
+      if (result.event === 'saveVoucher') {
+        console.log(result.data);
+        this.totalMoneyPay = originalTotalMoney;
+        if (result.data.voucher !== null) {
+          this.voucherService.getVoucherSales(result.data.voucher).subscribe(res => {
+            this.voucher = res.data;
+            if (res.data.voucherType === 1) {
+              const reducedVoucherPrice = parseFloat(((res.data.reducedValue / 100) * this.priceCustomer).toFixed(2));
+
+              console.log(reducedVoucherPrice);
+              if (reducedVoucherPrice > res.data.maxReduced) {
+                this.priceCustomer = this.priceCustomer - this.voucher.maxReduced;
+                this.voucher.reducedValue = this.voucher.maxReduced;
+              } else {
+                this.priceCustomer = this.priceCustomer - this.voucher.reducedValue;
+              }
+            } else {
+              this.priceCustomer = this.priceCustomer - this.voucher.reducedValue;
+            }
+            this.priceVoucher = this.voucher.reducedValue;
+            this.voucherChoice.voucher = res.data.codess;
+            console.log(this.voucher.code);
+            this.cdr.detectChanges();
+          });
+        }
+        // if (result.data.voucherShip !== null) {
+        //   this.voucherShipService.getVoucherShip(result.data.voucherShip).subscribe(res => {
+        //     this.voucherShip = res.data;
+        //     if (this.shipFee <= res.data.reducedValue) {
+        //       this.shipFeeReduce = this.shipFee;
+        //       this.totalMoneyPay = this.totalMoneyPay - this.shipFee;
+        //     } else {
+        //       this.totalMoneyPay = this.totalMoneyPay - res.data.reducedValue;
+        //       this.shipFeeReduce = res.data.reducedValue;
+        //     }
+        //     this.voucherChoice.voucherShip = res.data.code;
+        //     this.cdr.detectChanges();
+        //   });
+        // }
+      }
+    });
   }
 
 // validate

@@ -16,7 +16,9 @@
           <div class="search-results" *ngIf="showResults">
             <mat-table [dataSource]="searchResults" *ngIf="isProductListVisible">
               <ng-container matColumnDef="image">
-                <mat-cell *matCellDef="let product"><img width="60px" height="60px" src="{{ product?.imagesDTOList[0].imageName }}" alt="" srcset=""> </mat-cell>
+                <mat-cell *matCellDef="let product"><img width="60px" height="60px"
+                                                         src="{{ product?.imagesDTOList[0].imageName }}" alt=""
+                                                         srcset=""></mat-cell>
               </ng-container>
               <ng-container matColumnDef="code">
                 <mat-cell *matCellDef="let product"> {{ product?.code }} </mat-cell>
@@ -27,10 +29,21 @@
               </ng-container>
 
               <ng-container matColumnDef="price">
-                <mat-cell *matCellDef="let product"> {{ utilService.formatMoney( product?.price ) }} </mat-cell>
+                <mat-cell *matCellDef="let product">
+                  <div *ngIf="product?.reducePrice == null && product?.percentageReduce == null">
+                    <span>{{product?.price}}</span> đ
+                  </div>
+                  <div *ngIf="product?.reducePrice != null && product?.percentageReduce != null">
+                    <del>{{utilService.formatMoney(product?.price)}}</del>
+                    <span
+                      style="margin-left: 5px">{{utilService.formatMoney(product?.price - product?.reducePrice)}}</span>
+                  </div>
+                </mat-cell>
+
               </ng-container>
 
-              <mat-row *matRowDef="let row; columns: ['image','code', 'name', 'price']" (click)="addProductInOrder(row)"></mat-row>
+              <mat-row *matRowDef="let row; columns: ['image','code', 'name', 'price']"
+                       (click)="addProductInOrder(row)"></mat-row>
             </mat-table>
           </div>
         </div>
@@ -40,7 +53,7 @@
             <mat-tab-group *ngIf="count > 0" (selectedTabChange)="onTabChange($event)">
               <mat-tab *ngFor="let o of listOder">
                 <ng-template mat-tab-label>
-                  <span>{{ o.name }}</span>
+                  <span>{{ o?.name }}</span>
                   <button (click)="removeOrder(o)" type="button" class="remove-btn-order">
                     <i class="bi bi-x-circle"></i>
                   </button>
@@ -74,7 +87,6 @@
               <th>Màu sắc</th>
               <th>Số lượng</th>
               <th>Đơn giá</th>
-              <th>Chi tiết</th>
             </tr>
             </thead>
             <tbody>
@@ -101,15 +113,19 @@
                            (change)="onColorChange($event, i)">
                 </ng-select>
               </td>
-              <td><input type="number" min="0" class="quantity" name="quantity" [(ngModel)]="listCart[i].quantity"
-                         (ngModelChange)="calculateTotalAllProducts()" [ngModelOptions]="{standalone: true}" ></td>
-              <td>{{utilService.formatMoney(product?.price)}}</td>
-              <td>{{product?.total}}</td>
+              <td><input type="number" min="1" class="quantity" name="quantity" [(ngModel)]="listCart[i].quantity"
+                         (ngModelChange)="calculateTotalAllProducts()" [ngModelOptions]="{standalone: true}"></td>
               <td>
-                <button mat-button [matMenuTriggerFor]="menu"><i class="bi bi-three-dots-vertical"></i></button>
-                <mat-menu #menu="matMenu">
-                  <button mat-menu-item>Chi Tiết</button>
-                </mat-menu>
+                <div>
+                  <div *ngIf="product?.reducePrice == null && product?.percentageReduce == null">
+                    <span>{{product?.price}}</span> đ
+                  </div>
+                  <div *ngIf="product?.reducePrice != null && product?.percentageReduce != null">
+                    <del>{{utilService.formatMoney(product?.price)}}</del>
+                    <span
+                      style="margin-left: 5px">{{utilService.formatMoney(product?.price - product?.reducePrice)}}</span>
+                  </div>
+                </div>
               </td>
             </tr>
             </tbody>
@@ -120,7 +136,9 @@
             <div class="row mb-1">
               <input class="col-sm-6 col-form-label name-nv custom-input" readonly name="fullname"
                      [(ngModel)]="fullname">
-              <mat-slide-toggle class="col-sm-6 col-form-label" [(ngModel)]="isChecked" (change)="selectedOpsiontGH()">Giao Hàng</mat-slide-toggle>
+              <mat-slide-toggle class="col-sm-6 col-form-label" [(ngModel)]="isChecked" (change)="selectedOpsiontGH()">
+                Giao Hàng
+              </mat-slide-toggle>
 
             </div>
 
@@ -136,11 +154,11 @@
                 <div class="search-results-kh" *ngIf="searchCustomerResults">
                   <mat-table [dataSource]="searchCustomerResults" *ngIf="isCustomerNull">
                     <ng-container matColumnDef="fullname">
-                      <mat-cell *matCellDef="let cs"> {{ cs.fullname }} </mat-cell>
+                      <mat-cell *matCellDef="let cs"> {{ cs?.fullname }} </mat-cell>
                     </ng-container>
 
                     <ng-container matColumnDef="phone">
-                      <mat-cell *matCellDef="let cs"> {{ cs.phone }} </mat-cell>
+                      <mat-cell *matCellDef="let cs"> {{ cs?.phone }} </mat-cell>
                     </ng-container>
 
                     <mat-row *matRowDef="let row; columns: ['fullname', 'phone']" (click)="addCustomer(row)"></mat-row>
@@ -160,9 +178,10 @@
             <div class="row mb-2">
               <label class="col-sm-6 col-form-label">Giảm giá:</label>
               <div class="col-sm-6 position-relative">
-                <input type="text" min="0" class="form-control custom-input" name="priceVoucher" placeholder="{{utilService.formatMoney(priceVoucher)}}"
+                <input type="text" min="0" class="form-control custom-input" name="priceVoucher"
+                       placeholder="{{utilService.formatMoney(priceVoucher)}}"
                        (change)="priceVouchers() " [(ngModel)]="priceVoucher" [ngModelOptions]="{standalone: true}">
-                <a class="btn icon-add position-absolute top-0 end-0">
+                <a class="btn icon-add position-absolute top-0 end-0" (click)="openVoucherSC()">
                   <i class="bi bi-plus-lg"></i>
                 </a>
               </div>
@@ -177,22 +196,24 @@
                 <div class="form-check form-check-inline col-md-6">
                   <input class="form-check-input" type="radio" name="inlineRadioOptions2" id="inlineRadio2" value="1"
                          [(ngModel)]="selectedOption" [ngModelOptions]="{standalone: true}">
-                  <label class="form-check-label" for="inlineRadio2">Chuyển Khoản</label>
+                  <label class="form-check-label" for="inlineRadio2">Chuyển Khoản VNP</label>
                 </div>
               </div>
             </div>
             <div class="row mb-1">
-              <div class="col-sm-12" *ngIf="selectedOption === '0'">
-                <input type="text" class="form-control note-custom" placeholder="Ghi chú đơn hàng">
-              </div>
-              <div class="col-sm-6 center" *ngIf="selectedOption === '1'">
-                <img class="col-sm-6 img" src="assets/image/frame.png">
-              </div>
+<!--              <div class="col-sm-12" *ngIf="selectedOption === '0'">-->
+<!--                <input type="text" class="form-control note-custom" placeholder="Ghi chú đơn hàng">-->
+<!--              </div>-->
+<!--              <div class="col-sm-6 center" *ngIf="selectedOption === '1'">-->
+<!--                <img class="col-sm-6 img" src="assets/image/frame.png">-->
+<!--              </div>-->
               <!--Tên người nhận-->
               <div class="row mb-1" *ngIf="isChecked">
                 <label class="col-sm-6 col-form-label">Tên Người nhận:</label>
                 <div class="col-sm-6">
-                  <input type="text" class="form-control custom-input" name="receiver" (keydown)="revoveInvalid(validReceiver)" (blur)="validateReceiver()" [(ngModel)]="receiver" [ngModelOptions]="{standalone: true}">
+                  <input type="text" class="form-control custom-input" name="receiver"
+                         (keydown)="revoveInvalid(validReceiver)" (blur)="validateReceiver()" [(ngModel)]="receiver"
+                         [ngModelOptions]="{standalone: true}">
                   <div class="validate-input" *ngIf="!validReceiver.done">
                     <p class="validate-input-label" *ngIf="validReceiver.empty">Tên người nhận không để trống</p>
                     <p class="validate-input-label" *ngIf="validReceiver.maxLength">Tên người nhận tối đa 250 kí tự</p>
@@ -203,18 +224,23 @@
               <div class="row mb-1" *ngIf="isChecked">
                 <label class="col-sm-6 col-form-label">SĐT:</label>
                 <div class="col-sm-6">
-                  <input type="text" class="form-control custom-input" name="receiver_phone" (keydown)="revoveInvalid(validReceiverPhone)"
-                         (blur)="validateReceiverPhone()" [(ngModel)]="receiver_phone" [ngModelOptions]="{standalone: true}">
+                  <input type="text" class="form-control custom-input" name="receiver_phone"
+                         (keydown)="revoveInvalid(validReceiverPhone)"
+                         (blur)="validateReceiverPhone()" [(ngModel)]="receiver_phone"
+                         [ngModelOptions]="{standalone: true}">
                   <div class="validate-input" *ngIf="!validReceiverPhone.done">
                     <p class="validate-input-label" *ngIf="validReceiverPhone.empty">Số điện thoại không để trống</p>
-                    <p class="validate-input-label" *ngIf="validReceiverPhone.regex">Số điện thoại không đúng định dạng</p>
+                    <p class="validate-input-label" *ngIf="validReceiverPhone.regex">Số điện thoại không đúng định
+                      dạng</p>
                   </div>
                 </div>
               </div>
               <div class="row mb-1" *ngIf="isChecked">
                 <label class="col-sm-6 col-form-label">Email:</label>
                 <div class="col-sm-6">
-                  <input type="text" class="form-control custom-input" name="receiver_mail" (keydown)="revoveInvalid(validEmail)" (blur)="validateEmail()" [(ngModel)]="receiver_mail" [ngModelOptions]="{standalone: true}">
+                  <input type="text" class="form-control custom-input" name="receiver_mail"
+                         (keydown)="revoveInvalid(validEmail)" (blur)="validateEmail()" [(ngModel)]="receiver_mail"
+                         [ngModelOptions]="{standalone: true}">
                   <div class="validate-input" *ngIf="!validEmail.done">
                     <p class="validate-input-label" *ngIf="validEmail.empty">Email không để trống</p>
                     <p class="validate-input-label" *ngIf="validEmail.maxLength">Email tối đa 250 kí tự</p>
@@ -226,7 +252,9 @@
               <div class="row mb-1" *ngIf="isChecked">
                 <label class="col-sm-6 col-form-label">Địa Chỉ:</label>
                 <div class="col-sm-6">
-                  <input type="text" class="form-control custom-input" name="address" (keydown)="revoveInvalid(specificAddress)" (blur)="validateSpecificAddress()" [(ngModel)]="addressNotLogin.specificAddress" [ngModelOptions]="{standalone: true}">
+                  <input type="text" class="form-control custom-input" name="address"
+                         (keydown)="revoveInvalid(specificAddress)" (blur)="validateSpecificAddress()"
+                         [(ngModel)]="addressNotLogin.specificAddress" [ngModelOptions]="{standalone: true}">
                   <div class="validate-input" *ngIf="!validProvince.done">
                     <p class="validate-input-label" *ngIf="validProvince.empty">Vui lòng không để trống</p>
                   </div>
@@ -237,8 +265,11 @@
               <div class="row mb-1" *ngIf="isChecked">
                 <label class="col-sm-6 col-form-label">Tỉnh / Thành phố:</label>
                 <div class="col-sm-6">
-                  <ng-select [items]="listProvince" bindLabel="ProvinceName" bindValue="ProvinceID" placeholder="--Lựa chọn--" (keydown)="revoveInvalid(validProvince)" (blur)="validateProvince()" (change)="getDistrict($event)"
-                             [(ngModel)]="addressNotLogin.provinceId" [ngModelOptions]="{standalone: true}" [searchable]="false" >
+                  <ng-select [items]="listProvince" bindLabel="ProvinceName" bindValue="ProvinceID"
+                             placeholder="--Lựa chọn--" (keydown)="revoveInvalid(validProvince)"
+                             (blur)="validateProvince()" (change)="getDistrict($event)"
+                             [(ngModel)]="addressNotLogin.provinceId" [ngModelOptions]="{standalone: true}"
+                             [searchable]="false">
                   </ng-select>
                   <div class="validate-input" *ngIf="!validProvince.done">
                     <p class="validate-input-label" *ngIf="validProvince.empty">Vui lòng không để trống</p>
@@ -250,8 +281,11 @@
               <div class="row mb-1" *ngIf="isChecked">
                 <label class="col-sm-6 col-form-label">Quận / Huyện:</label>
                 <div class="col-sm-6">
-                  <ng-select [items]="listDistrict"  bindLabel="DistrictName" bindValue="DistrictID" placeholder="--Lựa chọn--"
-                             [(ngModel)]="addressNotLogin.districtId" [ngModelOptions]="{standalone: true}" [searchable]="false" (keydown)="revoveInvalid(validDistrict)" (blur)="validateDistrict()"  (change)="getWard($event)" >
+                  <ng-select [items]="listDistrict" bindLabel="DistrictName" bindValue="DistrictID"
+                             placeholder="--Lựa chọn--"
+                             [(ngModel)]="addressNotLogin.districtId" [ngModelOptions]="{standalone: true}"
+                             [searchable]="false" (keydown)="revoveInvalid(validDistrict)" (blur)="validateDistrict()"
+                             (change)="getWard($event)">
                   </ng-select>
                   <div class="validate-input" *ngIf="!validProvince.done">
                     <p class="validate-input-label" *ngIf="validProvince.empty">Vui lòng không để trống</p>
@@ -263,8 +297,10 @@
               <div class="row mb-1" *ngIf="isChecked">
                 <label class="col-sm-6 col-form-label">Phường / Xã:</label>
                 <div class="col-sm-6">
-                  <ng-select [items]="listWard" bindLabel="WardName" bindValue="WardCode" placeholder="--Lựa chọn--" (keydown)="revoveInvalid(validWard)" (blur)="validateWard()"
-                             [searchable]="false" [(ngModel)]="addressNotLogin.wardCode" [ngModelOptions]="{standalone: true}" (change)="getPhiShip();" >
+                  <ng-select [items]="listWard" bindLabel="WardName" bindValue="WardCode" placeholder="--Lựa chọn--"
+                             (keydown)="revoveInvalid(validWard)" (blur)="validateWard()"
+                             [searchable]="false" [(ngModel)]="addressNotLogin.wardCode"
+                             [ngModelOptions]="{standalone: true}" (change)="getPhiShip();">
                   </ng-select>
                   <div class="validate-input" *ngIf="!validProvince.done">
                     <p class="validate-input-label" *ngIf="validProvince.empty">Vui lòng không để trống</p>
