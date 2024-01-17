@@ -53,7 +53,7 @@
             <mat-tab-group *ngIf="count > 0" (selectedTabChange)="onTabChange($event)">
               <mat-tab *ngFor="let o of listOder">
                 <ng-template mat-tab-label>
-                  <span>{{ o.name }}</span>
+                  <span>{{ o?.name }}</span>
                   <button (click)="removeOrder(o)" type="button" class="remove-btn-order">
                     <i class="bi bi-x-circle"></i>
                   </button>
@@ -87,7 +87,6 @@
               <th>Màu sắc</th>
               <th>Số lượng</th>
               <th>Đơn giá</th>
-              <th>Chi tiết</th>
             </tr>
             </thead>
             <tbody>
@@ -128,12 +127,6 @@
                   </div>
                 </div>
               </td>
-              <td>
-                <button mat-button [matMenuTriggerFor]="menu"><i class="bi bi-three-dots-vertical"></i></button>
-                <mat-menu #menu="matMenu">
-                  <button mat-menu-item>Chi Tiết</button>
-                </mat-menu>
-              </td>
             </tr>
             </tbody>
           </table>
@@ -161,11 +154,11 @@
                 <div class="search-results-kh" *ngIf="searchCustomerResults">
                   <mat-table [dataSource]="searchCustomerResults" *ngIf="isCustomerNull">
                     <ng-container matColumnDef="fullname">
-                      <mat-cell *matCellDef="let cs"> {{ cs.fullname }} </mat-cell>
+                      <mat-cell *matCellDef="let cs"> {{ cs?.fullname }} </mat-cell>
                     </ng-container>
 
                     <ng-container matColumnDef="phone">
-                      <mat-cell *matCellDef="let cs"> {{ cs.phone }} </mat-cell>
+                      <mat-cell *matCellDef="let cs"> {{ cs?.phone }} </mat-cell>
                     </ng-container>
 
                     <mat-row *matRowDef="let row; columns: ['fullname', 'phone']" (click)="addCustomer(row)"></mat-row>
@@ -203,17 +196,17 @@
                 <div class="form-check form-check-inline col-md-6">
                   <input class="form-check-input" type="radio" name="inlineRadioOptions2" id="inlineRadio2" value="1"
                          [(ngModel)]="selectedOption" [ngModelOptions]="{standalone: true}">
-                  <label class="form-check-label" for="inlineRadio2">Chuyển Khoản</label>
+                  <label class="form-check-label" for="inlineRadio2">Chuyển Khoản VNP</label>
                 </div>
               </div>
             </div>
             <div class="row mb-1">
-              <div class="col-sm-12" *ngIf="selectedOption === '0'">
-                <input type="text" class="form-control note-custom" placeholder="Ghi chú đơn hàng">
-              </div>
-              <div class="col-sm-6 center" *ngIf="selectedOption === '1'">
-                <img class="col-sm-6 img" src="assets/image/frame.png">
-              </div>
+<!--              <div class="col-sm-12" *ngIf="selectedOption === '0'">-->
+<!--                <input type="text" class="form-control note-custom" placeholder="Ghi chú đơn hàng">-->
+<!--              </div>-->
+<!--              <div class="col-sm-6 center" *ngIf="selectedOption === '1'">-->
+<!--                <img class="col-sm-6 img" src="assets/image/frame.png">-->
+<!--              </div>-->
               <!--Tên người nhận-->
               <div class="row mb-1" *ngIf="isChecked">
                 <label class="col-sm-6 col-form-label">Tên Người nhận:</label>

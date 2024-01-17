@@ -7,7 +7,7 @@ import {OrderDetailService} from '../../service/order-detail.service';
 import {Order} from '../model/Order';
 import {OrderDetail} from '../model/OrderDetail';
 import {BehaviorSubject, forkJoin} from 'rxjs';
-import {Router} from '@angular/router';
+import {ActivatedRoute, Router} from '@angular/router';
 import {MatTabChangeEvent} from '@angular/material/tabs';
 import {SizeService} from '../../service/size.service';
 import {MausacService} from '../../service/mausac.service';
@@ -47,7 +47,7 @@ export class SalesCounterComponent implements OnInit {
   searcherCustomer: string = '';
   showCustomer: boolean = false;
   searchCustomerResults: any[] = [];
-  listProductPush: any[] ;
+  listProductPush: any[];
   totalAllProducts: number = 0;
   priceCustomer: number = 0;
   priceVoucher: number = 0;
@@ -103,6 +103,7 @@ export class SalesCounterComponent implements OnInit {
     voucher: null,
     voucherShip: null
   };
+  statusPayment: any;
   voucher: any;
   voucherShip: any;
   codeVoucher: any;
@@ -119,8 +120,9 @@ export class SalesCounterComponent implements OnInit {
               private router: Router, private sizeService: SizeService, private colorService: MausacService,
               private dialog: MatDialog, private customerService: CustomerServiceService, private toastr: ToastrService, private cdr: ChangeDetectorRef,
               private productDetailService: ProductdetailService, private giaoHangService: GiaoHangServiceService, private paymentService: PaymentSalesService,
-              public utilService: UtilService, private voucherService: SalesCouterVoucherService
+              public utilService: UtilService, private voucherService: SalesCouterVoucherService, private route: ActivatedRoute
   ) {
+    this.statusPayment = this.route.snapshot.queryParamMap.get('vnp_TransactionStatus');
   }
 
   search() {
@@ -183,15 +185,16 @@ export class SalesCounterComponent implements OnInit {
     }
     localStorage.setItem('coutOrder', this.count.toString());
     localStorage.setItem('listOrder', JSON.stringify(this.listOder));
+    localStorage.removeItem(`orderProducts_${this.currentOrderId}`);
   }
 
   addProductInOrder(row: any) {
     if (!row.quantity) {
       row.quantity = 1;
     }
-    if (row.reducePrice != null && row.percentageReduce != null){
-       this.reducePriceProduct = row.price - row.reducePrice;
-    }else {
+    if (row.reducePrice != null && row.percentageReduce != null) {
+      this.reducePriceProduct = row.price - row.reducePrice;
+    } else {
       this.reducePriceProduct = row.price;
     }
     this.listProductPush.push(row);
@@ -278,7 +281,7 @@ export class SalesCounterComponent implements OnInit {
   calculateTotalAllProducts() {
     this.totalAllProducts = 0;
     for (let i = 0; i < this.listCart.length; i++) {
-      if (this.listCart[i].quantity <= 0){
+      if (this.listCart[i].quantity <= 0) {
         this.toastr.error('số lượng sản phẩm phải lớn hơn 0');
         return;
       }
@@ -325,7 +328,7 @@ export class SalesCounterComponent implements OnInit {
     if (this.listCart[index].sizeId !== null && this.listCart[index].colorId !== null) {
       this.listProductPush[index].productDetailDTOList.filter(d => d.idSize === this.listCart[index].sizeId && d.idColor === this.listCart[index].colorId).map(pd => {
         console.log(pd.id);
-        if (pd.quantity <= 0){
+        if (pd.quantity <= 0) {
           this.toastr.error('sản phẩm đã hết hàng');
         }
         return this.listCart[index] = {
@@ -334,7 +337,6 @@ export class SalesCounterComponent implements OnInit {
           quantityInstock: pd.quantity
         };
       });
-      console.log('ProductDetail: ', this.listCart);
     } else {
       return;
     }
@@ -373,6 +375,10 @@ export class SalesCounterComponent implements OnInit {
     this.validateProvince();
     this.validateDistrict();
     this.validateWard();
+    if (this.listProductPush.length === 0){
+      this.toastr.error('không có sản phẩm nào để thanh toán');
+      return;
+    }
     if (this.listCart.some(c => c.sizeId === null || c.colorId === null)) {
       this.toastr.error('chưa chọn size và màu sắc của sản phẩm');
       return;
@@ -396,15 +402,15 @@ export class SalesCounterComponent implements OnInit {
     }
     for (let i = 0; i < this.listCart.length; i++) {
       const idProductDetail = this.listCart[i].quantityInstock;
-      if (this.listCart[i].quantity <= 0 ){
+      if (this.listCart[i].quantity <= 0) {
         this.toastr.error('Số lượng sản phẩm phải lớn hơn 0');
         return;
       }
-      if (idProductDetail === 0){
+      if (idProductDetail <= 0) {
         this.toastr.error('sản phẩm đã hết hàng');
         return;
       }
-      if (this.listCart[i].quantity > this.listCart[i].quantityInstock){
+      if (this.listCart[i].quantity > this.listCart[i].quantityInstock) {
         this.toastr.error('Không đủ số lượng sản phẩm');
         return;
       }
@@ -477,7 +483,6 @@ export class SalesCounterComponent implements OnInit {
             if (resPay.status === 'OK') {
               // sessionStorage.setItem('order', JSON.stringify(objCheckOut));
               // setTimeout()
-              this.toastr.success('thanh toán thành công');
               window.location.href = resPay.url;
             }
           });
@@ -533,12 +538,13 @@ export class SalesCounterComponent implements OnInit {
                 confirmButtonColor: '#3085d6',
                 confirmButtonText: 'OK'
               }).then(results => {
-                if (results.isConfirmed){
+                if (results.isConfirmed) {
                   this.printInvoice();
                   localStorage.removeItem('listProductPush');
                   this.refreshData();
                   this.removeOrder(order);
                   this.calculateTotalAllProducts();
+                  localStorage.removeItem('listOrder');
                   localStorage.setItem('coutOrder', this.count.toString());
                   localStorage.setItem('listOrder', JSON.stringify(this.listOder));
                 }
@@ -633,6 +639,7 @@ export class SalesCounterComponent implements OnInit {
   }
 
   onTabChange(event: MatTabChangeEvent): void {
+    console.log('Tab: ', event);
     const selectedTabIndex = event.index;
     this.currentOrderId = this.listOder[selectedTabIndex].id;
     this.getProductListForCurrentOrder();
@@ -663,6 +670,9 @@ export class SalesCounterComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    if (this.statusPayment === '00'){
+      this.toastr.success('thanh toán thành công');
+    }
     const listOrderCookie = localStorage.getItem('listOrder');
     const countOrderCookie = localStorage.getItem('coutOrder');
     if (countOrderCookie && listOrderCookie) {
@@ -805,7 +815,7 @@ export class SalesCounterComponent implements OnInit {
   }
 
   //voucher
-  openVoucherSC(){
+  openVoucherSC() {
     const originalTotalMoney = this.priceCustomer;
     const dialogRef = this.dialog.open(PogupVoucherSCComponent, {
       width: '45%',

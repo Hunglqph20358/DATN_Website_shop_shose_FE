@@ -15,6 +15,7 @@ export class AuthJwtService {
     if (isExpired) {
       localStorage.removeItem('token');
       localStorage.removeItem('users');
+      localStorage.removeItem('listOrder');
       this.router.navigate(['/admin/login']);
       return false;
     }
