@@ -100,6 +100,7 @@ import {DatePipe} from '@angular/common';
 
 import { ActionStaffComponent } from './component/staff/action-staff/action-staff.component';
 import {ZXingScannerModule} from '@zxing/ngx-scanner';
+import {MatSlideToggleModule} from '@angular/material/slide-toggle';
 
 @NgModule({
   declarations: [
@@ -201,7 +202,8 @@ import {ZXingScannerModule} from '@zxing/ngx-scanner';
     DateRangePickerModule,
     MatInputModule,
     DateRangePickerModule,
-    ZXingScannerModule
+    ZXingScannerModule,
+    MatSlideToggleModule
   ],
   bootstrap: [AppComponent],
   providers: [{provide: JWT_OPTIONS, useValue: JWT_OPTIONS},

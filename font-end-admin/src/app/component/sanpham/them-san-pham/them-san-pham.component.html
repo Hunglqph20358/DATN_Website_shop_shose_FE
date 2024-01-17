@@ -1,10 +1,7 @@
+
 <h1 mat-dialog-title>Thêm sản phẩm</h1>
 <div mat-dialog-content class="example-container"style="display: flex">
   <div style="margin-right: 10px">
-<!--    <mat-form-field appearance="outline">-->
-<!--      <mat-label>Mã</mat-label>-->
-<!--      <input [(ngModel)]="Code" name="Code" matInput placeholder="Mã">-->
-<!--    </mat-form-field>-->
     <mat-form-field appearance="outline">
       <mat-label>Tên sản phẩm</mat-label>
       <input [(ngModel)]="Name" name="Name" matInput placeholder="Tên" (keydown)="revoveInvalid(validName)" (blur)="validateName()">
@@ -13,10 +10,10 @@
         <p class="validate-input-label" *ngIf="validName.maxLength">Tên sản phẩm dưới 250 kí tự</p>
       </div>
     </mat-form-field>
-    <mat-form-field appearance="outline">
-      <mat-label>Tên người tạo</mat-label>
-      <input [(ngModel)]="CreateName" name="CreateName" matInput placeholder="Người tạo">
-    </mat-form-field>
+<!--    <mat-form-field appearance="outline">-->
+<!--      <mat-label>Tên người tạo</mat-label>-->
+<!--      <input [(ngModel)]="CreateName" name="CreateName" matInput placeholder="Người tạo">-->
+<!--    </mat-form-field>-->
     <mat-form-field appearance="outline">
       <mat-label>Mô tả</mat-label>
       <input [(ngModel)]="Description" name="Description" matInput placeholder="Mô tả" (keydown)="revoveInvalid(validDescription)" (blur)="validateDescription()">
@@ -83,36 +80,101 @@
         <p class="validate-input-label" *ngIf="validMaterial.empty">Vui lòng chọn Chất liệu</p>
       </div>
     </mat-form-field>
-<!--    <mat-form-field appearance="outline">-->
-<!--      <mat-label>IdBrand</mat-label>-->
-<!--      <input [(ngModel)]="IdBrand" name="IdBrand" matInput placeholder="IdBrand">-->
-<!--    </mat-form-field>-->
-<!--    <mat-form-field appearance="outline">-->
-<!--      <mat-label>IdCategory</mat-label>-->
-<!--      <input [(ngModel)]="IdCategory" name="IdCategory" matInput placeholder="IdCategory">-->
-<!--    </mat-form-field>-->
-<!--    <mat-form-field appearance="outline">-->
-<!--      <mat-label>IdSole</mat-label>-->
-<!--      <input [(ngModel)]="IdSole" name="IdSole" matInput placeholder="IdSole">-->
-<!--    </mat-form-field>-->
-<!--    <mat-form-field appearance="outline">-->
-<!--      <mat-label>IdMaterial</mat-label>-->
-<!--      <input [(ngModel)]="IdMaterial" name="IdMaterial" matInput placeholder="IdMaterial">-->
-<!--    </mat-form-field>-->
     <div>
-      <input type="file" [(ngModel)]="imgLst" (change)="OnChangeFile($event)" multiple (keydown)="revoveInvalid(validImage)" (blur)="validateImage()">
-
+      <input type="file" [(ngModel)]="imgLst" style="color: red" (change)="OnChangeFile($event)" multiple (keydown)="revoveInvalid(validImage)" (blur)="validateImage()">
       <p class="validate-input-label" *ngIf="validImage.empty">Ảnh không được để trống</p>
+      <p class="validate-input-label" *ngIf="validateImageCount">
+        Ảnh phải tối đa là 3
+      </p>
     </div>
-    <div id="preview"></div>
+    <br>
+    <div *ngIf="Name">
+            <h1 style="display: flex">Thêm Kích cỡ & Màu sắc</h1>
+      <ng-select [items]="size"
+                 bindLabel="sizeNumber"
+                 bindValue="id"
+                 [multiple]="true"
+                 (change)="OnChangSize($event)"
+                 placeholder="Chọn kích thước"
+                 >
+      </ng-select>
+      <br>
+      <ng-select [items]="color"
+                 bindLabel="name"
+                 bindValue="id"
+                 [multiple]="true"
+                 (change)="OnChangColor($event)"
+                 placeholder="Chọn màu sắc"
+                 >
+      </ng-select>
+      <br>
+<!--      <h1>Thêm Kích cỡ & Màu sắc</h1>-->
+<!--      <mat-form-field>-->
+<!--        <mat-label>Kích cỡ</mat-label>-->
+<!--        <mat-select [(ngModel)]="idSize" (selectionChange)="OnChangSize($event)"  multiple>-->
+<!--          <mat-option *ngFor="let sz of size"  [value]="sz.id">{{sz.sizeNumber}}</mat-option>-->
+<!--        </mat-select>-->
+<!--      </mat-form-field>-->
+<!--      <mat-form-field>-->
+<!--        <mat-label>Màu sắc</mat-label>-->
+<!--        <mat-select [(ngModel)]="idColor" (selectionChange)="OnChangColor($event)"  multiple>-->
+<!--          <mat-option *ngFor="let cl of color" [value]="cl.id">{{cl.name}}</mat-option>-->
+<!--        </mat-select>-->
+<!--      </mat-form-field>-->
+<!--      <mat-radio-group [(ngModel)]="shoeCollar" name="shoeCollar">-->
+<!--        <mat-label>Cổ giày</mat-label>-->
+<!--        <mat-radio-button [value]="0">Cổ thấp</mat-radio-button>-->
+<!--        <mat-radio-button [value]="1">Cổ cao</mat-radio-button>-->
+<!--      </mat-radio-group>-->
+<!--      <mat-form-field appearance="outline">-->
+<!--        <mat-label>Số Lượng</mat-label>-->
+<!--        <input [(ngModel)]="quantity" name="quantity" matInput placeholder="Số lượng">-->
+<!--      </mat-form-field>-->
+    </div>
   </div>
+</div>
+<div  *ngIf="productDetail && productDetail.length > 0">
+  <h1> Chi tiết sản phẩm</h1>
+  <table class="table">
+    <thead>
+    <tr>
+      <th scope="col">Tên Sản Phẩm</th>
+      <th scope="col">Kích thước</th>
+      <th scope="col">Màu sắc</th>
+      <th scope="col">Số Lượng</th>
+      <th scope="col">Cổ giày</th>
+      <th scope="col">Chức năng</th>
+    </tr>
+    </thead>
+    <tbody class="table-group-divider">
+    <tr *ngFor="let prdtl of productDetail; let i = index">
+      <td>{{prdtl.name}}</td>
+      <td>{{prdtl.sizeDTO.sizeNumber}}</td>
+      <td>{{prdtl.colorDTO.name}}</td>
+      <td>
+        <div>
+          <input type="text" [(ngModel)]="productDetail[i].quantity" style="width: 50px">
+        </div>
+      </td>
+      <td>
+        <div>
+          <ng-select [items]="listShoeCollar"
+                     bindLabel="name"
+                     bindValue="id"
+                     [(ngModel)]="productDetail[i].shoeCollar"
+                     [clearable]="false"
+          >
+          </ng-select>
+        </div>
+      </td>
+      <td><button mat-icon-button color="warn"  (click)="deleteProductDetail(i)"><mat-icon>delete</mat-icon></button></td>
+    </tr>
+    </tbody>
+  </table>
 </div>
 <div mat-dialog-actions [align]="'end'">
   <button mat-raised-button color="warn" routerLink="/admin/san-pham">Đóng</button>
   <button mat-raised-button color="primary" (click)="clickaddProduct()">Thêm</button>
 </div>
-<script>
-  function getImagePreview(event){
 
-  }
-</script>
+
