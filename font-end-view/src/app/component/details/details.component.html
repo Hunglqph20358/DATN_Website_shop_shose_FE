@@ -3,11 +3,7 @@
     <div class="col-md-5">
       <div class="main-img">
         <app-custom-carousel [images]="product.imagesDTOList" [height]="0"></app-custom-carousel>
-<!--        <img class="img-fluid" [src]="product.imagesDTOList[0].imageName" alt="ProductS">-->
         <div class="row my-3 previews" style="display: flex;justify-content: space-around;">
-<!--          <div class="col-md-3" *ngFor="let img of product.imagesDTOList">-->
-<!--            <img class="w-100" [src]="img.imageName" alt="Sale">-->
-<!--          </div>-->
         </div>
       </div>
     </div>
@@ -19,8 +15,6 @@
         <div class="product-title text-bold my-3">
           {{product?.name}}
         </div>
-
-
         <div class="price-area my-4" *ngIf="product?.reducePrice != null && product?.percentageReduce != null">
           <div class="old-price" style="font-size: 15px; margin-top: 10px"><div style="text-decoration: line-through; color: #757575">{{utilService.formatMoney(product.price)}}</div></div>
           <div class="new-price" style="font-size: 25px"><span>{{utilService.formatMoney(product.price - product.reducePrice)}}</span></div>
@@ -71,15 +65,20 @@
           class="mtext-104 cl3 txt-center num-product"
           type="number"
           name="num-product"
-          [(ngModel)]="quantityBuy" />
+          [(ngModel)]="quantityBuy"
+          (ngModelChange)="checkQuantity()"
+        />
         <button type="button"
           class="btn-num-product-up cl8 hov-btn3 trans-04 flex-c-m" [style.cursor]="quantityBuy < getProductDetailQuantity()? 'pointer':'not-allowed'" (click)="tangSoLuong();" [disabled]="quantityBuy >= getProductDetailQuantity()">
           <i class="fa-solid fa-plus"></i>
         </button>
       </div>
+      <div class="validate-input" *ngIf="validQuantityBuy">
+        <p class="validate-input-label" *ngIf="validQuantityBuy">{{validQuantityBuyMess}}</p>
+      </div>
       <div class ="btn-groups">
-        <button class = "add-cart-btn" style="border-radius: 5px" [disabled]="bothSizeAndColorSelected === false" [style.opacity]="bothSizeAndColorSelected === false ? '0.5': ''" (click)="addToCart(product.id)"><i class = "fas fa-shopping-cart"></i>Thêm giỏ hàng</button>
-        <button class = "buy-now-btn" style="border-radius: 5px" [disabled]="bothSizeAndColorSelected === false" [style.opacity]="bothSizeAndColorSelected === false ? '0.5': ''" (click)="buyNow(product.id);"><i class = "fas fa-wallet"></i>Mua ngay</button>
+        <button class = "add-cart-btn" style="border-radius: 5px" [disabled]="bothSizeAndColorSelected === false || this.validQuantityBuy" [style.opacity]="(bothSizeAndColorSelected === false || this.validQuantityBuy) ? '0.5': ''" (click)="addToCart(product.id)"><i class = "fas fa-shopping-cart"></i>Thêm giỏ hàng</button>
+        <button class = "buy-now-btn" style="border-radius: 5px" [disabled]="bothSizeAndColorSelected === false || this.validQuantityBuy" [style.opacity]="(bothSizeAndColorSelected === false || this.validQuantityBuy) ? '0.5': ''" (click)="buyNow(product.id);"><i class = "fas fa-wallet"></i>Mua ngay</button>
       </div>
     </div>
   </div>
@@ -129,9 +128,17 @@
         </a>
 
         <div class="card-body">
-          <h5 class="card-title">{{p?.name}}</h5>
-          <div *ngIf="p?.reducePrice == null && p?.percentageReduce == null"><span>{{utilService.formatMoney(p?.price)}}</span></div>
-          <div *ngIf="p?.reducePrice != null && p?.percentageReduce != null"> <del>{{utilService.formatMoney(p?.price)}}</del>  <span style="margin-left: 5px">{{utilService.formatMoney(p.price - p.reducePrice)}}</span></div>
+          <h5 class="card-title">{{p.name}}</h5>
+          <!--                <div *ngIf="p.reducePrice == null && p.percentageReduce == null"><span>{{p.price}}</span> đ</div>-->
+          <div class="price-area my-4" *ngIf="p?.reducePrice == null && p?.percentageReduce == null">
+            <div class="new-price" style="font-size: 25px"><span>{{utilService.formatMoney(p?.price)}}</span></div>
+          </div>
+          <!--                <div *ngIf="p.reducePrice != null && p.percentageReduce != null"> <del>{{utilService.formatMoney(p.price)}}</del>-->
+          <!--                  <span style="margin-left: 5px">{{utilService.formatMoney(p.price - p.reducePrice)}}</span></div>-->
+          <div class="price-area my-4" *ngIf="p?.reducePrice != null && p?.percentageReduce != null">
+            <div class="old-price" style="font-size: 15px; margin-top: 10px"><div style="text-decoration: line-through; color: #757575">{{utilService.formatMoney(p.price)}}</div></div>
+            <div class="new-price" style="font-size: 25px"><span>{{utilService.formatMoney(p.price - p.reducePrice)}}</span></div>
+          </div>
         </div>
       </div>
     </div>

@@ -45,7 +45,8 @@ export class DetailsComponent implements OnInit {
   colorId: number | null = null;
   sizeId: number | null = null;
   bothSizeAndColorSelected: boolean = false;
-
+  validQuantityBuy: boolean = false;
+  validQuantityBuyMess = null;
 
   ngOnInit(): void {
     this.activeRoute.params.subscribe(params => {
@@ -87,7 +88,6 @@ export class DetailsComponent implements OnInit {
       });
     }
   }
-
 
 
   selectSize(s) {
@@ -255,10 +255,12 @@ export class DetailsComponent implements OnInit {
 
   giamSoLuong() {
     this.quantityBuy = this.quantityBuy - 1;
+    this.checkQuantity();
   }
 
   tangSoLuong() {
     this.quantityBuy = this.quantityBuy + 1;
+    this.checkQuantity();
   }
 
   onSizeChange(event: any): void {
@@ -267,7 +269,7 @@ export class DetailsComponent implements OnInit {
     if (this.product && this.product.productDetailDTOList) {
       if (this.sizeId === null) {
         this.listColor = [...this.originalListColor];
-      }else {
+      } else {
         this.listColor = [...this.originalListColor];
         const detailsForSelectedSize = this.product.productDetailDTOList
           .filter(detail => detail.idSize === this.sizeId && detail.idColor);
@@ -285,7 +287,7 @@ export class DetailsComponent implements OnInit {
     if (this.product && this.product.productDetailDTOList) {
       if (this.colorId === null) {
         this.listSize = [...this.originalListSize];
-      }else {
+      } else {
         this.listSize = [...this.originalListSize];
         const detailsForSelectedColor = this.product.productDetailDTOList
           .filter(detail => detail.idColor === this.colorId && detail.idSize);
@@ -298,5 +300,24 @@ export class DetailsComponent implements OnInit {
     }
     this.checkIfBothSizeAndColorSelected();
     this.cdr.detectChanges();
+  }
+
+  checkQuantity() {
+    const regex = /^\d+$/;
+    if (this.quantityBuy === undefined || this.quantityBuy === null || JSON.stringify(this.quantityBuy) === '') {
+      this.validQuantityBuy = true;
+      this.validQuantityBuyMess = 'Vui lòng nhập số lượng mua';
+      return;
+    } else if (!regex.test(JSON.stringify(this.quantityBuy))) {
+      this.validQuantityBuy = true;
+      this.validQuantityBuyMess = 'Vui lòng nhập số lượng mua phải là số và lớn hơn 0';
+      return;
+    } else if (this.quantityBuy > this.getProductDetailQuantity()) {
+      this.validQuantityBuy = true;
+      this.validQuantityBuyMess = 'Số lượng mua đã lớn hơn số lượng hiện có';
+      return;
+    }
+    this.validQuantityBuy = false;
+    this.validQuantityBuyMess = null;
   }
 }
