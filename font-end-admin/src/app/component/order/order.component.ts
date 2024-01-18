@@ -31,6 +31,8 @@ export class OrderComponent implements OnInit {
     dateFrom: null,
     dateTo: null
   };
+  totalStatus: any;
+
   constructor(private matDialog: MatDialog, private orderService: OrderService, private cdr: ChangeDetectorRef) {
     const lst =
       [
@@ -218,6 +220,7 @@ export class OrderComponent implements OnInit {
 
   ngOnInit(): void {
     this.getAllOrder();
+    this.getTotalStatus();
   }
 
   onGridReady(params: any) {
@@ -235,6 +238,18 @@ export class OrderComponent implements OnInit {
     this.orderService.getAllOrderAdmin(obj).subscribe(res => {
       this.rowData = res;
       console.log(this.rowData);
+    });
+    this.cdr.detectChanges();
+  }
+
+  getTotalStatus(): void {
+    const obj = {
+      dateFrom: this.modelSearch.dateFrom !== null ? formatDate(this.modelSearch.dateFrom) : null,
+      dateTo: this.modelSearch.dateTo !== null ? formatDate(this.modelSearch.dateTo) : null,
+    };
+    this.orderService.totalStatusOrderAdmin(obj).subscribe(res => {
+      this.totalStatus = res;
+      console.log(this.totalStatus);
     });
     this.cdr.detectChanges();
   }
@@ -260,9 +275,11 @@ export class OrderComponent implements OnInit {
       }
     });
   }
+
   searchOrder() {
     console.log(this.modelSearch);
     this.getAllOrder();
+    this.getTotalStatus();
     this.cdr.detectChanges();
   }
 }
