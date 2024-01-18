@@ -23,21 +23,21 @@
           <div style="display:flex; margin-left: 10px; flex-direction: column">
             <div class="row" style="display: flex">
               <div class="col">
-                <label>Mã: {{v.code}}</label>
+                <label>Mã: {{v?.code}}</label>
               </div>
 <!--              <div class="col" *ngIf="v.voucherType === 1">-->
 <!--                <label>Giảm: {{v.reducedValue}} %</label>-->
 <!--                <label>Giảm Tối đa: {{v.maxReduced | number:'1.0-0'}} đ</label>-->
 <!--              </div>-->
               <div>
-                <label>Giảm: {{v.reducedValue | number:'1.0-0'}} đ</label>
+                <label>Giảm: {{v?.reducedValue | number:'1.0-0'}} đ</label>
               </div>
             </div>
             <div class="row">
-              <label>Đơn tối thiểu: {{v.conditionApply | number:'1.0-0'}} đ</label>
+              <label>Đơn tối thiểu: {{v?.conditionApply | number:'1.0-0'}} đ</label>
             </div>
             <div class="row">
-              <label>HSD: {{utilService.formatDateTime(v.endDate)}}</label>
+              <label>HSD: {{utilService.formatDateTime(v?.endDate)}}</label>
             </div>
           </div>
         </div>
@@ -62,21 +62,21 @@
           <div style="display:flex; margin-left: 10px; flex-direction: column">
             <div class="row" style="display: flex">
               <div>
-                <label>Mã: {{v.code}}</label>
+                <label>Mã: {{v?.code}}</label>
               </div>
-              <div  *ngIf="v.voucherType === 1">
-                <label>Giảm: {{v.reducedValue}} %</label>
-                <label>Giảm Tối đa: {{v.maxReduced | number:'1.0-0'}} đ</label>
+              <div  *ngIf="v?.voucherType === 1">
+                <label>Giảm: {{v?.reducedValue}} %</label>
+                <label>Giảm Tối đa: {{v?.maxReduced | number:'1.0-0'}} đ</label>
               </div>
-              <div *ngIf="v.voucherType === 0">
-                <label>Giảm: {{v.reducedValue | number:'1.0-0'}} đ</label>
+              <div *ngIf="v?.voucherType === 0">
+                <label>Giảm: {{v?.reducedValue | number:'1.0-0'}} đ</label>
               </div>
             </div>
             <div class="row">
-              <label>Đơn tối thiểu: {{v.conditionApply | number:'1.0-0'}} đ</label>
+              <label>Đơn tối thiểu: {{v?.conditionApply | number:'1.0-0'}} đ</label>
             </div>
             <div class="row">
-              <label>HSD: {{utilService.formatDateTime(v.endDate)}}</label>
+              <label>HSD: {{utilService.formatDateTime(v?.endDate)}}</label>
             </div>
           </div>
         </div>

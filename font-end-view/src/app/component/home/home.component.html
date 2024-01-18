@@ -26,7 +26,7 @@
           <button type="button" class="btn btn-light" (click)="changeBrand(0)">Tất cả</button>
         </li>
         <li class="nav-item" *ngFor="let b of listBrand">
-          <input type="button" class="btn btn-light" id="brandName" [value]="b.name" (click)="changeBrand(b.id)">
+          <input type="button" class="btn btn-light" id="brandName" [value]="b.name" (click)="changeBrand(b?.id)">
         </li>
       </ul>
     </div>
@@ -39,15 +39,15 @@
                 <img style="width: 250px; height: 330px"
                   (mouseenter)="onMouseEnter(p)"
                   (mouseleave)="onMouseLeave(p)"
-                  [src]="isMouseOver[p.id] ? p.imagesDTOList[1].imageName : p.imagesDTOList[0].imageName"
+                  [src]="isMouseOver[p.id] ? p?.imagesDTOList[1]?.imageName : p?.imagesDTOList[0]?.imageName"
                   class="card-img-top"
                   alt="..."
                 >
-                <span *ngIf="p.reducePrice != null && p.percentageReduce != null" class="percentage-badge">{{ p.percentageReduce }}%</span>
+                <span *ngIf="p?.reducePrice != null && p?.percentageReduce != null" class="percentage-badge">{{ p?.percentageReduce }}%</span>
               </a>
 
               <div class="card-body">
-                <h5 class="card-title">{{p.name}}</h5>
+                <h5 class="card-title">{{p?.name}}</h5>
 <!--                <div *ngIf="p.reducePrice == null && p.percentageReduce == null"><span>{{p.price}}</span> đ</div>-->
                 <div  *ngIf="p?.reducePrice == null && p?.percentageReduce == null">
                   <div  style="font-size: 25px"><span>{{utilService.formatMoney(p?.price)}}</span></div>
@@ -55,8 +55,8 @@
 <!--                <div *ngIf="p.reducePrice != null && p.percentageReduce != null"> <del>{{utilService.formatMoney(p.price)}}</del>-->
 <!--                  <span style="margin-left: 5px">{{utilService.formatMoney(p.price - p.reducePrice)}}</span></div>-->
                 <div *ngIf="p?.reducePrice != null && p?.percentageReduce != null">
-                  <div  style="font-size: 15px; margin-top: 10px"><div style="text-decoration: line-through; color: #757575">{{utilService.formatMoney(p.price)}}</div></div>
-                  <div style="font-size: 25px"><span>{{utilService.formatMoney(p.price - p.reducePrice)}}</span></div>
+                  <div  style="font-size: 15px; margin-top: 10px"><div style="text-decoration: line-through; color: #757575">{{utilService.formatMoney(p?.price)}}</div></div>
+                  <div style="font-size: 25px"><span>{{utilService.formatMoney(p?.price - p?.reducePrice)}}</span></div>
                 </div>
               </div>
             </div>

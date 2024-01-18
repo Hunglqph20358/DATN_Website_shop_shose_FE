@@ -2,7 +2,7 @@
   <div class="row">
     <div class="col-md-5">
       <div class="main-img">
-        <app-custom-carousel [images]="product.imagesDTOList" [height]="0"></app-custom-carousel>
+        <app-custom-carousel [images]="product?.imagesDTOList" [height]="0"></app-custom-carousel>
         <div class="row my-3 previews" style="display: flex;justify-content: space-around;">
         </div>
       </div>
@@ -16,8 +16,8 @@
           {{product?.name}}
         </div>
         <div class="price-area my-4" *ngIf="product?.reducePrice != null && product?.percentageReduce != null">
-          <div class="old-price" style="font-size: 15px; margin-top: 10px"><div style="text-decoration: line-through; color: #757575">{{utilService.formatMoney(product.price)}}</div></div>
-          <div class="new-price" style="font-size: 25px"><span>{{utilService.formatMoney(product.price - product.reducePrice)}}</span></div>
+          <div class="old-price" style="font-size: 15px; margin-top: 10px"><div style="text-decoration: line-through; color: #757575">{{utilService.formatMoney(product?.price)}}</div></div>
+          <div class="new-price" style="font-size: 25px"><span>{{utilService.formatMoney(product?.price - product?.reducePrice)}}</span></div>
           <div  style="display: flex;text-align: center;align-items: center;background-color:red; color: #ffffff;margin-left: 30px;border-radius: 4px; height: 20px; margin-top: 10px">
             <div style="font-size: 10px; padding: 5px;font-weight: 700;">{{product?.percentageReduce}}% GIẢM</div></div>
         </div>
@@ -77,8 +77,8 @@
         <p class="validate-input-label" *ngIf="validQuantityBuy">{{validQuantityBuyMess}}</p>
       </div>
       <div class ="btn-groups">
-        <button class = "add-cart-btn" style="border-radius: 5px" [disabled]="bothSizeAndColorSelected === false || this.validQuantityBuy" [style.opacity]="(bothSizeAndColorSelected === false || this.validQuantityBuy) ? '0.5': ''" (click)="addToCart(product.id)"><i class = "fas fa-shopping-cart"></i>Thêm giỏ hàng</button>
-        <button class = "buy-now-btn" style="border-radius: 5px" [disabled]="bothSizeAndColorSelected === false || this.validQuantityBuy" [style.opacity]="(bothSizeAndColorSelected === false || this.validQuantityBuy) ? '0.5': ''" (click)="buyNow(product.id);"><i class = "fas fa-wallet"></i>Mua ngay</button>
+        <button class = "add-cart-btn" style="border-radius: 5px" [disabled]="bothSizeAndColorSelected === false || this.validQuantityBuy" [style.opacity]="(bothSizeAndColorSelected === false || this.validQuantityBuy) ? '0.5': ''" (click)="addToCart(product?.id)"><i class = "fas fa-shopping-cart"></i>Thêm giỏ hàng</button>
+        <button class = "buy-now-btn" style="border-radius: 5px" [disabled]="bothSizeAndColorSelected === false || this.validQuantityBuy" [style.opacity]="(bothSizeAndColorSelected === false || this.validQuantityBuy) ? '0.5': ''" (click)="buyNow(product?.id);"><i class = "fas fa-wallet"></i>Mua ngay</button>
       </div>
     </div>
   </div>
@@ -136,8 +136,8 @@
           <!--                <div *ngIf="p.reducePrice != null && p.percentageReduce != null"> <del>{{utilService.formatMoney(p.price)}}</del>-->
           <!--                  <span style="margin-left: 5px">{{utilService.formatMoney(p.price - p.reducePrice)}}</span></div>-->
           <div class="price-area my-4" *ngIf="p?.reducePrice != null && p?.percentageReduce != null">
-            <div class="old-price" style="font-size: 15px; margin-top: 10px"><div style="text-decoration: line-through; color: #757575">{{utilService.formatMoney(p.price)}}</div></div>
-            <div class="new-price" style="font-size: 25px"><span>{{utilService.formatMoney(p.price - p.reducePrice)}}</span></div>
+            <div class="old-price" style="font-size: 15px; margin-top: 10px"><div style="text-decoration: line-through; color: #757575">{{utilService.formatMoney(p?.price)}}</div></div>
+            <div class="new-price" style="font-size: 25px"><span>{{utilService.formatMoney(p?.price - p?.reducePrice)}}</span></div>
           </div>
         </div>
       </div>

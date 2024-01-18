@@ -199,6 +199,15 @@ export class DetailsComponent implements OnInit {
     expirationDate.setTime(expirationDate.getTime() + 30 * 60 * 1000);
     if (this.cartData.has(productKey)) {
       const slHienTai = this.cartData.get(productKey);
+      if ((slHienTai + this.quantityBuy) > this.getProductDetailQuantity()) {
+        Swal.fire({
+          icon: 'error',
+          title: 'Số lượng mua lớn hơn số lượng tồn',
+          showConfirmButton: false,
+          timer: 1500
+        });
+        return;
+      }
       this.cartData.set(productKey, slHienTai + this.quantityBuy);
       this.cookieService.set('cart', JSON.stringify(Array.from(this.cartData.entries())), expirationDate);
       Swal.fire({
